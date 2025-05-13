@@ -68,13 +68,10 @@ jobs:
           oauth-secret: ${{ secrets.TS_CLIENT_SECRET }}
           tags: tag:ci
 
-      - name: e
-        run: dig pi.cama-bass.ts.net
-
       - name: SSH Setup
         uses: shimataro/ssh-key-action@v2
         with:
-          known_hosts: pi.cama-bass.ts.net
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy
