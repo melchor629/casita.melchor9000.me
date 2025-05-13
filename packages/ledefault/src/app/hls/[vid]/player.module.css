@@ -1,0 +1,13 @@
+@media (max-aspect-ratio: 16/9) {
+  .llea {
+    width: 100dvw;
+    height: calc(9 / 16 * 100dvw);
+  }
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .llea {
+    width: calc(16 / 9 * 100dvh);
+    height: 100dvh;
+  }
+}

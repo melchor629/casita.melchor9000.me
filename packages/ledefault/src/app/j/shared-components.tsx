@@ -1,0 +1,81 @@
+/* eslint-disable react/jsx-props-no-spreading */
+import { clsx } from 'clsx'
+import { forwardRef, type ComponentPropsWithRef } from 'preact/compat'
+
+type TextAreaProps = Readonly<ComponentPropsWithRef<'textarea'>>
+export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextArea({ children, class: classs, className, ...props }, ref) {
+  return (
+    <textarea
+      {...props}
+      ref={ref}
+      class={clsx(
+        'bg-primary-subtle-light dark:bg-primary-subtle-dark',
+        'px-2 py-1',
+        'rounded-md shadow-lg',
+        'resize-y',
+        'outline-2 outline-offset-2 not-focus:not-active:outline-hidden',
+        'outline-primary-subtle-light dark:outline-primary-subtle-dark',
+        'transition-colors',
+        classs, className,
+      )}
+    >
+      {children}
+    </textarea>
+  )
+})
+
+type CharButtonProps = Readonly<ComponentPropsWithRef<'button'> & {
+  variant?: 'primary' | 'secondary'
+}>
+export const CharButton = forwardRef<HTMLButtonElement, CharButtonProps>(function CharButton({ children, class: classs, className, variant = 'primary', ...props }, ref) {
+  return (
+    <button
+      {...props}
+      ref={ref}
+      class={clsx(
+        'relative',
+        'min-w-12',
+        'outline-2 outline-offset-2',
+        'not-focus:not-active:outline-hidden',
+        'rounded-lg shadow-md',
+        'cursor-pointer',
+        'transition-colors',
+        'disabled:opacity-75',
+        variant === 'primary' && [
+          'px-4 py-3',
+          'bg-primary-main-light dark:bg-primary-main-dark text-primary-text-dark',
+          'hover:not-disabled:bg-primary-hover-light dark:hover:not-disabled:bg-primary-hover-dark',
+          'outline-primary-main-light dark:outline-primary-main-dark',
+        ],
+        variant === 'secondary' && [
+          'px-2 py-1',
+          'bg-transparent border border-solid border-primary-text-light dark:border-primary-text-dark',
+          'hover:not-disabled:bg-primary-hover-light/30 dark:hover:not-disabled:bg-primary-hover-dark/30',
+          'outline-primary-text-light dark:outline-primary-text-dark',
+        ],
+        classs, className,
+      )}
+    >
+      {children}
+    </button>
+  )
+})
+
+type NaisTableProps = Readonly<ComponentPropsWithRef<'table'>>
+export const NaisTable = forwardRef<HTMLTableElement, NaisTableProps>(function NaisTable({ children, class: classs, className, ...props }, ref) {
+  return (
+    <table
+      {...props}
+      ref={ref}
+      class={clsx(
+        'border-separate border-spacing-x-2 border-spacing-y-1',
+        'w-full',
+        'text-center',
+        'mb-2',
+        classs, className,
+      )}
+    >
+      {children}
+    </table>
+  )
+})

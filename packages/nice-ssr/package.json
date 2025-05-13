@@ -1,0 +1,64 @@
+{
+  "name": "@melchor629/nice-ssr",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "sideEffects": false,
+  "bin": {
+    "nice-ssr-build": "./bin/build.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    "./vite": {
+      "types": "./dist/vite/plugin.d.ts",
+      "import": "./dist/vite/plugin.js"
+    },
+    "./fastify": {
+      "types": "./dist/fastify/plugin.d.ts",
+      "import": "./dist/fastify/plugin.js"
+    },
+    "./server": {
+      "types": "./dist/entry/server.d.tsx",
+      "import": "./dist/entry/server.js"
+    },
+    ".": {
+      "types": "./src/nice-ssr/nice-ssr.ts",
+      "import": "./dist/nice-ssr/nice-ssr.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "tsc -p . --watch",
+    "lint": "eslint src",
+    "check": "tsc -p . --noEmit"
+  },
+  "dependencies": {
+    "@fastify/static": "^8.0.0",
+    "fastify-plugin": "^5.0.1",
+    "preact-render-to-string": "^6.0.0"
+  },
+  "peerDependencies": {
+    "fastify": "^5.0.0",
+    "preact": "^10.0.0",
+    "vite": "^6.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@fastify/middie": "^9.0.0",
+    "@melchor629/eslint-config": "^0.2.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^6.0.0"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "src/nice-ssr/"
+  ]
+}
