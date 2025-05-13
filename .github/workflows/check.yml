@@ -25,8 +25,8 @@ jobs:
       - name: Check audit
         run: npm audit --omit=dev
 
-      - name: Check linter
-        run: npx turbo run check lint
-
       - name: Build
         run: npx turbo run build
+
+      - name: Check linter
+        run: npx turbo run check lint
