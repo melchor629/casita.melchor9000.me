@@ -20,7 +20,7 @@ jobs:
           node-version: '22.x'
 
       - name: Install packages
-        run: npm ci
+        run: npm i
 
       - name: Check audit
         run: npm audit --omit=dev
