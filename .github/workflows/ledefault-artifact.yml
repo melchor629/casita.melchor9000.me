@@ -72,10 +72,10 @@ jobs:
         run: dig pi.cama-bass.ts.net
 
       - name: SSH Setup
-        uses: MrSquaare/ssh-setup-action@v3.1.0
+        uses: shimataro/ssh-key-action@v2
         with:
-          host: pi.cama-bass.ts.net
-          private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: pi.cama-bass.ts.net
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy
         run: ssh -p 22 ubuntu@pi.cama-bass.ts.net 'cd docker/ledefault && docker compose pull && docker compose up -d'
