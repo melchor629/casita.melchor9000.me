@@ -68,7 +68,7 @@ jobs:
           oauth-secret: ${{ secrets.TS_CLIENT_SECRET }}
           tags: tag:ci
 
-- name: e
+      - name: e
         run: dig pi.cama-bass.ts.net
 
       - name: SSH Setup
