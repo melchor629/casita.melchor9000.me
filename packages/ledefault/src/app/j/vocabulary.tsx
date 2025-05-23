@@ -580,7 +580,7 @@ export default function Vocabulary({ changePage }: { readonly changePage: () => 
   const filter = filterFromSearchParams || inputValue
   return (
     <>
-      <div class="flex gap-2 max-w-screen-md w-full px-1">
+      <div class="flex gap-2 max-w-screen-md w-full pt-4 px-4 pb-4 bg-primary-bg-light/30 dark:bg-primary-bg-dark/30 backdrop-blur-sm z-10">
         <input
           type="text"
           id="vocab-filter"
@@ -610,7 +610,7 @@ export default function Vocabulary({ changePage }: { readonly changePage: () => 
         </div>
       </div>
       <div
-        class="flex grow flex-col gap-2 px-2 py-1 w-full max-w-screen-md overflow-y-auto"
+        class="flex grow flex-col gap-2 -mt-16 px-4 pt-17 pb-5 w-full max-w-screen-md overflow-y-auto"
         id="vocab-results"
       >
         <VocabularyResults filter={filter} />

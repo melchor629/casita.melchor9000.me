@@ -1,4 +1,5 @@
 import type { Metadata } from '@melchor629/nice-ssr'
+import clsx from 'clsx'
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
 import KanaWriter from './kana-writer'
 import Vocabulary from './vocabulary'
@@ -91,20 +92,32 @@ export default function JapanesePage() {
 
   const daContainer = `
     absolute top-0 left-0
-    p-4
     min-h-screen md:max-h-screen
     w-screen
-    flex flex-col md:flex-wrap
+    flex flex-col
     justify-center content-center items-center
-    gap-y-4
-    gap-x-6
   `
   return (
     <>
-      <div class={`${daContainer} opacity-0 invisible hidden`} ref={kanaWriterRef}>
+      <div
+        class={clsx(
+          daContainer,
+          'p-4 gap-y-4 gap-x-6',
+          'md:flex-wrap',
+          'opacity-0 invisible hidden',
+        )}
+        ref={kanaWriterRef}
+      >
         <KanaWriter changePage={useCallback(() => void changePage('vocab'), [changePage])} />
       </div>
-      <div class={`${daContainer} opacity-0 invisible hidden md:flex-nowrap!`} ref={vocabRef}>
+      <div
+        class={clsx(
+          daContainer,
+          'max-h-screen',
+          'opacity-0 invisible hidden',
+        )}
+        ref={vocabRef}
+      >
         <Vocabulary changePage={useCallback(() => void changePage('kana-writer'), [changePage])} />
       </div>
     </>
