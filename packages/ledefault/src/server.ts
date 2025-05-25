@@ -25,7 +25,6 @@ const app = fastify({
       : undefined,
   },
 
-  ...(isProduction && { http2: true }),
   genReqId: () => nanoid(23),
   requestTimeout: 120,
   trustProxy: true,
