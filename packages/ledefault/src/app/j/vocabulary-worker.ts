@@ -126,7 +126,7 @@ function processVocabEntry(entry: MutDictionaryEntry, level: 'basic' | 'intermed
     entry.forms.past.positive ??= `${root}${past}`
     entry.forms.past.negative ??= `${root}${negative}なかった`
     entry.forms.letsDo ??= `${root}${mashou}う`
-    entry.forms.te ??= `${root}${te}`
+    entry.forms.te ??= `${root}${masu}${te}`
     entry.forms.wantTo ??= `${root}たい`
     entry.forms.formal = {
       present: {
