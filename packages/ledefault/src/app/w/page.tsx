@@ -36,11 +36,11 @@ function DaLink({ entry }: { readonly entry: import('./entries').Entry }) {
         referrerPolicy="no-referrer"
         id={`link-${entry.id}`}
         class={clsx(
-          'bg-primary-elevated-light dark:bg-primary-elevated-dark',
+          'bg-primary-elevated',
           'rounded-lg',
           'px-6 py-6',
           'outline-hidden outline-2 outline-offset-2',
-          'outline-primary-elevated-light dark:outline-primary-elevated-dark',
+          'outline-primary-elevated',
           'focus:outline-solid active:outline-solid',
           'relative',
           'shadow-lg hover:shadow-xl',
@@ -67,7 +67,7 @@ function DaLink({ entry }: { readonly entry: import('./entries').Entry }) {
         class={clsx(
           'fixed top-0 left-0 z-10',
           'pointer-events-none',
-          'bg-primary-elevated-light dark:bg-primary-elevated-dark',
+          'bg-primary-elevated',
           'rounded-md',
           'px-2 py-1',
           'text-sm',

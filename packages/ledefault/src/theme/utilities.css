@@ -1,0 +1,15 @@
+@utility animation-delay-1s {
+  animation-delay: 1s;
+}
+
+@utility animation-duration-2s {
+  animation-duration: 2s;
+}
+
+@utility animation-easing-in-out {
+  animation-timing-function: ease-in-out;
+}
+
+@utility animation-easing-linear {
+  animation-timing-function: linear;
+}

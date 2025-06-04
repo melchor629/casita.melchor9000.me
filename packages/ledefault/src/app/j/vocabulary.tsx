@@ -53,7 +53,7 @@ const RefLink = ({ refLink: ref }: { readonly refLink: EntryRef }) => {
     'rounded-sm',
     'cursor-pointer',
     'transition-colors',
-    'hover:bg-accent-elevated-light/20 hover:dark:bg-accent-elevated-dark/20',
+    'hover:bg-accent-elevated/20',
   )
   if (ref.type === 'basic') {
     return (
@@ -422,10 +422,10 @@ function VocabularyResult({ result }: ThingProps) {
   return (
     <div
       class={clsx(
-        'bg-accent-elevated-light/15 dark:bg-accent-elevated-dark/15',
+        'bg-accent-elevated/15',
         'border border-accent-main-light dark:border-accent-main-dark',
         'px-2 py-1',
-        'shadow-xs shadow-accent-elevated-light dark:shadow-accent-elevated-dark',
+        'shadow-xs shadow-accent-elevated',
         'rounded-md',
         'flex flex-row gap-2',
       )}
@@ -580,17 +580,17 @@ export default function Vocabulary({ changePage }: { readonly changePage: () => 
   const filter = filterFromSearchParams || inputValue
   return (
     <>
-      <div class="flex gap-2 max-w-screen-md w-full pt-4 px-4 pb-4 bg-primary-bg-light/30 dark:bg-primary-bg-dark/30 backdrop-blur-sm z-10">
+      <div class="flex gap-2 max-w-screen-md w-full pt-4 px-4 pb-4 bg-primary-bg/30 backdrop-blur-sm z-10">
         <input
           type="text"
           id="vocab-filter"
           class={clsx(
-            'bg-primary-subtle-light dark:bg-primary-subtle-dark',
+            'bg-primary-subtle hover:bg-primary-hover',
             'px-2 py-1',
             'grow',
             'rounded-md shadow-md',
             'outline-2 outline-offset-2',
-            'outline-primary-subtle-light dark:outline-primary-subtle-dark',
+            'outline-primary-hover',
             'not-focus:not-active:outline-hidden',
             'transition-colors',
           )}

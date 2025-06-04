@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "./light.css" layer(theme);
+@import "./dark.css" layer(theme);
+@import "./common.css";
+@import "./utilities.css";

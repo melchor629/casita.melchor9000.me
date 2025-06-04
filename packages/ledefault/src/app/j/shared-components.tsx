@@ -9,12 +9,12 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function 
       {...props}
       ref={ref}
       class={clsx(
-        'bg-primary-subtle-light dark:bg-primary-subtle-dark',
+        'bg-primary-subtle hover:bg-primary-hover',
         'px-2 py-1',
         'rounded-md shadow-lg',
         'resize-y',
         'outline-2 outline-offset-2 not-focus:not-active:outline-hidden',
-        'outline-primary-subtle-light dark:outline-primary-subtle-dark',
+        'outline-primary-hover',
         'transition-colors',
         classs, className,
       )}
@@ -43,15 +43,15 @@ export const CharButton = forwardRef<HTMLButtonElement, CharButtonProps>(functio
         'disabled:opacity-75',
         variant === 'primary' && [
           'px-4 py-3',
-          'bg-primary-main-light dark:bg-primary-main-dark text-primary-text-dark',
-          'hover:not-disabled:bg-primary-hover-light dark:hover:not-disabled:bg-primary-hover-dark',
-          'outline-primary-main-light dark:outline-primary-main-dark',
+          'bg-primary-elevated text-primary-text',
+          'hover:not-disabled:bg-primary-hover',
+          'outline-primary-hover',
         ],
         variant === 'secondary' && [
           'px-2 py-1',
-          'bg-transparent border border-solid border-primary-text-light dark:border-primary-text-dark',
-          'hover:not-disabled:bg-primary-hover-light/30 dark:hover:not-disabled:bg-primary-hover-dark/30',
-          'outline-primary-text-light dark:outline-primary-text-dark',
+          'bg-transparent border border-solid border-primary-text',
+          'hover:not-disabled:bg-primary-hover/50',
+          'outline-primary-text',
         ],
         classs, className,
       )}

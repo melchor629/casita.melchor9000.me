@@ -1,0 +1,11 @@
+@theme {
+  --color-primary-main-dark: var(--color-slate-600);
+  --color-primary-hover-dark: var(--color-slate-700);
+  --color-primary-subtle-dark: var(--color-slate-800);
+  --color-primary-text-dark: var(--color-slate-50);
+  --color-primary-bg-dark: var(--color-slate-950);
+  --color-primary-elevated-dark: var(--color-slate-800);
+
+  --color-accent-main-dark: var(--color-fuchsia-500);
+  --color-accent-elevated-dark: var(--color-fuchsia-800);
+}

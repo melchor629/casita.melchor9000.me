@@ -1,0 +1,11 @@
+@theme {
+  --color-primary-main-light: var(--color-slate-500);
+  --color-primary-hover-light: var(--color-slate-300);
+  --color-primary-subtle-light: var(--color-slate-200);
+  --color-primary-text-light: var(--color-slate-900);
+  --color-primary-bg-light: var(--color-slate-50);
+  --color-primary-elevated-light: var(--color-slate-200);
+
+  --color-accent-main-light: var(--color-fuchsia-600);
+  --color-accent-elevated-light: var(--color-fuchsia-200);
+}

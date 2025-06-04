@@ -1,0 +1,37 @@
+@theme {
+  --animate-fade-in: fade-in 1s ease-in-out;
+  --animate-fade-out: fade-in 1s ease-in-out reverse;
+
+  @keyframes fade-in {
+    0% { opacity: 0 }
+    100% { opacity: 1 }
+  }
+}
+
+@theme {
+  --color-primary-main: var(--color-primary-main-dark);
+  --color-primary-hover: var(--color-primary-hover-dark);
+  --color-primary-subtle: var(--color-primary-subtle-dark);
+  --color-primary-text: var(--color-primary-text-dark);
+  --color-primary-bg: var(--color-primary-bg-dark);
+  --color-primary-elevated: var(--color-primary-elevated-dark);
+
+  --color-accent-main: var(--color-accent-main-dark);
+  --color-accent-elevated: var(--color-accent-elevated-dark);
+}
+
+@layer theme {
+  :root, :host {
+    @variant not-dark {
+      --color-primary-main: var(--color-primary-main-light);
+      --color-primary-hover: var(--color-primary-hover-light);
+      --color-primary-subtle: var(--color-primary-subtle-light);
+      --color-primary-text: var(--color-primary-text-light);
+      --color-primary-bg: var(--color-primary-bg-light);
+      --color-primary-elevated: var(--color-primary-elevated-light);
+
+      --color-accent-main: var(--color-accent-main-light);
+      --color-accent-elevated: var(--color-accent-elevated-light);
+    }
+  }
+}
