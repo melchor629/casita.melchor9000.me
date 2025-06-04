@@ -18,7 +18,7 @@ const WanaKanaInput = forwardRef(function WanaKanaInput({ mode, onLatinChars, to
     const value = textArea?.value
     const latChars = toRomaji(value ?? '')
     onLatinChars(latChars)
-  }, [onLatinChars, textArea?.value])
+  }, [onLatinChars, textArea])
 
   useImperativeHandle(ref, () => Object.freeze({
     clear() {
