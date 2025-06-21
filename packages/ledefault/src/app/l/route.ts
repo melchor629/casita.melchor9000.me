@@ -20,9 +20,9 @@ export async function GET(req: SsrRequest) {
       redirect: 'manual',
     })
     if (response.status === 307) {
-      const r = SsrResponse.redirect(response.headers.get('location')!)
-      response.headers.getSetCookie().forEach((cookie) => r.headers.append('set-cookie', cookie))
-      return r
+      return SsrResponse.new()
+        .header('set-cookie', response.headers.getSetCookie())
+        .redirect(new URL(response.headers.get('location')!))
     }
 
     req.nice.log.info({
