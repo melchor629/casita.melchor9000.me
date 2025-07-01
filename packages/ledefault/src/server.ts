@@ -45,7 +45,7 @@ await app.register(import('@fastify/helmet'), {
     directives: {
       'img-src': ['\'self\'', 'data:', '*.melchor9000.me'],
       'media-src': ['\'self\'', 'blob:'],
-      'style-src': ['\'self\'', 'unsafe-inline'],
+      'style-src': ['\'self\'', '\'unsafe-inline\''],
       'script-src': ['\'self\'', (req) => {
         req.headers['x-script-nonce'] = nanoid()
         return `'nonce-${req.headers['x-script-nonce']}'`
