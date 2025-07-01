@@ -386,7 +386,7 @@ const Details = ({ result }: ThingProps) => (
   </span>
 )
 
-const typesWithDetails = Object.freeze(['verb', 'demonstrative', 'adjective', 'ichidan-verb', 'godan-verb', 'kanji'])
+const typesWithDetails = Object.freeze(['verb', 'demonstrative', 'adjective', 'ichidan-verb', 'godan-verb', 'irregular-verb', 'kanji'])
 
 /**
  * Renders the given entry to Preact.
@@ -481,6 +481,7 @@ function VocabularyResult({ result }: ThingProps) {
               {result.type === 'verb' && <VerbTable result={result} />}
               {result.type === 'ichidan-verb' && <InformalVerbTable result={result} />}
               {result.type === 'godan-verb' && <InformalVerbTable result={result} />}
+              {result.type === 'irregular-verb' && <InformalVerbTable result={result} />}
               {result.type === 'demonstrative' && <DemonstrativeTable result={result} />}
               {result.type === 'adjective' && <AdjectiveTable result={result} />}
               {result.type === 'kanji' && <KanjiReadings result={result} />}

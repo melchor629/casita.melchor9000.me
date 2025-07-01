@@ -234,7 +234,7 @@ export type DemonstrativeDictionaryEntry = BaseDictionaryEntry<'demonstrative'> 
   }>
 }>
 
-export type InformalVerbDictionaryEntry = BaseDictionaryEntry<'ichidan-verb' | 'godan-verb'> & Readonly<{
+export type InformalVerbDictionaryEntry = BaseDictionaryEntry<'ichidan-verb' | 'godan-verb' | 'irregular-verb'> & Readonly<{
   forms: Readonly<{
     present: {
       readonly positive: string
