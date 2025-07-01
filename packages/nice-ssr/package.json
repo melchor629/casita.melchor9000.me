@@ -42,7 +42,7 @@
   "peerDependencies": {
     "fastify": "^5.0.0",
     "preact": "^10.0.0",
-    "vite": "^6.0.0"
+    "vite": "^6.0.0 || ^7.0.0"
   },
   "peerDependenciesMeta": {
     "vite": {
@@ -54,7 +54,7 @@
     "@melchor629/eslint-config": "^0.2.0",
     "@types/node": "^22.0.0",
     "typescript": "^5.0.0",
-    "vite": "^6.0.0"
+    "vite": "^7.0.0"
   },
   "files": [
     "bin/",
