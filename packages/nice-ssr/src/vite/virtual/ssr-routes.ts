@@ -7,13 +7,13 @@ export default async function generateSsrRoutes() {
   const imports: string[] = []
   const routes: Record<
     string,
-    | { type: 'root-layout' | 'route' | 'page', entry: string, middleware?: string }
+    | { type: 'root-layout' | 'route' | 'page', entry: string }
     | { type: 'root-layout', entry: string }
     | { type: 'middleware', entry: string }
   > = {}
   for await (const route of fs.glob([getAppPath('**', 'page.tsx'), getAppPath('**', 'route.ts')])) {
     const { dir: pathname, name: pathType } = path.parse('/' + path.relative(getAppPath(), route))
-    imports.push(`import * as route${i} from '${path.resolve(route)}'`)
+    imports.push(`const route${i} = () => import('${path.resolve(route)}')`)
     if (pathname in routes) {
       throw new Error(`Cannot have a route.ts and page.tsx for the same route ${pathname}`)
     }
@@ -24,13 +24,13 @@ export default async function generateSsrRoutes() {
 
   const middlewarePath = getMiddlewarePath()
   if (await unsafeExists(middlewarePath)) {
-    imports.push(`import middleware from '${middlewarePath}'`)
+    imports.push(`const middleware = () => import('${middlewarePath}')`)
     routes['$Middleware'] = { type: 'middleware', entry: 'middleware' }
   }
 
   const rootLayoutPath = getRootLayoutPath()
   if (await unsafeExists(rootLayoutPath)) {
-    imports.push(`import RootLayout from '${rootLayoutPath}'`)
+    imports.push(`const RootLayout = () => import('${rootLayoutPath}')`)
     routes['$RootLayout'] = { type: 'root-layout', entry: 'RootLayout' }
   }
 
@@ -41,7 +41,7 @@ export default async function generateSsrRoutes() {
       }
 
       if (route.type === 'page' || route.type === 'route') {
-        return `{ type: '${route.type}', pathname: ${JSON.stringify(pathname)}, entry: ${route.entry}, middleware: ${route.middleware} }`
+        return `{ type: '${route.type}', pathname: ${JSON.stringify(pathname)}, entry: ${route.entry} }`
       }
 
       if (route.type === 'middleware') {

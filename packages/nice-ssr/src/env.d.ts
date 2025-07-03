@@ -3,10 +3,11 @@
 declare module 'virtual:ssr/routes' {
   import type { PageModule, RouteHandler, RouteModule } from '@melchor629/nice-ssr'
 
-  export type PagePathModule = { type: 'page', pathname: string, entry: PageModule }
-  export type RoutePathModule = { type: 'route', pathname: string, entry: RouteModule }
-  export type RootLayoutPathModule = { type: 'root-layout', entry: PageModule['default'] }
-  export type MiddlewarePathModule = { type: 'middleware', prefix: string, middleware: RouteHandler }
+  type Lazy<T> = () => Promise<T>
+  export type PagePathModule = { type: 'page', pathname: string, entry: Lazy<PageModule> }
+  export type RoutePathModule = { type: 'route', pathname: string, entry: Lazy<RouteModule> }
+  export type RootLayoutPathModule = { type: 'root-layout', entry: Lazy<PageModule> }
+  export type MiddlewarePathModule = { type: 'middleware', middleware: Lazy<{ readonly default: RouteHandler }> }
   export type ResourcePathModule =
     | PagePathModule
     | RoutePathModule

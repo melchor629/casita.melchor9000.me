@@ -54,11 +54,11 @@ const getRouteHandler = memoize((routeMatch: ResourcePathModule) => ({
       log,
     )
     if (routeMatch.type === 'page') {
-      const response = await renderPage(routeMatch.entry, niceRequest)
+      const response = await renderPage(await routeMatch.entry(), niceRequest)
       return response
     }
     if (routeMatch.type === 'route') {
-      const response = await runRouteHandler(routeMatch.entry, niceRequest)
+      const response = await runRouteHandler(await routeMatch.entry(), niceRequest)
       return response
     }
     return SsrResponse
@@ -87,10 +87,10 @@ export function * getAll() {
 }
 
 export const getMiddleware = memoize(function getMiddleware() {
-  const middleware = routeModules
+  const middlewareMatch = routeModules
     .filter((module) => module.type === 'middleware')
     .at(0)
-  if (middleware) {
+  if (middlewareMatch) {
     return {
       execute: async (request: Request, basePath: string, log: Logger) => {
         const pathname = new URL(request.url).pathname.slice(basePath.length - 1)
@@ -101,7 +101,8 @@ export const getMiddleware = memoize(function getMiddleware() {
           {},
           log,
         )
-        const response = await middleware.middleware(niceRequest)
+        const { default: middleware } = await middlewareMatch.middleware()
+        const response = await middleware(niceRequest)
         if (response instanceof SsrResponse && response.isNextResponse()) {
           return { type: 'next', headers: response.headers } as const
         }

@@ -99,17 +99,24 @@ const ssrPlugin = fastifyPlugin(async (app, options: SsrPluginOptions) => {
       throw new Error('Please add @fastify/middie or @fastify/express for development')
     }
 
-    const { createServer } = await import('vite')
+    const { createServer, isRunnableDevEnvironment } = await import('vite')
     app.log.info('Creating vite server')
     const vite = await createServer({
       server: { middlewareMode: true },
       appType: 'custom',
       base: options.prefix,
     })
+
     app.log.info('Registering vite handler')
     app.use(vite.middlewares)
+
+    const { ssr } = vite.environments
+    if (!isRunnableDevEnvironment(ssr)) {
+      throw new Error('Missing vite plugin, please import and use "@melchor629/nice-ssr/vite" plugin')
+    }
+
     getSsrServer = async () => {
-      const server = await vite.ssrLoadModule('@melchor629/nice-ssr/server') as typeof EntryServer
+      const server = await ssr.runner.import<typeof EntryServer>('@melchor629/nice-ssr/server')
       return {
         server,
         processError: vite.ssrFixStacktrace.bind(vite),

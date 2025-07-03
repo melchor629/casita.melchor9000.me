@@ -135,8 +135,8 @@ export default async function renderPage(module: PageModule, request: SsrRequest
   ])
 
   request.nice.log.debug('Building body')
-  const { entry: RootLayout } = routeModules.find((m) => m.type === 'root-layout')
-    ?? { entry: DefaultRootLayout }
+  const RootLayout = (await routeModules.find((m) => m.type === 'root-layout')?.entry())?.default
+    ?? DefaultRootLayout
   const { default: Page } = module
   const tree = RootLayout({
     children: [
