@@ -141,6 +141,21 @@ function processVocabEntry(entry: MutDictionaryEntry, level: 'basic' | 'intermed
     }
   }
 
+  if (entry.type === 'irregular-verb' && typeof entry.forms.formal === 'string') {
+    const root = (entry.forms.formal as unknown as string).slice(0, -2)
+    entry.forms.formal = {
+      present: {
+        positive: `${root}ます`,
+        negative: `${root}ません`,
+      },
+      past: {
+        positive: `${root}ました`,
+        negative: `${root}ません でした`,
+      },
+      mashou: `${root}ましょう`,
+    }
+  }
+
   if (entry.type === 'adjective') {
     const root = entry.value.slice(0, -1)
     entry.forms ??= {} as never
@@ -164,16 +179,12 @@ function processVocabEntry(entry: MutDictionaryEntry, level: 'basic' | 'intermed
  * @returns Filtered vocabulary.
  */
 function filterResults(dictionary: readonly DictionaryEntry[], filter: string) {
-  let results = dictionary
+  let results = Iterator.from(dictionary)
   for (const p of filter.split(' ')) {
-    if (results.length === 0) {
-      break
-    }
-
     if (p.includes(':')) {
       const [tag, value] = p.toLowerCase().split(':')
       if (!value) {
-        results = []
+        results = Iterator.from([])
       }
       if (tag === 't') {
         results = results.filter((result) => result.type.startsWith(value))
@@ -185,16 +196,25 @@ function filterResults(dictionary: readonly DictionaryEntry[], filter: string) {
         results = results.filter((result) => result.level === level)
       }
     } else {
-      const latValue = p.toLowerCase()
+      const exact = p.startsWith('=')
+      const latValue = (exact ? p.slice(1) : p).toLowerCase()
       const hiraValue = toHiragana(latValue)
       const kataValue = toKatakana(latValue)
-      results = results.filter((result) => (
-        result.meaning.includes(latValue)
-        || result.value.includes(hiraValue)
-        || result.value.includes(kataValue)
-      ))
+      if (exact) {
+        results = results.filter((result) => (
+          result.meaning === latValue
+          || result.value === hiraValue
+          || result.value === kataValue
+        ))
+      } else {
+        results = results.filter((result) => (
+          result.meaning.includes(latValue)
+          || result.value.includes(hiraValue)
+          || result.value.includes(kataValue)
+        ))
+      }
     }
   }
 
-  return results
+  return results.toArray()
 }

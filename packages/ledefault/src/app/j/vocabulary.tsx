@@ -40,7 +40,7 @@ const JapaneseWithRomaji = ({ value }: { readonly value: string }) => (
 const RefLink = ({ refLink: ref }: { readonly refLink: EntryRef }) => {
   const linkTo = useMemo(() => {
     if (ref.type !== 'url') {
-      const q = `l:${ref.type.slice(0, 1)} c:${ref.chapter} ${ref.word}`
+      const q = `l:${ref.type.slice(0, 1)} c:${ref.chapter} =${ref.word}`
       return {
         searchParams: new URLSearchParams({ q }),
       }
