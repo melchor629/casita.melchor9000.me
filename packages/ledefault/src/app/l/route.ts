@@ -11,9 +11,9 @@ export async function GET(req: SsrRequest) {
 
   const headers = new Headers(req.headers)
   headers.set('x-forwarded-method', 'get')
-  headers.set('x-forwarded-scheme', req.nice.url.protocol)
-  headers.set('x-forwarded-host', req.nice.url.host)
-  headers.set('x-forwarded-uri', req.nice.url.toString())
+  headers.set('x-forwarded-proto', req.nice.url.protocol)
+  headers.set('x-forwarded-host', req.nice.url.hostname)
+  headers.set('x-forwarded-uri', req.nice.pathname.toString())
   try {
     const response = await fetch('http://traefik-auth:8080/auth', {
       headers,
