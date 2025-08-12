@@ -101,6 +101,18 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
     name: 'registry',
     url: 'https://registry.melchor9000.me',
   },
+  {
+    id: 'sonarr',
+    name: 'sonarr',
+    url: 'https://sonarr.melchor9000.me',
+    icon: 'https://sonarr.melchor9000.me/Content/Images/Icons/apple-touch-icon.png',
+  },
+  {
+    id: 'prowlarr',
+    name: 'prowlarr',
+    url: 'https://prowlarr.melchor9000.me',
+    icon: 'https://prowlarr.melchor9000.me/Content/Images/Icons/apple-touch-icon.png',
+  },
 ] satisfies Array<Entry | 'space'>)
 
 export default entries
