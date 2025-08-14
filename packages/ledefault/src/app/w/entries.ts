@@ -7,7 +7,10 @@ export type Entry = Readonly<{
   name: string
   url: string
   label?: string
+  limitedTo?: ReadonlyArray<string>
 }>
+
+const melchorSubs = ['melchor9000', 'Melchor']
 
 const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
   {
@@ -63,6 +66,7 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
     icon: qbittorrentImage,
     name: 'qBittorrent',
     url: 'https://qbittorrent.melchor9000.me/',
+    limitedTo: [...melchorSubs],
   },
   {
     id: 'nicotine',
@@ -75,6 +79,7 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
     icon: 'https://esphome.melchor9000.me/static/images/favicon.ico',
     name: 'esphome',
     url: 'https://esphome.melchor9000.me',
+    limitedTo: [...melchorSubs],
   },
   {
     id: 'netdata-pi',
@@ -106,12 +111,14 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
     name: 'sonarr',
     url: 'https://sonarr.melchor9000.me',
     icon: 'https://sonarr.melchor9000.me/Content/Images/Icons/apple-touch-icon.png',
+    limitedTo: [...melchorSubs],
   },
   {
     id: 'prowlarr',
     name: 'prowlarr',
     url: 'https://prowlarr.melchor9000.me',
     icon: 'https://prowlarr.melchor9000.me/Content/Images/Icons/apple-touch-icon.png',
+    limitedTo: [...melchorSubs],
   },
 ] satisfies Array<Entry | 'space'>)
 

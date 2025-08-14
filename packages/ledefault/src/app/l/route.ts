@@ -1,4 +1,5 @@
 import { SsrResponse, type SsrRequest } from '@melchor629/nice-ssr'
+import { traefikAuthUrl } from '@/config'
 
 export async function GET(req: SsrRequest) {
   if (req.headers.get('cookie')?.includes('ta-ls')) {
@@ -11,15 +12,16 @@ export async function GET(req: SsrRequest) {
 
   const headers = new Headers(req.headers)
   headers.set('x-forwarded-method', 'get')
-  headers.set('x-forwarded-proto', req.nice.url.protocol)
-  headers.set('x-forwarded-host', req.nice.url.hostname)
+  headers.set('x-forwarded-proto', req.nice.url.protocol.slice(0, -1))
+  headers.set('x-forwarded-host', req.nice.url.host)
   headers.set('x-forwarded-uri', req.nice.pathname.toString())
   try {
-    const response = await fetch('http://traefik-auth:8080/auth', {
+    const response = await fetch(new URL('/auth', traefikAuthUrl), {
       headers,
       redirect: 'manual',
     })
     if (response.status === 307) {
+      req.nice.log.info({ location: response.headers.get('location')! }, 'Redirect for login')
       return SsrResponse.new()
         .header('set-cookie', response.headers.getSetCookie())
         .redirect(new URL(response.headers.get('location')!))
