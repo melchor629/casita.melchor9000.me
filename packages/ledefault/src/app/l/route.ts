@@ -1,5 +1,5 @@
 import { SsrResponse, type SsrRequest } from '@melchor629/nice-ssr'
-import { isLoggedIn, startLogIn } from '../../auth'
+import { isLoggedIn, startLogIn } from '@/auth'
 
 export async function GET(req: SsrRequest) {
   if (isLoggedIn(req)) {

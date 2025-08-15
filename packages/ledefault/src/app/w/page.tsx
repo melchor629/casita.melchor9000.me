@@ -2,7 +2,7 @@ import { useFloating, offset, autoUpdate } from '@floating-ui/react-dom'
 import { type PageLoader, type Metadata } from '@melchor629/nice-ssr'
 import { clsx } from 'clsx'
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
-import { getUser } from '../../auth'
+import { getUser } from '@/auth'
 
 type PageProps = {
   readonly entries: ReadonlyArray<import('./entries').Entry | 'space'>

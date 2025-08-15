@@ -16,6 +16,7 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "paths": {
+      "@/auth": ["./src/auth.ts"],
       "@/config": ["./src/config.ts"]
     }
   },
