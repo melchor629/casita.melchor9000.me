@@ -84,7 +84,7 @@ const niceSsrPlugin = (): Plugin => {
       if (!options?.ssr && id.endsWith('page.tsx')) {
         return code
           .replaceAll(/import.+?from *(?:'|")node:[\w/]+(?:'|");?/g, '')
-          .replaceAll(/import.+?from *(?:'|")@\/config(?:'|");?/g, '')
+          .replaceAll(/import.+?from *(?:'|")@\/(?:auth|config)(?:'|");?/g, '')
       }
     },
   }

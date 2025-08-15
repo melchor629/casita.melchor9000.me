@@ -3,6 +3,7 @@ import routeModules, { type PathModule, type ResourcePathModule } from 'virtual:
 import { mapToSsrRequest, type Logger } from '../nice-ssr/request.ts'
 import { SsrResponse } from '../nice-ssr/response.ts'
 import renderPage from './page-render.tsx'
+import { runWithStorage } from './request-storage.ts'
 import runRouteHandler from './route-runner.ts'
 
 function memoize<TParams extends unknown[], TReturn>(
@@ -54,11 +55,11 @@ const getRouteHandler = memoize((routeMatch: ResourcePathModule) => ({
       log,
     )
     if (routeMatch.type === 'page') {
-      const response = await renderPage(await routeMatch.entry(), niceRequest)
+      const response = await runWithStorage(async () => renderPage(await routeMatch.entry(), niceRequest))
       return response
     }
     if (routeMatch.type === 'route') {
-      const response = await runRouteHandler(await routeMatch.entry(), niceRequest)
+      const response = await runWithStorage(async () => runRouteHandler(await routeMatch.entry(), niceRequest))
       return response
     }
     return SsrResponse

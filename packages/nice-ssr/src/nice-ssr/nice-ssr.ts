@@ -1,3 +1,4 @@
+export { default as cache } from './cache'
 export {
   Link,
   type LinkProps,
