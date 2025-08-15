@@ -9,7 +9,7 @@ export type Metadata = Readonly<{
 
 export type PageLoaderContext<
   TParams extends Record<string, string> = Record<never, string>,
-> = Omit<SsrRequest<TParams>, 'body'>
+> = Omit<SsrRequest<TParams>, 'body' | 'bodyUsed' | 'arrayBuffer' | 'blob' | 'formData' | 'json' | 'text'>
 
 export type PageLoader<
   TLoaderData extends Record<string, unknown>,

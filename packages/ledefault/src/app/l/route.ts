@@ -1,8 +1,8 @@
 import { SsrResponse, type SsrRequest } from '@melchor629/nice-ssr'
-import { traefikAuthUrl } from '@/config'
+import { isLoggedIn, startLogIn } from '../../auth'
 
 export async function GET(req: SsrRequest) {
-  if (req.headers.get('cookie')?.includes('ta-ls')) {
+  if (isLoggedIn(req)) {
     const r = req.nice.url.searchParams.get('r') ?? ''
     if (r.startsWith('/') && !r.startsWith('//') && URL.canParse(r, req.nice.url.origin)) {
       return SsrResponse.new().redirect(r as `/${string}`)
@@ -10,31 +10,21 @@ export async function GET(req: SsrRequest) {
     return SsrResponse.new().redirect('/')
   }
 
-  const headers = new Headers(req.headers)
-  headers.set('x-forwarded-method', 'get')
-  headers.set('x-forwarded-proto', req.nice.url.protocol.slice(0, -1))
-  headers.set('x-forwarded-host', req.nice.url.host)
-  headers.set('x-forwarded-uri', req.nice.pathname.toString())
-  try {
-    const response = await fetch(new URL('/auth', traefikAuthUrl), {
-      headers,
-      redirect: 'manual',
-    })
-    if (response.status === 307) {
-      req.nice.log.info({ location: response.headers.get('location')! }, 'Redirect for login')
-      return SsrResponse.new()
-        .header('set-cookie', response.headers.getSetCookie())
-        .redirect(new URL(response.headers.get('location')!))
-    }
-
+  const result = await startLogIn(req)
+  if (result.type === 'success') {
+    req.nice.log.debug({ location: result.url }, 'Redirect for login')
+    return SsrResponse.new()
+      .header('set-cookie', result.cookies)
+      .redirect(result.url)
+  } else if (result.type === 'server-error') {
     req.nice.log.info({
-      status: response.status,
-      body: await response.text(),
-      headers: Object.fromEntries(response.headers),
+      status: result.status,
+      body: result.body,
+      headers: result.headers,
     }, 'Cannot login')
     return SsrResponse.new().status('internal-server-error').empty()
-  } catch (err) {
-    req.nice.log.warn({ err }, 'Cannot start login')
+  } else {
+    req.nice.log.warn({ err: result.err }, 'Cannot start login')
     return SsrResponse.new().status('internal-server-error').empty()
   }
 }

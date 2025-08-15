@@ -2,7 +2,7 @@ import { useFloating, offset, autoUpdate } from '@floating-ui/react-dom'
 import { type PageLoader, type Metadata } from '@melchor629/nice-ssr'
 import { clsx } from 'clsx'
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
-import { traefikAuthUrl } from '@/config'
+import { getUser } from '../../auth'
 
 type PageProps = {
   readonly entries: ReadonlyArray<import('./entries').Entry | 'space'>
@@ -14,12 +14,11 @@ export const metadata: Metadata = {
 
 export const loader: PageLoader<PageProps> = async (req) => {
   const { default: entries } = await import('./entries')
-  const { sub } = await fetch(new URL('/me', traefikAuthUrl), { headers: { cookie: req.headers.get('cookie')! } })
-    .then((response) => response.json() as Promise<{ sub: string }>)
-    .catch(() => ({ sub: null }))
+  const sub = await getUser(req)
+    .then((res) => res.type === 'success' ? res.data.sub : '')
   return {
     entries: entries
-      .filter((subEntries) => subEntries === 'space' || !subEntries.limitedTo || subEntries.limitedTo.includes(sub ?? '')),
+      .filter((subEntries) => subEntries === 'space' || !subEntries.limitedTo || subEntries.limitedTo.includes(sub)),
   }
 }
 
