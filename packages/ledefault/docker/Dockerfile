@@ -34,4 +34,4 @@ ENV NODE_ENV=production
 USER node:node
 
 WORKDIR /app/packages/ledefault
-CMD ["node", "--experimental-strip-types", "./dist/server.ts"]
+CMD ["node", "./dist/server.ts"]

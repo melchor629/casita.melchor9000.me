@@ -13,9 +13,7 @@
       ],
       "cwd": "${workspaceFolder}/packages/ledefault",
       "program": "${workspaceFolder}/packages/ledefault/src/server.ts",
-      "runtimeArgs": [
-        "--experimental-strip-types",
-      ],
+      "runtimeArgs": [],
       "env": {
         "NODE_ENV": "development",
       },
