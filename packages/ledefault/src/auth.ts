@@ -1,4 +1,4 @@
-import type { SsrRequest } from '@melchor629/nice-ssr'
+import { cache, type SsrRequest } from '@melchor629/nice-ssr'
 import { traefikAuthUrl } from './config'
 
 const loginEndpoint = new URL('/auth', traefikAuthUrl)
@@ -44,7 +44,7 @@ type GetUserResults =
   | { type: 'not-logged-in' }
   | { type: 'server-error', status: number, body: string }
   | { type: 'success', data: { sub: string } }
-export const getUser = async (req: { headers: Headers }): Promise<GetUserResults> => {
+export const getUser = cache(async (req: { headers: Headers }): Promise<GetUserResults> => {
   if (!isLoggedIn(req)) {
     return { type: 'not-logged-in' }
   }
@@ -59,4 +59,4 @@ export const getUser = async (req: { headers: Headers }): Promise<GetUserResults
 
   const data = await response.json() as { sub: string }
   return { type: 'success', data }
-}
+})
