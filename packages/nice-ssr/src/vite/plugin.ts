@@ -85,7 +85,7 @@ const niceSsrPlugin = (): Plugin => {
       if (!options?.ssr && id.endsWith('page.tsx')) {
         const ast = this.parse(code, { jsx: true })
         const newCode = transformPage(ast)
-        return { ast, code: newCode, moduleSideEffects: false }
+        return { code: newCode, moduleSideEffects: false }
       }
     },
   }
