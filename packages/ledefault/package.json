@@ -24,7 +24,7 @@
     "fastify": "^5.0.0",
     "js-yaml": "^4.1.0",
     "nanoid": "^5.0.0",
-    "preact": "^10.0.0",
+    "preact": "11.0.0-beta.0",
     "react": "npm:@preact/compat",
     "react-dom": "npm:@preact/compat",
     "shaka-player": "^4.14.10",

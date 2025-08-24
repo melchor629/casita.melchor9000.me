@@ -1,5 +1,5 @@
 import type { Ref } from 'preact'
-import { forwardRef, memo, type KeyboardEvent, type TargetedEvent } from 'preact/compat'
+import { memo, type KeyboardEvent, type TargetedEvent } from 'preact/compat'
 import { useCallback, useImperativeHandle, useLayoutEffect, useRef, useState } from 'preact/hooks'
 import * as wanakana from 'wanakana'
 import { hiraganaCharRows, katakanaCharRows, toRomaji } from './jp-utils'
@@ -11,7 +11,7 @@ type WanaKanaInputProps = Readonly<{
   ref: Ref<Readonly<{ clear: () => void, add: (jpChar: string) => void }>>
   toggleMode: () => void
 }>
-const WanaKanaInput = forwardRef(function WanaKanaInput({ mode, onLatinChars, toggleMode }: WanaKanaInputProps, ref: WanaKanaInputProps['ref']) {
+function WanaKanaInput({ mode, onLatinChars, ref, toggleMode }: WanaKanaInputProps) {
   const [textArea, setTextArea] = useState<HTMLTextAreaElement | null>(null)
 
   const onKanaInputChange = useCallback(() => {
@@ -57,7 +57,7 @@ const WanaKanaInput = forwardRef(function WanaKanaInput({ mode, onLatinChars, to
       }, [toggleMode])}
     />
   )
-})
+}
 
 type KanaCharacterProps = Readonly<{
   addChar: (jp: string, lat: string) => void

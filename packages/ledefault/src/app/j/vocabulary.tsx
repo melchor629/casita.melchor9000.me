@@ -374,10 +374,11 @@ const Details = ({ result }: ThingProps) => (
     {result.details!
       .split('\n')
       .filter((l, i, a) => i + 1 < a.length || l.trim() !== '')
-      .map((l) => l.length >= 70
+      .map((l, i) => l.length >= 70
         ? `${l} `
         : (
-          <Fragment key={l}>
+          // eslint-disable-next-line react/no-array-index-key
+          <Fragment key={`${l}:${i}`}>
             {l}
             <br />
           </Fragment>

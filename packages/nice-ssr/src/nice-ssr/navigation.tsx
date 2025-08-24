@@ -1,4 +1,4 @@
-import type { JSX } from 'preact'
+import type { MouseEventHandler } from 'preact'
 import {
   createContext,
   useCallback,
@@ -197,7 +197,7 @@ export const Link: FC<LinkProps> = ({ children, onClick, to, ...props }: LinkPro
   const navigate = useNavigate()
   const href = useHref(to)
 
-  const improvedClick = useCallback<JSX.MouseEventHandler<HTMLAnchorElement>>((e) => {
+  const improvedClick = useCallback<MouseEventHandler<HTMLAnchorElement>>((e) => {
     e.preventDefault()
     navigate(to, typeof to === 'object' ? to.mode : 'push')
     onClick?.(e)
@@ -206,7 +206,7 @@ export const Link: FC<LinkProps> = ({ children, onClick, to, ...props }: LinkPro
   return (
     <a
       // eslint-disable-next-line react/jsx-props-no-spreading
-      {...props}
+      {...props as object}
       onClick={improvedClick}
       href={href}
     >

@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { clsx } from 'clsx'
-import { forwardRef, type ComponentPropsWithRef } from 'preact/compat'
+import type { ComponentPropsWithRef } from 'preact/compat'
 
 type TextAreaProps = Readonly<ComponentPropsWithRef<'textarea'>>
-export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextArea({ children, class: classs, className, ...props }, ref) {
+export function TextArea({ children, class: classs, className, ref, ...props }: TextAreaProps) {
   return (
     <textarea
       {...props}
@@ -22,12 +22,12 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function 
       {children}
     </textarea>
   )
-})
+}
 
 type CharButtonProps = Readonly<ComponentPropsWithRef<'button'> & {
   variant?: 'primary' | 'secondary'
 }>
-export const CharButton = forwardRef<HTMLButtonElement, CharButtonProps>(function CharButton({ children, class: classs, className, variant = 'primary', ...props }, ref) {
+export function CharButton({ children, class: classs, className, ref, variant = 'primary', ...props }: CharButtonProps) {
   return (
     <button
       {...props}
@@ -59,10 +59,10 @@ export const CharButton = forwardRef<HTMLButtonElement, CharButtonProps>(functio
       {children}
     </button>
   )
-})
+}
 
 type NaisTableProps = Readonly<ComponentPropsWithRef<'table'>>
-export const NaisTable = forwardRef<HTMLTableElement, NaisTableProps>(function NaisTable({ children, class: classs, className, ...props }, ref) {
+export function NaisTable({ children, class: classs, className, ref, ...props }: NaisTableProps) {
   return (
     <table
       {...props}
@@ -78,4 +78,4 @@ export const NaisTable = forwardRef<HTMLTableElement, NaisTableProps>(function N
       {children}
     </table>
   )
-})
+}
