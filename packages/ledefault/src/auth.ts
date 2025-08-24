@@ -4,10 +4,11 @@ import { traefikAuthUrl } from './config'
 const loginEndpoint = new URL('/auth', traefikAuthUrl)
 const userEndpoint = new URL('/me', traefikAuthUrl)
 
-export const isLoggedIn = (req: { headers: Headers }) => req.headers.get('cookie')?.includes('ts-ls')
+export const isLoggedIn = (req: { headers: Headers }) => req.headers.get('cookie')?.includes('ta-ls')
 
 type LogInResults =
-  | { type: 'success', cookies: string[], url: URL }
+  | { type: 'redirect', cookies: string[], url: URL }
+  | { type: 'logged-in' }
   | { type: 'server-error', status: number, body: string, headers: Record<string, string> }
   | { type: 'internal-error', err: unknown }
 export const startLogIn = async (req: SsrRequest): Promise<LogInResults> => {
@@ -23,10 +24,14 @@ export const startLogIn = async (req: SsrRequest): Promise<LogInResults> => {
     })
     if (response.status === 307) {
       return {
-        type: 'success',
+        type: 'redirect',
         cookies: response.headers.getSetCookie(),
         url: new URL(response.headers.get('location')!),
       }
+    }
+
+    if (response.status === 200) {
+      return { type: 'logged-in' }
     }
 
     return {
