@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Plugin } from 'vite'
+import { transformPage } from './transform-csr.ts'
 import { csrPageModuleId, getAppPath, getRelativeSourcePath, getRootLayoutPath, ssrRoutesModuleId } from './utils.ts'
 import generateCsrPage from './virtual/csr-page.ts'
 import generateSsrRoutes from './virtual/ssr-routes.ts'
@@ -82,9 +83,9 @@ const niceSsrPlugin = (): Plugin => {
 
     transform(code, id, options) {
       if (!options?.ssr && id.endsWith('page.tsx')) {
-        return code
-          .replaceAll(/import.+?from *(?:'|")node:[\w/]+(?:'|");?/g, '')
-          .replaceAll(/import.+?from *(?:'|")@\/(?:auth|config)(?:'|");?/g, '')
+        const ast = this.parse(code, { jsx: true })
+        const newCode = transformPage(ast)
+        return { ast, code: newCode, moduleSideEffects: false }
       }
     },
   }
