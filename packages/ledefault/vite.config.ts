@@ -19,7 +19,7 @@ export default defineConfig({
       },
     }),
     tailwindcss(),
-    niceSsrPlugin(),
+    niceSsrPlugin({ devTools: { enabled: true } }),
     {
       name: 'copy-server',
       async closeBundle() {
