@@ -23,6 +23,9 @@
       "types": "./dist/entry/server.d.tsx",
       "import": "./dist/entry/server.js"
     },
+    "./server.js": {
+      "import": "./dist/entry/server.js"
+    },
     ".": {
       "types": "./src/nice-ssr/nice-ssr.ts",
       "import": "./dist/nice-ssr/nice-ssr.js"
