@@ -13,6 +13,7 @@
   --color-primary-hover: var(--color-primary-hover-dark);
   --color-primary-subtle: var(--color-primary-subtle-dark);
   --color-primary-text: var(--color-primary-text-dark);
+  --color-primary-text-subtle: var(--color-primary-text-subtle-dark);
   --color-primary-bg: var(--color-primary-bg-dark);
   --color-primary-elevated: var(--color-primary-elevated-dark);
 
@@ -27,6 +28,7 @@
       --color-primary-hover: var(--color-primary-hover-light);
       --color-primary-subtle: var(--color-primary-subtle-light);
       --color-primary-text: var(--color-primary-text-light);
+      --color-primary-text-subtle: var(--color-primary-text-subtle-light);
       --color-primary-bg: var(--color-primary-bg-light);
       --color-primary-elevated: var(--color-primary-elevated-light);
 

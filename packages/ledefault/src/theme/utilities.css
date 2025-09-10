@@ -13,3 +13,9 @@
 @utility animation-easing-linear {
   animation-timing-function: linear;
 }
+
+@custom-variant last-of-group {
+  & + &:has(+ :not(&)) {
+    @slot;
+  }
+}

@@ -3,6 +3,7 @@
   --color-primary-hover-dark: var(--color-slate-700);
   --color-primary-subtle-dark: var(--color-slate-800);
   --color-primary-text-dark: var(--color-slate-50);
+  --color-primary-text-subtle-dark: color-mix(in oklab, var(--color-primary-text-dark) 55%, transparent);
   --color-primary-bg-dark: var(--color-slate-950);
   --color-primary-elevated-dark: var(--color-slate-800);
 

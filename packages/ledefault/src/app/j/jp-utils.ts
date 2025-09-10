@@ -270,3 +270,5 @@ export type DictionaryEntry =
   | KanjiEntry
 
 export type MutDictionaryEntry = Mutable<DictionaryEntry>
+
+export type VocabularyComponentProps<T extends DictionaryEntry = DictionaryEntry> = { readonly result: T }
