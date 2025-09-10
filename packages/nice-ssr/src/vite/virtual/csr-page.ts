@@ -1,8 +1,10 @@
 import { getAppPath } from '../utils.ts'
 
-export default function generateCsrPage(moduleId: string) {
+export default function generateCsrPage(moduleId: string, devtools: 'none' | 'dev' | 'prod') {
   const sourcePath = getAppPath(...moduleId.split('/'), 'page.tsx')
+  const devtoolsImport = `import "${devtools === 'prod' ? 'preact/devtools' : 'preact/debug'}";`
   return `
+${devtools !== 'none' ? devtoolsImport : ''}
 import { hydrate, h, options } from 'preact'
 import Page from ${JSON.stringify(sourcePath)}
 

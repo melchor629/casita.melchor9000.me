@@ -6,9 +6,17 @@ import { csrPageModuleId, getAppPath, getRelativeSourcePath, getRootLayoutPath, 
 import generateCsrPage from './virtual/csr-page.ts'
 import generateSsrRoutes from './virtual/ssr-routes.ts'
 
+type NiceSsrOptions = Readonly<{
+  devTools?: Readonly<{
+    enabled?: boolean
+    enabledInProd?: boolean
+  }>
+}>
+
 const unsafeExists = (path: string) =>
   fs.access(path).then(() => true).catch(() => false)
-const niceSsrPlugin = (): Plugin => {
+const niceSsrPlugin = ({ devTools: devtools }: NiceSsrOptions = {}): Plugin => {
+  let devToolsEnabled: 'dev' | 'prod' | 'none' = 'none'
   return {
     name: 'nice-ssr-plugin',
     resolveId(source) {
@@ -22,7 +30,7 @@ const niceSsrPlugin = (): Plugin => {
 
     async load(id) {
       if (id.startsWith(`\0${csrPageModuleId('')}`)) {
-        return generateCsrPage(id.slice(13))
+        return generateCsrPage(id.slice(13), devToolsEnabled)
       }
       if (id === `\0${ssrRoutesModuleId}`) {
         return generateSsrRoutes()
@@ -78,6 +86,14 @@ const niceSsrPlugin = (): Plugin => {
           config.build.outDir = 'dist/server'
           config.build.rollupOptions.external = ['../client/.vite/manifest.json']
         }
+      }
+    },
+
+    configResolved(config) {
+      if (config.isProduction) {
+        devToolsEnabled = devtools?.enabled && devtools.enabledInProd ? 'prod' : 'none'
+      } else {
+        devToolsEnabled = devtools?.enabled ?? true ? 'dev' : 'none'
       }
     },
 
