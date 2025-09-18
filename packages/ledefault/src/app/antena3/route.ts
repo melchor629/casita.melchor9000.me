@@ -20,7 +20,7 @@ export async function POST(request: SsrRequest) {
     return SsrResponse.new().status('unauthorized').empty()
   }
 
-  const body = await request.json() as { yesterday?: boolean }
+  const body = await request.json() as { yesterday?: boolean, type?: 'check-in' | 'holiday' }
   const checkDate = new Date()
   if (body.yesterday) {
     checkDate.setDate(checkDate.getDate() - 1)
@@ -30,9 +30,6 @@ export async function POST(request: SsrRequest) {
   }
 
   try {
-    const dateFormatted = formatDate(checkDate)
-    log.info({ username, checkDate }, `Checking in with user '${username}' for ${dateFormatted}`)
-
     log.debug({ username, checkDate }, 'Log in into app')
     const [sessionId, authorization] = await loginRequest(username, password)
     await waitRandomSeconds(log)
@@ -43,8 +40,13 @@ export async function POST(request: SsrRequest) {
       return SsrResponse.new().status('bad-request').text('UserID not found')
     }
 
-    log.debug({ userId, username, checkDate }, 'Doing check-in')
-    await checkInRequest(userId, sessionId, authorization, clientToken, dateFormatted)
+    if (body.type === 'holiday') {
+      log.debug({ userId, username, checkDate }, 'Marking as holiday')
+      await markAsHolidaysRequest(userId, sessionId, authorization, clientToken, checkDate)
+    } else {
+      log.debug({ userId, username, checkDate }, 'Doing check-in')
+      await checkInRequest(userId, sessionId, authorization, clientToken, checkDate)
+    }
     return SsrResponse.new().empty()
   } catch (err) {
     log.error({ err, username, checkDate }, 'Could not log in or clock in')
@@ -157,7 +159,7 @@ async function checkInRequest(
   sessionId: string,
   authorization: string,
   clientToken: string,
-  checkDate: string,
+  checkDate: Date,
 ): Promise<void> {
   const url = `${apiUrl}/apiISAPI/rest/action/insertDefaultClockMark`
 
@@ -165,8 +167,58 @@ async function checkInRequest(
   <NewSmartParams>
     <idcase>1</idcase>
     <objectlist>${userId}</objectlist>
-    <datelist>${checkDate}</datelist>
+    <datelist>${formatDate(checkDate)}</datelist>
     <type>0</type>
+    <crossdomain>http://172.16.0.9/servers/B79883/ISAPIBoldWP.dll</crossdomain>
+    <timetoken></timetoken>
+    <clienttoken>${clientToken}</clienttoken>
+    <noclon>true</noclon>
+    <session>${sessionId}</session>
+  </NewSmartParams>`
+
+  const abortController = new AbortController()
+  setTimeout(() => abortController.abort(), 10_000)
+  await checkOkResponse(await fetch(url, {
+    method: 'POST',
+    signal: abortController.signal,
+    body: xmlBody,
+    headers: {
+      authorization,
+      caseSession: sessionId,
+      'Content-Type': 'text/plain',
+      'User-Agent': 'Mozilla/5.0',
+    },
+  }))
+}
+
+const oneDay = 86400000
+async function markAsHolidaysRequest(
+  userId: string,
+  sessionId: string,
+  authorization: string,
+  clientToken: string,
+  checkDate: Date,
+): Promise<void> {
+  const url = `${apiUrl}/apiISAPI/rest/action/applyIncidence`
+
+  const xmlBody = `<?xml version="1.0" encoding="ISO-8859-1" ?>
+  <NewSmartParams>
+    <idcase>1</idcase>
+    <idworker></idworker>
+    <idcontractworker>${userId}</idcontractworker>
+    <idincidence>44</idincidence>
+    <idnewincidence>0</idnewincidence>
+    <inidatestr>${formatDate(checkDate)}</inidatestr>
+    <enddatestr>${formatDate(new Date(checkDate.valueOf() + oneDay))}</enddatestr>
+    <delete>false</delete>
+    <onlyifschedule>false</onlyifschedule>
+    <applyallschedule>false</applyallschedule>
+    <windowsclient>false</windowsclient>
+    <runtest>false</runtest>
+    <testexpression></testexpression>
+    <startincidencesearching>false</startincidencesearching>
+    <untildatestr></untildatestr>
+    <gennewform>false</gennewform>
     <crossdomain>http://172.16.0.9/servers/B79883/ISAPIBoldWP.dll</crossdomain>
     <timetoken></timetoken>
     <clienttoken>${clientToken}</clienttoken>
