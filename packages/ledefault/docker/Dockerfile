@@ -1,4 +1,6 @@
-FROM --platform=$BUILDPLATFORM node:22-alpine AS packages
+ARG TAG=24-alpine
+
+FROM --platform=$BUILDPLATFORM node:$TAG AS packages
 
 WORKDIR /app
 
@@ -10,7 +12,7 @@ RUN npx turbo prune ledefault --docker && \
   cp /app/packages/nice-ssr/bin/*.js /app/out/json/packages/nice-ssr/bin/
 
 
-FROM --platform=$BUILDPLATFORM node:22-alpine AS builder
+FROM --platform=$BUILDPLATFORM node:$TAG AS builder
 
 WORKDIR /app
 
@@ -21,7 +23,7 @@ COPY --from=packages /app/out/full/ ./
 RUN npm run build
 
 
-FROM node:22-alpine AS final
+FROM node:$TAG AS final
 
 WORKDIR /app
 
