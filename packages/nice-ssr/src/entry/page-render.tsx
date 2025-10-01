@@ -216,7 +216,6 @@ async function renderPartialPage(module: PageModule, request: SsrRequest) {
       request.nice.originalPathname,
       request.nice.basePath,
     ),
-    // eslint-disable-next-line @typescript-eslint/await-thenable
     typeof module.metadata === 'function'
       ? module.metadata(ssrProps)
       : Promise.resolve(module.metadata),

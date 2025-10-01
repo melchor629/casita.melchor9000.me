@@ -264,8 +264,18 @@ export const { useBlocker, useHref, useNavigate, useParams, usePathname, useSear
   const navigatedFns: Array<() => void> = []
   window.addEventListener('popstate', () => {
     const newUrl = new URL(location.href)
-    trySmoothNavigation(newUrl).catch(() => {})
+    trySmoothNavigation(newUrl)
+      .then(() => navigatedFns.forEach((fn) => fn()))
+      .catch(() => window.location.reload())
   }, false)
+  const useRouterContext = () =>
+    useSyncExternalStore(
+      (notify) => {
+        navigatedFns.push(notify)
+        return () => navigatedFns.splice(navigatedFns.indexOf(notify))
+      },
+      () => context,
+    )
   return {
     useBlocker: (shouldBlock) => {
       const [blockerState, setBlockerState] = useState<Blocker>({ state: 'unblocked' })
@@ -314,24 +324,18 @@ export const { useBlocker, useHref, useNavigate, useParams, usePathname, useSear
       return blockerState
     },
     useHref: (path) => {
+      const { url } = useRouterContext()
       return useMemo(
         () =>
           typeof path === 'string'
-            ? getHref(context.url, path)
-            : getHref(context.url, path.pathname, path.searchParams),
-        [path],
+            ? getHref(url, path)
+            : getHref(url, path.pathname, path.searchParams),
+        [path, url],
       )
     },
-    usePathname: () => context.pathname,
-    useSearchParams: () =>
-      useSyncExternalStore(
-        (notify) => {
-          navigatedFns.push(notify)
-          return () => navigatedFns.splice(navigatedFns.indexOf(notify))
-        },
-        () => context.url.searchParams,
-      ),
-    useParams: <T extends Record<string, string>>() => context.params as T,
+    usePathname: () => useRouterContext().pathname,
+    useSearchParams: () => useRouterContext().url.searchParams,
+    useParams: <T extends Record<string, string>>() => useRouterContext().params as T,
     useNavigate: () => useMemo(() => async (path, mode = 'push') => {
       if (typeof path === 'string') {
         const a = new URL(path, location.origin)
@@ -348,6 +352,7 @@ export const { useBlocker, useHref, useNavigate, useParams, usePathname, useSear
         } else if (mode === 'replace') {
           history.replaceState({}, '', newUrl)
         }
+        navigatedFns.forEach((fn) => fn())
       }
     }, []),
     useRevalidator: () => useCallback(() => loadPage(context.url, true), []),
