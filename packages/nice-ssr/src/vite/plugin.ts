@@ -2,8 +2,9 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Plugin } from 'vite'
 import { transformPage } from './transform-csr.ts'
-import { csrPageModuleId, getAppPath, getRelativeSourcePath, getRootLayoutPath, ssrRoutesModuleId } from './utils.ts'
+import { csrPageModuleId, getAppPath, getRelativeSourcePath, getRootLayoutPath, partialSsrPageModuleId, ssrRoutesModuleId } from './utils.ts'
 import generateCsrPage from './virtual/csr-page.ts'
+import generatePartialSsrPage from './virtual/partial-ssr-page.ts'
 import generateSsrRoutes from './virtual/ssr-routes.ts'
 
 type NiceSsrOptions = Readonly<{
@@ -23,6 +24,9 @@ const niceSsrPlugin = ({ devTools: devtools }: NiceSsrOptions = {}): Plugin => {
       if (source.startsWith(csrPageModuleId('')) && !source.endsWith('/')) {
         return `\0${source}`
       }
+      if (source.startsWith(partialSsrPageModuleId('')) && !source.endsWith('/')) {
+        return `\0${source}`
+      }
       if (source === ssrRoutesModuleId) {
         return `\0${source}`
       }
@@ -31,6 +35,9 @@ const niceSsrPlugin = ({ devTools: devtools }: NiceSsrOptions = {}): Plugin => {
     async load(id) {
       if (id.startsWith(`\0${csrPageModuleId('')}`)) {
         return generateCsrPage(id.slice(13), devToolsEnabled)
+      }
+      if (id.startsWith(`\0${partialSsrPageModuleId('')}`)) {
+        return generatePartialSsrPage(id.slice(13 + 8))
       }
       if (id === `\0${ssrRoutesModuleId}`) {
         return generateSsrRoutes()
@@ -61,6 +68,14 @@ const niceSsrPlugin = ({ devTools: devtools }: NiceSsrOptions = {}): Plugin => {
                 .replace(/_$/, '') || 'rp'
               return `.p/pages/${pageName}.[hash].js`
             }
+            if (chunkInfo.facadeModuleId.startsWith(`\0${partialSsrPageModuleId('')}`)) {
+              const pageName = chunkInfo.facadeModuleId
+                .slice(partialSsrPageModuleId('').length + 2)
+                .replaceAll(/[[\]/]/g, '_')
+                .replaceAll(/_+/g, '_')
+                .replace(/_$/, '') || 'rp'
+              return `.p/partial-page/${pageName}.[hash].js`
+            }
           }
           return `.p/assets/${chunkInfo.name}.[hash].js`
         }
@@ -71,6 +86,8 @@ const niceSsrPlugin = ({ devTools: devtools }: NiceSsrOptions = {}): Plugin => {
           config.build.rollupOptions.input = []
           config.build.rollupOptions.output.chunkFileNames = (chunkInfo) =>
             `.p/chunks/${chunkInfo.name}.[hash].js`
+          // needed for the partial-ssr pages, otherwise the export default is trimmed
+          config.build.rollupOptions.preserveEntrySignatures = 'exports-only'
 
           const rootLayoutPath = getRootLayoutPath()
           if (await unsafeExists(rootLayoutPath)) {
@@ -79,6 +96,7 @@ const niceSsrPlugin = ({ devTools: devtools }: NiceSsrOptions = {}): Plugin => {
           for await (const page of fs.glob(getAppPath('**', 'page.tsx'))) {
             const lePath = path.relative(getAppPath(), page).replace(/page\.tsx$/, '')
             config.build.rollupOptions.input.push(csrPageModuleId(lePath))
+            config.build.rollupOptions.input.push(partialSsrPageModuleId(lePath))
           }
         } else {
           config.build.ssr = path.join(import.meta.dirname, '..', 'entry/server.js')

@@ -60,8 +60,8 @@ async function getCsrTags(
   scriptNonce?: string,
   styleNonce?: string,
 ): Promise<[ComponentChild[], ComponentChild[]]> {
+  const pageCsrModuleId = path.join('virtual:csr', moduleId).replace(/\/$/, '')
   if (import.meta.env.DEV) {
-    const pageCsrModuleId = path.join('virtual:csr', moduleId).replace(/\/$/, '')
     return [
       [<script type="module" nonce={scriptNonce} src="/src/app/root-layout.tsx" />],
       [<script type="module" nonce={scriptNonce} src={`/@id/__x00__${pageCsrModuleId}`} />],
@@ -71,7 +71,6 @@ async function getCsrTags(
   // @ts-expect-error this is an external file after build
   // eslint-disable-next-line import-x/no-unresolved
   const { default: manifest } = await import('../client/.vite/manifest.json', { with: { type: 'json' } }) as { default: Record<string, RawManifestEntry> }
-  const pageCsrModuleId = path.join('virtual:csr', moduleId).replace(/\/$/, '')
   const pageCsrManifestEntry = getEntryForModuleId(manifest, pageCsrModuleId)
   const rootLayoutCsrManifestEntry = getEntryForModuleId(manifest, 'src/app/root-layout.tsx')
   const allDependencyEntries = getExtraEntries(pageCsrManifestEntry)
@@ -94,6 +93,28 @@ async function getCsrTags(
   ]
 }
 
+async function getCsrAssets(
+  moduleId: string,
+  basePath: string,
+): Promise<Array<{ type: 'page' | 'module' | 'stylesheet', path: string }>> {
+  const pageCsrModuleId = path.join('virtual:partial-ssr', moduleId).replace(/\/$/, '')
+  if (import.meta.env.DEV) {
+    return [
+      { type: 'page', path: `/@id/__x00__${pageCsrModuleId}` },
+    ]
+  }
+
+  // @ts-expect-error this is an external file after build
+  // eslint-disable-next-line import-x/no-unresolved
+  const { default: manifest } = await import('../client/.vite/manifest.json', { with: { type: 'json' } }) as { default: Record<string, RawManifestEntry> }
+  const pageCsrManifestEntry = getEntryForModuleId(manifest, pageCsrModuleId)
+  const allDependencyEntries = getExtraEntries(pageCsrManifestEntry)
+  const css = allDependencyEntries
+    .flatMap((entry) => entry.css ?? [])
+    .map((path) => ({ type: 'stylesheet' as const, path }))
+  return [...css, { type: 'page', path: `${basePath}${pageCsrManifestEntry.file}` }]
+}
+
 const DefaultRootLayout = ({ children }: { readonly children: ComponentChild[] }) => (
   <html lang="en">
     <head />
@@ -102,12 +123,7 @@ const DefaultRootLayout = ({ children }: { readonly children: ComponentChild[] }
 )
 const doctypeHtmlBuffer = Buffer.from('<!DOCTYPE html>\n', 'utf-8')
 
-export default async function renderPage(module: PageModule, request: SsrRequest) {
-  if (!request.headers.get('accept')?.includes('text/html')) {
-    request.nice.log.debug('Page request but does not accept HTML, return 404')
-    return new Response(null, { status: 404 })
-  }
-
+async function renderCompletePage(module: PageModule, request: SsrRequest) {
   request.nice.log.debug('Loading props')
   const ssrProps = await loadProps(module, request)
 
@@ -173,6 +189,55 @@ export default async function renderPage(module: PageModule, request: SsrRequest
   return SsrResponse.new()
     .header('content-type', 'text/html; charset=utf-8')
     .stream(body)
+}
+
+async function renderPartialPage(module: PageModule, request: SsrRequest) {
+  request.nice.log.debug('Loading props')
+  const ssrProps = await loadProps(module, request)
+
+  request.nice.log.debug('Serializing data')
+  const context = {
+    basePath: request.nice.basePath,
+    params: request.nice.params,
+    pathname: request.nice.pathname,
+    url: request.nice.url,
+  } satisfies SsrRouterContextValue
+
+  request.nice.log.debug('Building head')
+  const [assets, metadata] = await Promise.all([
+    getCsrAssets(
+      request.nice.originalPathname,
+      request.nice.basePath,
+    ),
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    typeof module.metadata === 'function'
+      ? module.metadata(ssrProps)
+      : Promise.resolve(module.metadata),
+  ])
+
+  return SsrResponse.json({
+    p: ssrProps,
+    c: context,
+    a: assets,
+    m: metadata,
+  })
+}
+
+function renderInvalidPage(request: SsrRequest) {
+  request.nice.log.debug('Page request but does not accept HTML, return 404')
+  return new Response(null, { status: 404 })
+}
+
+export default async function renderPage(module: PageModule, request: SsrRequest) {
+  if (request.headers.get('accept')?.includes('application/json+ssr')) {
+    return renderPartialPage(module, request)
+  }
+
+  if (request.headers.get('accept')?.includes('text/html')) {
+    return renderCompletePage(module, request)
+  }
+
+  return renderInvalidPage(request)
 }
 
 async function renderHead({ metadata: metadataFn }: PageModule, ssrProps: Record<string, unknown>) {

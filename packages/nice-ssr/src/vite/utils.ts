@@ -20,3 +20,5 @@ export const getMiddlewarePath = () => getAppPath('middleware.ts')
 export const ssrRoutesModuleId = 'virtual:ssr/routes'
 export const csrPageModuleId = (pagePath: string) =>
   path.join('virtual:csr', pagePath).replace(/\/$/, '')
+export const partialSsrPageModuleId = (pagePath: string) =>
+  path.join('virtual:partial-ssr', pagePath).replace(/\/$/, '')

@@ -3,7 +3,9 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useState,
   useSyncExternalStore,
   type ComponentPropsWithRef,
   type FC,
@@ -49,7 +51,49 @@ export function notFound(): never {
   throw new SsrError('not-found')
 }
 
+type Blocker = Readonly<{
+  /**
+   * The state of the blocker.
+   */
+  state: 'unblocked'
+} | {
+  /**
+   * The state of the blocker.
+   */
+  state: 'blocked'
+  /**
+   * URL where it will navigate to.
+   */
+  location: URL
+  /**
+   * Proceeds with the navigation.
+   */
+  proceed: () => void
+  /**
+   * Resets the navigation by canceling it.
+   */
+  reset: () => void
+} | {
+  /**
+   * The state of the blocker.
+   */
+  state: 'proceeding'
+  /**
+   * URL that is navigating to.
+   */
+  location: URL
+}>
+
 type RouterHooks = {
+  /**
+   * Allows blocking navigation if the condition in {@link shouldBlock} matches. When it is blocked,
+   * the blocker object will have `state === 'blocked'` and one of the `proceed` or `reset` functions
+   * must be called to continue or cancel the navigation. When the state is `state === 'proceeding'`,
+   * the navigation is taking place right now.
+   * @param shouldBlock A boolean or function that returns a boolean which decides if the navigation should be blocked.
+   * @returns The blocker interface.
+   */
+  useBlocker: (shouldBlock: boolean | ((opts: { current: URL, next: URL }) => boolean)) => Blocker
   /**
    * Calculates the `href` of the provided path.
    * @param path The path to get the URL.
@@ -91,7 +135,7 @@ export type SsrRouterContextValue = Readonly<{
 
 export const SsrRouterContext = createContext<SsrRouterContextValue>(null!)
 
-export const { useHref, useNavigate, useParams, usePathname, useSearchParams } = ((): RouterHooks => {
+export const { useBlocker, useHref, useNavigate, useParams, usePathname, useSearchParams } = ((): RouterHooks => {
   const getHref = (currentUrl: URL, pathname?: string, searchParams?: URLSearchParams) => {
     if (pathname && !pathname.startsWith('/')) {
       throw new Error('Only absolute paths are supported')
@@ -102,6 +146,7 @@ export const { useHref, useNavigate, useParams, usePathname, useSearchParams } =
 
   if (import.meta.env.SSR) {
     return {
+      useBlocker: () => ({ state: 'unblocked' }),
       useHref: (path) => {
         const { url } = useContext(SsrRouterContext)
         return useMemo(() => typeof path === 'string' ? getHref(url, path) : getHref(url, path.pathname, path.searchParams), [url, path])
@@ -136,12 +181,130 @@ export const { useHref, useNavigate, useParams, usePathname, useSearchParams } =
     ...window.__cc as SsrRouterContextValue,
     url: new URL((window.__cc as SsrRouterContextValue).url),
   }
-  const fns: Array<() => void> = []
+  const blockerFns: Array<(newUrl: URL, result: Promise<'proceed' | 'block'>) => Promise<'proceed' | 'block'>> = []
+  const trySmoothNavigation = async (newUrl: URL) => {
+    if (newUrl.pathname !== context.pathname) {
+      try {
+        const { promise: blockerResult, resolve } = Promise.withResolvers<'block' | 'proceed'>()
+        const blockersResults = await Promise.all(blockerFns.map((fn) => fn(newUrl, blockerResult)))
+        if (blockersResults.includes('block')) {
+          resolve('block')
+          return 'block'
+        }
+        resolve('proceed')
+        const res = await fetch(newUrl, {
+          headers: {
+            accept: 'application/json+ssr',
+          },
+        })
+        const data = await res.json() as {
+          p: Record<string, unknown>
+          c: SsrRouterContextValue
+          a: Array<{ type: 'page' | 'module' | 'stylesheet', path: string }>
+          m?: { title?: string, description?: string }
+        }
+        const modules = await Promise.all(data.a.map(async (asset) => {
+          if (asset.type === 'page') {
+            const { default: rerender } = await import(/* @vite-ignore */ asset.path) as { default: () => void }
+            return rerender
+          }
+          if (asset.type === 'module') {
+            return import(/* @vite-ignore */ asset.path) as Promise<unknown>
+          }
+          const stylesheet = document.createElement('link')
+          stylesheet.rel = 'stylesheet'
+          stylesheet.crossOrigin = 'anonymous'
+          stylesheet.href = asset.path
+          document.head.appendChild(stylesheet)
+          return new Promise<void>((resolve) => stylesheet.addEventListener('load', () => resolve(), false))
+        }))
+        const rerender = modules.filter((module) => typeof module === 'function').at(0)
+        setTimeout(() => {
+          Object.assign(context, data.c)
+          context.url = new URL(data.c.url)
+
+          if (data.m?.title) {
+            document.title = data.m.title
+          }
+          if (data.m?.description) {
+            const descr = document.head.querySelector<HTMLMetaElement>('meta[name=description]')
+            if (descr) {
+              descr.content = data.m.description
+            } else {
+              const descr = document.createElement('meta')
+              descr.content = data.m.description
+              descr.name = 'description'
+              document.head.append(descr)
+            }
+          } else {
+            const descr = document.head.querySelector<HTMLMetaElement>('meta[name=description]')
+            descr?.remove()
+          }
+
+          rerender?.(data.p)
+        }, 0)
+      } catch {
+        location.assign(newUrl)
+        return 'block'
+      }
+    } else {
+      context.url = new URL(location.href)
+      navigatedFns.forEach((fn) => fn())
+    }
+    return 'proceed'
+  }
+  const navigatedFns: Array<() => void> = []
   window.addEventListener('popstate', () => {
-    context.url = new URL(location.href)
-    fns.forEach((fn) => fn())
+    const newUrl = new URL(location.href)
+    trySmoothNavigation(newUrl).catch(() => {})
   }, false)
   return {
+    useBlocker: (shouldBlock) => {
+      const [blockerState, setBlockerState] = useState<Blocker>({ state: 'unblocked' })
+      useEffect(() => {
+        let navFn: (() => void) | null = null
+        const fn = (newUrl: URL, result: Promise<'proceed' | 'block'>) => {
+          if (shouldBlock === false) {
+            return Promise.resolve<'proceed'>('proceed')
+          }
+          if (typeof shouldBlock === 'function' && !shouldBlock({ current: context.url, next: newUrl })) {
+            return Promise.resolve<'proceed'>('proceed')
+          }
+
+          const { promise, resolve } = Promise.withResolvers<'proceed' | 'block'>()
+          setBlockerState({
+            state: 'blocked',
+            location: newUrl,
+            proceed: () => resolve('proceed'),
+            reset: () => resolve('block'),
+          })
+          result
+            .then((result) => {
+              if (result === 'proceed') {
+                setBlockerState({ state: 'proceeding', location: newUrl })
+                navFn = () => {
+                  navFn = null
+                  setBlockerState({ state: 'unblocked' })
+                }
+                navigatedFns.push(navFn)
+              } else {
+                setBlockerState({ state: 'unblocked' })
+              }
+            })
+            .catch(() => {})
+          return promise
+        }
+        blockerFns.push(fn)
+        return () => {
+          blockerFns.splice(blockerFns.indexOf(fn))
+          if (navFn) {
+            navigatedFns.splice(navigatedFns.indexOf(navFn))
+            navFn = null
+          }
+        }
+      }, [shouldBlock])
+      return blockerState
+    },
     useHref: (path) => {
       return useMemo(
         () =>
@@ -155,13 +318,13 @@ export const { useHref, useNavigate, useParams, usePathname, useSearchParams } =
     useSearchParams: () =>
       useSyncExternalStore(
         (notify) => {
-          fns.push(notify)
-          return () => fns.splice(fns.indexOf(notify))
+          navigatedFns.push(notify)
+          return () => navigatedFns.splice(navigatedFns.indexOf(notify))
         },
         () => context.url.searchParams,
       ),
     useParams: <T extends Record<string, string>>() => context.params as T,
-    useNavigate: () => useMemo(() => (path, mode = 'push') => {
+    useNavigate: () => useMemo(() => async (path, mode = 'push') => {
       if (typeof path === 'string') {
         const a = new URL(path, location.origin)
         path = { pathname: a.pathname, searchParams: a.searchParams }
@@ -171,16 +334,12 @@ export const { useHref, useNavigate, useParams, usePathname, useSearchParams } =
         `${path.pathname ?? context.url.pathname}?${path.searchParams ?? ''}`.replace(/\?$/, ''),
         location.origin,
       )
-      if (mode === 'push') {
-        history.pushState({}, '', newUrl)
-      } else if (mode === 'replace') {
-        history.replaceState({}, '', newUrl)
-      }
-      if (path.pathname != null && path.pathname !== context.pathname) {
-        location.assign(newUrl)
-      } else {
-        context.url = newUrl
-        fns.forEach((fn) => fn())
+      if (await trySmoothNavigation(newUrl) === 'proceed') {
+        if (mode === 'push') {
+          history.pushState({}, '', newUrl)
+        } else if (mode === 'replace') {
+          history.replaceState({}, '', newUrl)
+        }
       }
     }, []),
   }

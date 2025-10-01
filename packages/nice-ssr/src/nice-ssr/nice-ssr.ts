@@ -4,6 +4,7 @@ export {
   type LinkProps,
   notFound,
   redirect,
+  useBlocker,
   useHref,
   useNavigate,
   useParams,
