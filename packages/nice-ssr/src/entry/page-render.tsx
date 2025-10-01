@@ -6,7 +6,7 @@ import { renderToReadableStream } from 'preact-render-to-string/stream'
 // eslint-disable-next-line import-x/no-unresolved
 import routeModules from 'virtual:ssr/routes'
 import { SsrRouterContext, type SsrRouterContextValue } from '../nice-ssr/navigation'
-import type { PageLoaderContext, PageModule } from '../nice-ssr/page'
+import type { Metadata, PageLoaderContext, PageModule } from '../nice-ssr/page'
 import type { SsrRequest } from '../nice-ssr/request'
 import { SsrResponse } from '../nice-ssr/response'
 
@@ -191,6 +191,13 @@ async function renderCompletePage(module: PageModule, request: SsrRequest) {
     .stream(body)
 }
 
+export type PartialPageRenderResult = Readonly<{
+  p: Record<string, unknown>
+  c: SsrRouterContextValue
+  a: Array<{ type: 'page' | 'module' | 'stylesheet', path: string }>
+  m?: Metadata
+}>
+
 async function renderPartialPage(module: PageModule, request: SsrRequest) {
   request.nice.log.debug('Loading props')
   const ssrProps = await loadProps(module, request)
@@ -220,7 +227,7 @@ async function renderPartialPage(module: PageModule, request: SsrRequest) {
     c: context,
     a: assets,
     m: metadata,
-  })
+  } satisfies PartialPageRenderResult)
 }
 
 function renderInvalidPage(request: SsrRequest) {

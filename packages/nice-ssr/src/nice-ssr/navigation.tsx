@@ -10,6 +10,7 @@ import {
   type ComponentPropsWithRef,
   type FC,
 } from 'preact/compat'
+import type { PartialPageRenderResult } from '../entry/page-render'
 
 const ssrTypeSymbol = Symbol('ssr:type')
 
@@ -118,6 +119,11 @@ type RouterHooks = {
    */
   usePathname: () => string
   /**
+   * Gets a function to force reload loader data when requested.
+   * @returns A function to call when a data revalidation is needed.
+   */
+  useRevalidator: () => () => Promise<void>
+  /**
    * Gets the search parameters parsed as {@link URLSearchParams} instance.
    * Any modifications on the object won't be reflected back, please use
    * {@link useNavigate} function instead.
@@ -170,6 +176,7 @@ export const { useBlocker, useHref, useNavigate, useParams, usePathname, useSear
           [pathname, url],
         )
       },
+      useRevalidator: () => () => Promise.resolve(),
     }
   }
 
@@ -182,6 +189,57 @@ export const { useBlocker, useHref, useNavigate, useParams, usePathname, useSear
     url: new URL((window.__cc as SsrRouterContextValue).url),
   }
   const blockerFns: Array<(newUrl: URL, result: Promise<'proceed' | 'block'>) => Promise<'proceed' | 'block'>> = []
+  const loadPage = async (newUrl: URL, justFetch = false) => {
+    const res = await fetch(newUrl, {
+      headers: {
+        accept: 'application/json+ssr',
+      },
+    })
+    const data = await res.json() as PartialPageRenderResult
+    const modules = await Promise.all(data.a.map(async (asset) => {
+      if (asset.type === 'page') {
+        const { default: rerender } = await import(/* @vite-ignore */ asset.path) as { default: () => void }
+        return rerender
+      }
+      if (justFetch) {
+        return Promise.resolve()
+      }
+      if (asset.type === 'module') {
+        return import(/* @vite-ignore */ asset.path) as Promise<unknown>
+      }
+      const stylesheet = document.createElement('link')
+      stylesheet.rel = 'stylesheet'
+      stylesheet.crossOrigin = 'anonymous'
+      stylesheet.href = asset.path
+      document.head.appendChild(stylesheet)
+      return new Promise<void>((resolve) => stylesheet.addEventListener('load', () => resolve(), false))
+    }))
+    const rerender = modules.filter((module) => typeof module === 'function').at(0)
+    setTimeout(() => {
+      Object.assign(context, data.c)
+      context.url = new URL(data.c.url)
+
+      if (data.m?.title) {
+        document.title = data.m.title
+      }
+      if (data.m?.description) {
+        const descr = document.head.querySelector<HTMLMetaElement>('meta[name=description]')
+        if (descr) {
+          descr.content = data.m.description
+        } else {
+          const descr = document.createElement('meta')
+          descr.content = data.m.description
+          descr.name = 'description'
+          document.head.append(descr)
+        }
+      } else {
+        const descr = document.head.querySelector<HTMLMetaElement>('meta[name=description]')
+        descr?.remove()
+      }
+
+      rerender?.(data.p)
+    }, 0)
+  }
   const trySmoothNavigation = async (newUrl: URL) => {
     if (newUrl.pathname !== context.pathname) {
       try {
@@ -192,57 +250,7 @@ export const { useBlocker, useHref, useNavigate, useParams, usePathname, useSear
           return 'block'
         }
         resolve('proceed')
-        const res = await fetch(newUrl, {
-          headers: {
-            accept: 'application/json+ssr',
-          },
-        })
-        const data = await res.json() as {
-          p: Record<string, unknown>
-          c: SsrRouterContextValue
-          a: Array<{ type: 'page' | 'module' | 'stylesheet', path: string }>
-          m?: { title?: string, description?: string }
-        }
-        const modules = await Promise.all(data.a.map(async (asset) => {
-          if (asset.type === 'page') {
-            const { default: rerender } = await import(/* @vite-ignore */ asset.path) as { default: () => void }
-            return rerender
-          }
-          if (asset.type === 'module') {
-            return import(/* @vite-ignore */ asset.path) as Promise<unknown>
-          }
-          const stylesheet = document.createElement('link')
-          stylesheet.rel = 'stylesheet'
-          stylesheet.crossOrigin = 'anonymous'
-          stylesheet.href = asset.path
-          document.head.appendChild(stylesheet)
-          return new Promise<void>((resolve) => stylesheet.addEventListener('load', () => resolve(), false))
-        }))
-        const rerender = modules.filter((module) => typeof module === 'function').at(0)
-        setTimeout(() => {
-          Object.assign(context, data.c)
-          context.url = new URL(data.c.url)
-
-          if (data.m?.title) {
-            document.title = data.m.title
-          }
-          if (data.m?.description) {
-            const descr = document.head.querySelector<HTMLMetaElement>('meta[name=description]')
-            if (descr) {
-              descr.content = data.m.description
-            } else {
-              const descr = document.createElement('meta')
-              descr.content = data.m.description
-              descr.name = 'description'
-              document.head.append(descr)
-            }
-          } else {
-            const descr = document.head.querySelector<HTMLMetaElement>('meta[name=description]')
-            descr?.remove()
-          }
-
-          rerender?.(data.p)
-        }, 0)
+        await loadPage(newUrl)
       } catch {
         location.assign(newUrl)
         return 'block'
@@ -342,6 +350,7 @@ export const { useBlocker, useHref, useNavigate, useParams, usePathname, useSear
         }
       }
     }, []),
+    useRevalidator: () => useCallback(() => loadPage(context.url, true), []),
   }
 })()
 
