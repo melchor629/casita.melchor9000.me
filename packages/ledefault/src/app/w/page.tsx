@@ -1,5 +1,5 @@
 import { useFloating, offset, autoUpdate } from '@floating-ui/react-dom'
-import type { PageLoader, Metadata } from '@melchor629/nice-ssr'
+import { type PageLoader, type Metadata, useNavigate, useBlocker } from '@melchor629/nice-ssr'
 import { clsx } from 'clsx'
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
 import { getUser } from '@/auth'
@@ -92,6 +92,8 @@ function DaLink({ entry }: { readonly entry: import('./entries').Entry }) {
 export default function Page({ entries }: PageProps) {
   const [fadeInEnded, setFadeInEnded] = useState(false)
   const divRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
+  const blocker = useBlocker(true)
 
   const fadeout = useCallback(() => (
     divRef.current!.animate([
@@ -105,28 +107,24 @@ export default function Page({ entries }: PageProps) {
       .then(() => setFadeInEnded(false))
   ), [])
 
-  const goToPublicHome = useCallback(async () => {
-    await fadeout()
-    window.location.assign('/')
-  }, [fadeout])
-
-  const goToJapanesechan = useCallback(async () => {
-    await fadeout()
-    window.location.assign('/j/')
-  }, [fadeout])
-
   useEffect(() => {
     const abtctrl = new AbortController()
     window.addEventListener('keyup', (event) => {
       if (event.key === 'h') {
-        void goToPublicHome()
+        navigate('/')
       } else if (event.key === 'j') {
-        void goToJapanesechan()
+        navigate('/j/')
       }
       abtctrl.abort()
     }, { passive: true, signal: abtctrl.signal })
     return () => { if (!abtctrl.signal.aborted) abtctrl.abort() }
-  }, [goToPublicHome, goToJapanesechan])
+  }, [navigate])
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      fadeout().catch(() => {}).finally(() => blocker.proceed())
+    }
+  }, [blocker, fadeout])
 
   return (
     <div

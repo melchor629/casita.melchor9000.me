@@ -1,6 +1,6 @@
-import type { Metadata } from '@melchor629/nice-ssr'
+import { useBlocker, useNavigate, type Metadata } from '@melchor629/nice-ssr'
 import clsx from 'clsx'
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import KanaWriter from './kana-writer'
 import Vocabulary from './vocabulary'
 
@@ -14,6 +14,8 @@ export default function JapanesePage() {
   const [mutState] = useState<{ animating?: boolean, current: 'vocab' | 'kana-writer' }>(() => ({
     current: null!,
   }))
+  const navigate = useNavigate()
+  const blocker = useBlocker(useMemo(() => ({ current, next }) => current.pathname !== next.pathname, []))
 
   const changePage = useCallback(async (page: 'vocab' | 'kana-writer' | null) => {
     const pageDivs = Object.freeze({
@@ -53,16 +55,6 @@ export default function JapanesePage() {
     mutState.animating = false
   }, [mutState])
 
-  const goToPublicHome = useCallback(async () => {
-    await changePage(null)
-    window.location.assign('/')
-  }, [changePage])
-
-  const goToPrivateHome = useCallback(async () => {
-    await changePage(null)
-    window.location.assign('/w/')
-  }, [changePage])
-
   useEffect(() => {
     const abtctrl = new AbortController()
     window.addEventListener('keyup', (event) => {
@@ -71,15 +63,15 @@ export default function JapanesePage() {
       }
 
       if (event.key === 'j') {
-        void goToPublicHome()
+        navigate('/')
         abtctrl.abort()
       } else if (event.key === 'h') {
-        void goToPrivateHome()
+        navigate('/w/')
         abtctrl.abort()
       }
     }, { passive: true, signal: abtctrl.signal })
     return () => { if (!abtctrl.signal.aborted) abtctrl.abort() }
-  }, [goToPublicHome, goToPrivateHome])
+  }, [navigate])
 
   useEffect(() => {
     const storedValue = localStorage.getItem('j:mode')
@@ -89,6 +81,12 @@ export default function JapanesePage() {
       void changePage('kana-writer')
     }
   }, [changePage])
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      changePage(null).catch(() => {}).finally(() => blocker.proceed())
+    }
+  }, [blocker, changePage])
 
   const daContainer = `
     absolute top-0 left-0

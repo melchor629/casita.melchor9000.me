@@ -1,4 +1,4 @@
-import type { Metadata } from '@melchor629/nice-ssr'
+import { useBlocker, useNavigate, type Metadata } from '@melchor629/nice-ssr'
 import { clsx } from 'clsx'
 import { useCallback, useEffect, useState } from 'preact/hooks'
 
@@ -8,6 +8,8 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   const [animated, setAnimated] = useState(false)
+  const navigate = useNavigate()
+  const blocker = useBlocker(true)
 
   const fadeout = useCallback(() =>
     Promise.all(
@@ -25,16 +27,6 @@ export default function HomePage() {
         }),
     ), [])
 
-  const goToPrivateHome = useCallback(async () => {
-    await fadeout()
-    window.location.assign('/w/')
-  }, [fadeout])
-
-  const goToJapanesechan = useCallback(async () => {
-    await fadeout()
-    window.location.assign('/j/')
-  }, [fadeout])
-
   useEffect(() => {
     console.log("You've found a raspberry pi hosting things.")
     console.log('The owner of it is @melchor629 (aka melchor9000).')
@@ -49,14 +41,20 @@ export default function HomePage() {
     const abtctrl = new AbortController()
     window.addEventListener('keyup', (event) => {
       if (event.key === 'h') {
-        void goToPrivateHome()
+        navigate('/w/')
       } else if (event.key === 'j') {
-        void goToJapanesechan()
+        navigate('/j/')
       }
       abtctrl.abort()
     }, { passive: true, signal: abtctrl.signal })
     return () => { if (!abtctrl.signal.aborted) abtctrl.abort() }
-  }, [goToPrivateHome, goToJapanesechan])
+  }, [navigate])
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      fadeout().catch(() => {}).finally(() => blocker.proceed())
+    }
+  }, [blocker, fadeout])
 
   return (
     <div
@@ -71,7 +69,7 @@ export default function HomePage() {
       onAnimationEnd={useCallback(() => setAnimated((v) => !v), [])}
     >
       <div>
-        <pre onTouchEnd={useCallback(() => goToPrivateHome, [goToPrivateHome])}>
+        <pre onTouchEnd={useCallback(() => navigate('/w/'), [navigate])}>
           <span class="text-green-500">
             {`   .~~.   .~~.
   '. \\ ' ' / .'`}
