@@ -1,4 +1,4 @@
-import type { MouseEventHandler } from 'preact'
+import type { Context, MouseEventHandler } from 'preact'
 import {
   createContext,
   useCallback,
@@ -12,7 +12,7 @@ import {
 } from 'preact/compat'
 import type { PartialPageRenderResult } from '../entry/page-render'
 
-const ssrTypeSymbol = Symbol('ssr:type')
+const ssrTypeSymbol: unique symbol = Symbol('ssr:type')
 
 export class SsrError extends Error {
   readonly [ssrTypeSymbol]: 'redirect' | 'not-found'
@@ -26,7 +26,7 @@ export class SsrError extends Error {
 export const isSsrError = (error: unknown): error is SsrError =>
   error instanceof SsrError || (error instanceof Error && ssrTypeSymbol in error)
 
-export const getSsrErrorType = (error: SsrError) =>
+export const getSsrErrorType = (error: SsrError): SsrError[typeof ssrTypeSymbol] =>
   error[ssrTypeSymbol]
 
 /**
@@ -139,7 +139,7 @@ export type SsrRouterContextValue = Readonly<{
   params: Record<string, string>
 }>
 
-export const SsrRouterContext = createContext<SsrRouterContextValue>(null!)
+export const SsrRouterContext: Context<SsrRouterContextValue> = createContext<SsrRouterContextValue>(null!)
 
 export const { useBlocker, useHref, useNavigate, useParams, usePathname, useSearchParams } = ((): RouterHooks => {
   const getHref = (currentUrl: URL, pathname?: string, searchParams?: URLSearchParams) => {

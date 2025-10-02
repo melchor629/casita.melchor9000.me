@@ -20,4 +20,5 @@ export const runWithStorage = <T = void>(fn: () => Promise<T>): Promise<T> => {
   }, fn)
 }
 
-export const getRequestStorage = () => asyncLocalStorage.getStore()
+export const getRequestStorage = (): RequestStorage | undefined =>
+  asyncLocalStorage.getStore()

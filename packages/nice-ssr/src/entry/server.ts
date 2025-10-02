@@ -22,7 +22,7 @@ function memoize<TParams extends unknown[], TReturn>(
     }
     return returnValue
   }
-  memoizedFn.clear = () => cache.clear()
+  memoizedFn.clear = (): void => cache.clear()
   return memoizedFn
 }
 
@@ -42,10 +42,20 @@ const getPathRegex = memoize((pageModule: PathModule) => {
   )
 }, (pageModule) => 'pathname' in pageModule ? pageModule.pathname : pageModule.type)
 
-const getRouteHandler = memoize((routeMatch: ResourcePathModule) => ({
+type RouteHandle = Readonly<{
+  type: ResourcePathModule['type']
+  routePathname: ResourcePathModule['pathname']
+  render(request: Request, log: Logger, pathname: string): Promise<Response>
+}>
+
+type MiddlewareHandle = Readonly<{
+  execute(request: Request, basePath: string, log: Logger): Promise<{ type: 'next', headers: Headers } | { type: 'response', response: Response }>
+}>
+
+const getRouteHandler = memoize((routeMatch: ResourcePathModule): RouteHandle => ({
   type: routeMatch.type,
   routePathname: routeMatch.pathname,
-  render: async (request: Request, log: Logger, pathname: string) => {
+  render: async (request, log, pathname) => {
     const params = getPathRegex(routeMatch)?.exec(pathname)?.groups ?? {}
     const niceRequest = mapToSsrRequest(
       request,
@@ -69,7 +79,7 @@ const getRouteHandler = memoize((routeMatch: ResourcePathModule) => ({
   },
 }), (routeMatch) => routeMatch.pathname)
 
-export function get(pagePath: string) {
+export function get(pagePath: string): RouteHandle | undefined {
   pagePath ||= '/'
   const pageMatch = routeModules
     .filter((page): page is ResourcePathModule => page.type === 'page' || page.type === 'route')
@@ -79,7 +89,7 @@ export function get(pagePath: string) {
   }
 }
 
-export function * getAll() {
+export function * getAll(): Generator<RouteHandle> {
   for (const routeModule of routeModules) {
     if (routeModule.type === 'root-layout' || routeModule.type === 'middleware') continue
 
@@ -87,7 +97,7 @@ export function * getAll() {
   }
 }
 
-export const getMiddleware = memoize(function getMiddleware() {
+export const getMiddleware: (() => MiddlewareHandle | null) & { clear(): void } = memoize(function getMiddleware() {
   const middlewareMatch = routeModules
     .filter((module) => module.type === 'middleware')
     .at(0)

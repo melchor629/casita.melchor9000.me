@@ -47,7 +47,7 @@ export function createRequest(req: FastifyRequest, reply: FastifyReply): Request
   return new Request(url, init)
 }
 
-export async function writeResponse(response: Response, reply: FastifyReply, server: typeof EntryServer) {
+export async function writeResponse(response: Response, reply: FastifyReply, server: typeof EntryServer): Promise<void> {
   reply.status(response.status)
 
   for (const [headerName, headerValue] of response.headers) {

@@ -35,7 +35,7 @@ export async function runMiddleware(
   prefix: string,
   server: typeof EntryServer,
   processError?: (error: Error) => void,
-) {
+): Promise<void> {
   try {
     const middleware = server.getMiddleware()
     if (middleware) {
@@ -69,7 +69,7 @@ export async function renderRoute(
   server: typeof EntryServer,
   processError?: (error: Error) => void,
   error?: unknown,
-) {
+): Promise<void> {
   let log = req.log
   try {
     if (!route) {

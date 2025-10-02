@@ -234,7 +234,7 @@ function renderInvalidPage(request: SsrRequest) {
   return new Response(null, { status: 404 })
 }
 
-export default async function renderPage(module: PageModule, request: SsrRequest) {
+export default async function renderPage(module: PageModule, request: SsrRequest): Promise<Response> {
   if (request.headers.get('accept')?.includes('application/json+ssr')) {
     return renderPartialPage(module, request)
   }

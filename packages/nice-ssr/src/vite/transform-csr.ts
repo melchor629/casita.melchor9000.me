@@ -302,7 +302,7 @@ export function getExternalIdentifiers(stmts: Statement[], parentDecls: string[]
 }
 
 const exportsToRemove = Object.freeze(['loader', 'metadata'])
-export const transformPage = (ast: Program) => {
+export const transformPage = (ast: Program): string => {
   const ssrExports = ast.body
     .filter((el): el is ExportNamedDeclaration =>
       el.type === 'ExportNamedDeclaration'

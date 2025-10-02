@@ -1,5 +1,6 @@
 import path from 'node:path'
 import type {} from '@fastify/middie'
+import type { FastifyInstance } from 'fastify'
 import { fastifyPlugin } from 'fastify-plugin'
 import type * as EntryServer from '../entry/server.ts'
 import { renderRoute, runMiddleware } from './render.ts'
@@ -88,7 +89,7 @@ const ssrRouterPlugin = fastifyPlugin(async (app, { getSsrServer, prefix, prod }
   fastify: '^5.0.0',
 })
 
-const ssrPlugin = fastifyPlugin(async (app, options: SsrPluginOptions) => {
+const ssrPlugin: (app: FastifyInstance, options: SsrPluginOptions) => Promise<void> = fastifyPlugin(async (app: FastifyInstance, options: SsrPluginOptions): Promise<void> => {
   let getSsrServer: GetSsrServerFn
 
   if (options.prod) {

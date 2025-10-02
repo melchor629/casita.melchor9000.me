@@ -21,7 +21,7 @@ export function mapToSsrRequest(
   originalPathname: string,
   params: Record<string, string>,
   log: Logger,
-) {
+): SsrRequest {
   const niceRequest = request as unknown as SsrRequest
   const url = new URL(request.url)
   niceRequest.nice = Object.freeze({
