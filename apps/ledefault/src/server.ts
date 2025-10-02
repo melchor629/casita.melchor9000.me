@@ -86,7 +86,18 @@ await app.listen({
 })
 app.log.info('Server started!')
 
-process.finalization.register(app, (app) => {
-  app.log.info('Closing server...')
-  app.close().catch(() => {})
-})
+if (typeof process.finalization === 'object') {
+  process.finalization.register(app, (app) => {
+    app.log.info('Closing server...')
+    app.close().catch(() => {})
+  })
+} else {
+  process.on('SIGTERM', () => {
+    app.log.info('Closing server...')
+    app.close().catch(() => {})
+  })
+  process.on('SIGINT', () => {
+    app.log.info('Closing server...')
+    app.close().catch(() => {})
+  })
+}

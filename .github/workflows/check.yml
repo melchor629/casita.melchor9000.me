@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   check-and-build:
@@ -20,7 +20,7 @@ jobs:
           node-version: '22.x'
 
       - name: Install packages
-        run: npm i
+        run: npm ci
 
       - name: Check audit
         run: npm audit --omit=dev

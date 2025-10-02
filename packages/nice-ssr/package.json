@@ -27,7 +27,7 @@
       "import": "./dist/entry/server.js"
     },
     ".": {
-      "types": "./src/nice-ssr/nice-ssr.ts",
+      "types": "./dist/nice-ssr/nice-ssr.d.ts",
       "import": "./dist/nice-ssr/nice-ssr.js"
     }
   },
