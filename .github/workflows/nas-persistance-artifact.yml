@@ -1,4 +1,4 @@
-name: CD
+name: nas-persistance artifact
 
 on:
   push:

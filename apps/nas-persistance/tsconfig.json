@@ -4,7 +4,8 @@
     "@melchor629/tsconfigs/buildable.json",
   ],
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "./src",
+    "outDir": "./dist",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "declaration": false
