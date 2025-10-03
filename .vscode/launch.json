@@ -7,17 +7,33 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "dev",
+      "name": "ledefault",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "cwd": "${workspaceFolder}/packages/ledefault",
-      "program": "${workspaceFolder}/packages/ledefault/src/server.ts",
+      "cwd": "${workspaceFolder}/apps/ledefault",
+      "program": "${workspaceFolder}/apps/ledefault/src/server.ts",
       "runtimeArgs": [],
       "env": {
         "NODE_ENV": "development",
       },
-      "envFile": "${workspaceFolder}/packages/ledefault/.env",
+      "envFile": "${workspaceFolder}/apps/ledefault/.env",
+      "outputCapture": "std",
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "nas-persistance",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceFolder}/apps/nas-persistance",
+      "program": "${workspaceFolder}/apps/nas-persistance/src/index.ts",
+      "runtimeArgs": ["--loader", "ts-node/esm"],
+      "env": {
+        "NODE_ENV": "development",
+      },
+      "envFile": "${workspaceFolder}/apps/nas-persistance/.env",
       "outputCapture": "std",
     }
   ]

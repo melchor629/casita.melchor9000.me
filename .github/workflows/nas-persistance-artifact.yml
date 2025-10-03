@@ -3,13 +3,13 @@ name: CD
 on:
   push:
     branches: ['main']
-    tags: ['ledefault@v*']
+    tags: ['nas-persistance@v*']
   pull_request:
     branches: ['main']
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: melchor9000/ledefault
+  IMAGE_NAME: melchor9000/nas-persistance
 
 jobs:
   build:
@@ -49,8 +49,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./apps/ledefault/docker/Dockerfile
-          push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/ledefault@v') }}
+          file: ./apps/nas-persistance/docker/Dockerfile
+          push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nas-persistance@v') }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
@@ -58,7 +58,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/ledefault@v') }}
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nas-persistance@v') }}
     environment: pi
     steps:
       - name: Tailscale
@@ -75,4 +75,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy
-        run: ssh -p 22 ubuntu@pi.cama-bass.ts.net 'cd docker/ledefault && docker compose pull && docker compose up -d'
+        run: ssh -p 22 ubuntu@pi.cama-bass.ts.net 'cd docker/nas && docker compose pull && docker compose up -d'

@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "@melchor629/tsconfigs/node.json",
+    "@melchor629/tsconfigs/buildable.json",
+  ],
+  "compilerOptions": {
+    "rootDir": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": false
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "esm": true,
+    "swc": true,
+    "files": true
+  },
+  "include": [
+    "src/",
+    "*.config.js",
+    "*.config.ts",
+  ]
+}

@@ -33,7 +33,6 @@
   },
   "devDependencies": {
     "@fastify/middie": "^9.0.0",
-    "@melchor629/eslint-config": "^0.2.0",
     "@preact/preset-vite": "^2.0.0",
     "@tailwindcss/vite": "^4.1.4",
     "@types/js-yaml": "^4.0.9",

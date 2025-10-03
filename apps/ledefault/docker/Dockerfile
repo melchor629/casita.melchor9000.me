@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 ARG TAG=24-alpine
 
 FROM --platform=$BUILDPLATFORM node:$TAG AS packages
