@@ -29,11 +29,11 @@ WORKDIR /app
 
 COPY --from=packages /app/out/json/ ./
 RUN npm ci --omit=dev
-COPY --from=builder /app/packages/ledefault/dist/ ./packages/ledefault/dist/
+COPY --from=builder /app/apps/ledefault/dist/ ./apps/ledefault/dist/
 COPY --from=builder /app/packages/nice-ssr/dist/fastify/ ./packages/nice-ssr/dist/fastify/
 
 ENV NODE_ENV=production
 USER node:node
 
-WORKDIR /app/packages/ledefault
+WORKDIR /app/apps/ledefault
 CMD ["node", "./dist/server.ts"]
