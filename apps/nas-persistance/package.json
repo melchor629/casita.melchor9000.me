@@ -4,7 +4,7 @@
     "email": "melchor9000@gmail.com",
     "url": "https://melchor9000.me"
   },
-  "name": "nas-persistence",
+  "name": "nas-persistance",
   "version": "1.2.0",
   "description": "Persistence layer for NAS APIs",
   "type": "module",

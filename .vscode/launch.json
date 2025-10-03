@@ -35,6 +35,40 @@
       },
       "envFile": "${workspaceFolder}/apps/nas-persistance/.env",
       "outputCapture": "std",
-    }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "nas-fs api",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceFolder}/apps/nas-fs",
+      "program": "${workspaceFolder}/apps/nas-fs/src/index.ts",
+      "args": ["api"],
+      "runtimeArgs": [],
+      "env": {
+        "NODE_ENV": "development",
+      },
+      "envFile": "${workspaceFolder}/apps/nas-fs/.env",
+      "outputCapture": "std",
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "nas-fs worker",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceFolder}/apps/nas-fs",
+      "program": "${workspaceFolder}/apps/nas-fs/src/index.ts",
+      "args": ["worker"],
+      "runtimeArgs": [],
+      "env": {
+        "NODE_ENV": "development",
+      },
+      "envFile": "${workspaceFolder}/apps/nas-fs/.env",
+      "outputCapture": "std",
+    },
   ]
 }

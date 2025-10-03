@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "@melchor629/tsconfigs/node.json",
+  ],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": [
+    "src/",
+    "*.config.js",
+    "*.config.ts",
+  ]
+}
