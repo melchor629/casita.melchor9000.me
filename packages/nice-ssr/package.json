@@ -32,7 +32,7 @@
     }
   },
   "scripts": {
-    "build": "rm -r dist && tsc -p .",
+    "build": "rm -rf dist && tsc -p .",
     "dev": "tsc -p . --watch",
     "lint": "eslint src",
     "check": "tsc -p . --noEmit"
