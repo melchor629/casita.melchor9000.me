@@ -9,7 +9,7 @@ WORKDIR /app
 RUN npm i -g turbo@^2
 
 COPY . .
-RUN npx turbo prune nas-persistance --docker
+RUN npx turbo prune nas-fs --docker
 
 
 FROM --platform=$BUILDPLATFORM node:$TAG AS builder
@@ -18,14 +18,10 @@ WORKDIR /app
 COPY --from=packages /app/out/json/ ./
 RUN apt update && \
     apt install --no-install-recommends --no-install-suggests -y gcc g++ make python3 && \
-    npm ci
-
-ENV CI=true
-ENV NODE_ENV=production
+    npm ci --omit=dev
 
 COPY --from=packages /app/out/full/ ./
 COPY /apps/nas-fs/docker/entrypoint.sh ./
-RUN npm run build
 
 
 FROM node:$TAG AS final
@@ -64,15 +60,11 @@ RUN <<APP
   rm -rf /etc/apt/keyrings
 APP
 
-COPY --from=packages /app/out/json/ ./
-RUN apt update && \
-    apt install --no-install-recommends --no-install-suggests -y gcc g++ make python3 && \
-    npm ci --omit=dev
-
-COPY --from=builder /app/apps/nas-fs/dist/ ./apps/nas-fs/dist/
+COPY --from=builder /app/apps/nas-fs/ ./apps/nas-fs/
 
 ENV PORT=3001
 ENV NODE_ENV=production
 ENV LANG=C.UTF-8
 
+WORKDIR /app/apps/nas-fs/
 ENTRYPOINT [ "/app/entrypoint.sh" ]
