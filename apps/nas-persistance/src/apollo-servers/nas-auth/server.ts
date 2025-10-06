@@ -4,7 +4,7 @@ import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace
 import fastifyApollo, { fastifyApolloDrainPlugin } from '@as-integrations/fastify'
 import type { FastifyInstance } from 'fastify'
 import { ArgumentValidationError, buildSchema } from 'type-graphql'
-import { env, nasAuthApiKeys, pathPrefix } from '../../config.js'
+import { env, nasAuthApiKeys, pathPrefix, authorities } from '../../config.js'
 import nasAuthDataSource from '../../orm/nas-auth/connection.js'
 import {
   ApplicationRepository,
@@ -12,7 +12,6 @@ import {
   UserPermissionRepository,
   UserRepository,
 } from '../../orm/nas-auth/repositories/index.js'
-import verifyJwt from '../../utils/jwt-plugin.js'
 import otelPlugin from '../common/plugins/otel.js'
 import type { NasAuthGraphQLContext } from './context.js'
 import {
@@ -78,9 +77,9 @@ const buildNasAuthServer = async (app: FastifyInstance) => {
   })
   await nasAuthServer.start()
 
-  await app.register(verifyJwt, {
-    path: `${pathPrefix}/nas-auth`,
-    optional: true,
+  await app.register(import('@melchor629/fastify-infra/jwt'), {
+    prefix: `${pathPrefix}/nas-auth`,
+    oidcUrl: authorities.map((a) => new URL(a)),
   })
 
   await app.register(fastifyApollo(nasAuthServer), {

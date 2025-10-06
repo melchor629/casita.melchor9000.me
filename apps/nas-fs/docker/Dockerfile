@@ -61,6 +61,7 @@ RUN <<APP
 APP
 
 COPY --from=builder /app/apps/nas-fs/ ./apps/nas-fs/
+COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/src/
 
 ENV PORT=3001
 ENV NODE_ENV=production

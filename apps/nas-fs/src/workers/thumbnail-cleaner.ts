@@ -1,10 +1,10 @@
 import { join } from 'node:path'
 import type { Job } from 'bullmq'
 import fs from 'fs-extra'
-import { apps } from '../../../config.ts'
-import type { ThumbnailManifest } from '../../../models/thumbnails/thumbnail-manifest.ts'
-import getApp from '../../app.ts'
-import { queues } from '../constants.ts'
+import { apps } from '../config.ts'
+import getApp from '../core-logic/app.ts'
+import { queues } from '../core-logic/jobs/constants.ts'
+import type { ThumbnailManifest } from '../models/thumbnails/thumbnail-manifest.ts'
 import BaseWorker from './base-worker.ts'
 
 export type ThumbnailCleanerJobData = object

@@ -1,18 +1,18 @@
-import Redis from 'ioredis'
+import { Redis } from 'ioredis'
 import { redisUrl } from '../config.ts'
 import { addCloseableHandler } from '../utils/stop-signal.ts'
 import type { Cache } from './cache.ts'
 import RedisCache from './redis-cache.ts'
 
-let redis: Redis.Redis | undefined
+let redis: Redis | undefined
 const cacheCache = new Map<string, Cache>()
-const getCache = (appIdentifier: string): Cache => {
-  if (!redisUrl) {
-    throw new Error('Redis URL is not set')
-  }
-
+const getRedis = () => {
   if (redis === undefined) {
-    redis = new (Redis as unknown as typeof Redis.default)(redisUrl, {
+    if (!redisUrl) {
+      throw new Error('Redis URL is not set')
+    }
+
+    redis = new Redis(redisUrl, {
       showFriendlyErrorStack: process.env.NODE_ENV !== 'production',
       lazyConnect: true,
       offlineQueue: true,
@@ -21,8 +21,14 @@ const getCache = (appIdentifier: string): Cache => {
     redis.on('error', () => {})
   }
 
+  return redis
+}
+const getCache = (appIdentifier: string, redisInstance?: Redis): Cache => {
   if (!cacheCache.has(appIdentifier)) {
-    const cache = new RedisCache(redis, appIdentifier === 'π' ? undefined : `nas-fs:${appIdentifier}`)
+    const cache = new RedisCache(
+      redisInstance ?? getRedis(),
+      appIdentifier === 'π' ? undefined : `nas-fs:${appIdentifier}`,
+    )
     cacheCache.set(appIdentifier, cache)
   }
 

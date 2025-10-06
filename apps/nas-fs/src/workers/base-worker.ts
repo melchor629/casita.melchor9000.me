@@ -2,9 +2,9 @@ import { type Span, type Tracer, trace } from '@opentelemetry/api'
 import {
   Job, type Processor, Worker, type WorkerOptions,
 } from 'bullmq'
-import { redisUrl } from '../../../config.ts'
-import { addCloseableHandler } from '../../../utils/stop-signal.ts'
-import { redisPrefix } from '../constants.ts'
+import { redisUrl } from '../config.ts'
+import { redisPrefix } from '../core-logic/jobs/constants.ts'
+import { addCloseableHandler } from '../utils/stop-signal.ts'
 
 export type TracingContext = {
   span: Span

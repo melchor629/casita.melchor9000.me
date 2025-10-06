@@ -1,9 +1,9 @@
 import type { Job } from 'bullmq'
-import getApp from '../../app.ts'
-import { directoryWalker, info } from '../../fs/index.ts'
-import { queues } from '../constants.ts'
-import q from '../queues.ts'
-import type { AppJobData } from '../types.ts'
+import getApp from '../core-logic/app.ts'
+import { directoryWalker, info } from '../core-logic/fs/index.ts'
+import { queues } from '../core-logic/jobs/constants.ts'
+import q from '../core-logic/jobs/queues.ts'
+import type { AppJobData } from '../core-logic/jobs/types.ts'
 import BaseWorker, { type TracingContext } from './base-worker.ts'
 
 export interface SynchronizeJobData extends AppJobData {

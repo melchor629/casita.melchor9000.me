@@ -1,4 +1,5 @@
 import path from 'node:path'
+import createLogger from '@melchor629/fastify-infra/logger'
 import fastify from 'fastify'
 import { nanoid } from 'nanoid'
 import {
@@ -12,23 +13,14 @@ import {
 
 // Create http server
 const app = fastify({
-  logger: {
-    level: logLevel,
-    transport: !isProduction
-      ? {
-          target: 'pino-pretty',
-          options: {
-            translateTime: 'HH:MM:ss.l Z',
-            ignore: 'pid,hostname',
-          },
-        }
-      : undefined,
-  },
+  loggerInstance: createLogger('ledefault', logLevel),
 
   genReqId: () => nanoid(23),
   requestTimeout: 120,
   trustProxy: true,
 })
+
+await app.register(import('@melchor629/fastify-infra/finalization'))
 
 if (isProduction) {
   await app.register(import('@fastify/compress'))
@@ -84,20 +76,3 @@ await app.listen({
   port,
   host: isProduction ? '::' : 'localhost',
 })
-app.log.info('Server started!')
-
-if (typeof process.finalization === 'object') {
-  process.finalization.register(app, (app) => {
-    app.log.info('Closing server...')
-    app.close().catch(() => {})
-  })
-} else {
-  process.on('SIGTERM', () => {
-    app.log.info('Closing server...')
-    app.close().catch(() => {})
-  })
-  process.on('SIGINT', () => {
-    app.log.info('Closing server...')
-    app.close().catch(() => {})
-  })
-}

@@ -36,6 +36,7 @@ RUN apk add --no-cache python3 build-base postgresql-dev && \
   npm cache clean --force
 
 COPY --from=builder /app/apps/nas-persistance/dist/ ./apps/nas-persistance/dist/
+COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/src/
 COPY apps/nas-persistance/docker/entrypoint.sh /entrypoint.sh
 
 USER node:node

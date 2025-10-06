@@ -2,27 +2,43 @@ import { PassThrough, Readable, Transform } from 'node:stream'
 import type { FastifyPluginAsync, FastifyReply } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
 
-interface EventMessage {
-  readonly id?: string
-  readonly event?: string
-  readonly data?: string
-  readonly retry?: string
-  readonly comment?: string
-}
+type EventMessage = Readonly<{
+  id?: string
+  event?: string
+  data?: string
+  retry?: string
+  comment?: string
+}>
 
 interface Options {
   configurePings?: true | number
 }
 
 interface Sse {
+  /**
+   * Signal that tells when the connection is closed for any reason.
+   */
   readonly abortSignal: AbortSignal
+  /**
+   * Sends an event through the channel. The message will be send asynchronously
+   * soon after this is called.
+   * @param event Event to send to the requester.
+   */
   send(event: EventMessage): void
+  /**
+   * Ends the channel.
+   * @param reason The reason of why it is ended, if it matters.
+   */
   end(reason?: Error): void
   then(onFullfilled: () => void, onRejected?: (error: Error) => void): void
 }
 
 declare module 'fastify' {
   interface FastifyReply {
+    /**
+     * Replies this connection with Server-Sent Events.
+     * @param opts Options for the Server-Sent Events reply.
+     */
     sse(opts?: Options): Readonly<Sse>
   }
 }
@@ -67,6 +83,13 @@ const serializeMessage = (event: EventMessage) => {
 
 const ssePlugin: FastifyPluginAsync = (fastify) => {
   const connections: { reqId: string, abort: AbortController }[] = []
+  fastify.addHook('preClose', () => {
+    connections.forEach(({ abort }) => {
+      abort.abort(new Error('Server is closing'))
+    })
+    connections.splice(0)
+    return Promise.resolve()
+  })
   fastify
     .decorateReply('sse', function sse(this: FastifyReply, opts: Options = {}): Readonly<Sse> {
       if (connections.find((c) => c.reqId === this.request.id)) {
@@ -93,7 +116,7 @@ const ssePlugin: FastifyPluginAsync = (fastify) => {
       }
 
       // NOTE: this is never called when the browser closes connection through vite...
-      this.request.raw.on('close', () => {
+      this.request.cancelSignal.addEventListener('abort', () => {
         abort.abort(new Error('Client has closed the connection'))
       })
 
@@ -127,15 +150,10 @@ const ssePlugin: FastifyPluginAsync = (fastify) => {
       } satisfies Sse)
     })
 
-  // NOTE: for some reason, the onClose hook is not being called if there are connections opened
-  fastify.globalDisposables.push(() => {
-    connections.forEach(({ abort }) => {
-      abort.abort(new Error('Server is closing'))
-    })
-    connections.splice(0)
-  })
-
   return Promise.resolve()
 }
 
-export default fastifyPlugin(ssePlugin, { name: 'sse' })
+export default fastifyPlugin(ssePlugin, {
+  name: '@melchor629/fastify-infra/sse',
+  dependencies: ['@melchor629/fastify-infra/abort'],
+})

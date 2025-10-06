@@ -2,7 +2,7 @@ import logger from './logger.ts'
 
 const start = async () => {
   logger.info('Loading workers...')
-  const workers = await import('./core-logic/jobs/workers/index.ts')
+  const workers = await import('./workers/index.ts')
   const { default: queues } = await import('./core-logic/jobs/queues.ts')
 
   logger.info({ workers: Object.keys(workers) }, 'Starting workers...')

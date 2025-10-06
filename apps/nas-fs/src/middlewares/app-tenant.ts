@@ -14,7 +14,7 @@ const appTenantPlugin: FastifyPluginAsync = (fastify) => {
   fastify.decorateRequest('appTenant', null)
   fastify.addHook<{ Params: { appKey: string } }>('onRequest', (req) => {
     const { appKey } = req.params
-    const app = getApp(appKey, req.log)
+    const app = getApp(appKey, req.log, req.server.redis)
     if (!app) {
       throw new NotFoundError(`App '${appKey}' not found`)
     }

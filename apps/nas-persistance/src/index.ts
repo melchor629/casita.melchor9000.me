@@ -5,7 +5,7 @@ import { buildNasAuthServer } from './apollo-servers/index.js'
 import { env, port } from './config.js'
 import logger from './logger.js'
 import nasAuthDataSource from './orm/nas-auth/connection.js'
-import healthController from './utils/health-controller.js'
+import dataSourceHealthCheck from './utils/datasource-health-check.ts'
 
 // https://blog.logrocket.com/how-build-graphql-api-typegraphql-typeorm/
 // https://www.npmjs.com/package/apollo-server
@@ -35,7 +35,12 @@ try {
     buildNasAuthServer(app as unknown as FastifyInstance),
   ])
 
-  app.get('/health', healthController)
+  await app.register(import('@melchor629/fastify-infra/abort'))
+  await app.register(import('@melchor629/fastify-infra/health'), {
+    checks: (add) => {
+      add('nas-auth', dataSourceHealthCheck, nasAuthDataSource)
+    },
+  })
 
   await app.listen({ host: '::', port })
   app.log.info('App ready')

@@ -33,6 +33,7 @@ COPY --from=packages /app/out/json/ ./
 RUN npm ci --omit=dev
 COPY --from=builder /app/apps/ledefault/dist/ ./apps/ledefault/dist/
 COPY --from=builder /app/packages/nice-ssr/dist/fastify/ ./packages/nice-ssr/dist/fastify/
+COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/src/
 
 ENV NODE_ENV=production
 USER node:node

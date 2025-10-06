@@ -1,15 +1,6 @@
-import { pino } from 'pino'
-import { env, logLevel } from './config.js'
+import createLogger from '@melchor629/fastify-infra/logger'
+import { logLevel } from './config.js'
 
-export default pino({
-  level: logLevel,
-  transport: env === 'dev'
-    ? {
-        target: 'pino-pretty',
-        options: {
-          translateTime: true,
-          colorize: true,
-        },
-      }
-    : undefined,
-})
+const logger = createLogger('nas-persistance', logLevel)
+
+export default logger

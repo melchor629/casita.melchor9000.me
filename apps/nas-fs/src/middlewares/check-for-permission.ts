@@ -75,6 +75,9 @@ const authorizationPlugin: FastifyPluginAsync = (fastify) => {
         if (!req.jwtToken || !req.appTenant) {
           throw new UnauthorizedError()
         }
+        if (!req.jwtToken.payload.sub) {
+          throw new ForbiddenError('Token does not contain sub claim')
+        }
 
         const { permissions } = await fetchPermissions(
           req.jwtToken.token,

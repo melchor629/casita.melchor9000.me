@@ -1,11 +1,11 @@
 import { Queue, type WorkerOptions } from 'bullmq'
 import { redisUrl } from '../../config.ts'
 import { addCloseableHandler } from '../../utils/stop-signal.ts'
+import type { SynchronizeJobData } from '../../workers/synchronize.ts'
+import type { ThumbnailCleanerJobData } from '../../workers/thumbnail-cleaner.ts'
+import type { ThumbnailJobData } from '../../workers/thumbnail.ts'
+import type { UploadCleanerJobData } from '../../workers/upload-cleaner.ts'
 import { queues as queueNames, redisPrefix } from './constants.ts'
-import type { SynchronizeJobData } from './workers/synchronize.ts'
-import type { ThumbnailCleanerJobData } from './workers/thumbnail-cleaner.ts'
-import type { ThumbnailJobData } from './workers/thumbnail.ts'
-import type { UploadCleanerJobData } from './workers/upload-cleaner.ts'
 
 const redisUrlUrl = new URL(redisUrl!)
 

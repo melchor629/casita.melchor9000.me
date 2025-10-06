@@ -1,12 +1,20 @@
 import type { FastifyInstance } from 'fastify'
-import healthController from './health.ts'
+import type { Redis } from 'ioredis'
+import getCache from '../cache/provider.ts'
+import { authApiBaseUrl } from '../config.ts'
+import getPlexHealth from '../core-logic/health/plex.ts'
 import homeController from './home.ts'
 import notFoundController from './not-found.ts'
 
 const appRoutesPlugin = async (fastify: FastifyInstance) => {
-  await fastify.register(import('../middlewares/http-cache.ts'))
-  await fastify.register(import('../middlewares/rate-limiter.ts'))
-  await fastify.register(import('../middlewares/ensure-jwt.ts'))
+  await fastify.register(import('@melchor629/fastify-infra/http-cache'))
+  await fastify.register(import('@melchor629/fastify-infra/jwt'), {
+    oidcUrl: new URL(authApiBaseUrl),
+    verify: {
+      allowedAud: ['nas-fs'],
+      requiredClaims: ['sub'],
+    },
+  })
   await fastify.register(import('../middlewares/swagger.ts'))
   await fastify.register(import('../middlewares/route-processor.ts'))
 
@@ -22,7 +30,18 @@ const appRoutesPlugin = async (fastify: FastifyInstance) => {
     prefix: '/:appKey',
   })
 
-  fastify.get('/health', healthController.options, healthController)
+  await fastify.register(import('@melchor629/fastify-infra/health'), {
+    config: {
+      jwt: { optional: true },
+    },
+    checks: async (add) => {
+      const health = await import('@melchor629/fastify-infra/health')
+      add('redis', health.redisHealthCheck, { client: () => (getCache('π') as unknown as { client: Redis }).client })
+      add('nas-auth', health.externalHealthCheck, { url: new URL(authApiBaseUrl) }, 'degraded')
+      add('plex', getPlexHealth, undefined, 'degraded')
+    },
+    shouldIncludeDetails: (req) => !!req.jwtToken?.payload.sub || process.env.NODE_ENV !== 'production',
+  })
   fastify.get('/', homeController.options, homeController)
 
   fastify.setNotFoundHandler({

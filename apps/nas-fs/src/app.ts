@@ -4,12 +4,10 @@ import fastify from 'fastify'
 import { nanoid } from 'nanoid'
 import * as config from './config.ts'
 import logger from './logger.ts'
-import { addCloseableHandler } from './utils/stop-signal.ts'
 
 declare module 'fastify' {
   interface FastifyInstance {
     packageJson: typeof import('../package.json')
-    globalDisposables: Array<() => Promise<void> | void>
   }
 }
 
@@ -26,7 +24,6 @@ const start = async () => {
   }).withTypeProvider<TypeBoxTypeProvider>()
 
   app.decorate('packageJson', packageJson)
-  app.decorate('globalDisposables', [])
 
   app.setErrorHandler(async (error, req, reply) => {
     let type = ('type' in error && error.type as string) || error.code || error.name || error.constructor.name || null
@@ -53,11 +50,29 @@ const start = async () => {
     }
   })
 
+  await app.register(import('@melchor629/fastify-infra/abort'))
+  await app.register(import('@melchor629/fastify-infra/finalization'))
+
   await app.register(import('@autotelic/fastify-opentelemetry').then((t) => t.default), {
     wrapRoutes: true,
   })
 
   await app.register(import('./middlewares/trace.ts'))
+
+  await app.register(import('@fastify/redis'), {
+    url: config.redisUrl,
+    connectionName: 'nas-fs',
+    connectTimeout: 1000,
+    maxRetriesPerRequest: 1,
+  })
+  await app.register(import('@fastify/rate-limit'), {
+    global: true,
+    max: config.rateLimiter.requestsPerSecond,
+    redis: app.redis,
+    timeWindow: '1s',
+    allowList: ['127.0.0.1'],
+    nameSpace: 'nas-fs:rate-limit:',
+  })
 
   if (config.pathPrefix) {
     await app.register(import('./controllers/index.ts'), {
@@ -70,13 +85,6 @@ const start = async () => {
   await app.listen({
     host: '::',
     port: config.port,
-  })
-
-  addCloseableHandler('fastify', async () => {
-    logger.info('Stopping nas-fs...')
-    await Promise.all(app.globalDisposables.map((fn) => Promise.try(fn)))
-    await app.close()
-    logger.info('Stopped nas-fs')
   })
 }
 

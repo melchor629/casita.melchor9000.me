@@ -34,7 +34,7 @@ const fsRoutesPlugin = async (app: FastifyInstance) => {
     .get('/a/:id/:num(\\d+)', getUrlAliasController.options, getUrlAliasController)
 
   await app.register(async (f) => {
-    await f.register(import('../../middlewares/sse.ts'))
+    await f.register(import('@melchor629/fastify-infra/sse'))
     f.get('', fsChangesController.options, fsChangesController)
   }, { prefix: '/fs-changes' })
 }

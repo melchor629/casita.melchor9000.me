@@ -51,16 +51,29 @@ const swaggerPlugin: FastifyPluginAsync = async (fastify) => {
 
   if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line import-x/no-extraneous-dependencies
-    await fastify.register(import('@fastify/swagger-ui'), {
-      initOAuth: {
-        clientId: 'nas-fs',
-        clientSecret: 'nas-fs',
-        scopes: 'openid offline_access',
-        usePkceWithAuthorizationCodeGrant: true,
-      },
-      theme: {
+    await fastify.register(import('@scalar/fastify-api-reference'), {
+      configuration: {
         title: 'NAS FS Open API Specification',
+        authentication: {
+          preferredSecurityScheme: ['auth'],
+          securitySchemes: {
+            auth: {
+              type: 'oauth2',
+              flows: {
+                authorizationCode: {
+                  type: 'type',
+                  'x-scalar-client-id': 'nas-fs',
+                  clientSecret: 'nas-fs',
+                  scopes: 'openid offline_access',
+                  selectedScopes: ['openid', 'offline_access'],
+                  'x-usePkce': 'SHA-256',
+                },
+              },
+            },
+          },
+        },
       },
+      logLevel: 'error',
       routePrefix: '/oas',
     })
   } else {
