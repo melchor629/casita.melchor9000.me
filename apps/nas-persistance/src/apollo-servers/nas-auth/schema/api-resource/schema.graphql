@@ -1,0 +1,59 @@
+enum ApiResourceAccessTokenFormat {
+  jwt
+  opaque
+}
+
+"""Represents an API Resource of an application"""
+type ApiResource {
+  key: String!
+  name: String!
+  scopes: JSON!
+  audience: String!
+  accessTokenFormat: ApiResourceAccessTokenFormat!
+  accessTokenTTL: Float
+  jwt: JSONObject
+
+  """Application in which this resource belongs to"""
+  application: Application!
+}
+
+"""Data for creating a new api resource"""
+input CreateApiResourceInput {
+  key: String! @constraint(minLength: 1, maxLength: 500)
+  name: String! @constraint(minLength: 4, maxLength: 1000)
+  scopes: JSON!
+  audience: String! @constraint(minLength: 1, maxLength: 1000)
+  accessTokenFormat: ApiResourceAccessTokenFormat!
+  accessTokenTTL: Float
+  jwt: JSONObject
+  applicationKey: String!
+}
+
+"""Data for updating an api resource"""
+input UpdateApiResourceInput {
+  name: String @constraint(minLength: 4, maxLength: 1000)
+  scopes: JSON
+  audience: String @constraint(minLength: 1, maxLength: 1000)
+  accessTokenFormat: ApiResourceAccessTokenFormat
+  accessTokenTTL: Float
+  jwt: JSONObject
+}
+
+extend type Query {
+  """List of all registered API Resources"""
+  apiResources: [ApiResource!]!
+
+  """Get an API Resource"""
+  apiResource(key: String!): ApiResource
+}
+
+extend type Mutation {
+  """Creates a new API Resource"""
+  addApiResource(data: CreateApiResourceInput!): ApiResource!
+
+  """Updates an API Resource"""
+  updateApiResource(key: String!, data: UpdateApiResourceInput!): ApiResource
+
+  """Deletes an API Resource"""
+  deleteApiResource(key: String!): Boolean!
+}

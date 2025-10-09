@@ -1,0 +1,37 @@
+"""Represents the permission relationship to an user"""
+type UserPermission {
+  id: Int!
+  write: Boolean!
+  delete: Boolean!
+
+  """The user that has this permission"""
+  user: User!
+
+  """The permission the user has"""
+  permission: Permission!
+}
+
+"""Data to create a new user permission"""
+input CreateUserPermissionInput {
+  userId: Int!
+  permissionId: Int!
+  write: Boolean!
+  delete: Boolean!
+}
+
+"""Data to edit an user permission"""
+input EditUserPermissionInput {
+  write: Boolean!
+  delete: Boolean!
+}
+
+extend type Mutation {
+  """Adds a new user permission"""
+  addUserPermission(data: CreateUserPermissionInput!): UserPermission!
+
+  """Updates an existing user permission"""
+  updateUserPermission(id: Int!, data: EditUserPermissionInput!): UserPermission
+
+  """Deletes an user permission"""
+  deleteUserPermission(id: Int!): Boolean!
+}

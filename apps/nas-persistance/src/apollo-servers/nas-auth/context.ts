@@ -1,6 +1,6 @@
 import type { OpenTelemetryReqInstance } from '@autotelic/fastify-opentelemetry'
-import type { DataSource } from 'typeorm'
-import {
+import type { PrismaClient } from '@melchor629/prisma-nas-auth'
+import type {
   ApplicationRepository,
   PermissionRepository,
   UserPermissionRepository,
@@ -8,9 +8,7 @@ import {
 } from '../../orm/nas-auth/repositories/index.js'
 
 export interface NasAuthGraphQLContext {
-  connection: DataSource
-  apiKey: string | string[] | undefined
-  tokenUser: Record<string, string | number | boolean | null>
+  prisma: PrismaClient
   applicationRepository: ApplicationRepository
   permissionRepository: PermissionRepository
   userPermissionRepository: UserPermissionRepository

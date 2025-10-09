@@ -29,7 +29,7 @@
       ],
       "cwd": "${workspaceFolder}/apps/nas-persistance",
       "program": "${workspaceFolder}/apps/nas-persistance/src/index.ts",
-      "runtimeArgs": ["--loader", "ts-node/esm"],
+      "runtimeArgs": [],
       "env": {
         "NODE_ENV": "development",
       },

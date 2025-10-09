@@ -1,4 +1,4 @@
-export { default as ApplicationRepository } from './application.js'
-export { default as PermissionRepository } from './permission.js'
-export { default as UserPermissionRepository } from './user-permission.js'
-export { default as UserRepository } from './user.js'
+export { default as ApplicationRepository } from './application.ts'
+export { default as PermissionRepository } from './permission.ts'
+export { default as UserPermissionRepository } from './user-permission.ts'
+export { default as UserRepository } from './user.ts'

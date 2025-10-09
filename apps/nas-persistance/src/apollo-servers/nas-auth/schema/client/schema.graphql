@@ -1,0 +1,38 @@
+"""Represents one Client"""
+type Client {
+  clientId: String!
+  clientName: String!
+  fields: JSONObject!
+}
+
+"""Data for creating a new client"""
+input CreateClientInput {
+  clientId: String! @constraint(minLength: 2, maxLength: 128)
+  clientName: String! @constraint(minLength: 1, maxLength: 1024)
+  fields: JSONObject
+}
+
+"""Data for updating a new client"""
+input UpdateClientInput {
+  clientName: String @constraint(minLength: 1, maxLength: 1024)
+  fields: JSONObject
+}
+
+extend type Query {
+  """List of all registered clients"""
+  clients: [Client!]!
+
+  """Gets one client"""
+  client(id: String!): Client
+}
+
+extend type Mutation {
+  """Creates a new client"""
+  addClient(data: CreateClientInput!): Client!
+
+  """Updates a client"""
+  updateClient(id: String!, data: UpdateClientInput!): Client
+
+  """Deletes a client"""
+  deleteClient(id: String!): Boolean!
+}

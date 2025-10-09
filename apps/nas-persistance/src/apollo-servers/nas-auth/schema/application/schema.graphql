@@ -1,0 +1,41 @@
+"""Represents an application in the system"""
+type Application {
+  key: String!
+  name: String!
+
+  """Permissions related to that application"""
+  permissions: [Permission!]!
+
+  """API Resources of the application"""
+  apiResources: [ApiResource!]!
+}
+
+"""Data for creating a new application"""
+input CreateApplicationInput {
+  key: String! @constraint(minLength: 1, maxLength: 2, pattern: "^[a-zA-Z0-9][\\w-]*$")
+  name: String! @constraint(minLength: 3, maxLength: 500)
+}
+
+"""Data for updating an application"""
+input UpdateApplicationInput {
+  name: String @constraint(minLength: 3, maxLength: 500)
+}
+
+extend type Query {
+  """List of all registered applications"""
+  applications: [Application!]!
+
+  """Get an application"""
+  application(key: String!): Application
+}
+
+extend type Mutation {
+  """Creates a new application"""
+  addApplication(data: CreateApplicationInput!): Application!
+
+  """Updates an application"""
+  updateApplication(key: String!, data: UpdateApplicationInput!): Application
+
+  """Deletes an application"""
+  deleteApplication(key: String!): Boolean!
+}

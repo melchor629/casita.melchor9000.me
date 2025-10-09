@@ -1,9 +1,8 @@
-import type { DataSource } from 'typeorm'
-import BaseRepository from '../../base-repository.js'
-import Permission from '../entities/permission.js'
+import type { Prisma, PrismaClient } from '@melchor629/prisma-nas-auth'
+import BaseRepository from '../../base-repository.ts'
 
-export default class PermissionRepository extends BaseRepository<Permission> {
-  constructor(dataSource: DataSource) {
-    super(dataSource.getRepository(Permission))
+export default class PermissionRepository extends BaseRepository<number, Prisma.TypeMap['model']['Permission']> {
+  constructor(client: PrismaClient) {
+    super(client.permission)
   }
 }

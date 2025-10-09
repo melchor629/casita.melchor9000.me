@@ -1,0 +1,45 @@
+"""Represents a login mechanism information"""
+type Login {
+  id: Int!
+  type: String!
+  loginId: String!
+  data: JSONObject
+  disabled: Boolean!
+
+  """The user that the login refers to"""
+  user: User!
+}
+
+"""Data for creating a new login"""
+input CreateLoginInput {
+  type: String! @constraint(minLength: 1, maxLength: 50)
+  loginId: String! @constraint(maxLength: 2048)
+  userId: Int!
+  data: String
+  disabled: Boolean
+}
+
+"""Data for updating a login"""
+input UpdateLoginInput {
+  data: String
+  disabled: Boolean
+}
+
+extend type Query {
+  """Get info about an specific login"""
+  login(id: Int!): Login
+
+  """Gets a login for the given type and loginId"""
+  findLogin(userId: ID, provider: String!, loginId: String!): Login
+}
+
+extend type Mutation {
+  """Creates a new login for a specific user"""
+  addLogin(data: CreateLoginInput!): Login!
+
+  """Updates a login"""
+  updateLogin(id: Int!, data: UpdateLoginInput!): Login!
+
+  """Deletes a login"""
+  deleteLogin(id: Int!): Boolean!
+}

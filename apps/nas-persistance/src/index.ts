@@ -1,15 +1,9 @@
-import 'reflect-metadata/lite'
-
 import { type FastifyInstance, fastify } from 'fastify'
-import { buildNasAuthServer } from './apollo-servers/index.js'
-import { env, port } from './config.js'
-import logger from './logger.js'
-import nasAuthDataSource from './orm/nas-auth/connection.js'
+import { buildNasAuthServer } from './apollo-servers/index.ts'
+import { env, port } from './config.ts'
+import logger from './logger.ts'
+import nasAuthClient from './orm/nas-auth/connection.ts'
 import dataSourceHealthCheck from './utils/datasource-health-check.ts'
-
-// https://blog.logrocket.com/how-build-graphql-api-typegraphql-typeorm/
-// https://www.npmjs.com/package/apollo-server
-// https://typegraphql.com/docs/getting-started.html
 
 const app = fastify({
   loggerInstance: logger,
@@ -31,14 +25,14 @@ try {
   })
 
   await Promise.all([
-    nasAuthDataSource.initialize(),
+    nasAuthClient.$connect(),
     buildNasAuthServer(app as unknown as FastifyInstance),
   ])
 
   await app.register(import('@melchor629/fastify-infra/abort'))
   await app.register(import('@melchor629/fastify-infra/health'), {
     checks: (add) => {
-      add('nas-auth', dataSourceHealthCheck, nasAuthDataSource)
+      add('nas-auth', dataSourceHealthCheck, nasAuthClient)
     },
   })
 

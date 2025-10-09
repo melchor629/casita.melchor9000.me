@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["auth"]
+}
+
+enum ApiResourceAccessTokenFormat {
+  @@schema("auth")
+
+  jwt
+  opaque
+}
+
+model ApiResource {
+  @@map("api_resource")
+  @@schema("auth")
+
+  id                Int                           @id(map: "PK_f80ccb48a19c807aa53d90dd66b") @default(autoincrement())
+  key               String                        @unique(map: "api-resource-key-unique") @db.VarChar(500)
+  name              String                        @db.VarChar(1000)
+  scopes            Json
+  audience          String                        @db.VarChar(1000)
+  accessTokenFormat ApiResourceAccessTokenFormat  @default(jwt)
+  accessTokenTTL    Int?
+  jwt               Json?
+  applicationId     Int
+  application       Application                   @relation(fields: [applicationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7c34867275a5cc746b6d4fd75ed")
+}
+
+model Application {
+  @@map("application")
+  @@schema("auth")
+
+  id           Int            @id(map: "PK_b50aa5a1c0644e601c0cdbf986d") @default(autoincrement())
+  key          String         @unique(map: "application-apiKey-unique") @db.VarChar(32)
+  name         String         @db.VarChar(500)
+  apiResources ApiResource[]
+  permissions  Permission[]
+}
+
+model Client {
+  @@map("client")
+  @@schema("auth")
+
+  id         Int    @id(map: "PK_96da49381769303a6515a8785c7") @default(autoincrement())
+  clientId   String @unique(map: "UQ_6ed9067942d7537ce359e172ff6") @db.VarChar(128)
+  clientName String @db.VarChar(1024)
+  fields     Json
+}
+
+model Login {
+  @@map("login")
+  @@schema("auth")
+
+  id       Int     @id(map: "PK_0e29aa96b7d3fb812ff43fcfcd3") @default(autoincrement())
+  type     String  @db.VarChar(50)
+  loginId  String  @db.VarChar(2048)
+  data     Json?
+  disabled Boolean @default(false)
+  userId   Int
+  user     User    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b1c3fff7c4bc7d15b3018abab6f")
+
+  @@unique([type, loginId], map: "IDX_204cd5e1949e4f4f73139dc7d0")
+}
+
+model Permission {
+  @@map("permission")
+  @@schema("auth")
+
+  id              Int               @id(map: "PK_3b8b97af9d9d8807e41e6f48362") @default(autoincrement())
+  name            String            @db.VarChar(100)
+  applicationId   Int
+  displayName     String?           @db.VarChar(1000)
+  application     Application       @relation(fields: [applicationId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_2a032717ceae31ffbbc72a4805b")
+  userPermissions UserPermission[]
+
+  @@unique([name, applicationId], map: "permission-name-application-key")
+}
+
+model User {
+  @@map("user")
+  @@schema("auth")
+
+  id              Int               @id(map: "PK_cace4a159ff9f2512dd42373760") @default(autoincrement())
+  userName        String            @db.VarChar(100)
+  displayName     String            @db.VarChar(512)
+  email           String?           @db.VarChar(1024)
+  disabled        Boolean           @default(false)
+  familyName      String?           @db.VarChar(512)
+  givenName       String?           @db.VarChar(512)
+  profileImageUrl String?           @db.VarChar(4096)
+  logins          Login[]
+  userPermissions UserPermission[]
+}
+
+model UserPermission {
+  @@map("user_permission")
+  @@schema("auth")
+
+  id           Int        @id(map: "PK_a7326749e773c740a7104634a77") @default(autoincrement())
+  write        Boolean    @default(false)
+  delete       Boolean    @default(false)
+  userId       Int
+  permissionId Int
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_a592f2df24c9d464afd71401ff6")
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_deb59c09715314aed1866e18a81")
+
+  @@unique([userId, permissionId], map: "IDX_1cf6c7f47d0655afa389e1bd59")
+}

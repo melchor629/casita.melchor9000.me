@@ -1,9 +1,12 @@
 import type { HealthCheck } from '@melchor629/fastify-infra/health'
-import type { DataSource } from 'typeorm'
 
-const dataSourceHealthCheck: HealthCheck<DataSource> = async (dataSource) => {
+type PrismaClient = {
+  $queryRaw<T = unknown>(query: TemplateStringsArray, ...values: unknown[]): Promise<T>;
+}
+
+const dataSourceHealthCheck: HealthCheck<PrismaClient> = async (dataSource) => {
   try {
-    await dataSource.sql`SELECT 1`
+    await dataSource.$queryRaw`SELECT 1`
     return {
       type: 'type-orm',
       status: 'healthy',

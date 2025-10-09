@@ -1,0 +1,41 @@
+"""Rerpesent one permission of an application"""
+type Permission {
+  id: Int!
+  name: String!
+  displayName: String
+
+  """Application associated with this permission"""
+  application: Application!
+
+  """Users that has this permission assigned"""
+  users: [UserPermission!]!
+}
+
+"""Data for creating a permission"""
+input CreatePermissionInput {
+  name: String! @constraint(minLength: 3, maxLength: 100)
+  displayName: String @constraint(minLength: 3, maxLength: 1000)
+  applicationKey: String!
+}
+
+"""Data for updating a permission"""
+input UpdatePermissionInput {
+  name: String @constraint(minLength: 3, maxLength: 100)
+  displayName: String @constraint(minLength: 3, maxLength: 1000)
+}
+
+extend type Query {
+  """List of registered permissions"""
+  permissions: [Permission!]!
+}
+
+extend type Mutation {
+  """Create a new permission"""
+  addPermission(data: CreatePermissionInput!): Permission!
+
+  """Update a permission"""
+  updatePermission(id: Int!, data: UpdatePermissionInput!): Permission
+
+  """Deletes a permission"""
+  deletePermission(id: Int!): Boolean
+}

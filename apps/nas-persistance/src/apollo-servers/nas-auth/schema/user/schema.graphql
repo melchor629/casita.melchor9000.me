@@ -1,0 +1,58 @@
+"""Represents an user of the system"""
+type User {
+  id: Int!
+  userName: String!
+  displayName: String!
+  familyName: String
+  givenName: String
+  profileImageUrl: String
+  email: String
+  disabled: Boolean!
+
+  """Permissions that the user has"""
+  permissions: [UserPermission!]!
+
+  """Logins that the user uses to enter in the system"""
+  logins: [Login!]!
+}
+
+"""Data to create a new user"""
+input CreateUserInput {
+  userName: String! @constraint(minLength: 3, maxLength: 100)
+  displayName: String! @constraint(minLength: 1, maxLength: 512)
+  familyName: String @constraint(minLength: 1, maxLength: 512)
+  givenName: String @constraint(minLength: 1, maxLength: 512)
+  profileImageUrl: String @constraint(minLength: 1, maxLength: 4096, format: "uri")
+  email: String @constraint(minLength: 1, maxLength: 1024, format: "email")
+  disabled: Boolean
+}
+
+"""Data to update an user"""
+input UpdateUserInput {
+  userName: String @constraint(minLength: 3, maxLength: 100)
+  displayName: String @constraint(minLength: 1, maxLength: 512)
+  familyName: String @constraint(minLength: 1, maxLength: 512)
+  givenName: String @constraint(minLength: 1, maxLength: 512)
+  profileImageUrl: String @constraint(minLength: 1, maxLength: 4096, format: "uri")
+  email: String @constraint(minLength: 1, maxLength: 1024, format: "email")
+  disabled: Boolean
+}
+
+extend type Query {
+  """List of users registered"""
+  users: [User!]!
+
+  """Get the user"""
+  user(userName: String, id: Int, emails: [String!], displayName: String): User
+}
+
+extend type Mutation {
+  """Creates a new user"""
+  addUser(data: CreateUserInput!): User!
+
+  """Updates an existing user"""
+  updateUser(id: Int!, data: UpdateUserInput!): User!
+
+  """Deletes an user"""
+  deleteUser(id: Int!): Boolean!
+}

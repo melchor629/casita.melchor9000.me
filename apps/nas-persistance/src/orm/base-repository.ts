@@ -1,14 +1,35 @@
 import DataLoader from 'dataloader'
-import { In, Repository } from 'typeorm'
+
+type PrismaTypeModel<Type extends string | number> = {
+  payload: {
+    scalars: { id: Type } & Record<string, unknown>
+  }
+  operations: {
+    findMany: {
+      args: {
+        where?: { id?: Type | { in?: Type[] | object } }
+      }
+      result: Array<{ id?: Type }>
+    }
+  }
+}
+type PrismaDelegateType<
+  EntityKeyType extends string | number,
+  EntityTypeModel extends PrismaTypeModel<EntityKeyType>,
+> = {
+  [TOp in 'findMany']: (
+    arg: EntityTypeModel['operations'][TOp]['args'],
+  ) => Promise<EntityTypeModel['operations'][TOp]['result']>
+}
 
 class BaseRepository<
-  EntityType extends { id: EntityKeyType },
-  EntityKeyType extends number | string = number,
+  EntityKeyType extends string | number,
+  EntityTypeModel extends PrismaTypeModel<EntityKeyType>,
 > {
   #dataLoaders: Map<string, DataLoader<unknown, unknown>>
-  #repository: Repository<EntityType>
+  #repository
 
-  constructor(repository: Repository<EntityType>) {
+  constructor(repository: PrismaDelegateType<EntityKeyType, EntityTypeModel>) {
     this.#dataLoaders = new Map()
     this.#repository = repository
   }
@@ -40,12 +61,11 @@ class BaseRepository<
   }
 
   #getDataLoader() {
-    return this.getDataLoader('get', async (keys: readonly EntityKeyType[]) => {
-      // @ts-expect-error the types are not working fine when using EntityKeyType
-      const results = await this.#repository.findBy({
-        id: In(keys),
+    return this.getDataLoader<EntityKeyType, EntityTypeModel['payload']['scalars'] | null>('get', async (keys) => {
+      const results = await this.#repository.findMany({
+        where: { id: { in: keys } },
       })
-      return keys.map((k) => results.find(({ id }) => id === k) ?? null)
+      return keys.map((k) => results.find(({ id }) => id === k) as EntityTypeModel['payload']['scalars'] ?? null)
     })
   }
 }

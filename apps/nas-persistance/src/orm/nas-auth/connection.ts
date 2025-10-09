@@ -1,13 +1,26 @@
-import { DataSource } from 'typeorm'
-import baseOptions from '../config.js'
-import * as entities from './entities/index.js'
-import * as migrations from './migrations/index.js'
+import { PrismaClient } from '@melchor629/prisma-nas-auth'
+import { getDatasourceUrl, wrapClient } from '../config.ts'
 
-const nasAuthDataSource = new DataSource({
-  ...baseOptions,
-  schema: 'auth',
-  entities: Object.values(entities),
-  migrations: Object.values(migrations),
-})
+const nasAuthClient = wrapClient(new PrismaClient({
+  datasourceUrl: getDatasourceUrl('auth'),
+  log: [
+    {
+      emit: 'event',
+      level: 'query',
+    },
+    {
+      emit: 'event',
+      level: 'error',
+    },
+    {
+      emit: 'event',
+      level: 'info',
+    },
+    {
+      emit: 'event',
+      level: 'warn',
+    },
+  ],
+}))
 
-export default nasAuthDataSource
+export default nasAuthClient

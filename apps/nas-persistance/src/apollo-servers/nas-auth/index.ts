@@ -1,2 +1,2 @@
-export type { NasAuthGraphQLContext } from './context.js'
-export { default } from './server.js'
+export type { NasAuthGraphQLContext } from './context.ts'
+export { default } from './server.ts'
