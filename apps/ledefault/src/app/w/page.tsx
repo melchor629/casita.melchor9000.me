@@ -3,6 +3,7 @@ import { type PageLoader, type Metadata, useNavigate, useBlocker } from '@melcho
 import { clsx } from 'clsx'
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
 import { getUser } from '@/auth'
+import entries from './entries'
 
 type PageProps = {
   readonly entries: ReadonlyArray<import('./entries').Entry | 'space'>
@@ -13,7 +14,6 @@ export const metadata: Metadata = {
 }
 
 export const loader: PageLoader<PageProps> = async (req) => {
-  const { default: entries } = await import('./entries')
   const sub = await getUser(req)
     .then((res) => res.type === 'success' ? res.data.sub : '')
   return {

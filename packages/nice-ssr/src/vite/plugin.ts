@@ -77,7 +77,7 @@ const niceSsrPlugin = ({ devTools: devtools }: NiceSsrOptions = {}): Plugin => {
               return `.p/partial-page/${pageName}.[hash].js`
             }
           }
-          return `.p/assets/${chunkInfo.name}.[hash].js`
+          return `.p/chunks/${chunkInfo.name}.[hash].js`
         }
 
         if (!env.isSsrBuild) {

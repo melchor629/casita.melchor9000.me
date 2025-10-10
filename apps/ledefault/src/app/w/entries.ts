@@ -102,11 +102,6 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
     url: 'https://gatus.melchor9000.me',
   },
   {
-    id: 'registry',
-    name: 'registry',
-    url: 'https://registry.melchor9000.me',
-  },
-  {
     id: 'sonarr',
     name: 'sonarr',
     url: 'https://sonarr.melchor9000.me',
