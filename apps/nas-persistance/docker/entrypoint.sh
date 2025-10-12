@@ -2,7 +2,7 @@
 
 if [ "$1" = "nas-persistence" ]; then
   shift
-  exec node /app/apps/nas-persistance/src/index.js "$@"
+  exec node /app/apps/nas-persistance/src/index.ts "$@"
 fi
 
 if [ "$1" = "run-migrations" ]; then
@@ -13,7 +13,7 @@ if [ "$1" = "run-migrations" ]; then
 fi
 
 if [ "$#" -eq 0 ]; then
-  exec node /app/apps/nas-persistance/src/index.js
+  exec node /app/apps/nas-persistance/src/index.ts
 fi
 
 exec "$@"

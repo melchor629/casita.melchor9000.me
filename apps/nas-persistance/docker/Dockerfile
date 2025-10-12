@@ -14,13 +14,26 @@ RUN npx turbo prune nas-persistance --docker
 
 FROM --platform=$BUILDPLATFORM node:$TAG AS builder
 
+ARG TARGETARCH
 WORKDIR /app
 
 COPY --from=packages /app/out/json/ ./
 RUN npm ci
 
 COPY --from=packages /app/out/full/ ./
-RUN CI=true NODE_ENV=production npm run build
+RUN <<EOM
+  if [ "$TARGETARCH" = "amd64" ]; then
+    echo "Detected amd64 for prisma"
+    export PRISMA_BINARY_TARGET="[\"linux-musl-openssl-3.0.x\"]"
+  elif [ "$TARGETARCH" = "arm64" ]; then
+    echo "Detected arm64 for prisma"
+    export PRISMA_BINARY_TARGET="[\"linux-musl-arm64-openssl-3.0.x\"]"
+  else
+    echo "Not supported arch!"
+    exit 1
+  fi
+  npm run build
+EOM
 
 
 FROM node:$TAG AS final

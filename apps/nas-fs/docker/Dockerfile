@@ -16,9 +16,7 @@ FROM --platform=$BUILDPLATFORM node:$TAG AS builder
 
 WORKDIR /app
 COPY --from=packages /app/out/json/ ./
-RUN apt update && \
-    apt install --no-install-recommends --no-install-suggests -y gcc g++ make python3 && \
-    npm ci --omit=dev
+RUN npm ci --omit=dev
 
 COPY --from=packages /app/out/full/ ./
 COPY /apps/nas-fs/docker/entrypoint.sh ./
@@ -26,6 +24,7 @@ COPY /apps/nas-fs/docker/entrypoint.sh ./
 
 FROM node:$TAG AS final
 WORKDIR /app
+
 RUN <<APP
   set -ex
 
@@ -37,7 +36,7 @@ RUN <<APP
   rm repo-mediaarea.deb
 
   apt update
-  apt install --no-install-recommends --no-install-suggests -y mediainfo libjemalloc2
+  apt install --no-install-recommends --no-install-suggests -y mediainfo libjemalloc2 file
 
   . /etc/os-release
   ARCH=$(dpkg --print-architecture)
@@ -59,6 +58,9 @@ RUN <<APP
   rm -rf /root/.cache /root/.npm
   rm -rf /etc/apt/keyrings
 APP
+
+COPY --from=packages /app/out/json/ ./
+RUN npm ci --omit=dev
 
 COPY --from=builder /app/apps/nas-fs/ ./apps/nas-fs/
 COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/src/

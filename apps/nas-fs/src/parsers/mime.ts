@@ -1,20 +1,13 @@
-import mmmime from '@picturae/mmmagic'
+import { execa } from 'execa'
 import type { Mime } from '../models/fs/mime.ts'
 
-const getMimeType = (path: string): Promise<Mime | undefined> => {
-  const magic = new mmmime.Magic(mmmime.MAGIC_MIME_TYPE | mmmime.MAGIC_MIME_ENCODING)
-  return new Promise((resolve, reject) => {
-    magic.detectFile(path, (err, res) => {
-      if (err) {
-        reject(err)
-      } else {
-        const [mime, type] = (res ?? '').split(';')
-        resolve({
-          mime,
-          isText: !!type && type?.split('=')[1] !== 'binary',
-        })
-      }
-    })
+const getMimeType = async (path: string): Promise<Mime | undefined> => {
+  const result = await execa('file', ['--mime', '--extension', '--brief', path])
+  const res = result.stdout ?? 'application/octet-stream; charset=binary'
+  const [mime, type] = (res ?? '').split(';')
+  return Promise.resolve({
+    mime,
+    isText: !!type && type?.split('=')[1] !== 'binary',
   })
 }
 
