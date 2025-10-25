@@ -10,7 +10,7 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: melchor9000/nas-persistance
-  PUBLISH: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nas-persistance@v') }}
+  PUBLISH: ${{ startsWith(github.ref, 'refs/tags/nas-persistance@v') }}
 
 jobs:
   build:
@@ -60,7 +60,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ env.PUBLISH == 'true' }}
+    if: ${{ startsWith(github.ref, 'refs/tags/nas-persistance@v') }}
     environment: pi
     steps:
       - name: Checkout actions
