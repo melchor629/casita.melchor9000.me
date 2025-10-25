@@ -58,7 +58,7 @@
     "@fastify/middie": "^9.0.0",
     "@types/node": "^22.0.0",
     "typescript": "^5.0.0",
-    "vite": "^7.0.0"
+    "vite": "^7.1.11"
   },
   "files": [
     "bin/",
