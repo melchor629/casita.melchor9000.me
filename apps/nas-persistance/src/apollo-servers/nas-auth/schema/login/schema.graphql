@@ -15,7 +15,7 @@ input CreateLoginInput {
   type: String! @constraint(minLength: 1, maxLength: 50)
   loginId: String! @constraint(maxLength: 2048)
   userId: Int!
-  data: String
+  data: JSONObject
   disabled: Boolean
 }
 

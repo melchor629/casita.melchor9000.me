@@ -22,7 +22,7 @@ input CreateUserInput {
   displayName: String! @constraint(minLength: 1, maxLength: 512)
   familyName: String @constraint(minLength: 1, maxLength: 512)
   givenName: String @constraint(minLength: 1, maxLength: 512)
-  profileImageUrl: String @constraint(minLength: 1, maxLength: 4096, format: "uri")
+  profileImageUrl: String @constraint(minLength: 1, maxLength: 4096)
   email: String @constraint(minLength: 1, maxLength: 1024, format: "email")
   disabled: Boolean
 }
@@ -33,7 +33,7 @@ input UpdateUserInput {
   displayName: String @constraint(minLength: 1, maxLength: 512)
   familyName: String @constraint(minLength: 1, maxLength: 512)
   givenName: String @constraint(minLength: 1, maxLength: 512)
-  profileImageUrl: String @constraint(minLength: 1, maxLength: 4096, format: "uri")
+  profileImageUrl: String @constraint(minLength: 1, maxLength: 4096)
   email: String @constraint(minLength: 1, maxLength: 1024, format: "email")
   disabled: Boolean
 }

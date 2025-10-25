@@ -47,10 +47,12 @@ const userResolvers: ModelResolvers<'User'> = {
     user: (_parent, { displayName, emails, id, userName }, { prisma }) =>
       prisma.user.findFirst({
         where: {
-          displayName: displayName || undefined,
-          email: emails ? { in: emails } : undefined,
-          id: id ?? undefined,
-          userName: userName || undefined,
+          OR: [
+            { displayName: displayName || undefined },
+            { email: emails ? { in: emails } : undefined },
+            { id: id ?? undefined },
+            { userName: userName || undefined },
+          ],
         },
       }),
 

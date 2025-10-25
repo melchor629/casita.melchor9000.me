@@ -94,7 +94,7 @@ export type CreateClientInput = {
 
 /** Data for creating a new login */
 export type CreateLoginInput = {
-  data?: InputMaybe<Scalars['String']['input']>;
+  data?: InputMaybe<Scalars['JSONObject']['input']>;
   disabled?: InputMaybe<Scalars['Boolean']['input']>;
   loginId: Scalars['String']['input'];
   type: Scalars['String']['input'];

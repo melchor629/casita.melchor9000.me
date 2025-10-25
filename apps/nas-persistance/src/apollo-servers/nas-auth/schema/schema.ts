@@ -1,6 +1,6 @@
 // eslint-disable-next-line import-x/no-extraneous-dependencies
 import { makeExecutableSchema } from '@graphql-tools/schema'
-import { constraintDirective, constraintDirectiveTypeDefs } from 'graphql-constraint-directive'
+import { constraintDirectiveTypeDefs } from 'graphql-constraint-directive'
 import apiResourceResolvers from './api-resource/resolvers.ts'
 import applicationResolvers from './application/resolvers.ts'
 import baseResolvers from './base/resolvers.ts'
@@ -33,7 +33,7 @@ const modelResolvers: Resolvers[] = [
   userPermissionResolvers,
 ]
 
-export const schema = constraintDirective()(makeExecutableSchema({
+export const schema = makeExecutableSchema({
   typeDefs: [
     constraintDirectiveTypeDefs,
     typeDefs,
@@ -48,4 +48,4 @@ export const schema = constraintDirective()(makeExecutableSchema({
       Mutation: { ...a.Mutation, ...r.Mutation },
     }), { Query: {}, Mutation: {} })),
   }),
-}))
+})
