@@ -1,0 +1,7 @@
+.next/
+.vscode/
+node_modules/
+jwks.json
+.env
+profile-images/
+.DS_Store

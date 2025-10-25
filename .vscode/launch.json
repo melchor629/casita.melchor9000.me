@@ -70,5 +70,21 @@
       "envFile": "${workspaceFolder}/apps/nas-fs/.env",
       "outputCapture": "std",
     },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "nas-auth",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceFolder}/apps/nas-auth",
+      "program": "${workspaceFolder}/apps/nas-auth/src/index.ts",
+      "runtimeArgs": [],
+      "env": {
+        "NODE_ENV": "development",
+      },
+      "envFile": "${workspaceFolder}/apps/nas-auth/.env",
+      "outputCapture": "std",
+    },
   ]
 }

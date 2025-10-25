@@ -1,20 +1,19 @@
-import type { Redis } from 'ioredis'
+import type { RedisClientType } from 'redis'
 import type { HealthCheck } from '../types.ts'
 
 type RedisHealthCheckOptions = {
-  client: Redis | (() => Redis)
+  client: RedisClientType | (() => RedisClientType)
 }
 
 const redisHealthCheck: HealthCheck<RedisHealthCheckOptions> = async ({ client }) => {
   const redis = typeof client === 'function' ? client() : client
   if (
-    redis.status === 'connecting'
-      || redis.status === 'connect'
-      || redis.status === 'ready'
+    redis.isOpen
+      || redis.isReady
   ) {
     const [, keys, info] = await Promise.all([
       redis.ping('ping'),
-      redis.dbsize(),
+      redis.dbSize(),
       redis.info('server'),
     ])
     return {

@@ -1,0 +1,23 @@
+{
+  "extends": "@melchor629/tsconfigs/preact.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "forceConsistentCasingInFileNames": true,
+    "rewriteRelativeImportExtensions": false,
+    "plugins": [
+      {
+        "name": "@0no-co/graphqlsp",
+        "schema": "./src/queries/client/schema.graphql"
+      }
+    ]
+  },
+  "include": [
+    "src/",
+    "vite.config.ts",
+  ],
+  "exclude": ["node_modules"]
+}

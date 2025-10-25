@@ -36,7 +36,7 @@ const appRoutesPlugin = async (fastify: FastifyInstance) => {
     },
     checks: async (add) => {
       const health = await import('@melchor629/fastify-infra/health')
-      add('redis', health.redisHealthCheck, { client: () => (getCache('π') as unknown as { client: Redis }).client })
+      add('redis', health.ioredisHealthCheck, { client: () => (getCache('π') as unknown as { client: Redis }).client })
       add('nas-auth', health.externalHealthCheck, { url: new URL(authApiBaseUrl) }, 'degraded')
       add('plex', getPlexHealth, undefined, 'degraded')
     },
