@@ -9,31 +9,14 @@
 }
 
 @theme {
-  --color-primary-main: var(--color-primary-main-dark);
-  --color-primary-hover: var(--color-primary-hover-dark);
-  --color-primary-subtle: var(--color-primary-subtle-dark);
-  --color-primary-text: var(--color-primary-text-dark);
-  --color-primary-text-subtle: var(--color-primary-text-subtle-dark);
-  --color-primary-bg: var(--color-primary-bg-dark);
-  --color-primary-elevated: var(--color-primary-elevated-dark);
+  --color-primary-main: light-dark(var(--color-primary-main-light), var(--color-primary-main-dark));
+  --color-primary-hover: light-dark(var(--color-primary-hover-light), var(--color-primary-hover-dark));
+  --color-primary-subtle: light-dark(var(--color-primary-subtle-light), var(--color-primary-subtle-dark));
+  --color-primary-text: light-dark(var(--color-primary-text-light), var(--color-primary-text-dark));
+  --color-primary-text-subtle: light-dark(var(--color-primary-text-subtle-light), var(--color-primary-text-subtle-dark));
+  --color-primary-bg: light-dark(var(--color-primary-bg-light), var(--color-primary-bg-dark));
+  --color-primary-elevated: light-dark(var(--color-primary-elevated-light), var(--color-primary-elevated-dark));
 
-  --color-accent-main: var(--color-accent-main-dark);
-  --color-accent-elevated: var(--color-accent-elevated-dark);
-}
-
-@layer theme {
-  :root, :host {
-    @variant not-dark {
-      --color-primary-main: var(--color-primary-main-light);
-      --color-primary-hover: var(--color-primary-hover-light);
-      --color-primary-subtle: var(--color-primary-subtle-light);
-      --color-primary-text: var(--color-primary-text-light);
-      --color-primary-text-subtle: var(--color-primary-text-subtle-light);
-      --color-primary-bg: var(--color-primary-bg-light);
-      --color-primary-elevated: var(--color-primary-elevated-light);
-
-      --color-accent-main: var(--color-accent-main-light);
-      --color-accent-elevated: var(--color-accent-elevated-light);
-    }
-  }
+  --color-accent-main: light-dark(var(--color-accent-main-light), var(--color-accent-main-dark));
+  --color-accent-elevated: light-dark(var(--color-accent-elevated-light), var(--color-accent-elevated-dark));
 }
