@@ -45,6 +45,7 @@ jobs:
           file: ./apps/nas-persistance/docker/Dockerfile
 
       - name: Extract version
+        uses: ./.github/actions/utils/version
         id: version
         if: ${{ env.PUBLISH == 'true' }}
 
