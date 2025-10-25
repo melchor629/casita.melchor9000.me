@@ -1,19 +1,25 @@
 import path from 'node:path'
 import type {} from '@fastify/middie'
-import type { FastifyInstance } from 'fastify'
+import type { FastifyInstance, FastifyReply } from 'fastify'
 import { fastifyPlugin } from 'fastify-plugin'
 import type * as EntryServer from '../entry/server.ts'
-import { renderRoute, runMiddleware } from './render.ts'
+import { createRequest, writeResponse } from './mappers.ts'
+
+type RenderRouterOptions = Readonly<{
+  hijack?: boolean
+  error?: Error | 'not-found'
+  props?: Record<string, unknown>
+}>
 
 declare module 'fastify' {
   interface FastifyReply {
-    renderPage(page: `/${string}` | 'not-found'): Promise<void>
-    renderErrorPage(error: Error): Promise<void>
+    renderRoute(route?: `/${string}`, options?: RenderRouterOptions): Promise<void>
+    renderRouteToResponse(page?: `/${string}`, options?: RenderRouterOptions): Promise<Response>
   }
 }
 
 export type SsrPluginOptions = {
-  prefix: string
+  prefix: `/${string}`
   prod: boolean
 }
 
@@ -22,11 +28,9 @@ type GetSsrServerFn = () => Promise<{
   processError?: (error: Error) => void
 }>
 
-type SsrRouterPluginOptions = SsrPluginOptions & {
-  getSsrServer: GetSsrServerFn
-}
+type SsrRouterPluginOptions = SsrPluginOptions
 
-const ssrRouterPlugin = fastifyPlugin(async (app, { getSsrServer, prefix, prod }: SsrRouterPluginOptions) => {
+const ssrRouterPlugin = fastifyPlugin(async (app, { prod }: SsrRouterPluginOptions) => {
   // remove all body parsers from fastify, leave nice-ssr do the job
   app.removeAllContentTypeParsers()
   app.addContentTypeParser('*', (_1, _2, done) => done(null))
@@ -39,49 +43,11 @@ const ssrRouterPlugin = fastifyPlugin(async (app, { getSsrServer, prefix, prod }
       allowedPath: (pathName) => !pathName.endsWith('/') && !pathName.endsWith('/index.html'),
       decorateReply: false,
     })
-
-    const { server } = await getSsrServer()
-    for (const route of server.getAll()) {
-      const fastifyPath = route.routePathname.replaceAll(/\[(\w+)\]/g, ':$1')
-      app.log.info({ type: route.type, path: fastifyPath }, 'Registering route')
-      if (route.type === 'route') {
-        app.all(fastifyPath, async (req, reply) => {
-          await renderRoute(req, reply, route, server)
-        })
-      } else {
-        app.get(fastifyPath, async (req, reply) => {
-          await renderRoute(req, reply, route, server)
-        })
-        if (fastifyPath !== '/') {
-          app.get(fastifyPath + '/', async (req, reply) => {
-            await renderRoute(req, reply, route, server)
-          })
-        }
-      }
-    }
-
-    app.log.info('Registering not found handler')
-    app.setNotFoundHandler(async (_, res) => {
-      await res.renderPage('not-found')
-    })
-  } else {
-    app.log.info('Registering dev route handler')
-    app.setNotFoundHandler(async (req, res) => {
-      const pathname = req.url.split('?')[0].replace(/\/$/, '') as `/${string}`
-      await res.renderPage(pathname)
-    })
   }
 
-  app.log.info('Registering middleware handler')
-  app.addHook('onRequest', async function ssrMiddlewareHook(req, reply) {
-    const { processError, server } = await getSsrServer()
-    await runMiddleware(
-      req,
-      reply,
-      prefix,
-      server,
-      processError,
-    )
+  app.log.info('Registering route handler')
+  app.setNotFoundHandler(async (_, res) => {
+    await res.renderRoute()
   })
 }, {
   name: '@melchor629/nice-ssr/router',
@@ -127,24 +93,37 @@ const ssrPlugin: (app: FastifyInstance, options: SsrPluginOptions) => Promise<vo
     app.addHook('onClose', () => vite.close())
   }
 
-  app.decorateReply('renderPage', async function renderPage(pathname) {
+  async function render(
+    reply: FastifyReply,
+    pathname?: `/${string}`,
+    props?: Record<string, unknown>,
+    error?: Error | 'not-found',
+  ) {
     const { processError, server } = await getSsrServer()
-    this.log.debug({ pathname }, 'Looking for route to render')
-    const route = server.get(pathname)
-    await renderRoute(this.request, this, route, server, processError)
+    reply.log.debug({ pathname }, 'Looking for route to render')
+    const request = createRequest(reply.request, reply, pathname)
+    const response = await server.renderRoute(request, {
+      log: reply.log,
+      signal: null!,
+      basePathname: options.prefix,
+      processError,
+      error,
+      props,
+    })
+    return response
+  }
+
+  app.decorateReply('renderRoute', async function renderPage(pathname, { error, hijack, props } = {}) {
+    const response = await render(this, pathname, props, error)
+    await writeResponse(response, this, hijack)
   })
 
-  app.decorateReply('renderErrorPage', async function renderErrorPage(error) {
-    const { processError, server } = await getSsrServer()
-    this.log.debug({ pathname: 'error' }, 'Looking for route to render')
-    const route = server.get('error')
-    await renderRoute(this.request, this, route, server, processError, error)
+  app.decorateReply('renderRouteToResponse', async function renderPageToResponse(pathname, { error, props } = {}) {
+    const response = await render(this, pathname, props, error)
+    return response
   })
 
-  await app.register(ssrRouterPlugin, {
-    ...options,
-    getSsrServer,
-  })
+  await app.register(ssrRouterPlugin, options)
 }, {
   name: '@melchor629/nice-ssr/render',
   fastify: '^5.0.0',

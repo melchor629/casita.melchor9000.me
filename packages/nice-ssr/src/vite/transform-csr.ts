@@ -1,59 +1,84 @@
 import { generate } from 'astring'
 import type { ExportNamedDeclaration, Expression, ImportDeclaration, Pattern, Program, Property, SpreadElement, Statement, VariableDeclaration } from 'estree'
 
-function getDeclaredNamesProperty(property: Property | SpreadElement) {
+type ParentDecls = readonly string[]
+type VisitResult = readonly [decl: string[], externalRefs: string[]]
+
+function getDeclaredNamesProperty(property: Property | SpreadElement, parentDecls: ParentDecls): VisitResult {
   if (property.type === 'SpreadElement') {
-    return getExternalIdentifiersExpression(property.argument, [])[0]
+    return getExternalIdentifiersExpression(property.argument, [])
   }
 
   if (property.value.type === 'Identifier') {
-    return [property.value.name]
+    return [[property.value.name], []]
   }
 
-  return []
+  if (
+    property.value.type === 'ObjectPattern'
+    || property.value.type === 'ArrayPattern'
+    || property.value.type === 'RestElement'
+    || property.value.type === 'AssignmentPattern'
+  ) {
+    return getDeclaredNamesPattern(property.value, parentDecls)
+  }
+
+  return getExternalIdentifiersExpression(property.value, parentDecls)
 }
 
-function getDeclaredNamesPattern(pattern: Pattern): string[] {
+function getDeclaredNamesPattern(pattern: Pattern, parentDecls: ParentDecls): VisitResult {
   if (pattern.type === 'ArrayPattern') {
     return pattern.elements
       .filter((v): v is NonNullable<typeof v> => v != null)
-      .flatMap(getDeclaredNamesPattern)
+      .map((v) => getDeclaredNamesPattern(v, parentDecls))
+      .reduce(([a, b], [c, d]) => ([[...a, ...c], [...b, ...d]]), [[], []])
   } else if (pattern.type === 'AssignmentPattern') {
     //
   } else if (pattern.type === 'Identifier') {
-    return [pattern.name]
+    return [[pattern.name], []]
   } else if (pattern.type === 'MemberExpression') {
     //
   } else if (pattern.type === 'ObjectPattern') {
-    return pattern.properties
-      .flatMap((p) => p.type === 'Property' ? getDeclaredNamesProperty(p) : getDeclaredNamesPattern(p.argument))
+    const decl = []
+    const externalRefs = []
+    for (const prop of pattern.properties) {
+      const [a, b] = prop.type === 'Property'
+        ? getDeclaredNamesProperty(prop, parentDecls)
+        : getDeclaredNamesPattern(prop.argument, parentDecls)
+      decl.push(...a)
+      externalRefs.push(...b)
+    }
+    return [decl, externalRefs]
   } else if (pattern.type === 'RestElement') {
-    return getDeclaredNamesPattern(pattern.argument)
+    return getDeclaredNamesPattern(pattern.argument, parentDecls)
   }
-  return []
+  return [[], []]
 }
 
-function getExternalIdentifiersVariableDeclaration(varDeclaration: VariableDeclaration, parentDecls: string[]) {
-  const decl = []
-  const externalRefs = []
+function getExternalIdentifiersVariableDeclaration(varDeclaration: VariableDeclaration, parentDecls: ParentDecls): VisitResult {
+  const decl: string[] = []
+  const externalRefs: string[] = []
   for (const declaration of varDeclaration.declarations) {
-    decl.push(...getDeclaredNamesPattern(declaration.id))
+    const [a, b] = getDeclaredNamesPattern(declaration.id, parentDecls)
+    decl.push(...a)
+    externalRefs.push(...b)
     if (declaration.init != null) {
       const [a, b] = getExternalIdentifiersExpression(declaration.init, parentDecls)
       decl.push(...a)
       externalRefs.push(...b)
     }
   }
-  return [decl, externalRefs] as readonly [decl: string[], externalRefs: string[]]
+  return [decl, externalRefs]
 }
 
-function getExternalIdentifiersExpression(expression: Expression, parentDecls: string[]) {
+function getExternalIdentifiersExpression(expression: Expression, parentDecls: ParentDecls): VisitResult {
   const decl: string[] = [...parentDecls]
   const externalRefs: string[] = []
   if (expression.type === 'ArrayExpression') {
     for (const el of expression.elements) {
       if (el?.type === 'SpreadElement') {
-        decl.push(...getDeclaredNamesProperty(el))
+        const [a, b] = getDeclaredNamesProperty(el, parentDecls)
+        decl.push(...a)
+        externalRefs.push(...b)
       } else if (el != null) {
         const [a, b] = getExternalIdentifiersExpression(el, parentDecls)
         decl.push(...a)
@@ -61,14 +86,20 @@ function getExternalIdentifiersExpression(expression: Expression, parentDecls: s
       }
     }
   } else if (expression.type === 'ArrowFunctionExpression') {
-    decl.push(...expression.params.flatMap((param) => getDeclaredNamesPattern(param)))
+    for (const param of expression.params) {
+      const [a, b] = getDeclaredNamesPattern(param, parentDecls)
+      decl.push(...a)
+      externalRefs.push(...b)
+    }
     if (expression.body.type === 'BlockStatement') {
       externalRefs.push(...getExternalIdentifiers(expression.body.body, decl))
     } else {
       externalRefs.push(...getExternalIdentifiersExpression(expression.body, decl)[1])
     }
   } else if (expression.type === 'AssignmentExpression') {
-    decl.push(...getDeclaredNamesPattern(expression.left))
+    const [c, d] = getDeclaredNamesPattern(expression.left, parentDecls)
+    decl.push(...c)
+    externalRefs.push(...d)
     const [a, b] = getExternalIdentifiersExpression(expression.right, parentDecls)
     decl.push(...a)
     externalRefs.push(...b)
@@ -91,7 +122,9 @@ function getExternalIdentifiersExpression(expression: Expression, parentDecls: s
 
     for (const arg of expression.arguments) {
       if (arg.type === 'SpreadElement') {
-        decl.push(...getDeclaredNamesProperty(arg))
+        const [a, b] = getDeclaredNamesProperty(arg, parentDecls)
+        decl.push(...a)
+        externalRefs.push(...b)
       } else {
         const [a, b] = getExternalIdentifiersExpression(arg, parentDecls)
         decl.push(...a)
@@ -106,7 +139,7 @@ function getExternalIdentifiersExpression(expression: Expression, parentDecls: s
       }
 
       const u = expression.expression.arguments
-        .flatMap((arg) => arg.type === 'SpreadElement' ? getDeclaredNamesProperty(arg) : getExternalIdentifiersExpression(arg, decl)[1])
+        .flatMap((arg) => arg.type === 'SpreadElement' ? getDeclaredNamesProperty(arg, parentDecls)[1] : getExternalIdentifiersExpression(arg, decl)[1])
       externalRefs.push(...u)
     } else if (expression.expression.type === 'MemberExpression') {
       if (expression.expression.object.type !== 'Super') {
@@ -132,7 +165,11 @@ function getExternalIdentifiersExpression(expression: Expression, parentDecls: s
     decl.push(...e)
     externalRefs.push(...f)
   } else if (expression.type === 'FunctionExpression') {
-    decl.push(...expression.params.flatMap((param) => getDeclaredNamesPattern(param)))
+    for (const param of expression.params) {
+      const [a, b] = getDeclaredNamesPattern(param, parentDecls)
+      decl.push(...a)
+      externalRefs.push(...b)
+    }
     externalRefs.push(...getExternalIdentifiers(expression.body.body, decl))
   } else if (expression.type === 'Identifier') {
     if (!parentDecls.includes(expression.name)) {
@@ -170,7 +207,11 @@ function getExternalIdentifiersExpression(expression: Expression, parentDecls: s
       externalRefs.push(...b)
     }
   } else if (expression.type === 'ObjectExpression') {
-    decl.push(...expression.properties.flatMap(getDeclaredNamesProperty))
+    for (const prop of expression.properties) {
+      const [a, b] = getDeclaredNamesProperty(prop, parentDecls)
+      decl.push(...a)
+      externalRefs.push(...b)
+    }
   } else if (expression.type === 'SequenceExpression') {
     externalRefs.push(...expression.expressions.flatMap((ex) => getExternalIdentifiersExpression(ex, decl)[1]))
   } else if (expression.type === 'TaggedTemplateExpression') {
@@ -194,7 +235,7 @@ function getExternalIdentifiersExpression(expression: Expression, parentDecls: s
       externalRefs.push(...a)
     }
   }
-  return [decl, externalRefs] as readonly [decl: string[], externalRefs: string[]]
+  return [decl, externalRefs] as VisitResult
 }
 
 export function getExternalIdentifiers(stmts: Statement[], parentDecls: string[]): string[] {
@@ -221,7 +262,9 @@ export function getExternalIdentifiers(stmts: Statement[], parentDecls: string[]
         decl.push(...a)
         externalRefs.push(...b)
       } else {
-        decl.push(...getDeclaredNamesPattern(stmt.left))
+        const [a, b] = getDeclaredNamesPattern(stmt.left, parentDecls)
+        decl.push(...a)
+        externalRefs.push(...b)
       }
 
       externalRefs.push(...getExternalIdentifiers([stmt.body], decl))
@@ -248,16 +291,18 @@ export function getExternalIdentifiers(stmts: Statement[], parentDecls: string[]
 
       externalRefs.push(...getExternalIdentifiers([stmt.body], decl))
     } else if (stmt.type === 'FunctionDeclaration') {
-      decl.push(...stmt.params.flatMap((param) => getDeclaredNamesPattern(param)))
+      for (const param of stmt.params) {
+        const [a, b] = getDeclaredNamesPattern(param, parentDecls)
+        decl.push(...a)
+        externalRefs.push(...b)
+      }
       externalRefs.push(...getExternalIdentifiers(stmt.body.body, decl))
     } else if (stmt.type === 'IfStatement') {
       const [a, b] = getExternalIdentifiersExpression(stmt.test, decl)
       externalRefs.push(...b)
-      const [, c] = getExternalIdentifiers([stmt.consequent], [...decl, ...a])
-      externalRefs.push(...c)
+      externalRefs.push(...getExternalIdentifiers([stmt.consequent], [...decl, ...a]))
       if (stmt.alternate) {
-        const [, d] = getExternalIdentifiers([stmt.consequent], decl)
-        externalRefs.push(...d)
+        externalRefs.push(...getExternalIdentifiers([stmt.consequent], decl))
       }
     } else if (stmt.type === 'ReturnStatement') {
       if (stmt.argument != null) {
@@ -274,7 +319,8 @@ export function getExternalIdentifiers(stmts: Statement[], parentDecls: string[]
     } else if (stmt.type === 'TryStatement') {
       externalRefs.push(...getExternalIdentifiers(stmt.block.body, decl))
       if (stmt.handler != null) {
-        const newDecl = stmt.handler.param ? getDeclaredNamesPattern(stmt.handler.param) : []
+        const [newDecl, newExternalRefs] = stmt.handler.param ? getDeclaredNamesPattern(stmt.handler.param, parentDecls) : [[], []]
+        externalRefs.push(...newExternalRefs)
         externalRefs.push(...getExternalIdentifiers(stmt.handler.body.body, [...decl, ...newDecl]))
       }
       if (stmt.finalizer) {
@@ -282,7 +328,9 @@ export function getExternalIdentifiers(stmts: Statement[], parentDecls: string[]
       }
     } else if (stmt.type === 'VariableDeclaration') {
       for (const declaration of stmt.declarations) {
-        decl.push(...getDeclaredNamesPattern(declaration.id))
+        const [a, b] = getDeclaredNamesPattern(declaration.id, parentDecls)
+        decl.push(...a)
+        externalRefs.push(...b)
         if (declaration.init) {
           const [, initExternalRefs] = getExternalIdentifiersExpression(declaration.init, decl)
           externalRefs.push(...initExternalRefs)
@@ -311,7 +359,7 @@ export const transformPage = (ast: Program): string => {
           (el.declaration.type === 'FunctionDeclaration' && exportsToRemove.includes(el.declaration.id.name))
             || (
               el.declaration.type === 'VariableDeclaration'
-                && getDeclaredNamesPattern(el.declaration.declarations[0].id).some((n) => exportsToRemove.includes(n))
+                && getDeclaredNamesPattern(el.declaration.declarations[0].id, [])[0].some((n) => exportsToRemove.includes(n))
             )
         ),
     )

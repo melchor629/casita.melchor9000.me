@@ -24,3 +24,9 @@ export type PageModule<
   metadata?: Metadata | ((props: TLoaderData) => Promise<Metadata> | Metadata)
   loader?: PageLoader<TLoaderData, TParams>
 }>
+
+export type PageHelperModule<
+  TLoaderData extends Record<string, unknown> = Record<never, never>,
+> = Readonly<{
+  default: FunctionComponent<TLoaderData>
+}>

@@ -1,12 +1,11 @@
 /* eslint-disable react/jsx-key */
 import path from 'node:path'
-import { Readable } from 'node:stream'
 import type { ComponentChild, VNode } from 'preact'
 import { renderToReadableStream } from 'preact-render-to-string/stream'
 // eslint-disable-next-line import-x/no-unresolved
 import routeModules from 'virtual:ssr/routes'
 import { SsrRouterContext, type SsrRouterContextValue } from '../nice-ssr/navigation'
-import type { Metadata, PageLoaderContext, PageModule } from '../nice-ssr/page'
+import type { Metadata, PageHelperModule, PageLoaderContext, PageModule } from '../nice-ssr/page'
 import type { SsrRequest } from '../nice-ssr/request'
 import { SsrResponse } from '../nice-ssr/response'
 
@@ -59,12 +58,12 @@ async function getCsrTags(
   basePath: string,
   scriptNonce?: string,
   styleNonce?: string,
-): Promise<[ComponentChild[], ComponentChild[]]> {
+): Promise<[ComponentChild[], string]> {
   const pageCsrModuleId = path.join('virtual:csr', moduleId).replace(/\/$/, '')
   if (import.meta.env.DEV) {
     return [
       [<script type="module" nonce={scriptNonce} src="/src/app/root-layout.tsx" />],
-      [<script type="module" nonce={scriptNonce} src={`/@id/__x00__${pageCsrModuleId}`} />],
+      `/@id/__x00__${pageCsrModuleId}`,
     ]
   }
 
@@ -81,15 +80,14 @@ async function getCsrTags(
   const preloadScripts = Array.from(new Set([
     ...allDependencyEntries.flatMap((entry) => entry?.imports ?? []),
     ...allDependencyEntries.flatMap((entry) => entry?.dynamicImports ?? []),
+    pageCsrManifestEntry,
   ]))
   return [
     [
       ...css.map((entry) => <link rel="stylesheet" crossOrigin="anonymous" nonce={styleNonce} href={`${basePath}${entry}`} />),
       ...preloadScripts.map((entry) => <link rel="preload" crossOrigin="anonymous" nonce={scriptNonce} href={`${basePath}${entry.file}`} as="script" />),
     ],
-    [
-      <script type="module" crossOrigin="anonymous" nonce={scriptNonce} src={`${basePath}${pageCsrManifestEntry.file}`} />,
-    ],
+    `${basePath}${pageCsrManifestEntry.file}`,
   ]
 }
 
@@ -97,7 +95,7 @@ async function getCsrAssets(
   moduleId: string,
   basePath: string,
 ): Promise<Array<{ type: 'page' | 'module' | 'stylesheet', path: string }>> {
-  const pageCsrModuleId = path.join('virtual:partial-ssr', moduleId).replace(/\/$/, '')
+  const pageCsrModuleId = path.join('virtual:csr', moduleId).replace(/\/$/, '')
   if (import.meta.env.DEV) {
     return [
       { type: 'page', path: `/@id/__x00__${pageCsrModuleId}` },
@@ -123,9 +121,16 @@ const DefaultRootLayout = ({ children }: { readonly children: ComponentChild[] }
 )
 const doctypeHtmlBuffer = Buffer.from('<!DOCTYPE html>\n', 'utf-8')
 
-async function renderCompletePage(module: PageModule, request: SsrRequest) {
+async function renderCompletePage(
+  module: PageModule,
+  pageContext: RenderPageContext,
+  request: SsrRequest,
+) {
   request.nice.log.debug('Loading props')
-  const ssrProps = await loadProps(module, request)
+  const ssrProps = {
+    ...(await loadProps(module, request)),
+    ...pageContext.props,
+  }
 
   request.nice.log.debug('Serializing data')
   const serializedProps = JSON.stringify(ssrProps)
@@ -140,7 +145,7 @@ async function renderCompletePage(module: PageModule, request: SsrRequest) {
   request.nice.log.debug('Building head')
   const scriptNonce = request.headers.get('x-script-nonce') || undefined
   const styleNonce = request.headers.get('x-style-nonce') || undefined
-  const [[moreHeads, inBody], pageMetadataHead] = await Promise.all([
+  const [[moreHeads, pageScriptPath], pageMetadataHead] = await Promise.all([
     getCsrTags(
       request.nice.originalPathname,
       request.nice.basePath,
@@ -151,13 +156,17 @@ async function renderCompletePage(module: PageModule, request: SsrRequest) {
   ])
 
   request.nice.log.debug('Building body')
-  const RootLayout = (await routeModules.find((m) => m.type === 'root-layout')?.entry())?.default
+  const RootLayout = (await routeModules.rootLayout?.())?.default
     ?? DefaultRootLayout
   const { default: Page } = module
+  const layoutComponents = await Promise.all(pageContext.layouts.map(async (m) => (await m()).default))
   const tree = RootLayout({
     children: [
       <SsrRouterContext value={context}>
-        <Page {...ssrProps} />
+        {layoutComponents.reduceRight(
+          (p, Layout) => <Layout>{p}</Layout>,
+          <Page {...ssrProps} />,
+        )}
       </SsrRouterContext>,
       <script
         type="module"
@@ -165,29 +174,34 @@ async function renderCompletePage(module: PageModule, request: SsrRequest) {
         dangerouslySetInnerHTML={{
           __html: [
             'const f=(o)=>o==null||typeof o!=="object"?o:(Object.keys(o).forEach(k=>f(o[k])),Object.freeze(o))',
-          `window.__pp=f(${serializedProps})`,
           `window.__cc=f(${serializedContext})`,
+          `import(${JSON.stringify(pageScriptPath)}).then(({ hydratePage }) => hydratePage(f(${serializedProps})))`,
           ].join(';'),
         }}
       />,
-      ...inBody,
     ],
   }) as VNode
   transformTree(tree, [...pageMetadataHead, ...moreHeads])
 
   request.nice.log.debug('Rendering HTML')
-  const stream = Readable.fromWeb(
-    // mixed types: DOM vs node -> cast to node's
-    renderToReadableStream(tree) as import('node:stream/web').ReadableStream,
-  )
-  const body = Readable.from((async function * () {
-    yield doctypeHtmlBuffer
-    for await (const chunk of stream) {
-      yield chunk
-    }
-  })())
+  const stream = renderToReadableStream(tree)
+  const reader = stream.getReader()
+  const body = new ReadableStream({
+    start(controller) {
+      controller.enqueue(doctypeHtmlBuffer)
+    },
+    async pull(controller) {
+      const result = await reader.read()
+      if (result.value) {
+        controller.enqueue(result.value)
+      } else if (result.done) {
+        controller.close()
+      }
+    },
+  })
   return SsrResponse.new()
     .header('content-type', 'text/html; charset=utf-8')
+    .status(pageContext.status ?? 'ok')
     .stream(body)
 }
 
@@ -198,9 +212,16 @@ export type PartialPageRenderResult = Readonly<{
   m?: Metadata
 }>
 
-async function renderPartialPage(module: PageModule, request: SsrRequest) {
+async function renderPartialPage(
+  module: PageModule,
+  pageContext: RenderPageContext,
+  request: SsrRequest,
+) {
   request.nice.log.debug('Loading props')
-  const ssrProps = await loadProps(module, request)
+  const ssrProps = {
+    ...(await loadProps(module, request)),
+    ...pageContext.props,
+  }
 
   request.nice.log.debug('Serializing data')
   const context = {
@@ -234,13 +255,23 @@ function renderInvalidPage(request: SsrRequest) {
   return new Response(null, { status: 404 })
 }
 
-export default async function renderPage(module: PageModule, request: SsrRequest): Promise<Response> {
+type RenderPageContext = {
+  layouts: Array<() => Promise<PageHelperModule>>
+  status?: number
+  props?: Record<string, unknown>
+}
+
+export default async function renderPage(
+  module: PageModule,
+  context: RenderPageContext,
+  request: SsrRequest,
+): Promise<Response> {
   if (request.headers.get('accept')?.includes('application/json+ssr')) {
-    return renderPartialPage(module, request)
+    return renderPartialPage(module, context, request)
   }
 
   if (request.headers.get('accept')?.includes('text/html')) {
-    return renderCompletePage(module, request)
+    return renderCompletePage(module, context, request)
   }
 
   return renderInvalidPage(request)

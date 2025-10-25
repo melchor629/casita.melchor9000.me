@@ -1,6 +1,5 @@
 import { Readable } from 'node:stream'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import type * as EntryServer from '../entry/server.ts'
 
 function createHeaders(req: FastifyRequest): Headers {
   const headers = new Headers()
@@ -12,7 +11,7 @@ function createHeaders(req: FastifyRequest): Headers {
   return headers
 }
 
-export function createRequest(req: FastifyRequest, reply: FastifyReply): Request {
+export function createRequest(req: FastifyRequest, reply: FastifyReply, pathname?: string): Request {
   // based on https://github.com/mjackson/remix-the-web/blob/main/packages/node-fetch-server/src/lib/request-listener.ts
   const controller = new AbortController()
   reply.raw.on('close', () => controller.abort())
@@ -22,6 +21,7 @@ export function createRequest(req: FastifyRequest, reply: FastifyReply): Request
   const protocol = req.protocol
   const host = req.host
   const url = new URL(req.originalUrl, `${protocol}://${host}`)
+  url.pathname = pathname ?? url.pathname
 
   const init: RequestInit = {
     method,
@@ -47,7 +47,7 @@ export function createRequest(req: FastifyRequest, reply: FastifyReply): Request
   return new Request(url, init)
 }
 
-export async function writeResponse(response: Response, reply: FastifyReply, server: typeof EntryServer): Promise<void> {
+async function writeFastifyResponse(response: Response, reply: FastifyReply): Promise<void> {
   reply.status(response.status)
 
   for (const [headerName, headerValue] of response.headers) {
@@ -56,17 +56,39 @@ export async function writeResponse(response: Response, reply: FastifyReply, ser
 
   let body: unknown
   if (reply.request.method !== 'HEAD') {
-    if (server.isSsrResponse(response)) {
-      body = server.extractBodyFromSsrResponse(response)
-    } else if (response.body != null) {
-      body = response.body
-    }
+    body = response.body
   }
 
   // compress does not support ReadableStream, better convert it to Readable
   if (body instanceof ReadableStream) {
     await reply.send(Readable.fromWeb(body as import('node:stream/web').ReadableStream))
   } else {
-    await reply.send(body)
+    await reply.send()
+  }
+}
+
+async function writeRawResponse(response: Response, reply: FastifyReply): Promise<void> {
+  reply.hijack()
+  for (const [headerName, headerValue] of response.headers) {
+    reply.raw.appendHeader(headerName, headerValue)
+  }
+  reply.raw.writeHead(response.status)
+
+  const body = response.body
+  if (body instanceof ReadableStream) {
+    const promise = new Promise<void>((resolve) => reply.raw.on('close', resolve))
+    Readable.fromWeb(body as import('node:stream/web').ReadableStream)
+      .pipe(reply.raw)
+    return promise
+  } else {
+    return new Promise<void>((resolve) => reply.raw.end(resolve))
+  }
+}
+
+export async function writeResponse(response: Response, reply: FastifyReply, hijack?: boolean) {
+  if (hijack) {
+    await writeRawResponse(response, reply)
+  } else {
+    await writeFastifyResponse(response, reply)
   }
 }

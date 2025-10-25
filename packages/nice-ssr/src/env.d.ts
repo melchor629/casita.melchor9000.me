@@ -1,21 +1,40 @@
 /// <reference types="vite/client" />
 
 declare module 'virtual:ssr/routes' {
-  import type { PageModule, RouteHandler, RouteModule } from '@melchor629/nice-ssr'
+  import type { PageModule, PageHelperModule, RouteHandler, RouteModule } from '@melchor629/nice-ssr'
 
   type Lazy<T> = () => Promise<T>
-  export type PagePathModule = { type: 'page', pathname: string, entry: Lazy<PageModule> }
-  export type RoutePathModule = { type: 'route', pathname: string, entry: Lazy<RouteModule> }
-  export type RootLayoutPathModule = { type: 'root-layout', entry: Lazy<PageModule> }
-  export type MiddlewarePathModule = { type: 'middleware', middleware: Lazy<{ readonly default: RouteHandler }> }
+  export type RootPathModule = {
+    middleware?: Lazy<{ readonly default: RouteHandler }>
+    rootLayout?: Lazy<PageModule>
+    route: PathModule
+  }
+  type BasePathModule = {
+    pathname: `/${string}`
+    matcher: RegExp
+    children: PathModule[]
+    layout?: Lazy<PageHelperModule>
+    notFound?: Lazy<PageHelperModule>
+    error?: Lazy<PageHelperModule<{ error: Error }>>
+  }
+  export type RoutePathModule = BasePathModule & {
+    type: 'route'
+    entry: Lazy<RouteModule>
+  }
+  export type PagePathModule = BasePathModule & {
+    type: 'page'
+    entry: Lazy<PageModule>
+  }
+  export type NothingPageModule = BasePathModule & {
+    type: 'nothing'
+  }
   export type ResourcePathModule =
     | PagePathModule
     | RoutePathModule
   export type PathModule =
     | ResourcePathModule
-    | RootLayoutPathModule
-    | MiddlewarePathModule
+    | NothingPageModule
 
-  const modules: ReadonlyArray<PathModule>
+  const modules: RootPathModule
   export default modules
 }

@@ -11,7 +11,6 @@ type TextStatus =
   | 'teapot'
   | 'internal-server-error'
 
-const ssrRawBodySymbol: unique symbol = Symbol.for('ssr:rawBody')
 const textStatusToNumber: Record<TextStatus, number> = Object.freeze({
   ok: 200,
   'moved-permanently': 301,
@@ -47,7 +46,7 @@ export type SsrResponseBuilder = Readonly<{
    * @param text The text to return in the body.
    * @param encoding String encoding.
    */
-  text(text: string | Buffer, encoding?: string): SsrResponse
+  text(text: string | ArrayBuffer | ArrayBufferView<ArrayBuffer>, encoding?: string): SsrResponse
 
   /**
    * Creates the response with the object provided as body. It will serialize
@@ -60,7 +59,7 @@ export type SsrResponseBuilder = Readonly<{
    * Creates the response using the provided stream as body to send.
    * @param stream Stream to send to send as response.
    */
-  stream(stream: ReadableStream | import('node:stream').Readable): SsrResponse
+  stream(stream: ReadableStream | Blob): SsrResponse
 
   /**
    * Creates a response without body.
@@ -114,7 +113,7 @@ export class SsrResponse extends Response {
 
       json(value) {
         headers.set('content-type', 'application/json; charset=utf-8')
-        return new SsrResponse(value, { ...init, headers, status })
+        return new SsrResponse(JSON.stringify(value), { ...init, headers, status })
       },
 
       stream(stream) {
@@ -149,23 +148,13 @@ export class SsrResponse extends Response {
    * @returns Response for continuing request.
    */
   static next(init?: Omit<ResponseInit, 'body' | 'status'>): SsrResponse {
-    return new SsrResponse(ssrRawBodySymbol, { ...init, status: 599 })
-  }
-
-  readonly [ssrRawBodySymbol]: unknown
-
-  constructor(body?: unknown, init?: ResponseInit) {
-    super(null, init)
-    this[ssrRawBodySymbol] = body
+    return new SsrResponse(null, { ...init, status: 599 })
   }
 
   isNextResponse(): boolean {
-    return this.status === 599 && this[ssrRawBodySymbol] === ssrRawBodySymbol
+    return this.status === 599 && this.body === null
   }
 }
 
 export const isSsrResponse = (response: Response): response is SsrResponse =>
-  response instanceof SsrResponse || ssrRawBodySymbol in response
-
-export const extractBodyFromSsrResponse = (response: SsrResponse): unknown =>
-  response[ssrRawBodySymbol]
+  response instanceof SsrResponse
