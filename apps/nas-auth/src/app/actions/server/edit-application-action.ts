@@ -1,7 +1,7 @@
 'use server'
 
 import type { PageLoaderContext } from '@melchor629/nice-ssr'
-import { updateApplication } from '../../queries'
+import { updateApplication } from '#queries/index.ts'
 import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 

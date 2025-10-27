@@ -1,7 +1,7 @@
 'use server'
 
 import { redirect, type PageLoaderContext } from '@melchor629/nice-ssr'
-import { deleteApplication } from '../../queries'
+import { deleteApplication } from '#queries/index.ts'
 import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 

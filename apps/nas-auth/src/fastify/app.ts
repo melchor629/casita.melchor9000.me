@@ -1,3 +1,4 @@
+import createLogger from '@melchor629/fastify-infra/logger'
 import { RedisStore } from 'connect-redis'
 import Fastify from 'fastify'
 import { nanoid } from 'nanoid'
@@ -24,10 +25,7 @@ declare module 'fastify' {
 
 const createApp = async () => {
   const app = Fastify({
-    logger: {
-      level: logLevel,
-      transport: isDebug ? { target: 'pino-pretty' } : undefined,
-    },
+    loggerInstance: createLogger('nas-fs', logLevel),
     pluginTimeout: 1 * 60 * 1000, // next can take a lot of time...
     trustProxy: true,
     genReqId: () => nanoid(31),
@@ -76,6 +74,7 @@ const createApp = async () => {
   // @fastify/oauth2 for external auth
   await app.register(import('./oauth2.ts'))
 
+  await app.register(import('@melchor629/fastify-infra/abort'))
   await app.register(import('@melchor629/fastify-infra/health'), {
     checks: async (add) => {
       const health = await import('@melchor629/fastify-infra/health')
@@ -86,7 +85,7 @@ const createApp = async () => {
   })
 
   // register API methods
-  registerRoutes(app)
+  registerRoutes(app as never)
 
   // register node-oidc
   app.register(async function oidcPlugin(fastify) {

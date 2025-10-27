@@ -2,7 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http'
 import { redirect, type Metadata, type PageLoaderContext } from '@melchor629/nice-ssr'
 import { errors } from 'oidc-provider'
 import { Consent, Login } from '#components/interactions/index.ts'
-import oidc from '../../../../oidc/oidc-next.ts'
+import oidc from '../../../../oidc/oidc.ts'
 
 type LoaderData = Readonly<{
   client: {

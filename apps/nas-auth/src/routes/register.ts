@@ -1,5 +1,4 @@
 import type { FastifyInstance } from 'fastify'
-import getHealthController from './health.ts'
 import alreadyLoggedInController from './interactions/already-logged-in.ts'
 import cancelController from './interactions/cancel.ts'
 import confirmGrantsController from './interactions/confirm-grants.ts'
@@ -16,8 +15,6 @@ const registerRoutes = (app: FastifyInstance) => {
 
   app.options('/token/permissions', getPermissionsForToken)
   app.get('/token/permissions', getPermissionsForToken)
-
-  app.get('/health', getHealthController)
 
   // oidc redirections
   for (const route of ['.well-known/openid-configuration', 'jwks']) {

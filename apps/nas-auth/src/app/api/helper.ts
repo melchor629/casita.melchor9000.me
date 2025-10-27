@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { cache, SsrResponse, type SsrRequest } from '@melchor629/nice-ssr'
 import { getPermissionsForUser } from '#queries/index.ts'
-import oidc from '../../oidc/oidc-next.ts'
+import oidc from '../../oidc/oidc.ts'
 
 type Permission = { key: string, write: boolean, delete: boolean }
 type Permissions = readonly Permission[] & { get(key: string): Permission | null }

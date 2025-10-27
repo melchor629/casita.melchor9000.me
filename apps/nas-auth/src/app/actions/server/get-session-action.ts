@@ -2,8 +2,8 @@
 
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { cache, type PageLoaderContext } from '@melchor629/nice-ssr'
-import oidc from '../../oidc/oidc-next.ts'
-import { getPermissionsForUser, getUser } from '../../queries'
+import { getPermissionsForUser, getUser } from '#queries/index.ts'
+import oidc from '../../../oidc/oidc.ts'
 import { forbidden, ok, type FailableResult } from './helpers.ts'
 
 type SessionInfo = Readonly<{

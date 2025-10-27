@@ -1,7 +1,7 @@
 'use server'
 
 import type { PageLoaderContext } from '@melchor629/nice-ssr'
-import { deleteApiResource } from '../../queries'
+import { deleteApiResource } from '#queries/index.ts'
 import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 

@@ -26,27 +26,6 @@ COPY --from=packages /app/out/full/ ./
 RUN npm run build
 RUN cp -rv /app/apps/nas-auth/src/* ./dist && rm -r /app/apps/nas-auth/dist/app
 
-# Install dependencies
-FROM --platform=$BUILDPLATFORM node:$TAG AS deps
-
-WORKDIR /app
-COPY ./package.json ./package-lock.json ./
-RUN npm ci
-
-
-# Build
-FROM --platform=$BUILDPLATFORM node:$TAG AS builder
-
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY ./*.js ./*.ts ./*.json ./
-COPY ./src ./src
-RUN npm run build
-RUN cp -r ./src ./dist && \
-  rm -r ./dist/components ./dist/app ./dist/styles ./dist/hooks && \
-  rm -rf .next/standalone/node_modules/sharp
-
-
 
 FROM node:$TAG AS final
 

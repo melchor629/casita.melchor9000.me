@@ -1,10 +1,19 @@
 import fs from 'fs'
+import type { ServerResponse } from 'http'
+import type { FastifyReply } from 'fastify'
 import { errors, type Adapter, type Configuration, type JWKS } from 'oidc-provider'
 import { cookieKeysOauth, jwksFilePath, publicUrl } from '../config.ts'
 import getApiResource from '../queries/get-api-resource.ts'
 import getUser from '../queries/get-user.ts'
 import GraphQLClientAdapter from './graphql-client-adapter.ts'
 import RedisAdapter from './redis-adapter.ts'
+
+type OidcServerResponse = ServerResponse & {
+  reply: FastifyReply
+}
+
+const isOidcServerResponse = (res: ServerResponse): res is OidcServerResponse =>
+  'reply' in res && typeof res.reply === 'object'
 
 const corsProp = 'urn:custom:client:allowed-cors-origins'
 const allowedApiResourcesProp = 'urn:custom:client:allowed-api-resources'
@@ -151,11 +160,31 @@ const config: Configuration = {
     revocation: { enabled: true },
     // logout interactions
     rpInitiatedLogout: {
-      async logoutSource() {
-        // NOTE implement outside next
+      async logoutSource(ctx, form) {
+        if (!isOidcServerResponse(ctx.res)) {
+          ctx.body = ''
+          return
+        }
+
+        const { reply } = ctx.res
+        // I trust form to not doing unsecure things
+        const response = await reply.renderPageToResponse('/i/logout', { props: { form } })
+        ctx.body = await response.text()
       },
-      async postLogoutSuccessSource() {
-        // NOTE implement outside next
+      async postLogoutSuccessSource(ctx) {
+        if (!isOidcServerResponse(ctx.res)) {
+          ctx.body = ''
+          return
+        }
+
+        const { reply } = ctx.res
+        const response = await reply.renderPageToResponse('/i/post-logout', {
+          props: {
+            clientName: ctx.oidc.client?.clientName || '',
+            clientUri: ctx.oidc.client?.clientUri || '',
+          },
+        })
+        ctx.body = await response.text()
       },
     },
     // par endpoint
@@ -307,8 +336,17 @@ const config: Configuration = {
   },
 
   // a function to render the error page
-  async renderError() {
-    // NOTE implement outside next
+  async renderError(ctx, out, error) {
+    if (!isOidcServerResponse(ctx.res)) {
+      ctx.body = `Cannot attend your request, try again or contact the admin. (error: ${error.message})`
+      return
+    }
+
+    const { reply } = ctx.res
+    ctx.type = 'html'
+    reply.log.error(error, 'OIDC Interaction failed', { route: ctx.oidc?.route })
+    const response = await reply.renderPageToResponse('/i/error', { props: { out } })
+    ctx.body = await response.text()
   },
 }
 

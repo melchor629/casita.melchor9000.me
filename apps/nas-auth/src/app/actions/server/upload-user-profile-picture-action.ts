@@ -5,7 +5,7 @@ import path from 'node:path'
 import type { PageLoaderContext } from '@melchor629/nice-ssr'
 import { nanoid } from 'nanoid'
 import sharp from 'sharp'
-import { profileImagesPath } from '../../config.ts'
+import { profileImagesPath } from '../../../config.ts'
 import { getSession } from './get-session-action'
 import { ok, invalid } from './helpers.ts'
 

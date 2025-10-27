@@ -3,7 +3,7 @@
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 import type { PageLoaderContext } from '@melchor629/nice-ssr'
-import { profileImagesPath } from '../../config.ts'
+import { profileImagesPath } from '../../../config.ts'
 import { getSession } from './get-session-action.ts'
 import { ok, type FailableResult } from './helpers.ts'
 
