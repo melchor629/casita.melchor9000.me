@@ -11,6 +11,9 @@ jobs:
     name: Check and Build
     runs-on: ubuntu-latest
 
+    env:
+      PRISMA_BINARY_TARGET: native
+
     steps:
       - uses: actions/checkout@v5
 

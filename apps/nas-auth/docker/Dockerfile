@@ -10,7 +10,7 @@ WORKDIR /app
 RUN npm i -g turbo@^2
 
 COPY . .
-RUN npx turbo prune ledefault --docker && \
+RUN npx turbo prune nas-auth --docker && \
   mkdir -p /app/out/json/packages/nice-ssr/bin && \
   cp /app/packages/nice-ssr/bin/*.js /app/out/json/packages/nice-ssr/bin/
 
