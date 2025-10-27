@@ -55,6 +55,7 @@
     }
   },
   "devDependencies": {
+    "@melchor629/tsconfigs": "*",
     "@fastify/middie": "^9.0.0",
     "typescript": "^5.0.0",
     "vite": "^7.1.11"

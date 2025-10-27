@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      PRISMA_BINARY_TARGET: native
+      PRISMA_BINARY_TARGET: '["native"]'
 
     steps:
       - uses: actions/checkout@v5
