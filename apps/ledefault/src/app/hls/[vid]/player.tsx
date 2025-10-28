@@ -2,13 +2,14 @@ import { useSearchParams } from '@melchor629/nice-ssr'
 import { clsx } from 'clsx'
 import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks'
 import 'shaka-player/dist/controls.css'
+import type Shaka from 'shaka-player/dist/shaka-player.ui.js'
 import type { Manifest } from './page'
 import styles from './player.module.css'
 
 export default function Player({ manifest }: { readonly manifest: Manifest }) {
   const [pendingToPlay, setPendingToPlay] = useState(true)
   const [video, setVideo] = useState<HTMLVideoElement | null>(null)
-  const [player, setPlayer] = useState<shaka.Player | null>(null)
+  const [player, setPlayer] = useState<Shaka.Player | null>(null)
   const searchParams = useSearchParams()
 
   const onVideoPosterClick = useCallback(() => {
@@ -26,9 +27,8 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
     }
 
     let cleanupFn = () => {}
-    // @ts-expect-error it is a CJS in fact
     import('shaka-player/dist/shaka-player.ui.js')
-      .then(async (shaka: typeof globalThis.shaka) => {
+      .then(async ({ default: shaka }) => {
         const player = new shaka.Player()
         const playerUi = new shaka.ui.Overlay(player, video.parentElement!, video)
         playerUi.configure({
@@ -63,7 +63,7 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
 
         await player.attach(video)
       })
-      .catch((error: shaka.util.Error) => {
+      .catch((error: Shaka.util.Error) => {
         console.error('Error code', error.code, 'object', error)
         alert(`Video cannot be played in this browser. (${error.code})`)
       })
@@ -76,7 +76,7 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
     }
 
     player.load(manifest.src.path, null, manifest.src.type)
-      .catch((error: shaka.util.Error) => {
+      .catch((error: Shaka.util.Error) => {
         console.error('Error code', error.code, 'object', error)
         alert(`Video cannot be played in this browser. (${error.code})`)
       })

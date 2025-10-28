@@ -12,12 +12,12 @@ const KanjiReadings = ({ result: { kunyomi, onyomi } }: VocabularyComponentProps
   <NaisTable>
     <tbody>
       <tr>
-        <th>on-yomi</th>
-        <td>{useMemo(() => [onyomi].flat().map((value) => <JapaneseWithRomaji key={value} value={value} />), [onyomi])}</td>
+        <th className="w-20">on-yomi</th>
+        <td>{useMemo(() => <JapaneseWithRomaji value={onyomi} />, [onyomi])}</td>
       </tr>
       <tr>
-        <th>kun-yomi</th>
-        <td>{useMemo(() => [kunyomi].flat().map((value) => <JapaneseWithRomaji key={value} value={value} />), [kunyomi])}</td>
+        <th className="w-20">kun-yomi</th>
+        <td>{useMemo(() => <JapaneseWithRomaji value={kunyomi} />, [kunyomi])}</td>
       </tr>
     </tbody>
   </NaisTable>

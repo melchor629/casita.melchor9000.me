@@ -19,7 +19,7 @@ const typesWithDetails = Object.freeze(['verb', 'demonstrative', 'adjective', 'i
 export default function VocabularyResult({ result }: VocabularyComponentProps) {
   const [detailsOpen, setDetailsOpen] = useState(false)
   const detailsDivRef = useRef<HTMLDivElement>(null)
-  const hasDetails = result.details || typesWithDetails.includes(result.type)
+  const hasDetails = result.details || typesWithDetails.includes(result.type) || result.refs != null
 
   const detailsButtonClick = useCallback(() => {
     setDetailsOpen((v) => !v)
@@ -87,7 +87,10 @@ export default function VocabularyResult({ result }: VocabularyComponentProps) {
         )}
       >
         <div class="grow">
-          <JapaneseWithRomaji value={result.value} />
+          <JapaneseWithRomaji
+            value={result.value}
+            otherValue={result.type === 'noun' ? result.pronuntiation : (result.type === 'kanji' ? `${result.onyomi}・${result.kunyomi}` : undefined)}
+          />
           <div class="uppercase text-xs opacity-75 select-none">
             {result.type}
             {' · '}

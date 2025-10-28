@@ -27,7 +27,7 @@ const serializeEntry = (entry: Entry | RootEntry, imports: string[]): string => 
     + entry.path
       .split('/')
       .map((s) => s.replace(/^\([\w-]+\)$/, ''))
-      .map((s) => s.replace(/^\[([\w-]+)\]$/, '(?<$1>[^/]+?)'))
+      .map((s) => s.replaceAll(/\[([\w-]+)\]/g, '(?<$1>[^/]+?)'))
       .filter((s) => !!s)
       .join('\\/')
   if (!ser.endsWith('/^\\/')) {

@@ -188,7 +188,10 @@ export type BaseDictionaryEntry<TType extends string = string> = Readonly<{
   refs?: ReadonlyArray<EntryRef>
 }>
 
-export type NounDictionaryEntry = BaseDictionaryEntry<'noun'>
+export type NounDictionaryEntry = BaseDictionaryEntry<'noun'> & Readonly<{
+  pronuntiation?: string
+}>
+
 export type MarkerDictionaryEntry = BaseDictionaryEntry<'marker'>
 export type PhraseDictionaryEntry = BaseDictionaryEntry<'phrase'>
 export type InterrogativeDictionaryEntry = BaseDictionaryEntry<'interrogative'>
@@ -252,8 +255,8 @@ export type InformalVerbDictionaryEntry = BaseDictionaryEntry<'ichidan-verb' | '
 }>
 
 export type KanjiEntry = BaseDictionaryEntry<'kanji'> & Readonly<{
-  onyomi: string | string[]
-  kunyomi: string | string[]
+  onyomi: string
+  kunyomi: string
 }>
 
 export type DictionaryEntry =
