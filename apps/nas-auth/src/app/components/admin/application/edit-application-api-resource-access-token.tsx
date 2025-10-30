@@ -19,13 +19,15 @@ const asymmetricSigningAlgorithms = Object.freeze([
   'PS384',
   'PS512',
   'ES256',
-  'ES256K',
   'ES384',
   'ES512',
   'EdDSA',
   'RS256',
   'RS384',
   'RS512',
+  'ML-DSA-44',
+  'ML-DSA-65',
+  'ML-DSA-87',
 ] satisfies Array<AsymmetricSigningAlgorithm | 'unset'>)
 
 type EditApplicationApiResourceAccessTokenProps = Readonly<{

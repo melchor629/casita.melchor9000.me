@@ -168,7 +168,7 @@ const config: Configuration = {
 
         const { reply } = ctx.res
         // I trust form to not doing unsecure things
-        const response = await reply.renderPageToResponse('/i/logout', { props: { form } })
+        const response = await reply.renderRouteToResponse('/i/logout', { props: { form } })
         ctx.body = await response.text()
       },
       async postLogoutSuccessSource(ctx) {
@@ -178,7 +178,7 @@ const config: Configuration = {
         }
 
         const { reply } = ctx.res
-        const response = await reply.renderPageToResponse('/i/post-logout', {
+        const response = await reply.renderRouteToResponse('/i/post-logout', {
           props: {
             clientName: ctx.oidc.client?.clientName || '',
             clientUri: ctx.oidc.client?.clientUri || '',
@@ -345,7 +345,7 @@ const config: Configuration = {
     const { reply } = ctx.res
     ctx.type = 'html'
     reply.log.error(error, 'OIDC Interaction failed', { route: ctx.oidc?.route })
-    const response = await reply.renderPageToResponse('/i/error', { props: { out } })
+    const response = await reply.renderRouteToResponse('/i/error', { props: { out } })
     ctx.body = await response.text()
   },
 }
