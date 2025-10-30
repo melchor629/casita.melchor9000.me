@@ -19,35 +19,35 @@ const keyArgs = args.map((arg) => {
   if (arg.startsWith('RS')) {
     const [alg, modulusLength] = arg.split(':')
     process.stderr.write(` - Generating RSASSA-PKCS1-v1_5 key with SHA${alg.slice(2)} using modulus ${modulusLength || '2048'}\n`)
-    return [alg, { modulusLength: parseInt(modulusLength || '2048', 10) }]
+    return [alg, { modulusLength: parseInt(modulusLength || '2048', 10), extractable: true }]
   }
 
   if (arg.startsWith('PS')) {
     const [alg, modulusLength] = arg.split(':')
     process.stderr.write(` - Generating RSASSA-PSS key with SHA${alg.slice(2)} and MGF1 with SHA${alg.slice(2)} using modulus ${modulusLength || '2048'}\n`)
-    return [alg, { modulusLength: parseInt(modulusLength || '2048', 10) }]
+    return [alg, { modulusLength: parseInt(modulusLength || '2048', 10), extractable: true }]
   }
 
   if (arg.startsWith('HS')) {
     const alg = arg
     process.stderr.write(` - Generating HMAC key with SHA${alg.slice(2)}\n`)
-    return [alg]
+    return [alg, { extractable: true }]
   }
 
   if (arg.startsWith('ES')) {
     const alg = arg
     process.stderr.write(` - Generating ECDSA key using P-${alg.slice(2)} with SHA${alg.slice(2)}\n`)
-    return [alg]
+    return [alg, { extractable: true }]
   }
 
   if (arg.startsWith('EdDSA')) {
     const [alg, crv] = arg.split(':')
     process.stderr.write(` - Generating EdDSA key using ${crv || 'Ed25519'} curve\n`)
-    return [alg, { crv: crv || 'Ed25519' }]
+    return [alg, { crv: crv || 'Ed25519', extractable: true }]
   }
 
   process.stderr.write(` - Generating key using ${arg}\n`)
-  return [arg]
+  return [arg, { extractable: true }]
 })
 
 // https://datatracker.ietf.org/doc/html/rfc7518#section-3

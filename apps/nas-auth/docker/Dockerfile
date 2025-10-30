@@ -24,7 +24,7 @@ RUN npm ci
 
 COPY --from=packages /app/out/full/ ./
 RUN npm run build
-RUN cp -rv /app/apps/nas-auth/src/* ./dist && rm -r /app/apps/nas-auth/dist/app
+RUN rm -r /app/apps/nas-auth/src/app
 
 
 FROM node:$TAG AS final
@@ -36,6 +36,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 COPY --from=packages /app/out/json/ ./
 RUN npm ci --omit=dev
+COPY --from=builder /app/apps/nas-auth/src/ ./apps/nas-auth/src/
 COPY --from=builder /app/apps/nas-auth/dist/ ./apps/nas-auth/dist/
 COPY --from=builder /app/packages/nice-ssr/dist/fastify/ ./packages/nice-ssr/dist/fastify/
 COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/src/
@@ -43,5 +44,5 @@ COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/sr
 ENV NODE_ENV=production
 USER node:node
 
-WORKDIR /app/apps/ledefault
+WORKDIR /app/apps/nas-auth
 CMD ["nas-auth"]
