@@ -1,9 +1,9 @@
 import { useRevalidator } from '@melchor629/nice-ssr'
 import type { ChangeEvent, MouseEvent } from 'preact/compat'
 import { useCallback, useEffect, useState } from 'preact/hooks'
-import { useEditPermission } from '../../../actions/mutations/edit-permission'
-import { useRemovePermission } from '../../../actions/mutations/remove-permission'
-import type { GetApplication } from '../../../../queries/get-application'
+import { useEditPermission } from '#actions/mutations/edit-permission.ts'
+import { useRemovePermission } from '#actions/mutations/remove-permission.ts'
+import type { GetApplication } from '#queries/get-application.ts'
 import {
   Button,
   Input,

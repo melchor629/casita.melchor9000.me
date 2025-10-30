@@ -1,9 +1,9 @@
 import { useRevalidator } from '@melchor629/nice-ssr'
 import type { ChangeEvent, MouseEvent } from 'preact/compat'
 import { useCallback, useEffect, useState } from 'preact/hooks'
-import { useEditApiResource } from '../../../actions/mutations/edit-api-resource'
-import { useRemoveApiResource } from '../../../actions/mutations/remove-api-resource'
-import type { GetApplication } from '../../../../queries/get-application'
+import { useEditApiResource } from '#actions/mutations/edit-api-resource.ts'
+import { useRemoveApiResource } from '#actions/mutations/remove-api-resource.ts'
+import type { GetApplication } from '#queries/get-application.ts'
 import {
   Button,
   Input,

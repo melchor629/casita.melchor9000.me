@@ -25,7 +25,7 @@ export const getSession = cache((headers: Headers) => {
     },
   } as unknown as IncomingMessage
   const res = {} as ServerResponse
-  const ctx = oidc.app.createContext(req, res)
+  const ctx = oidc.createContext(req, res)
   return oidc.Session.get(ctx)
 })
 

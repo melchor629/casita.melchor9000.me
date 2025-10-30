@@ -1,7 +1,7 @@
 import type { ChangeEvent, MouseEvent } from 'preact/compat'
 import { useCallback, useMemo, useState } from 'preact/hooks'
-import { useAddUserPermission } from '../../../actions/mutations/add-user-permission'
-import type { GetPermissions } from '../../../../queries/get-permissions'
+import { useAddUserPermission } from '#actions/mutations/add-user-permission.ts'
+import type { GetPermissions } from '#queries/get-permissions.ts'
 import {
   Button,
   Dialog,

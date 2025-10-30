@@ -1,8 +1,8 @@
 import type { ChangeEvent, MouseEvent } from 'preact/compat'
 import { useCallback, useEffect, useState } from 'preact/hooks'
-import { useEditUser } from '../../../actions/mutations/edit-user'
-import { useRemoveUser } from '../../../actions/mutations/remove-user'
-import type { GetUserQuery } from '../../../../queries/get-user'
+import { useEditUser } from '#actions/mutations/edit-user.ts'
+import { useRemoveUser } from '#actions/mutations/remove-user.ts'
+import type { GetUserQuery } from '#queries/get-user.ts'
 import {
   Button,
   Input,

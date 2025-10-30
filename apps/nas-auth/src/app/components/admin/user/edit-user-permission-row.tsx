@@ -5,10 +5,10 @@ import {
   useMemo,
   useState,
 } from 'preact/hooks'
-import { useEditUserPermission } from '../../../actions/mutations/edit-user-permission'
-import { useRemoveUserPermission } from '../../../actions/mutations/remove-user-permission'
-import type { GetPermissions } from '../../../../queries/get-permissions'
-import type { GetUserQuery } from '../../../../queries/get-user'
+import { useEditUserPermission } from '#actions/mutations/edit-user-permission.ts'
+import { useRemoveUserPermission } from '#actions/mutations/remove-user-permission.ts'
+import type { GetPermissions } from '#queries/get-permissions.ts'
+import type { GetUserQuery } from '#queries/get-user.ts'
 import {
   Button,
   Input,

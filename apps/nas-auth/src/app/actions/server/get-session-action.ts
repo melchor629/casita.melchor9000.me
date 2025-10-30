@@ -35,7 +35,7 @@ export const getSession = cache(async function getSession(request: PageLoaderCon
     },
   } as unknown as IncomingMessage
   const res = {} as ServerResponse
-  const ctx = oidc.app.createContext(req, res)
+  const ctx = oidc.createContext(req, res)
   const session = await oidc.Session.get(ctx)
   if (!session.accountId) {
     return null

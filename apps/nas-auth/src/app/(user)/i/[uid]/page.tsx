@@ -36,7 +36,7 @@ export const loader = async (request: PageLoaderContext): Promise<LoaderData> =>
     const clientId = interaction.params.client_id as string
     const [client, session, config] = await Promise.all([
       oidc.Client.find(clientId),
-      oidc.Session.get(oidc.app.createContext(req, res)),
+      oidc.Session.get(oidc.createContext(req, res)),
       import('../../../../config.ts'),
     ])
 
