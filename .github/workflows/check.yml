@@ -29,7 +29,7 @@ jobs:
         run: npm audit --omit=dev
 
       - name: Build
-        run: npx turbo run build --continue=dependencies-succesful
+        run: npx turbo run build --continue=dependencies-successful
 
       - name: Check linter
         run: npx turbo run check lint --continue=always
