@@ -20,3 +20,7 @@
   --color-accent-main: light-dark(var(--color-accent-main-light), var(--color-accent-main-dark));
   --color-accent-elevated: light-dark(var(--color-accent-elevated-light), var(--color-accent-elevated-dark));
 }
+
+:root {
+  color-scheme: dark light;
+}

@@ -1,6 +1,6 @@
 import { useBlocker, useNavigate, type Metadata } from '@melchor629/nice-ssr'
 import clsx from 'clsx'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks'
+import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks'
 import KanaWriter from './kana-writer'
 import Vocabulary from './vocabulary'
 
@@ -11,9 +11,7 @@ export const metadata: Metadata = {
 export default function JapanesePage() {
   const kanaWriterRef = useRef<HTMLDivElement>(null)
   const vocabRef = useRef<HTMLDivElement>(null)
-  const [mutState] = useState<{ animating?: boolean, current: 'vocab' | 'kana-writer' }>(() => ({
-    current: null!,
-  }))
+  const mutStateRef = useRef<{ animating?: boolean, current: 'vocab' | 'kana-writer' }>({ current: null! })
   const navigate = useNavigate()
   const blocker = useBlocker(useMemo(() => ({ current, next }) => current.pathname !== next.pathname, []))
 
@@ -29,21 +27,21 @@ export default function JapanesePage() {
     const optionsIn = { duration: 1000, direction: 'reverse' as const }
     const optionsOut = { duration: 1000 }
 
-    if (mutState.animating) {
+    if (mutStateRef.current.animating) {
       return
     }
 
-    mutState.animating = true
+    mutStateRef.current.animating = true
 
     const fns = []
-    const currentPageDiv = pageDivs[mutState.current]
+    const currentPageDiv = pageDivs[mutStateRef.current.current]
     const nextPageDiv = pageDivs[page!]
     if (currentPageDiv) {
       const anim = currentPageDiv.animate(keyframes, optionsOut)
       currentPageDiv.classList.add('opacity-0')
       fns.push(anim.finished.then(() => currentPageDiv.classList.add('invisible', 'hidden')))
     }
-    mutState.current = page!
+    mutStateRef.current.current = page!
     if (nextPageDiv) {
       const anim = nextPageDiv.animate(keyframes, optionsIn)
       nextPageDiv.classList.remove('opacity-0', 'invisible', 'hidden')
@@ -52,8 +50,8 @@ export default function JapanesePage() {
     }
 
     await Promise.all(fns)
-    mutState.animating = false
-  }, [mutState])
+    mutStateRef.current.animating = false
+  }, [])
 
   useEffect(() => {
     const abtctrl = new AbortController()

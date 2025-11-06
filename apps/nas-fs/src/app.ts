@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import { FastifyOtelInstrumentation } from '@fastify/otel'
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import fastify from 'fastify'
 import { nanoid } from 'nanoid'
@@ -50,14 +51,12 @@ const start = async () => {
     }
   })
 
-  await app.register(import('@melchor629/fastify-infra/abort'))
-  await app.register(import('@melchor629/fastify-infra/finalization'))
-
-  await app.register(import('@autotelic/fastify-opentelemetry').then((t) => t.default), {
-    wrapRoutes: true,
+  await app.register(import('@melchor629/fastify-infra/telemetry'), {
+    instrumentation: new FastifyOtelInstrumentation(),
   })
 
-  await app.register(import('./middlewares/trace.ts'))
+  await app.register(import('@melchor629/fastify-infra/abort'))
+  await app.register(import('@melchor629/fastify-infra/finalization'))
 
   await app.register(import('@fastify/redis'), {
     url: config.redisUrl,
@@ -69,8 +68,8 @@ const start = async () => {
     global: true,
     max: config.rateLimiter.requestsPerSecond,
     redis: app.redis,
-    timeWindow: '1s',
-    allowList: ['127.0.0.1'],
+    timeWindow: config.rateLimiter.timeWindow,
+    allowList: config.rateLimiter.allowList,
     nameSpace: 'nas-fs:rate-limit:',
   })
 

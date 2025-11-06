@@ -80,7 +80,7 @@ const healthCheckPlugin = fastifyPlugin(async (fastify, options: HealthCheckPlug
           503: responseSchema,
         },
       },
-      config: options.config,
+      config: { otel: false, ...options.config },
     },
     async (req, reply) => {
       const shouldIncludeDetails = await options.shouldIncludeDetails?.(req) ?? true

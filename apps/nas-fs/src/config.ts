@@ -43,7 +43,9 @@ export const authApplicationKey = process.env.AUTH_APPLICATION_KEY || 'nas-fs'
 export const redisUrl = process.env.REDIS_URL
 
 export const rateLimiter = {
-  requestsPerSecond: parseInt(process.env.RATE_LIMITER_REQ_PER_SECOND || '25', 10),
+  requestsPerSecond: parseInt(process.env.RATE_LIMITER_REQ_PER_SECOND || '50', 10),
+  timeWindow: process.env.RATE_LIMITER_TIME_WINDOW || '1s',
+  allowList: (process.env.RATE_LIMITER_ALLOW_LIST || '127.0.0.1').split(','),
 }
 
 export const logLevel = process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug')

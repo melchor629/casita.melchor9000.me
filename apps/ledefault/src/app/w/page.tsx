@@ -24,7 +24,7 @@ export const loader: PageLoader<PageProps> = async (req) => {
 
 function DaLink({ entry }: { readonly entry: import('./entries').Entry }) {
   const [showTooltip, setShowTooltip] = useState(false)
-  const { floatingStyles, refs } = useFloating({
+  const { floatingStyles, refs: { setFloating, setReference } } = useFloating({
     strategy: 'fixed',
     middleware: [
       offset({ mainAxis: 12 }),
@@ -36,7 +36,7 @@ function DaLink({ entry }: { readonly entry: import('./entries').Entry }) {
   return (
     <>
       <a
-        ref={refs.setReference}
+        ref={setReference}
         href={entry.url}
         target="_blank"
         referrerPolicy="no-referrer"
@@ -68,7 +68,7 @@ function DaLink({ entry }: { readonly entry: import('./entries').Entry }) {
       </a>
 
       <div
-        ref={refs.setFloating}
+        ref={setFloating}
         style={floatingStyles}
         class={clsx(
           'fixed top-0 left-0 z-10',

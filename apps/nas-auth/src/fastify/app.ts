@@ -1,3 +1,4 @@
+import FastifyOtelInstrumentation from '@fastify/otel'
 import createLogger from '@melchor629/fastify-infra/logger'
 import { RedisStore } from 'connect-redis'
 import Fastify from 'fastify'
@@ -32,12 +33,9 @@ const createApp = async () => {
   })
 
   // telemetry
-  await app.register(import('@autotelic/fastify-opentelemetry'), {
-    wrapRoutes: true,
-    ignoreRoutes: (path) => path.includes('*'),
+  await app.register(import('@melchor629/fastify-infra/telemetry'), {
+    instrumentation: new FastifyOtelInstrumentation(),
   })
-
-  await app.register(import('./trace.ts'))
 
   // form body parser
   await app.register(import('@fastify/formbody'))

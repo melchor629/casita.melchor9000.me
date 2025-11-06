@@ -25,12 +25,12 @@
     "#queries/*": "./src/queries/*"
   },
   "dependencies": {
-    "@autotelic/fastify-opentelemetry": "^0.22.0",
     "@fastify/caching": "^9.0.0",
     "@fastify/cookie": "^11.0.0",
     "@fastify/formbody": "^8.0.0",
     "@fastify/middie": "^9.0.0",
     "@fastify/oauth2": "^8.1.2",
+    "@fastify/otel": "^0.13.0",
     "@fastify/session": "^11.0.0",
     "@melchor629/fastify-infra": "^0.1.0",
     "@melchor629/nice-ssr": "^0.2.0",

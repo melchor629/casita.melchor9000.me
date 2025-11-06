@@ -1,35 +1,35 @@
+import type { FastifyOtelInstrumentation } from '@fastify/otel'
 import type { Span, SpanOptions } from '@opentelemetry/api'
-import type { FastifyInstance, FastifyRequest } from 'fastify'
+import type { FastifyRequest } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
 
 declare module 'fastify' {
   interface FastifyRequest {
-    trace: (<T>(
+    trace: <T>(
       this: FastifyRequest,
       key: string,
       options: SpanOptions,
       fn: (span: Span) => Promise<T> | T,
-    ) => Promise<T> | T) & {
-      notRoot: boolean
-    }
+    ) => Promise<T> | T
   }
 }
 
-function tracePlugin(app: FastifyInstance) {
-  app.decorateRequest('trace', function trace<T>(
+type TelemetryPluginOptions = Readonly<{
+  instrumentation: FastifyOtelInstrumentation
+}>
+
+const telemetryPlugin = fastifyPlugin(async (fastify, { instrumentation }: TelemetryPluginOptions) => {
+  await fastify.register(instrumentation.plugin())
+
+  fastify.decorateRequest('trace', function trace<T>(
     this: FastifyRequest,
     key: string,
     options: SpanOptions,
     fn: (span: Span) => Promise<T> | T,
   ) {
-    const otel = this.openTelemetry()
+    const otel = this.opentelemetry()
     const runner = async (span: Span) => {
-      let undo = false
       try {
-        if (!this.trace.notRoot) {
-          undo = true
-          this.trace.notRoot = true
-        }
         const returnValue = fn(span)
         if (returnValue instanceof Promise) {
           return await returnValue
@@ -41,18 +41,14 @@ function tracePlugin(app: FastifyInstance) {
         throw e
       } finally {
         span.end()
-        if (undo) {
-          this.trace.notRoot = false
-        }
       }
     }
 
-    return this.trace.notRoot
-      ? otel.tracer.startActiveSpan(key, options, runner)
-      : otel.tracer.startActiveSpan(key, options, otel.context, runner)
+    return otel.tracer.startActiveSpan(key, options, runner)
   })
+}, {
+  name: '@melchor629/fastify-infra/telemetry',
+  fastify: '>=4',
+})
 
-  return Promise.resolve()
-}
-
-export default fastifyPlugin(tracePlugin, { name: 'trace' })
+export default telemetryPlugin
