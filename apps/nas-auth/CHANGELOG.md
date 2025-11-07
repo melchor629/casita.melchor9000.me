@@ -1,5 +1,12 @@
 # nas-auth
 
+## 3.0.4
+
+### Patch Changes
+
+- 2569c8c: Rename NAS_PERSISTENCE to NAS_PERSISTANCE in code
+- 2569c8c: Fix redis operations in redis adapter
+
 ## 3.0.3
 
 ### Patch Changes

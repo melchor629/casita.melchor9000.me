@@ -1,5 +1,11 @@
 # nas-persistance
 
+## 2.0.3
+
+### Patch Changes
+
+- 2569c8c: Rename NAS_PERSISTENCE to NAS_PERSISTANCE in code
+
 ## 2.0.2
 
 ### Patch Changes
