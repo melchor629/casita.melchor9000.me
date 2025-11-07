@@ -1,5 +1,11 @@
 # nas-fs
 
+## 0.12.21
+
+### Patch Changes
+
+- ef8cab6: Fix entrypoint in docker image.
+
 ## 0.12.20
 
 ### Patch Changes
