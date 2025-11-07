@@ -1,5 +1,11 @@
 # nas-fs
 
+## 0.12.20
+
+### Patch Changes
+
+- a35deb1: Another try on auto deploy apps.
+
 ## 0.12.19
 
 ### Patch Changes

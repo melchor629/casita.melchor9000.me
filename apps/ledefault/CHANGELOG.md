@@ -1,5 +1,11 @@
 # ledefault
 
+## 0.1.19
+
+### Patch Changes
+
+- a35deb1: Another try on auto deploy apps.
+
 ## 0.1.18
 
 ### Patch Changes

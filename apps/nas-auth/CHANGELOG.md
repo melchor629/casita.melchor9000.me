@@ -1,5 +1,11 @@
 # nas-auth
 
+## 3.0.2
+
+### Patch Changes
+
+- a35deb1: Another try on auto deploy apps.
+
 ## 3.0.1
 
 ### Patch Changes

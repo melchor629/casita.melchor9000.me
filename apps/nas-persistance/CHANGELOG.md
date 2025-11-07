@@ -1,5 +1,11 @@
 # nas-persistance
 
+## 2.0.2
+
+### Patch Changes
+
+- a35deb1: Another try on auto deploy apps.
+
 ## 2.0.1
 
 ### Patch Changes
