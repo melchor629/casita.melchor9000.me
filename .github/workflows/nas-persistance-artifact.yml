@@ -2,7 +2,8 @@ name: nas-persistance artifact
 
 on:
   push:
-    tags: ['nas-persistance@*']
+    tags:
+      - nas-persistance@*
 
 env:
   REGISTRY: docker.io
