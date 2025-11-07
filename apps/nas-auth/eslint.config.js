@@ -21,11 +21,10 @@ export default [
   },
   {
     name: 'react-files',
-    files: ['src/actions/**', 'src/app/**', 'src/components/**', 'src/hooks/**'],
+    files: ['src/app/**'],
     rules: {
       // TODO know why these fail with js/jsx files
       'import-x/no-unresolved': 'off',
-      'import-x/no-extraneous-dependencies': 'off',
       'react/prop-types': 'off',
     },
   },

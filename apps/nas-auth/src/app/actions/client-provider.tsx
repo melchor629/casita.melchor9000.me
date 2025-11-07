@@ -1,4 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query'
+// eslint-disable-next-line import-x/no-extraneous-dependencies
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import type { RenderableProps } from 'preact'
 import getQueryClient from './client.ts'
