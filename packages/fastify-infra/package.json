@@ -1,7 +1,7 @@
 {
   "name": "@melchor629/fastify-infra",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "sideEffects": false,
   "engines": {
@@ -35,11 +35,21 @@
     "pino-pretty": "^13.0.0"
   },
   "peerDependenciesMeta": {
-    "@fastify/otel": { "optional": true },
-    "@fastify/jwt": { "optional": true },
-    "fresh": { "optional": true },
-    "get-jwks": { "optional": true },
-    "pino-pretty": { "optional": true }
+    "@fastify/otel": {
+      "optional": true
+    },
+    "@fastify/jwt": {
+      "optional": true
+    },
+    "fresh": {
+      "optional": true
+    },
+    "get-jwks": {
+      "optional": true
+    },
+    "pino-pretty": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/fresh": "^0.5.0",
