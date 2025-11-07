@@ -80,6 +80,8 @@ const healthCheckPlugin = fastifyPlugin(async (fastify, options: HealthCheckPlug
           503: responseSchema,
         },
       },
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore from swagger
       config: { otel: false, ...options.config },
     },
     async (req, reply) => {
