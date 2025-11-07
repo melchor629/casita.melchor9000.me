@@ -3,7 +3,7 @@ name: ledefault artifact
 on:
   push:
     tags:
-      - ledefault@*
+      - "ledefault@*"
 
 env:
   REGISTRY: docker.io

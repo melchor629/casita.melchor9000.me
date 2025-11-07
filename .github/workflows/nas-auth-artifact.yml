@@ -3,7 +3,7 @@ name: nas-auth artifact
 on:
   push:
     tags:
-      - nas-auth@*
+      - "nas-auth@*"
 
 env:
   REGISTRY: docker.io

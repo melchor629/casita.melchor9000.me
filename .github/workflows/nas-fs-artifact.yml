@@ -3,7 +3,7 @@ name: nas-fs artifact
 on:
   push:
     tags:
-      - nas-fs@*
+      - "nas-fs@*"
 
 env:
   REGISTRY: docker.io
