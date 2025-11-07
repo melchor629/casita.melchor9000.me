@@ -45,6 +45,7 @@ jobs:
         uses: ./.github/actions/docker/push-hub
         with:
           file: ./apps/nas-persistance/docker/Dockerfile
+          image-name: ${{ env.IMAGE_NAME }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }}
