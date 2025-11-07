@@ -6,8 +6,8 @@ export const logLevel = process.env.LOG_LEVEL || 'debug'
 export const publicUrl = process.env.PUBLIC_URL || `http://localhost:${port}`
 export const redisUrl = process.env.REDIS_URL || 'redis://localhost'
 export const redisPrefix = process.env.REDIS_PREFIX || 'nas-auth:'
-export const nasPersistenceUrl = new URL(process.env.NAS_PERSISTENCE_URL || 'http://localhost:8003/')
-export const nasPersistenceApiKey = process.env.NAS_PERSISTENCE_API_KEY
+export const nasPersistanceUrl = new URL(process.env.NAS_PERSISTANCE_URL || 'http://localhost:8003/')
+export const nasPersistanceApiKey = process.env.NAS_PERSISTANCE_API_KEY
 
 export const jwksFilePath = process.env.JWKS_FILE_PATH || './jwks.json'
 export const cookieKeysOauth = (process.env.OAUTH_COOKIE_KEYS || 'some,bodyoncetoldme').split(',')

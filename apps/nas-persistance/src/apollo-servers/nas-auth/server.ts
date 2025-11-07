@@ -17,7 +17,7 @@ import type { NasAuthGraphQLContext } from './context.ts'
 import { schema } from './schema/schema.ts'
 
 const checkAuth = (req: FastifyRequest): boolean => {
-  if (nasAuthApiKeys.find((apiKey) => `X-ApiKey ${apiKey}` === req.headers.authorization)) {
+  if (req.headers.authorization?.toLowerCase().startsWith('x-apikey ') && nasAuthApiKeys.find((apiKey) => req.headers.authorization?.endsWith(apiKey))) {
     return true
   }
 

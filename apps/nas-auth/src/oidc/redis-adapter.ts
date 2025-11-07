@@ -82,7 +82,7 @@ export default class RedisAdapter implements Adapter {
 
     // store the element
     if (this.#consumable) {
-      multi.hmset(key, { payload: JSON.stringify(payload) })
+      multi.hSet(key, { payload: JSON.stringify(payload) })
     } else {
       multi.set(key, JSON.stringify(payload))
     }
@@ -96,7 +96,7 @@ export default class RedisAdapter implements Adapter {
     // reference list
     if (this.#grantable && payload.grantId) {
       const grantKey = grantKeyFor(payload.grantId)
-      multi.rpush(grantKey, key)
+      multi.rPush(grantKey, key)
       // TODO maybe use LTRIM as well to reduce the list size
       const ttl = await client.ttl(grantKey)
       if (expiresIn > ttl) {
@@ -179,7 +179,7 @@ export default class RedisAdapter implements Adapter {
    */
   async consume(id: string) {
     // NOTE: only runs on consumable stores
-    await client.hset(this.#key(id), 'consumed', Math.floor(Date.now() / 1000))
+    await client.hSet(this.#key(id), 'consumed', Math.floor(Date.now() / 1000))
   }
 
   /**

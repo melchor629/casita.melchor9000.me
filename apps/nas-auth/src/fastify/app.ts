@@ -7,7 +7,7 @@ import {
   cookieKeysDefault,
   isDebug,
   logLevel,
-  nasPersistenceUrl,
+  nasPersistanceUrl,
   publicUrl,
   redisPrefix,
   sessionSignKey,
@@ -77,7 +77,7 @@ const createApp = async () => {
     checks: async (add) => {
       const health = await import('@melchor629/fastify-infra/health')
       add('redis', health.redisHealthCheck, { client: () => client })
-      add('nas-persistance', health.externalHealthCheck, { url: new URL(nasPersistenceUrl) }, 'degraded')
+      add('nas-persistance', health.externalHealthCheck, { url: new URL(nasPersistanceUrl) }, 'degraded')
     },
     shouldIncludeDetails: () => true,
   })

@@ -1,11 +1,11 @@
 import { GraphQLClient } from 'graphql-request'
-import { nasPersistenceApiKey, nasPersistenceUrl } from '../../config.ts'
+import { nasPersistanceApiKey, nasPersistanceUrl } from '../../config.ts'
 import type { TypedDocumentString } from './graphql.ts'
 
-const url = new URL('/nas-auth', nasPersistenceUrl).toString()
+const url = new URL('/nas-auth', nasPersistanceUrl).toString()
 const client = new GraphQLClient(url, {
   headers: {
-    'X-ApiKey': nasPersistenceApiKey ?? '',
+    'X-ApiKey': nasPersistanceApiKey ?? '',
   },
   requestMiddleware: async (request) => {
     const otelApi = await import('@opentelemetry/api')
