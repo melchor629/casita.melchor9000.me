@@ -1,5 +1,11 @@
 # ledefault
 
+## 0.1.18
+
+### Patch Changes
+
+- Update tag trigger for the artifacts.
+
 ## 0.1.17
 
 ### Patch Changes

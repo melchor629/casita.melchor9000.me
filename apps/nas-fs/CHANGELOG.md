@@ -1,5 +1,11 @@
 # nas-fs
 
+## 0.12.19
+
+### Patch Changes
+
+- Update tag trigger for the artifacts.
+
 ## 0.12.18
 
 ### Patch Changes

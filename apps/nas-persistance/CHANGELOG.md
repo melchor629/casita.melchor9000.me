@@ -1,5 +1,11 @@
 # nas-persistance
 
+## 2.0.1
+
+### Patch Changes
+
+- Update tag trigger for the artifacts.
+
 ## 2.0.0
 
 ### Major Changes

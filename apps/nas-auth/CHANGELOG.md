@@ -1,5 +1,11 @@
 # nas-auth
 
+## 3.0.1
+
+### Patch Changes
+
+- Update tag trigger for the artifacts.
+
 ## 3.0.0
 
 ### Major Changes
