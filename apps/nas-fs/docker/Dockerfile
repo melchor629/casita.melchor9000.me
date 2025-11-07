@@ -70,4 +70,4 @@ ENV NODE_ENV=production
 ENV LANG=C.UTF-8
 
 WORKDIR /app/apps/nas-fs/
-ENTRYPOINT [ "/app/entrypoint.sh" ]
+ENTRYPOINT [ "/app/apps/nas-fs/entrypoint.sh" ]
