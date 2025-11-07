@@ -1,5 +1,11 @@
 # nas-auth
 
+## 3.0.3
+
+### Patch Changes
+
+- ca51307: Fix missing deps on prod build.
+
 ## 3.0.2
 
 ### Patch Changes
