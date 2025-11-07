@@ -64,10 +64,11 @@ RUN npm ci --omit=dev
 
 COPY --from=builder /app/apps/nas-fs/ ./apps/nas-fs/
 COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/src/
+COPY /apps/nas-fs/docker/entrypoint.sh ./
 
 ENV PORT=3001
 ENV NODE_ENV=production
 ENV LANG=C.UTF-8
 
 WORKDIR /app/apps/nas-fs/
-ENTRYPOINT [ "/app/apps/nas-fs/entrypoint.sh" ]
+ENTRYPOINT [ "/app/entrypoint.sh" ]

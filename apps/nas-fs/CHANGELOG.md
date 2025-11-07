@@ -1,5 +1,11 @@
 # nas-fs
 
+## 0.12.22
+
+### Patch Changes
+
+- fix entrypoint again
+
 ## 0.12.21
 
 ### Patch Changes

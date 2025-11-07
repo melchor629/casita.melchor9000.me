@@ -68,3 +68,4 @@ jobs:
         uses: ./.github/actions/deploy/pi
         with:
           project: nas
+          service: auth
