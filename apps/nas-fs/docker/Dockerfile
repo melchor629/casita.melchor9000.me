@@ -22,6 +22,14 @@ COPY --from=packages /app/out/full/ ./
 COPY /apps/nas-fs/docker/entrypoint.sh ./
 
 
+FROM node:$TAG AS installer
+
+WORKDIR /app
+
+COPY --from=packages /app/out/json/ ./
+RUN npm i --omit=dev
+
+
 FROM node:$TAG AS final
 WORKDIR /app
 
@@ -59,8 +67,7 @@ RUN <<APP
   rm -rf /etc/apt/keyrings
 APP
 
-COPY --from=packages /app/out/json/ ./
-RUN npm ci --omit=dev
+COPY --from=installer /app ./
 
 COPY --from=builder /app/apps/nas-fs/ ./apps/nas-fs/
 COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/src/

@@ -27,6 +27,14 @@ RUN npm run build
 RUN rm -r /app/apps/nas-auth/src/app
 
 
+FROM node:$TAG AS installer
+
+WORKDIR /app
+
+COPY --from=packages /app/out/json/ ./
+RUN npm i --omit=dev
+
+
 FROM node:$TAG AS final
 
 WORKDIR /app
@@ -34,8 +42,8 @@ WORKDIR /app
 COPY ./apps/nas-auth/docker/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-COPY --from=packages /app/out/json/ ./
-RUN npm ci --omit=dev
+COPY --from=installer /app ./
+
 COPY --from=builder /app/apps/nas-auth/src/ ./apps/nas-auth/src/
 COPY --from=builder /app/apps/nas-auth/dist/ ./apps/nas-auth/dist/
 COPY --from=builder /app/packages/nice-ssr/dist/fastify/ ./packages/nice-ssr/dist/fastify/

@@ -36,12 +36,19 @@ RUN <<EOM
 EOM
 
 
-FROM node:$TAG AS final
+FROM node:$TAG AS installer
 
 WORKDIR /app
 
 COPY --from=packages /app/out/json/ ./
-RUN npm ci --omit=dev
+RUN npm i --omit=dev
+
+
+FROM node:$TAG AS final
+
+WORKDIR /app
+
+COPY --from=installer /app ./
 
 COPY --from=builder /app/apps/nas-persistance/src/ ./apps/nas-persistance/src/
 COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/src/
