@@ -55,6 +55,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment: po
+    permissions:
+      contents: read
     steps:
       - name: Checkout actions
         uses: actions/checkout@v5

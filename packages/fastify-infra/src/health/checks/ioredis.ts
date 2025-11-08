@@ -25,7 +25,7 @@ const ioredisHealthCheck: HealthCheck<RedisHealthCheckOptions> = async ({ client
           info
             .split('\n')
             .slice(1)
-            .map((split) => split.replace('\r', '').split(':'))
+            .map((split) => split.replaceAll('\r', '').split(':'))
             .filter(([key]) => key.startsWith('redis_') || key.startsWith('valkey_') || key === 'os' || key.startsWith('uptime_')),
         ),
       },

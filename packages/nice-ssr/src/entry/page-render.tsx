@@ -30,6 +30,34 @@ type RawManifestEntry = Omit<ManifestEntry, 'imports' | 'dynamicImports'> & {
   imports?: string[]
 }
 
+const unsafeCharMap: Record<string, string> = {
+  '<': '\\u003C',
+  '>': '\\u003E',
+  '/': '\\u002F',
+  '\\': '\\\\',
+  '\b': '\\b',
+  '\f': '\\f',
+  '\n': '\\n',
+  '\r': '\\r',
+  '\t': '\\t',
+  '\0': '\\0',
+  '\u2028': '\\u2028',
+  '\u2029': '\\u2029',
+}
+const serializeForHtml = (data: unknown) => {
+  const json = JSON.stringify(data, (_, value) => {
+    if (typeof value === 'function') {
+      throw new Error('Cannot serialize functions')
+    }
+    if (typeof value === 'bigint') {
+      return value.toString()
+    }
+    return value as unknown
+  })
+  // eslint-disable-next-line no-control-regex
+  return json.replace(/[<>\u0008\f\n\r\t\0\u2028\u2029]/g, x => unsafeCharMap[x])
+}
+
 function getEntryForModuleId(manifest: Record<string, RawManifestEntry>, moduleId: string): ManifestEntry {
   if (!(moduleId in manifest)) {
     return null!
@@ -133,14 +161,12 @@ async function renderCompletePage(
   }
 
   request.nice.log.debug('Serializing data')
-  const serializedProps = JSON.stringify(ssrProps)
   const context = {
     basePath: request.nice.basePath,
     params: request.nice.params,
     pathname: request.nice.pathname,
     url: request.nice.url,
   } satisfies SsrRouterContextValue
-  const serializedContext = JSON.stringify(context)
 
   request.nice.log.debug('Building head')
   const scriptNonce = request.headers.get('x-script-nonce') || undefined
@@ -174,8 +200,8 @@ async function renderCompletePage(
         dangerouslySetInnerHTML={{
           __html: [
             'const f=(o)=>o==null||typeof o!=="object"?o:(Object.keys(o).forEach(k=>f(o[k])),Object.freeze(o))',
-          `window.__cc=f(${serializedContext})`,
-          `import(${JSON.stringify(pageScriptPath)}).then(({ hydratePage }) => hydratePage(f(${serializedProps})))`,
+          `window.__cc=f(${serializeForHtml(context)})`,
+          `import(${serializeForHtml(pageScriptPath)}).then(({ hydratePage }) => hydratePage(f(${serializeForHtml(ssrProps)})))`,
           ].join(';'),
         }}
       />,
