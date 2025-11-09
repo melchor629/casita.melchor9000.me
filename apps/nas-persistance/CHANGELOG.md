@@ -1,5 +1,18 @@
 # nas-persistance
 
+## 2.0.4
+
+### Patch Changes
+
+- 62d7f99: Change apollo telemetry implementation.
+- 1ccf40f: Reduce docker image sizes by optimizing layers and package installation.
+- 11ae436: Add telemetry to projects.
+- Updated dependencies [5182e2d]
+- Updated dependencies [6dc543c]
+- Updated dependencies [11ae436]
+  - @melchor629/infra@0.1.0
+  - @melchor629/fastify-infra@0.1.2
+
 ## 2.0.3
 
 ### Patch Changes

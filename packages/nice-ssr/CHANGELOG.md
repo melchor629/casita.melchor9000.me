@@ -1,5 +1,12 @@
 # @melchor629/nice-ssr
 
+## 0.3.1
+
+### Patch Changes
+
+- 6dc543c: Fix possible vulnerable code.
+- 396caf7: Add tracing to route rendering.
+
 ## 0.3.0
 
 ### Minor Changes
