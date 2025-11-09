@@ -14,7 +14,10 @@ import { CompositePropagator, W3CTraceContextPropagator } from '@opentelemetry/c
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { registerInstrumentations, type Instrumentation } from '@opentelemetry/instrumentation'
+import { FsInstrumentation } from '@opentelemetry/instrumentation-fs'
+import { RuntimeNodeInstrumentation } from '@opentelemetry/instrumentation-runtime-node'
 import { UndiciInstrumentation } from '@opentelemetry/instrumentation-undici'
+import { containerDetector } from '@opentelemetry/resource-detector-container'
 import {
   detectResources,
   envDetector,
@@ -115,7 +118,11 @@ export default function createTelemetry({
     ...options.attributes,
   })
   resource = resource.merge(detectResources({
-    detectors: options.resourceDetectors ?? [envDetector],
+    detectors: [
+      envDetector,
+      containerDetector,
+      ...(options.resourceDetectors ?? []),
+    ],
   }))
 
   const propagators = options.propagators ?? [new W3CTraceContextPropagator()]
@@ -157,6 +164,12 @@ export default function createTelemetry({
       enabled: true,
       requireParentforSpans: true,
     }),
+    new FsInstrumentation({
+      requireParentSpan: true,
+    }),
+    new RuntimeNodeInstrumentation({
+      monitoringPrecision: 1000,
+    }),
     ...(options.instrumentations ?? []),
   ]
   const disableInstrumentations = registerInstrumentations({
@@ -169,6 +182,7 @@ export default function createTelemetry({
     traceProvider,
     meterProvider,
     [Symbol.asyncDispose]: async () => {
+      diag.info('Shutting down telemetry')
       await Promise.all([
         meterProvider.shutdown(),
         traceProvider.shutdown(),
@@ -176,6 +190,7 @@ export default function createTelemetry({
 
       contextManager.disable()
       disableInstrumentations()
+      diag.info('Finished shutting down telemetry')
     },
   })
 }
