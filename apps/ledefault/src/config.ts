@@ -5,3 +5,7 @@ export const staticDirPath = process.env.STATIC_DIR_PATH || './static'
 export const logLevel = process.env.LOG_LEVEL || 'info'
 export const enableExtraSecurity = process.env.ENABLE_EXTRA_SECURITY != null
 export const traefikAuthUrl = new URL(process.env.TRAEFIK_AUTH_URL || 'http://traefik-auth:8080')
+export const otlp = Object.freeze({
+  enabled: ['1', 'true', 'yes'].includes(process.env.OTLP_ENABLED?.toLowerCase() || ''),
+  url: process.env.OTLP_URL,
+})

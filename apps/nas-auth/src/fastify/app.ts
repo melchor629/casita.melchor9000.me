@@ -1,5 +1,4 @@
-import FastifyOtelInstrumentation from '@fastify/otel'
-import createLogger from '@melchor629/fastify-infra/logger'
+import createLogger from '@melchor629/infra/logger'
 import { RedisStore } from 'connect-redis'
 import Fastify from 'fastify'
 import { nanoid } from 'nanoid'
@@ -12,6 +11,7 @@ import {
   redisPrefix,
   sessionSignKey,
 } from '../config.ts'
+import { fastifyInstrumentation } from '../instrumentation.ts'
 import client from '../redis.ts'
 import registerRoutes from '../routes/register.ts'
 
@@ -34,7 +34,7 @@ const createApp = async () => {
 
   // telemetry
   await app.register(import('@melchor629/fastify-infra/telemetry'), {
-    instrumentation: new FastifyOtelInstrumentation(),
+    instrumentation: fastifyInstrumentation,
   })
 
   // form body parser

@@ -1,5 +1,6 @@
+import './instrumentation.ts'
 import path from 'node:path'
-import createLogger from '@melchor629/fastify-infra/logger'
+import createLogger from '@melchor629/infra/logger'
 import fastify from 'fastify'
 import { nanoid } from 'nanoid'
 import {
@@ -18,6 +19,10 @@ const app = fastify({
   genReqId: () => nanoid(23),
   requestTimeout: 120,
   trustProxy: true,
+})
+
+await app.register(import('@melchor629/fastify-infra/telemetry'), {
+  instrumentation: (await import('./instrumentation.ts')).fastifyInstrumentation,
 })
 
 await app.register(import('@melchor629/fastify-infra/finalization'))

@@ -1,3 +1,4 @@
+import './instrumentation.ts'
 import { isDebug, port } from './config.ts'
 import createApp from './fastify/app.ts'
 

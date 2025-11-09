@@ -1,0 +1,43 @@
+{
+  "name": "@melchor629/infra",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    "./logger": "./src/logger.ts",
+    "./telemetry": "./src/telemetry.ts"
+  },
+  "scripts": {
+    "lint": "eslint src",
+    "check": "tsc -p . --noEmit"
+  },
+  "dependencies": {
+    "@opentelemetry/core": "^2.0.0",
+    "@opentelemetry/instrumentation": "^0.208.0",
+    "@opentelemetry/sdk-trace-node": "^2.0.0",
+    "@opentelemetry/sdk-metrics": "^2.0.0",
+    "@opentelemetry/context-async-hooks": "^2.0.0",
+    "@opentelemetry/instrumentation-undici": "^0.19.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.208.0",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.208.0",
+    "@opentelemetry/semantic-conventions": "^1.0.0",
+    "@opentelemetry/resources": "^2.0.0",
+    "pino": "^10.0.0"
+  },
+  "peerDependencies": {
+    "@opentelemetry/api": "^1.0.0",
+    "pino-pretty": "^13.0.0"
+  },
+  "peerDependenciesMeta": {
+    "pino-pretty": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

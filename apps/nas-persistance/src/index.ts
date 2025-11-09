@@ -1,6 +1,9 @@
+/* eslint-disable import-x/no-duplicates */
+import './instrumentation.ts'
 import { type FastifyInstance, fastify } from 'fastify'
 import { buildNasAuthServer } from './apollo-servers/index.ts'
 import { env, port } from './config.ts'
+import { fastifyInstrumentation } from './instrumentation.ts'
 import logger from './logger.ts'
 import nasAuthClient from './orm/nas-auth/connection.ts'
 import dataSourceHealthCheck from './utils/datasource-health-check.ts'
@@ -13,16 +16,16 @@ const app = fastify({
 try {
   app.log.info('Starting...')
 
+  await app.register(import('@melchor629/fastify-infra/telemetry'), {
+    instrumentation: fastifyInstrumentation,
+  })
+
   if (env === 'dev') {
     // eslint-disable-next-line import-x/no-extraneous-dependencies
     await app.register(import('@fastify/cors'), {
       origin: [`http://localhost:${port}`, 'https://studio.apollographql.com'],
     })
   }
-
-  await app.register(import('@autotelic/fastify-opentelemetry'), {
-    wrapRoutes: true,
-  })
 
   await Promise.all([
     nasAuthClient.$connect(),

@@ -1,3 +1,4 @@
+import './instrumentation.ts'
 import fs from 'node:fs'
 import { program } from 'commander'
 

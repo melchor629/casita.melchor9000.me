@@ -1,4 +1,6 @@
 import { Queue, type WorkerOptions } from 'bullmq'
+import { BullMQOtel } from 'bullmq-otel'
+import packageJson from '../../../package.json' with { type: 'json' }
 import { redisUrl } from '../../config.ts'
 import { addCloseableHandler } from '../../utils/stop-signal.ts'
 import type { SynchronizeJobData } from '../../workers/synchronize.ts'
@@ -21,6 +23,7 @@ const settings: WorkerOptions = {
     maxRetriesPerRequest: 3,
   },
   prefix: redisPrefix,
+  telemetry: new BullMQOtel('nas-fs-producer', packageJson.version),
 }
 
 const thumbnailQueue = new Queue<ThumbnailJobData>(queueNames.thumbnail, settings)

@@ -1,9 +1,9 @@
 import fs from 'node:fs'
-import { FastifyOtelInstrumentation } from '@fastify/otel'
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import fastify from 'fastify'
 import { nanoid } from 'nanoid'
 import * as config from './config.ts'
+import { fastifyInstrumentation } from './instrumentation.ts'
 import logger from './logger.ts'
 
 declare module 'fastify' {
@@ -52,7 +52,7 @@ const start = async () => {
   })
 
   await app.register(import('@melchor629/fastify-infra/telemetry'), {
-    instrumentation: new FastifyOtelInstrumentation(),
+    instrumentation: fastifyInstrumentation,
   })
 
   await app.register(import('@melchor629/fastify-infra/abort'))

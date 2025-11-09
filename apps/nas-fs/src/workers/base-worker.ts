@@ -2,12 +2,14 @@ import { type Span, type Tracer, trace } from '@opentelemetry/api'
 import {
   Job, type Processor, Worker, type WorkerOptions,
 } from 'bullmq'
+import { BullMQOtel } from 'bullmq-otel'
+import packageJson from '../../package.json' with { type: 'json' }
 import { redisUrl } from '../config.ts'
 import { redisPrefix } from '../core-logic/jobs/constants.ts'
 import { addCloseableHandler } from '../utils/stop-signal.ts'
 
 export type TracingContext = {
-  span: Span
+  span: Span | undefined
   tracer: Tracer
   createSpan<T>(this: void, name: string, fn: () => Promise<T>): Promise<T>
 }
@@ -24,41 +26,23 @@ function decorateProcessor<DataType, ResultType, NameType extends string>(
   processor: ProcessorWithSpan<DataType, ResultType, NameType>,
 ): Processor<DataType, ResultType, NameType> {
   return async function decorated(job, token) {
-    return jobTracer.startActiveSpan(
-      `job ${name}`,
-      {
-        kind: 4, // consumer
-        root: true,
-        attributes: {
-          'bullmq.job-id': job.id,
-          'bullmq.job-token': token,
-          'bullmq.job-name': name,
-        },
+    const span = trace.getActiveSpan()
+    span?.setAttribute('bullmq.job-id', job.id ?? '')
+    span?.setAttribute('bullmq.job-token', token ?? '')
+    span?.setAttribute('bullmq.job-name', name)
+    return await processor(job, token, {
+      span,
+      tracer: jobTracer,
+      async createSpan(name2, fn) {
+        return jobTracer.startActiveSpan(name2, async (subSpan) => {
+          try {
+            return await fn()
+          } finally {
+            subSpan.end()
+          }
+        })
       },
-      async (span) => {
-        try {
-          span.setStatus({ code: 1 })
-          return await processor(job, token, {
-            span,
-            tracer: jobTracer,
-            async createSpan(name2, fn) {
-              return jobTracer.startActiveSpan(name2, async (subSpan) => {
-                try {
-                  return await fn()
-                } finally {
-                  subSpan.end()
-                }
-              })
-            },
-          })
-        } catch (e) {
-          span.setStatus({ code: 2 }).recordException(e as Error)
-          throw e
-        } finally {
-          span.end()
-        }
-      },
-    )
+    })
   }
 }
 
@@ -76,6 +60,7 @@ const baseOptions: WorkerOptions = {
     retryStrategy: (times) => Math.max(Math.min(Math.exp(times), 30_000), 1_000),
   },
   prefix: redisPrefix,
+  telemetry: new BullMQOtel('nas-fs-worker', packageJson.version),
 }
 
 export default class BaseWorker<
