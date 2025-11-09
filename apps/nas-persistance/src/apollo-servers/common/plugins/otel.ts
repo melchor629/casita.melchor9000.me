@@ -1,9 +1,9 @@
 import type { ApolloServerPlugin } from '@apollo/server'
-import type { OpenTelemetryReqInstance } from '@autotelic/fastify-opentelemetry'
 import { trace } from '@opentelemetry/api'
+import type { FastifyRequest } from 'fastify'
 
 type BaseContext = {
-  openTelemetry: () => OpenTelemetryReqInstance
+  request: FastifyRequest
 }
 
 type Options = {
@@ -14,8 +14,12 @@ export default function otelPlugin<TContext extends BaseContext>(
   { name }: Options,
 ): ApolloServerPlugin<TContext> {
   return {
-    requestDidStart({ contextValue: { openTelemetry } }) {
-      const otel = openTelemetry()
+    requestDidStart({ contextValue: { request } }) {
+      const otel = request.opentelemetry()
+      if (!otel.enabled) {
+        return Promise.resolve({})
+      }
+
       const span = otel.tracer.startSpan(`${name} graphql request`, {}, otel.context)
       const parentContext = trace.setSpan(otel.context, span)
       return Promise.resolve({

@@ -1,4 +1,4 @@
-import { FastifyOtelInstrumentation } from '@fastify/otel'
+import FastifyOtelInstrumentation from '@fastify/otel'
 import createTelemetry from '@melchor629/infra/telemetry'
 import { RedisInstrumentation } from '@opentelemetry/instrumentation-redis'
 import packageJson from '../package.json' with { type: 'json' }

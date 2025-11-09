@@ -70,7 +70,7 @@ const buildNasAuthServer = async (app: FastifyInstance) => {
         permissionRepository: new PermissionRepository(nasAuthClient),
         userPermissionRepository: new UserPermissionRepository(nasAuthClient),
         userRepository: new UserRepository(nasAuthClient),
-        openTelemetry: request.openTelemetry,
+        request,
       })
     },
   })
