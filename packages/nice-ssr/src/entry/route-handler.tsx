@@ -5,6 +5,7 @@ import { SsrResponse } from '../nice-ssr/response.ts'
 import renderPage from './page-render.tsx'
 import { runWithStorage } from './request-storage.ts'
 import runRouteHandler from './route-runner.ts'
+import { startSpan } from './tracer.ts'
 
 function memoize<TParams extends unknown[], TReturn>(
   implementationFn: (...args: TParams) => TReturn,
@@ -52,8 +53,10 @@ const getRouteHandler = memoize((
 
     if (routeModules.middleware) {
       log.debug('Running middleware')
-      const { default: middleware } = await routeModules.middleware()
-      const response = await middleware(niceRequest)
+      const response = await startSpan('run middleware', async () => {
+        const { default: middleware } = await routeModules.middleware!()
+        return await middleware(niceRequest)
+      })
       if (!(response instanceof SsrResponse) || !response.isNextResponse()) {
         log.debug('Middleware gave a response, returning earlier')
         return response
@@ -62,11 +65,17 @@ const getRouteHandler = memoize((
 
     if (routeMatch.type === 'page') {
       const layouts = routePath.flatMap((r) => r.layout ? [r.layout] : [])
-      const response = await runWithStorage(async () => renderPage(await routeMatch.entry(), { layouts, status, props: { ...props, ...moreProps } }, niceRequest))
+      const response = await startSpan('render page', async () => {
+        const entry = await startSpan('load page entry', () => routeMatch.entry())
+        return runWithStorage(async () => renderPage(entry, { layouts, status, props: { ...props, ...moreProps } }, niceRequest))
+      })
       return response
     }
     if (routeMatch.type === 'route') {
-      const response = await runWithStorage(async () => runRouteHandler(await routeMatch.entry(), niceRequest))
+      const response = await startSpan('render route', async () => {
+        const entry = await startSpan('load route entry', () => routeMatch.entry())
+        return runWithStorage(async () => runRouteHandler(entry, niceRequest))
+      })
       return response
     }
     return SsrResponse

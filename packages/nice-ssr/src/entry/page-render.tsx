@@ -8,10 +8,13 @@ import { SsrRouterContext, type SsrRouterContextValue } from '../nice-ssr/naviga
 import type { Metadata, PageHelperModule, PageLoaderContext, PageModule } from '../nice-ssr/page'
 import type { SsrRequest } from '../nice-ssr/request'
 import { SsrResponse } from '../nice-ssr/response'
+import { startSpan } from './tracer'
 
 async function loadProps({ loader }: PageModule, context: PageLoaderContext) {
-  const props = loader?.(context) ?? {}
-  return props
+  return startSpan('run page loader', async () => {
+    const props = (await loader?.(context)) ?? {}
+    return props
+  })
 }
 
 type ManifestEntry = {
@@ -182,32 +185,35 @@ async function renderCompletePage(
   ])
 
   request.nice.log.debug('Building body')
-  const RootLayout = (await routeModules.rootLayout?.())?.default
-    ?? DefaultRootLayout
-  const { default: Page } = module
-  const layoutComponents = await Promise.all(pageContext.layouts.map(async (m) => (await m()).default))
-  const tree = RootLayout({
-    children: [
-      <SsrRouterContext value={context}>
-        {layoutComponents.reduceRight(
-          (p, Layout) => <Layout>{p}</Layout>,
-          <Page {...ssrProps} />,
-        )}
-      </SsrRouterContext>,
-      <script
-        type="module"
-        nonce={scriptNonce}
-        dangerouslySetInnerHTML={{
-          __html: [
-            'const f=(o)=>o==null||typeof o!=="object"?o:(Object.keys(o).forEach(k=>f(o[k])),Object.freeze(o))',
-          `window.__cc=f(${serializeForHtml(context)})`,
-          `import(${serializeForHtml(pageScriptPath)}).then(({ hydratePage }) => hydratePage(f(${serializeForHtml(ssrProps)})))`,
-          ].join(';'),
-        }}
-      />,
-    ],
-  }) as VNode
-  transformTree(tree, [...pageMetadataHead, ...moreHeads])
+  const tree = await startSpan('render page', async () => {
+    const RootLayout = (await routeModules.rootLayout?.())?.default
+      ?? DefaultRootLayout
+    const { default: Page } = module
+    const layoutComponents = await Promise.all(pageContext.layouts.map(async (m) => (await m()).default))
+    const tree = RootLayout({
+      children: [
+        <SsrRouterContext value={context}>
+          {layoutComponents.reduceRight(
+            (p, Layout) => <Layout>{p}</Layout>,
+            <Page {...ssrProps} />,
+          )}
+        </SsrRouterContext>,
+        <script
+          type="module"
+          nonce={scriptNonce}
+          dangerouslySetInnerHTML={{
+            __html: [
+              'const f=(o)=>o==null||typeof o!=="object"?o:(Object.keys(o).forEach(k=>f(o[k])),Object.freeze(o))',
+            `window.__cc=f(${serializeForHtml(context)})`,
+            `import(${serializeForHtml(pageScriptPath)}).then(({ hydratePage }) => hydratePage(f(${serializeForHtml(ssrProps)})))`,
+            ].join(';'),
+          }}
+        />,
+      ],
+    }) as VNode
+    transformTree(tree, [...pageMetadataHead, ...moreHeads])
+    return tree
+  })
 
   request.nice.log.debug('Rendering HTML')
   const stream = renderToReadableStream(tree)
@@ -304,18 +310,20 @@ export default async function renderPage(
 }
 
 async function renderHead({ metadata: metadataFn }: PageModule, ssrProps: Record<string, unknown>) {
-  const headEntries: ComponentChild[] = []
-  const metadata = typeof metadataFn === 'function' ? await metadataFn(ssrProps) : metadataFn
-  if (metadata?.title) {
-    headEntries.push(<title>{metadata.title}</title>)
-  }
-  if (metadata?.description) {
-    headEntries.push(<meta name="description" content={metadata.description} />)
-  }
-  if (metadata?.baseHref) {
-    headEntries.push(<base href={metadata.baseHref} />)
-  }
-  return headEntries
+  return startSpan('prepare metadata', async () => {
+    const headEntries: ComponentChild[] = []
+    const metadata = typeof metadataFn === 'function' ? await metadataFn(ssrProps) : metadataFn
+    if (metadata?.title) {
+      headEntries.push(<title>{metadata.title}</title>)
+    }
+    if (metadata?.description) {
+      headEntries.push(<meta name="description" content={metadata.description} />)
+    }
+    if (metadata?.baseHref) {
+      headEntries.push(<base href={metadata.baseHref} />)
+    }
+    return headEntries
+  })
 }
 
 function transformTree(tree: VNode, additionalElements: ComponentChild[]) {
