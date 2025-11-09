@@ -1,5 +1,11 @@
 # nas-auth
 
+## 3.0.6
+
+### Patch Changes
+
+- fix missing code in docker
+
 ## 3.0.5
 
 ### Patch Changes

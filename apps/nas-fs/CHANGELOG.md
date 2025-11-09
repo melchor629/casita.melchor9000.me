@@ -1,5 +1,11 @@
 # nas-fs
 
+## 0.12.24
+
+### Patch Changes
+
+- fix missing code in docker
+
 ## 0.12.23
 
 ### Patch Changes

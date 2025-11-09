@@ -52,6 +52,7 @@ COPY --from=installer /app ./
 
 COPY --from=builder /app/apps/nas-persistance/src/ ./apps/nas-persistance/src/
 COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/src/
+COPY --from=builder /app/packages/infra/src/ ./packages/infra/src/
 COPY --from=builder /app/packages/prisma-nas-auth/ ./packages/prisma-nas-auth
 COPY apps/nas-persistance/docker/entrypoint.sh /entrypoint.sh
 

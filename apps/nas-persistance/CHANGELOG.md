@@ -1,5 +1,11 @@
 # nas-persistance
 
+## 2.0.5
+
+### Patch Changes
+
+- fix missing code in docker
+
 ## 2.0.4
 
 ### Patch Changes

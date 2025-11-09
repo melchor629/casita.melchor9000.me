@@ -42,6 +42,7 @@ COPY --from=installer /app ./
 COPY --from=builder /app/apps/ledefault/dist/ ./apps/ledefault/dist/
 COPY --from=builder /app/packages/nice-ssr/dist/fastify/ ./packages/nice-ssr/dist/fastify/
 COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/src/
+COPY --from=builder /app/packages/infra/src/ ./packages/infra/src/
 
 ENV NODE_ENV=production
 USER node:node

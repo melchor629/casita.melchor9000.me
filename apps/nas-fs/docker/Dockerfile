@@ -71,6 +71,7 @@ COPY --from=installer /app ./
 
 COPY --from=builder /app/apps/nas-fs/ ./apps/nas-fs/
 COPY --from=builder /app/packages/fastify-infra/src/ ./packages/fastify-infra/src/
+COPY --from=builder /app/packages/infra/src/ ./packages/infra/src/
 COPY /apps/nas-fs/docker/entrypoint.sh ./
 
 ENV PORT=3001

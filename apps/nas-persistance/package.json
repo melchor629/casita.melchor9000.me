@@ -5,7 +5,7 @@
     "url": "https://melchor9000.me"
   },
   "name": "nas-persistance",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Persistence layer for NAS APIs",
   "type": "module",
   "module": "src/index.js",
