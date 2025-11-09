@@ -27,17 +27,30 @@ const start = async () => {
   app.decorate('packageJson', packageJson)
 
   app.setErrorHandler(async (error, req, reply) => {
-    let type = ('type' in error && error.type as string) || error.code || error.name || error.constructor.name || null
+    if (!error || typeof error !== 'object') {
+      req.log.error(error, 'Unhandled unknown error thrown during request')
+      return reply.status(500).send({
+        statusCode: 500,
+        type: 'unknown',
+        requestId: req.id,
+      })
+    }
+
+    let type = ('type' in error && error.type as string)
+      || ('code' in error && error.code)
+      || ('name' in error && error.name)
+      || error.constructor.name
+      || null
     if (type === 'Error') {
       type = null
     }
 
-    if (!error.statusCode || typeof error.statusCode !== 'number') {
+    if (!('statusCode' in error) || !error.statusCode || typeof error.statusCode !== 'number') {
       req.log.error(error, 'Unhandled error thrown during request')
       reply.status(500).send({
         statusCode: 500,
         type,
-        message: error.message,
+        message: 'message' in error ? error.message : undefined,
         requestId: req.id,
       })
     } else {
@@ -45,7 +58,7 @@ const start = async () => {
       reply.status(error.statusCode).send({
         statusCode: error.statusCode,
         type,
-        message: error.message,
+        message: 'message' in error ? error.message : undefined,
         requestId: req.id,
       })
     }
