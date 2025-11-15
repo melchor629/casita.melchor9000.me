@@ -49,7 +49,9 @@ const fsChangesSseController: Controller<typeof schema> = async (req, reply) => 
 fsChangesSseController.options = {
   config: {
     authorization: {},
-    jwt: {},
+    jwt: {
+      allowQuery: true,
+    },
   },
   schema,
 }

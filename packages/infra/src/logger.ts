@@ -26,6 +26,9 @@ const createLogger = (service: string, logLevel: LevelWithSilentOrString = 'info
     },
     level: logLevel,
     mixin,
+    formatters: {
+      level: (label) => ({ level: label }),
+    },
     transport: process.env.NODE_ENV !== 'production'
       ? {
           target: 'pino-pretty',
