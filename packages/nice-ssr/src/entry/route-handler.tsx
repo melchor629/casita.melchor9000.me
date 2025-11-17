@@ -100,8 +100,9 @@ const calculateRoutePath = (
       Iterator.from(route.children)
         .map((r) => calculateRoutePath(path, r))
         .filter((rh) => rh.length > 0)
+        .filter((rh) => rh.at(-1)!.type !== 'nothing')
         .toArray()
-        .toSorted((a, b) => b.length - a.length)
+        .toSorted((a, b) => b.at(-1)!.matcher.exec(path)![0].length - a.at(-1)!.matcher.exec(path)![0].length)
         .at(0) ?? []
     ),
   ]
