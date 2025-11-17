@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.3.2
+
+### Patch Changes
+
+- c19ed8d: Wrong route path priority when selecting route.
+
 ## 0.3.1
 
 ### Patch Changes

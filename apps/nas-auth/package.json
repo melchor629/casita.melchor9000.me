@@ -1,7 +1,7 @@
 {
   "name": "nas-auth",
   "private": true,
-  "version": "3.0.6",
+  "version": "3.0.7",
   "description": "OIDC and Authorization server",
   "main": "src/index.ts",
   "type": "module",
@@ -38,7 +38,7 @@
     "@fortawesome/react-fontawesome": "^3.1.0",
     "@melchor629/fastify-infra": "^0.1.2",
     "@melchor629/infra": "*",
-    "@melchor629/nice-ssr": "^0.3.1",
+    "@melchor629/nice-ssr": "^0.3.2",
     "@tanstack/react-query": "^5.0.0",
     "@opentelemetry/api": "^1.7.0",
     "@opentelemetry/instrumentation-redis": "^0.57.0",

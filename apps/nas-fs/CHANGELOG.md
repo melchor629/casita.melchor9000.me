@@ -1,5 +1,11 @@
 # nas-fs
 
+## 0.12.25
+
+### Patch Changes
+
+- 92ba0bc: Fix endpoint that requires token to be in query, not reading from it.
+
 ## 0.12.24
 
 ### Patch Changes

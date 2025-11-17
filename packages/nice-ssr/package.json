@@ -1,7 +1,7 @@
 {
   "name": "@melchor629/nice-ssr",
   "private": true,
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "module",
   "sideEffects": false,
   "bin": {

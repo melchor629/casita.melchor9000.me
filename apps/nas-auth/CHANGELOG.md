@@ -1,5 +1,13 @@
 # nas-auth
 
+## 3.0.7
+
+### Patch Changes
+
+- 9e954db: fix wrong app name in logger
+- Updated dependencies [c19ed8d]
+  - @melchor629/nice-ssr@0.3.2
+
 ## 3.0.6
 
 ### Patch Changes

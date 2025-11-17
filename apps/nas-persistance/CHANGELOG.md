@@ -1,5 +1,11 @@
 # nas-persistance
 
+## 2.0.6
+
+### Patch Changes
+
+- e8654be: Hidden errors with constraint directive plugin.
+
 ## 2.0.5
 
 ### Patch Changes
