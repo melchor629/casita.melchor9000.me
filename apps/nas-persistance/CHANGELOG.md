@@ -1,5 +1,11 @@
 # nas-persistance
 
+## 2.0.7
+
+### Patch Changes
+
+- Fix missing graphql-tag (missing dep from other).
+
 ## 2.0.6
 
 ### Patch Changes
