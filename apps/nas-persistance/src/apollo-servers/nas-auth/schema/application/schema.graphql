@@ -12,7 +12,7 @@ type Application {
 
 """Data for creating a new application"""
 input CreateApplicationInput {
-  key: String! @constraint(minLength: 1, maxLength: 2, pattern: "^[a-zA-Z0-9][\\w-]*$")
+  key: String! @constraint(minLength: 1, maxLength: 50, pattern: "^[a-zA-Z0-9][\\w-]*$")
   name: String! @constraint(minLength: 3, maxLength: 500)
 }
 

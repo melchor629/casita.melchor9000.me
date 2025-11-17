@@ -3,7 +3,7 @@ import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace
 import fastifyApollo, { fastifyApolloDrainPlugin } from '@as-integrations/fastify'
 import type { FastifyInstance, FastifyRequest } from 'fastify'
 import { GraphQLError } from 'graphql'
-import { createApolloQueryValidationPlugin } from 'graphql-constraint-directive'
+import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4.js'
 import { env, nasAuthApiKeys, pathPrefix, authorities } from '../../config.ts'
 import nasAuthClient from '../../orm/nas-auth/connection.ts'
 import {
@@ -37,7 +37,7 @@ const buildNasAuthServer = async (app: FastifyInstance) => {
     plugins: [
       fastifyApolloDrainPlugin(app),
       otelPlugin({ name: 'nas-auth' }),
-      createApolloQueryValidationPlugin({ schema }),
+      createApollo4QueryValidationPlugin<NasAuthGraphQLContext>() as ReturnType<typeof otelPlugin>,
     ].concat(env === 'dev' ? [ApolloServerPluginInlineTrace()] : []),
     cache: 'bounded',
   })
