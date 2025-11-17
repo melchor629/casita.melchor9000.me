@@ -26,7 +26,7 @@ declare module 'fastify' {
 
 const createApp = async () => {
   const app = Fastify({
-    loggerInstance: createLogger('nas-fs', logLevel),
+    loggerInstance: createLogger('nas-auth', logLevel),
     pluginTimeout: 1 * 60 * 1000, // next can take a lot of time...
     trustProxy: true,
     genReqId: () => nanoid(31),
