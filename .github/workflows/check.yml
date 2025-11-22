@@ -18,7 +18,7 @@ jobs:
       PRISMA_BINARY_TARGET: '["native"]'
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Use node 24
         uses: actions/setup-node@v6
@@ -51,10 +51,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Checkout actions
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: melchor629/actions
           ref: main
