@@ -14,6 +14,7 @@
     "start": "NODE_ENV=production node src/index.ts",
     "dev": "NODE_ENV=development node --env-file-if-exists=.env src/index.ts",
     "generate": "graphql-codegen -c src/apollo-servers/nas-auth/codegen.ts",
+    "docker": "../../docker_build.sh",
     "lint": "eslint src",
     "check": "tsc --noEmit -p ."
   },

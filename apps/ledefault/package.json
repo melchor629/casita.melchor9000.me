@@ -11,7 +11,7 @@
     "lint": "eslint src",
     "check": "tsc -p . --noEmit",
     "build": "nice-ssr-build",
-    "docker": "./docker/build.sh"
+    "docker": "../../docker_build.sh"
   },
   "dependencies": {
     "@fastify/compress": "^8.0.0",

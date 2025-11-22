@@ -11,7 +11,7 @@
     "build": "nice-ssr-build",
     "lint": "eslint src",
     "check": "tsc -p . --noEmit",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker": "../../docker_build.sh",
     "gql": "graphql-codegen-esm --config ./src/queries/client/config.ts"
   },
   "author": "melchor9000",

@@ -1,5 +1,5 @@
 {
-  "name": "a",
+  "name": "casita.melchor9000.me",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -11,7 +11,7 @@
     "change": "changeset",
     "check": "turbo run check",
     "lint": "turbo run lint",
-    "docker": "npm run docker -ws --if-present",
+    "docker": "npm run docker --ws --if-present",
     "db:generate": "turbo run db:generate",
     "db:migrate": "turbo run db:migrate",
     "db:deploy": "turbo run deploy"

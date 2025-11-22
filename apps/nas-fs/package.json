@@ -15,7 +15,8 @@
     "start": "NODE_ENV=production node src/index.ts",
     "dev": "NODE_ENV=development node --env-file-if-exists=.env src/index.ts",
     "lint": "eslint src",
-    "check": "tsc -p . --noEmit"
+    "check": "tsc -p . --noEmit",
+    "docker": "../../docker_build.sh"
   },
   "dependencies": {
     "@fastify/jwt": "^10.0.0",
