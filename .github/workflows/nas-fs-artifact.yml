@@ -19,10 +19,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Checkout actions
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: melchor629/actions
           ref: main
@@ -59,7 +59,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout actions
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: melchor629/actions
           ref: main
