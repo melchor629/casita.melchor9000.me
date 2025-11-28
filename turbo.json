@@ -17,8 +17,7 @@
       "cache": false
     },
     "db:generate": {
-      "cache": false,
-      "env": ["PRISMA_BINARY_TARGET"]
+      "cache": false
     },
     "db:migrate": {
       "cache": false,

@@ -23,6 +23,8 @@
     "@types/node": "^24.0.0",
     "eslint": "^9.0.0",
     "prisma": "^7.0.0",
+    "react": "npm:@preact/compat@^18",
+    "react-dom": "npm:@preact/compat@^18",
     "turbo": "^2.0.0"
   }
 }
