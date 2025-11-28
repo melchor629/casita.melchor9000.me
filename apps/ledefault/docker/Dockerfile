@@ -19,7 +19,7 @@ FROM --platform=$BUILDPLATFORM node:$TAG AS builder
 WORKDIR /app
 
 COPY --from=packages /app/out/json/ ./
-RUN npm ci
+RUN npm i
 
 COPY --from=packages /app/out/full/ ./
 RUN npm run build
