@@ -26,5 +26,10 @@
     "react": "npm:@preact/compat@^18",
     "react-dom": "npm:@preact/compat@^18",
     "turbo": "^2.0.0"
+  },
+  "#": "https://github.com/prisma/prisma/issues/28752",
+  "overrides": {
+    "hono": "^4.10.3",
+    "valibot": "^1.2.0"
   }
 }
