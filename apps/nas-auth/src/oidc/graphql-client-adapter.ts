@@ -7,31 +7,31 @@ export default class GraphQLClientAdapter implements Adapter {
    * @param id The ID of the element
    * @returns The payload of the element if found
    */
-  async find(id: string): Promise<AdapterPayload | undefined | void> {
+  async find(id: string): Promise<AdapterPayload | undefined> {
     return await getClient(id) ?? undefined
   }
 
-  upsert(): Promise<undefined | void> {
+  upsert(): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
-  findByUserCode(): Promise<AdapterPayload | undefined | void> {
+  findByUserCode(): Promise<AdapterPayload | undefined> {
     throw new Error('Method not implemented.')
   }
 
-  findByUid(): Promise<AdapterPayload | undefined | void> {
+  findByUid(): Promise<AdapterPayload | undefined> {
     throw new Error('Method not implemented.')
   }
 
-  consume(): Promise<undefined | void> {
+  consume(): Promise<undefined> {
     throw new Error('Method not implemented.')
   }
 
-  destroy(): Promise<undefined | void> {
+  destroy(): Promise<undefined> {
     throw new Error('Method not implemented.')
   }
 
-  revokeByGrantId(): Promise<undefined | void> {
+  revokeByGrantId(): Promise<void> {
     throw new Error('Method not implemented.')
   }
 }

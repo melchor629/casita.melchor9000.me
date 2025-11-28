@@ -3,7 +3,7 @@ import { type Static, Type, type TSchema, type TStringOptions, type TNumberOptio
 export { Type, type Static } from 'typebox'
 
 export const Nullable = <T extends TSchema>(schema: T) =>
-  Type.Unsafe<Static<T> | null>({
+  Type.Unsafe<Static<T | Type.TNull>>({
     ...schema,
     // mark it is nullable, it will be removed after
     nullable: true,

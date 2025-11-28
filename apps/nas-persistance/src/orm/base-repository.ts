@@ -7,7 +7,8 @@ type PrismaTypeModel<Type extends string | number> = {
   operations: {
     findMany: {
       args: {
-        where?: { id?: Type | { in?: readonly Type[] } }
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+        where?: { id?: Type | { in?: Type[] | {} | null } }
       }
       result: Array<{ id?: Type }>
     }
