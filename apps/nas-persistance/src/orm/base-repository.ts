@@ -7,7 +7,7 @@ type PrismaTypeModel<Type extends string | number> = {
   operations: {
     findMany: {
       args: {
-        where?: { id?: Type | { in?: Type[] | object } }
+        where?: { id?: Type | { in?: readonly Type[] } }
       }
       result: Array<{ id?: Type }>
     }
