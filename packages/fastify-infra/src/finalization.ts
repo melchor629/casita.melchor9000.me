@@ -6,25 +6,24 @@ type FinalizationPluginOptions = Readonly<{
 
 const finalizationPlugin = fastifyPlugin((fastify, options: FinalizationPluginOptions) => {
   const finalizationFn = async () => {
-    fastify.log.info('Closing server...')
-    await options.onPreFinalization?.()
-    await fastify.close()
+    try {
+      fastify.log.info('Closing service 🫱🫲')
+      await options.onPreFinalization?.()
+      await fastify.close()
+      fastify.log.info('Service closed 🤝')
+    } catch (e) {
+      fastify.log.error(e, 'Failed closing service 🖕🫲')
+    }
   }
 
   fastify.addHook('onReady', () => {
     fastify.log.info('Service is ready!')
-    if (typeof process.finalization === 'object') {
-      process.finalization.register(fastify, () => {
-        finalizationFn().catch(() => {})
-      })
-    } else {
-      process.on('SIGTERM', () => {
-        finalizationFn().catch(() => {})
-      })
-      process.on('SIGINT', () => {
-        finalizationFn().catch(() => {})
-      })
-    }
+    process.on('SIGTERM', () => {
+      finalizationFn().catch(() => {})
+    })
+    process.on('SIGINT', () => {
+      finalizationFn().catch(() => {})
+    })
     return Promise.resolve()
   })
   return Promise.resolve()
