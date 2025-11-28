@@ -16,7 +16,7 @@ FROM --platform=$BUILDPLATFORM node:$TAG AS builder
 
 WORKDIR /app
 COPY --from=packages /app/out/json/ ./
-RUN npm ci --omit=dev
+RUN npm i --omit=dev
 
 COPY --from=packages /app/out/full/ ./
 COPY /apps/nas-fs/docker/entrypoint.sh ./
