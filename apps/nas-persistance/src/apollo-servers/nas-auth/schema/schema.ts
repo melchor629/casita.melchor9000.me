@@ -1,4 +1,3 @@
-// eslint-disable-next-line import-x/no-extraneous-dependencies
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { constraintDirectiveTypeDefs } from 'graphql-constraint-directive'
 import apiResourceResolvers from './api-resource/resolvers.ts'

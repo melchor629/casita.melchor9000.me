@@ -61,6 +61,7 @@
   "devDependencies": {
     "@0no-co/graphqlsp": "^1.12.16",
     "@graphql-codegen/cli": "^6.0.0",
+    "@graphql-typed-document-node/core": "^3.0.0",
     "@melchor629/tsconfigs": "*",
     "@preact/preset-vite": "^2.0.0",
     "@tailwindcss/vite": "^4.1.4",

@@ -1,6 +1,10 @@
 import os from 'node:os'
 import { trace } from '@opentelemetry/api'
-import { pino, type LevelWithSilentOrString } from 'pino'
+import { pino, type BaseLogger, type LevelWithSilentOrString } from 'pino'
+
+export type Logger = Omit<BaseLogger, 'msgPrefix'> & {
+  child(bindings: Record<string, unknown>): Logger
+}
 
 const mixin = () => {
   const span = trace.getActiveSpan()

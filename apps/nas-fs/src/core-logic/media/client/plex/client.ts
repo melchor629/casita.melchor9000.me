@@ -59,7 +59,7 @@ const request = async (endpoint: string, queryParams: QueryParams = {}) => {
 
       const isJson = response.headers.get('content-type')?.includes('application/json')
       if (isJson) {
-        const body = await response.json() as unknown
+        const body = await response.json()
         throw new PlexException('Call to PMS API failed', response.status, body)
       } else {
         const body = await response.text()

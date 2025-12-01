@@ -1,5 +1,11 @@
-export type Logger = Pick<import('pino').Logger, 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal' | 'level'> & {
+export type Logger = {
+  // readonly level: 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal' | 'silent'
   child(bindings: Record<string, unknown>): Logger
+} & {
+  [v in 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal']: {
+    (message: string): void
+    (obj: object, message: string): void
+  }
 }
 
 export type SsrRequest<

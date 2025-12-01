@@ -1,8 +1,0 @@
-{
-  "name": "@melchor629/types-react",
-  "private": true,
-  "version": "18.0.0",
-  "peerDependencies": {
-    "preact": "*"
-  }
-}

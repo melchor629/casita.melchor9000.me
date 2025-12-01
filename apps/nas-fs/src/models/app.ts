@@ -1,15 +1,7 @@
-import type { BaseLogger } from 'pino'
+import type { Logger } from '@melchor629/infra/logger'
 import type { Cache } from '../cache/cache.ts'
 import type { getNotifier } from '../core-logic/fs/fs-watcher.ts'
 import { Type } from './type-helpers.ts'
-
-/**
- * Default pino logger type
- * @internal
- */
-interface Logger extends Omit<BaseLogger, 'msgPrefix'> {
-  child(bindings: Record<string, unknown>): Logger
-}
 
 /**
  * Application (tenant) services

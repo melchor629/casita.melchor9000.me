@@ -41,6 +41,7 @@
     }
   },
   "devDependencies": {
+    "@melchor629/tsconfigs": "*",
     "typescript": "^5.0.0"
   }
 }
