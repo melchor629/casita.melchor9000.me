@@ -6,7 +6,7 @@ import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 
 type EditUserLoginData = Readonly<{
-  data?: Record<string, unknown>
+  data?: Record<string, unknown> | null
   disabled: boolean
   loginId: number
   userId: number
