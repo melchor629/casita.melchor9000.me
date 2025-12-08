@@ -46,7 +46,7 @@ type Documents = {
     "\n  mutation updateApiResource($key: String!, $data: UpdateApiResourceInput!) {\n    updateApiResource(key: $key, data: $data) {\n      accessTokenFormat\n      accessTokenTTL\n      audience\n      jwt\n      key\n      name\n      scopes\n    }\n  }\n": typeof types.UpdateApiResourceDocument,
     "\n  mutation updateApplication($key: String!, $data: UpdateApplicationInput!) {\n    updateApplication(key: $key, data: $data) {\n      key\n      name\n    }\n  }\n": typeof types.UpdateApplicationDocument,
     "\n  mutation updateClient($id: String!, $data: UpdateClientInput!) {\n    updateClient(id: $id, data: $data) {\n      clientId\n      clientName\n      fields\n    }\n  }\n": typeof types.UpdateClientDocument,
-    "\n  mutation updateLoginData($data: String!, $loginId: Int!) {\n    updateLogin(data: { data: $data }, id: $loginId) {\n      id\n    }\n  }\n": typeof types.UpdateLoginDataDocument,
+    "\n  mutation updateLoginData($data: JSONObject!, $loginId: Int!) {\n    updateLogin(data: { data: $data }, id: $loginId) {\n      id\n    }\n  }\n": typeof types.UpdateLoginDataDocument,
     "\n  mutation updateLogin($loginId: Int!, $data: UpdateLoginInput!) {\n    updateLogin(data: $data, id: $loginId) {\n      id\n    }\n  }\n": typeof types.UpdateLoginDocument,
     "\n  mutation updatePermission($id: Int!, $data: UpdatePermissionInput!) {\n    updatePermission(id: $id, data: $data) {\n      id\n      name\n      displayName\n    }\n  }\n": typeof types.UpdatePermissionDocument,
     "\n  mutation updateUserPermission($id: Int!, $userPermission: EditUserPermissionInput!) {\n    updateUserPermission(id: $id, data: $userPermission) {\n      id\n      write\n      delete\n      permission {\n        id\n        name\n        application {\n          name\n        }\n      }\n    }\n  }\n": typeof types.UpdateUserPermissionDocument,
@@ -84,7 +84,7 @@ const documents: Documents = {
     "\n  mutation updateApiResource($key: String!, $data: UpdateApiResourceInput!) {\n    updateApiResource(key: $key, data: $data) {\n      accessTokenFormat\n      accessTokenTTL\n      audience\n      jwt\n      key\n      name\n      scopes\n    }\n  }\n": types.UpdateApiResourceDocument,
     "\n  mutation updateApplication($key: String!, $data: UpdateApplicationInput!) {\n    updateApplication(key: $key, data: $data) {\n      key\n      name\n    }\n  }\n": types.UpdateApplicationDocument,
     "\n  mutation updateClient($id: String!, $data: UpdateClientInput!) {\n    updateClient(id: $id, data: $data) {\n      clientId\n      clientName\n      fields\n    }\n  }\n": types.UpdateClientDocument,
-    "\n  mutation updateLoginData($data: String!, $loginId: Int!) {\n    updateLogin(data: { data: $data }, id: $loginId) {\n      id\n    }\n  }\n": types.UpdateLoginDataDocument,
+    "\n  mutation updateLoginData($data: JSONObject!, $loginId: Int!) {\n    updateLogin(data: { data: $data }, id: $loginId) {\n      id\n    }\n  }\n": types.UpdateLoginDataDocument,
     "\n  mutation updateLogin($loginId: Int!, $data: UpdateLoginInput!) {\n    updateLogin(data: $data, id: $loginId) {\n      id\n    }\n  }\n": types.UpdateLoginDocument,
     "\n  mutation updatePermission($id: Int!, $data: UpdatePermissionInput!) {\n    updatePermission(id: $id, data: $data) {\n      id\n      name\n      displayName\n    }\n  }\n": types.UpdatePermissionDocument,
     "\n  mutation updateUserPermission($id: Int!, $userPermission: EditUserPermissionInput!) {\n    updateUserPermission(id: $id, data: $userPermission) {\n      id\n      write\n      delete\n      permission {\n        id\n        name\n        application {\n          name\n        }\n      }\n    }\n  }\n": types.UpdateUserPermissionDocument,
@@ -218,7 +218,7 @@ export function graphql(source: "\n  mutation updateClient($id: String!, $data: 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation updateLoginData($data: String!, $loginId: Int!) {\n    updateLogin(data: { data: $data }, id: $loginId) {\n      id\n    }\n  }\n"): typeof import('./graphql.js').UpdateLoginDataDocument;
+export function graphql(source: "\n  mutation updateLoginData($data: JSONObject!, $loginId: Int!) {\n    updateLogin(data: { data: $data }, id: $loginId) {\n      id\n    }\n  }\n"): typeof import('./graphql.js').UpdateLoginDataDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

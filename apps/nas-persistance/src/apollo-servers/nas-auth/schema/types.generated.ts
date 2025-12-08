@@ -428,7 +428,7 @@ export type UpdateClientInput = {
 
 /** Data for updating a login */
 export type UpdateLoginInput = {
-  data?: InputMaybe<Scalars['String']['input']>;
+  data?: InputMaybe<Scalars['JSONObject']['input']>;
   disabled?: InputMaybe<Scalars['Boolean']['input']>;
 };
 

@@ -418,7 +418,7 @@ export type UpdateClientInput = {
 
 /** Data for updating a login */
 export type UpdateLoginInput = {
-  data?: InputMaybe<Scalars['String']['input']>;
+  data?: InputMaybe<Scalars['JSONObject']['input']>;
   disabled?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
@@ -688,7 +688,7 @@ export type UpdateClientMutationVariables = Exact<{
 export type UpdateClientMutation = { __typename?: 'Mutation', updateClient?: { __typename?: 'Client', clientId: string, clientName: string, fields: any } | null };
 
 export type UpdateLoginDataMutationVariables = Exact<{
-  data: Scalars['String']['input'];
+  data: Scalars['JSONObject']['input'];
   loginId: Scalars['Int']['input'];
 }>;
 
@@ -1103,7 +1103,7 @@ export const UpdateClientDocument = new TypedDocumentString(`
 }
     `) as unknown as TypedDocumentString<UpdateClientMutation, UpdateClientMutationVariables>;
 export const UpdateLoginDataDocument = new TypedDocumentString(`
-    mutation updateLoginData($data: String!, $loginId: Int!) {
+    mutation updateLoginData($data: JSONObject!, $loginId: Int!) {
   updateLogin(data: {data: $data}, id: $loginId) {
     id
   }

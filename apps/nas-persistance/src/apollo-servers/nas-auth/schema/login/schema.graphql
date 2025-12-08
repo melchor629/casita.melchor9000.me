@@ -21,7 +21,7 @@ input CreateLoginInput {
 
 """Data for updating a login"""
 input UpdateLoginInput {
-  data: String
+  data: JSONObject
   disabled: Boolean
 }
 

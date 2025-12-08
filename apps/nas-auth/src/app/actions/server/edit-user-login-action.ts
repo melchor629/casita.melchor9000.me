@@ -6,7 +6,7 @@ import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 
 type EditUserLoginData = Readonly<{
-  data?: unknown
+  data?: Record<string, unknown>
   disabled: boolean
   loginId: number
   userId: number
@@ -20,7 +20,7 @@ async function editUserLoginAction(context: PageLoaderContext, { loginId, userId
 
   const login = await updateLogin(loginId, {
     ...data,
-    data: JSON.stringify(data.data ?? null),
+    data: data.data ?? null,
   })
   // revalidatePath(`/admin/users/${userId}`)
   return ok(login)

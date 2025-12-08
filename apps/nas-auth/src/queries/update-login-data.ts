@@ -1,7 +1,7 @@
 import { execute, graphql } from './gql.ts'
 
 const UpdateLoginDataMutation = graphql(`
-  mutation updateLoginData($data: String!, $loginId: Int!) {
+  mutation updateLoginData($data: JSONObject!, $loginId: Int!) {
     updateLogin(data: { data: $data }, id: $loginId) {
       id
     }
@@ -11,7 +11,7 @@ const UpdateLoginDataMutation = graphql(`
 const updateLoginData = async (loginId: number, data: Record<string, unknown>) => {
   await execute(
     UpdateLoginDataMutation,
-    { loginId, data: JSON.stringify(data) },
+    { loginId, data },
   )
 }
 
