@@ -29,7 +29,7 @@ const EditUserLoginRow = ({
   const editUserLoginMutation = useEditUserLogin()
   const removeUserLoginMutation = useRemoveUserLogin()
   const [editMode, setEditMode] = useState(false)
-  const [loginData, setLoginData] = useState<unknown>(login.data)
+  const [loginData, setLoginData] = useState<Record<string, unknown> | null>(login.data)
   const [isDisabled, setIsDisabled] = useState(login.disabled)
   const [opened, setOpened] = useState(false)
 
@@ -52,7 +52,7 @@ const EditUserLoginRow = ({
     setOpened(true)
   }, [])
 
-  const editLoginDataClose = useCallback((data?: unknown) => {
+  const editLoginDataClose = useCallback((data?: Record<string, unknown> | null) => {
     if (data !== undefined) {
       setLoginData(data)
     }

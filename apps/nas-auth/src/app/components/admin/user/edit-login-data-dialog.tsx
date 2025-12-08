@@ -10,8 +10,8 @@ import {
 } from '../../ui'
 
 type EditLoginDataDialogProps = Readonly<{
-  close: (data?: unknown) => void
-  data: unknown
+  close: (data?: Record<string, unknown> | null) => void
+  data: Record<string, unknown> | null
   opened: boolean
 }>
 
@@ -36,7 +36,7 @@ const EditLoginDataDialog = ({ close, data, opened }: EditLoginDataDialogProps) 
         />
       </DialogBody>
       <DialogFooter className="text-end">
-        <Button onClick={useCallback(() => close(JSON.parse(dataAsJson || 'null') as unknown), [close, dataAsJson])}>
+        <Button onClick={useCallback(() => close(JSON.parse(dataAsJson || 'null') as Record<string, unknown> | null), [close, dataAsJson])}>
           Save
         </Button>
         &nbsp;
