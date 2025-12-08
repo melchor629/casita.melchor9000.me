@@ -1,5 +1,14 @@
 # nas-auth
 
+## 3.0.8
+
+### Patch Changes
+
+- df24223: Fix update login data miss type.
+- 3598aaa: fix login data types
+- Updated dependencies [49b1778]
+  - @melchor629/fastify-infra@0.1.3
+
 ## 3.0.7
 
 ### Patch Changes

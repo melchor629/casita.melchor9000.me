@@ -1,5 +1,11 @@
 # @melchor629/prisma-nas-auth
 
+## 0.1.0
+
+### Minor Changes
+
+- 87d42e2: Updgrade prisma to v7.
+
 ## 0.0.1
 
 ### Patch Changes

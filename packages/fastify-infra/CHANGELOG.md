@@ -1,5 +1,11 @@
 # @melchor629/fastify-infra
 
+## 0.1.3
+
+### Patch Changes
+
+- 49b1778: Fix finishing service did not finish fastify
+
 ## 0.1.2
 
 ### Patch Changes

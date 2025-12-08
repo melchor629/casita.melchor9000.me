@@ -1,5 +1,16 @@
 # nas-persistance
 
+## 2.0.8
+
+### Patch Changes
+
+- 87d42e2: Updgrade prisma to v7.
+- df24223: Fix update login data miss type.
+- Updated dependencies [87d42e2]
+- Updated dependencies [49b1778]
+  - @melchor629/prisma-nas-auth@0.1.0
+  - @melchor629/fastify-infra@0.1.3
+
 ## 2.0.7
 
 ### Patch Changes
