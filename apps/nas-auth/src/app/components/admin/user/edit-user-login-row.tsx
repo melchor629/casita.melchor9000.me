@@ -29,7 +29,7 @@ const EditUserLoginRow = ({
   const editUserLoginMutation = useEditUserLogin()
   const removeUserLoginMutation = useRemoveUserLogin()
   const [editMode, setEditMode] = useState(false)
-  const [loginData, setLoginData] = useState<Record<string, unknown> | null>(login.data)
+  const [loginData, setLoginData] = useState(login.data as Record<string, unknown> | null)
   const [isDisabled, setIsDisabled] = useState(login.disabled)
   const [opened, setOpened] = useState(false)
 
@@ -87,7 +87,7 @@ const EditUserLoginRow = ({
   }, [readOnly, canDelete, removeUserLoginMutation, login.id, userId])
 
   useEffect(() => {
-    setLoginData(login.data)
+    setLoginData(login.data as Record<string, unknown> | null)
     setIsDisabled(login.disabled)
   }, [login])
 
