@@ -1,6 +1,6 @@
 {
   "extends": [
-    "@melchor629/tsconfigs/preact.json",
+    "@melchor629/tsconfigs/react.json",
     "@melchor629/tsconfigs/buildable.json",
   ],
   "compilerOptions": {

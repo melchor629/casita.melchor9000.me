@@ -7,7 +7,7 @@ export function startSpan<T>(name: string, fn: (span: Span) => T): T {
   return tracer.startActiveSpan(name, (span) => {
     const result = fn(span)
     if (result instanceof Promise) {
-      void result.finally(() => span.end())
+      result.finally(() => span.end()).catch(() => {})
     } else {
       span.end()
     }

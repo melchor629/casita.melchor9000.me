@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-key */
 import path from 'node:path'
-import type { ComponentChild, VNode } from 'preact'
-import { renderToReadableStream } from 'preact-render-to-string/stream'
+import { type ReactNode, type ReactElement, cloneElement, type ComponentProps } from 'react'
+import { renderToReadableStream } from 'react-dom/server'
 // eslint-disable-next-line import-x/no-unresolved
 import routeModules from 'virtual:ssr/routes'
-import { SsrRouterContext, type SsrRouterContextValue } from '../nice-ssr/navigation'
+import { SsrRouterProvider, type SsrRouterProviderProps } from '../nice-ssr/navigation'
 import type { Metadata, PageHelperModule, PageLoaderContext, PageModule } from '../nice-ssr/page'
 import type { SsrRequest } from '../nice-ssr/request'
 import { SsrResponse } from '../nice-ssr/response'
@@ -89,11 +89,11 @@ async function getCsrTags(
   basePath: string,
   scriptNonce?: string,
   styleNonce?: string,
-): Promise<[ComponentChild[], string]> {
+): Promise<[ReactNode[], string]> {
   const pageCsrModuleId = path.join('virtual:csr', moduleId).replace(/\/$/, '')
   if (import.meta.env.DEV) {
     return [
-      [<script type="module" nonce={scriptNonce} src="/src/app/root-layout.tsx" />],
+      [<script type="module" nonce={scriptNonce} src="/src/app/root-layout.tsx" async />],
       `/@id/__x00__${pageCsrModuleId}`,
     ]
   }
@@ -144,13 +144,24 @@ async function getCsrAssets(
   return [...css, { type: 'page', path: `${basePath}${pageCsrManifestEntry.file}` }]
 }
 
-const DefaultRootLayout = ({ children }: { readonly children: ComponentChild[] }) => (
+async function getEntryCsr(basePath: string) {
+  if (import.meta.env.DEV) {
+    return '/@id/__x00__virtual:entry-csr'
+  }
+
+  // @ts-expect-error this is an external file after build
+  // eslint-disable-next-line import-x/no-unresolved
+  const { default: manifest } = await import('../client/.vite/manifest.json', { with: { type: 'json' } }) as { default: Record<string, RawManifestEntry> }
+  const entry = getEntryForModuleId(manifest, 'virtual:entry-csr')
+  return basePath + entry.file
+}
+
+const DefaultRootLayout = ({ children }: { readonly children: ReactNode[] }) => (
   <html lang="en">
     <head />
     <body id="app">{children}</body>
   </html>
 )
-const doctypeHtmlBuffer = Buffer.from('<!DOCTYPE html>\n', 'utf-8')
 
 async function renderCompletePage(
   module: PageModule,
@@ -163,18 +174,10 @@ async function renderCompletePage(
     ...pageContext.props,
   }
 
-  request.nice.log.debug('Serializing data')
-  const context = {
-    basePath: request.nice.basePath,
-    params: request.nice.params,
-    pathname: request.nice.pathname,
-    url: request.nice.url,
-  } satisfies SsrRouterContextValue
-
   request.nice.log.debug('Building head')
   const scriptNonce = request.headers.get('x-script-nonce') || undefined
   const styleNonce = request.headers.get('x-style-nonce') || undefined
-  const [[moreHeads, pageScriptPath], pageMetadataHead] = await Promise.all([
+  const [[moreHeads, pageScriptPath], pageMetadataHead, entryScriptPath] = await Promise.all([
     getCsrTags(
       request.nice.originalPathname,
       request.nice.basePath,
@@ -182,6 +185,7 @@ async function renderCompletePage(
       styleNonce,
     ),
     renderHead(module, ssrProps),
+    getEntryCsr(request.nice.basePath),
   ])
 
   request.nice.log.debug('Building body')
@@ -192,54 +196,60 @@ async function renderCompletePage(
     const layoutComponents = await Promise.all(pageContext.layouts.map(async (m) => (await m()).default))
     const tree = RootLayout({
       children: [
-        <SsrRouterContext value={context}>
-          {layoutComponents.reduceRight(
-            (p, Layout) => <Layout>{p}</Layout>,
-            <Page {...ssrProps} />,
-          )}
-        </SsrRouterContext>,
-        <script
-          type="module"
-          nonce={scriptNonce}
-          dangerouslySetInnerHTML={{
-            __html: [
-              'const f=(o)=>o==null||typeof o!=="object"?o:(Object.keys(o).forEach(k=>f(o[k])),Object.freeze(o))',
-            `window.__cc=f(${serializeForHtml(context)})`,
-            `import(${serializeForHtml(pageScriptPath)}).then(({ hydratePage }) => hydratePage(f(${serializeForHtml(ssrProps)})))`,
-            ].join(';'),
+        <SsrRouterProvider
+          initialValue={{
+            basePath: request.nice.basePath,
+            params: request.nice.params,
+            pathname: request.nice.pathname,
+            url: request.nice.url,
+            Page: (props: Record<string, unknown>) => (
+              <>
+                {layoutComponents.reduceRight(
+                  // eslint-disable-next-line react/no-unstable-nested-components
+                  (p, Layout) => <Layout>{p}</Layout>,
+                  <Page {...props} />,
+                )}
+              </>
+            ),
+            props: ssrProps,
           }}
         />,
       ],
-    }) as VNode
-    transformTree(tree, [...pageMetadataHead, ...moreHeads])
-    return tree
+    }) as ReactElement<ComponentProps<'html'>, 'html'>
+    return transformTree(tree, [...pageMetadataHead, ...moreHeads])
   })
 
   request.nice.log.debug('Rendering HTML')
-  const stream = renderToReadableStream(tree)
-  const reader = stream.getReader()
-  const body = new ReadableStream({
-    start(controller) {
-      controller.enqueue(doctypeHtmlBuffer)
+  const serializableContext: PartialPageRenderResult = {
+    a: [{ type: 'page', path: pageScriptPath }],
+    c: {
+      basePath: request.nice.basePath,
+      params: request.nice.params,
+      pathname: request.nice.pathname,
+      url: request.nice.url,
     },
-    async pull(controller) {
-      const result = await reader.read()
-      if (result.value) {
-        controller.enqueue(result.value)
-      } else if (result.done) {
-        controller.close()
-      }
+    p: ssrProps,
+  }
+  const stream = await renderToReadableStream(tree, {
+    nonce: scriptNonce,
+    signal: request.signal,
+    bootstrapScriptContent: `
+      const c=${serializeForHtml(serializableContext)};
+      import(${serializeForHtml(entryScriptPath)}).then(({ default: start }) => start(c));
+    `,
+    onError(error, errorInfo) {
+      request.nice.log.error({ err: error, ...errorInfo }, 'Rendering page thrown an unhandled error')
     },
   })
   return SsrResponse.new()
     .header('content-type', 'text/html; charset=utf-8')
     .status(pageContext.status ?? 'ok')
-    .stream(body)
+    .stream(stream)
 }
 
 export type PartialPageRenderResult = Readonly<{
   p: Record<string, unknown>
-  c: SsrRouterContextValue
+  c: Omit<SsrRouterProviderProps, 'props' | 'Page'>
   a: Array<{ type: 'page' | 'module' | 'stylesheet', path: string }>
   m?: Metadata
 }>
@@ -261,7 +271,7 @@ async function renderPartialPage(
     params: request.nice.params,
     pathname: request.nice.pathname,
     url: request.nice.url,
-  } satisfies SsrRouterContextValue
+  } satisfies PartialPageRenderResult['c']
 
   request.nice.log.debug('Building head')
   const [assets, metadata] = await Promise.all([
@@ -311,7 +321,7 @@ export default async function renderPage(
 
 async function renderHead({ metadata: metadataFn }: PageModule, ssrProps: Record<string, unknown>) {
   return startSpan('prepare metadata', async () => {
-    const headEntries: ComponentChild[] = []
+    const headEntries: ReactNode[] = []
     const metadata = typeof metadataFn === 'function' ? await metadataFn(ssrProps) : metadataFn
     if (metadata?.title) {
       headEntries.push(<title>{metadata.title}</title>)
@@ -326,23 +336,29 @@ async function renderHead({ metadata: metadataFn }: PageModule, ssrProps: Record
   })
 }
 
-function transformTree(tree: VNode, additionalElements: ComponentChild[]) {
-  if (tree.type !== 'html' || !Array.isArray(tree.props.children)) {
+function transformTree(tree: ReactElement<ComponentProps<'html'>, 'html'>, additionalElements: ReactNode[]) {
+  if (tree.type !== 'html' || !tree.props.children || typeof tree.props.children !== 'object' || !(Symbol.iterator in tree.props.children)) {
     throw new Error('The root layout must return <html /> tag')
   }
 
-  let headTree = (tree.props.children as ComponentChild[])
-    .filter((el): el is VNode => el != null && typeof el === 'object' && 'type' in el && 'props' in el)
-    .find((el) => el.type === 'head')
-  if (!headTree) {
-    headTree = <head />
-    tree.props.children.unshift(headTree)
-  }
-  headTree.props.children ??= []
-  const headChildren = headTree.props.children as ComponentChild[]
+  const treeChildren = Array.from(tree.props.children)
+  const headTree = treeChildren
+    .filter((el): el is ReactElement => el != null && typeof el === 'object' && 'type' in el && 'props' in el)
+    .find((el): el is ReactElement<ComponentProps<'head'>, 'head'> => el.type === 'head')
+    ?? <head /> as ReactElement<ComponentProps<'head'>>
+  const headChildren = Array.from(headTree.props.children as ReactNode[] ?? [])
   if (import.meta.env.DEV) {
     headChildren.unshift(<script type="module" src="/@vite/client" />)
   }
-  headChildren.unshift(<meta charset="UTF-8" />)
+  headChildren.unshift(<meta charSet="UTF-8" />)
   headChildren.push(...additionalElements)
+
+  const newHead = cloneElement(headTree, { children: headChildren })
+  return cloneElement(tree, {
+    children: [
+      treeChildren.slice(0, treeChildren.indexOf(headTree)),
+      newHead,
+      treeChildren.slice(treeChildren.indexOf(headTree) + 1),
+    ],
+  })
 }

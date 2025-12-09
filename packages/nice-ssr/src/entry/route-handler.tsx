@@ -162,7 +162,7 @@ export function getErrorPage(path: `/${string}`, error: unknown): RouteHandle {
       children: [],
       layout: errorRoutePath?.layout,
       entry: (errorRoutePath?.error as never)
-        ?? (() => Promise.resolve({ default: () => 'Page has errors' })),
+        ?? (() => Promise.resolve({ default: ({ error }: { error: Error }) => 'Page has errors: ' + error.message })),
       matcher: /^$/,
       pathname: `${errorRoutePath?.pathname ?? ''}/_error`,
       type: 'page',

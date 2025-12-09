@@ -35,6 +35,9 @@ export function createRequest(req: FastifyRequest, reply: FastifyReply, pathname
         req.raw.on('data', (chunk: Buffer) => {
           controller.enqueue(new Uint8Array(chunk.buffer, chunk.byteOffset, chunk.byteLength))
         })
+        req.raw.on('error', (error) => {
+          controller.error(error)
+        })
         req.raw.on('end', () => {
           controller.close()
         })
@@ -47,26 +50,6 @@ export function createRequest(req: FastifyRequest, reply: FastifyReply, pathname
   return new Request(url, init)
 }
 
-async function writeFastifyResponse(response: Response, reply: FastifyReply): Promise<void> {
-  reply.status(response.status)
-
-  for (const [headerName, headerValue] of response.headers) {
-    reply.header(headerName, headerValue)
-  }
-
-  let body: unknown
-  if (reply.request.method !== 'HEAD') {
-    body = response.body
-  }
-
-  // compress does not support ReadableStream, better convert it to Readable
-  if (body instanceof ReadableStream) {
-    await reply.send(Readable.fromWeb(body as import('node:stream/web').ReadableStream))
-  } else {
-    await reply.send()
-  }
-}
-
 async function writeRawResponse(response: Response, reply: FastifyReply): Promise<void> {
   reply.hijack()
   for (const [headerName, headerValue] of response.headers) {
@@ -76,10 +59,20 @@ async function writeRawResponse(response: Response, reply: FastifyReply): Promis
 
   const body = response.body
   if (body instanceof ReadableStream) {
-    const promise = new Promise<void>((resolve) => reply.raw.on('close', resolve))
-    Readable.fromWeb(body as import('node:stream/web').ReadableStream)
-      .pipe(reply.raw)
-    return promise
+    return await new Promise<void>((resolve, reject) => {
+      const nodeStream = Readable.fromWeb(body as import('node:stream/web').ReadableStream)
+      nodeStream.on('error', (err) => {
+        try {
+          reply.raw.destroy(err)
+        } catch {
+          // ignore errprs while destroying
+        }
+        reject(err)
+      })
+      reply.raw.on('error', (err) => reject(err))
+      reply.raw.on('close', () => resolve())
+      nodeStream.pipe(reply.raw)
+    })
   } else {
     return new Promise<void>((resolve) => reply.raw.end(resolve))
   }
@@ -89,6 +82,6 @@ export async function writeResponse(response: Response, reply: FastifyReply, hij
   if (hijack) {
     await writeRawResponse(response, reply)
   } else {
-    await writeFastifyResponse(response, reply)
+    await reply.send(response)
   }
 }

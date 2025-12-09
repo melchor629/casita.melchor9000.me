@@ -27,7 +27,7 @@ const getResolvedPageEntry = async (moduleId: string): Promise<[PageEntry | unde
   return [await getPageEntry(`/${moduleId}`), 'page']
 }
 
-export default async function generateCsrPage(moduleId: string, devtools: 'none' | 'dev' | 'prod') {
+export default async function generateCsrPage(moduleId: string) {
   const [pageEntry, type] = await getResolvedPageEntry(moduleId)
   if (!pageEntry) return ''
 
@@ -39,23 +39,13 @@ export default async function generateCsrPage(moduleId: string, devtools: 'none'
   const sourcePath = getAppPath(entry)
   const layouts = getLayouts(pageEntry)
   const pageRender = layouts
-    .reduceRight((p, _, i) => `h(Layout${i}, { children: ${p} })`, 'h(Page, props)')
-  const devtoolsImport = `import "${devtools === 'prod' ? 'preact/devtools' : 'preact/debug'}";`
+    .reduceRight((p, _, i) => `jsx(Layout${i}, { children: ${p} })`, 'jsx(Page, props)')
   return `
-${devtools !== 'none' ? devtoolsImport : ''}
-import { hydrate, render, h } from 'preact'
+import { jsx } from 'react/jsx-runtime';
 import Page from ${JSON.stringify(sourcePath)}
 ${layouts.map((p, i) => `import Layout${i} from ${JSON.stringify(p)}`).join('\n')}
 
-const container = document.getElementById('app')
-if (container == null) {
-  throw new Error('Container #app is not present, cannot render app.\\nEnsure to have a container with ID "id" in the root layout.')
-}
-
-export const hydratePage = (props) =>
-  hydrate(${pageRender}, container)
-
-export const renderPage = (props) =>
-  render(${pageRender}, container)
+export const renderPage = (props) => ${pageRender}
+renderPage.displayName = \`\${Page.displayName || Page.name}Layout\`
   `.trim()
 }

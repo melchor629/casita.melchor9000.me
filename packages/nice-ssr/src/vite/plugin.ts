@@ -15,25 +15,30 @@ type NiceSsrOptions = Readonly<{
 
 const unsafeExists = (path: string) =>
   fs.access(path).then(() => true).catch(() => false)
-const niceSsrPlugin = ({ devTools: devtools }: NiceSsrOptions = {}): Plugin => {
-  let devToolsEnabled: 'dev' | 'prod' | 'none' = 'none'
+const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
   return {
     name: 'nice-ssr-plugin',
-    resolveId(source) {
+    resolveId(source, importer) {
       if (source.startsWith(csrPageModuleId('')) && !source.endsWith('/')) {
         return `\0${source}`
       }
-      if (source === ssrRoutesModuleId) {
+      if (source === ssrRoutesModuleId || source === 'virtual:entry-csr') {
         return `\0${source}`
+      }
+      if (importer === '\0virtual:entry-csr' && source.startsWith('./')) {
+        return path.resolve(import.meta.dirname, '..', source)
       }
     },
 
     async load(id) {
       if (id.startsWith(`\0${csrPageModuleId('')}`)) {
-        return generateCsrPage(id.slice(13), devToolsEnabled)
+        return generateCsrPage(id.slice(13))
       }
       if (id === `\0${ssrRoutesModuleId}`) {
         return generateSsrRoutes()
+      }
+      if (id === '\0virtual:entry-csr') {
+        return await fs.readFile(path.resolve(import.meta.dirname, '..', 'csr-entry.js'), 'utf-8')
       }
     },
 
@@ -68,7 +73,7 @@ const niceSsrPlugin = ({ devTools: devtools }: NiceSsrOptions = {}): Plugin => {
         if (!env.isSsrBuild) {
           config.build.outDir = 'dist/client'
           config.build.manifest = true
-          config.build.rollupOptions.input = []
+          config.build.rollupOptions.input = ['virtual:entry-csr']
           config.build.rollupOptions.output.chunkFileNames = (chunkInfo) =>
             `.p/chunks/${chunkInfo.name}.[hash].js`
           // needed for the csr pages, otherwise the export default is trimmed
@@ -96,14 +101,6 @@ const niceSsrPlugin = ({ devTools: devtools }: NiceSsrOptions = {}): Plugin => {
           config.build.outDir = 'dist/server'
           config.build.rollupOptions.external = ['../client/.vite/manifest.json']
         }
-      }
-    },
-
-    configResolved(config) {
-      if (config.isProduction) {
-        devToolsEnabled = devtools?.enabled && devtools.enabledInProd ? 'prod' : 'none'
-      } else {
-        devToolsEnabled = devtools?.enabled ?? true ? 'dev' : 'none'
       }
     },
 
