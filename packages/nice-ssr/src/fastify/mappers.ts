@@ -82,6 +82,10 @@ export async function writeResponse(response: Response, reply: FastifyReply, hij
   if (hijack) {
     await writeRawResponse(response, reply)
   } else {
+    for (const [headerName, headerValue] of response.headers) {
+      reply.header(headerName, headerValue)
+    }
+    reply.status(response.status)
     await reply.send(response)
   }
 }
