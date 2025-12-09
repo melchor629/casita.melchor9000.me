@@ -1,4 +1,4 @@
-import { memo } from 'preact/compat'
+import { memo } from 'react'
 import type { Client } from './types'
 
 const InteractionFooter = ({ client }: { readonly client: Client }) => (

@@ -1,5 +1,5 @@
-import type { ChangeEvent, MouseEvent } from 'preact/compat'
-import { useCallback, useEffect, useState } from 'preact/hooks'
+import type { ChangeEvent, MouseEvent } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useEditUser } from '#actions/mutations/edit-user.ts'
 import { useRemoveUser } from '#actions/mutations/remove-user.ts'
 import type { GetUserQuery } from '#queries/get-user.ts'
@@ -60,6 +60,7 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
   }, [readOnly, canDelete, user.id, removeUserMutation])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUserName(user.userName)
     setDisplayName(user.displayName || '')
     setGivenName(user.givenName || '')

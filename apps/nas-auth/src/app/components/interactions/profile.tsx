@@ -1,5 +1,5 @@
 import { Link } from '@melchor629/nice-ssr'
-import { useMemo } from 'preact/hooks'
+import { useMemo } from 'react'
 import { usePublicUrl, useResolvedProfilePic } from '../../hooks'
 import Button from '../ui/button'
 import { H1 } from '../ui/text'

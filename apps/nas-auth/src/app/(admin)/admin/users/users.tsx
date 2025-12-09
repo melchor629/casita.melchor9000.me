@@ -1,6 +1,4 @@
-'use client'
-
-import { useMemo, useState } from 'preact/hooks'
+import { useMemo, useState } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
 import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
 import { AddUserDialog } from '#components/admin/user/index.ts'

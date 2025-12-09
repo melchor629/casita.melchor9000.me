@@ -1,5 +1,5 @@
 import { useRevalidator } from '@melchor629/nice-ssr'
-import { useCallback, useEffect, useState } from 'preact/hooks'
+import { useCallback, useEffect, useState } from 'react'
 import { useEditApplication } from '../../../actions/mutations/edit-application'
 import { useRemoveApplication } from '../../../actions/mutations/remove-application'
 import {
@@ -42,6 +42,7 @@ const EditApplication = ({ application, canDelete, readOnly }) => {
   }, [readOnly, canDelete, removeApplicationMutation, application.key])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setName(application.name || '')
   }, [application])
 

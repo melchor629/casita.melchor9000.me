@@ -1,10 +1,10 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 // eslint-disable-next-line import-x/no-extraneous-dependencies
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import type { RenderableProps } from 'preact'
+import type { PropsWithChildren } from 'react'
 import getQueryClient from './client.ts'
 
-export default function ClientProvider({ children }: RenderableProps<object>) {
+export default function ClientProvider({ children }: PropsWithChildren) {
   // value will depend if it is in the server or the client. avoid using
   // useState as it will break in suspense boundaries.
   const queryClient = getQueryClient()

@@ -1,6 +1,6 @@
 import { Link } from '@melchor629/nice-ssr'
 import { motion } from 'motion/react'
-import { useMemo, useState } from 'preact/hooks'
+import { useMemo, useState } from 'react'
 import {
   Button,
   H2,

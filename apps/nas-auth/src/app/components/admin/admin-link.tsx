@@ -1,4 +1,4 @@
-import type { ComponentProps } from 'preact'
+import type { ComponentProps } from 'react'
 
 const AdminLink = ({ children, className, ref, ...props }: ComponentProps<'div'>) => (
   <div

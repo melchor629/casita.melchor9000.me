@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'preact/hooks'
+import { useCallback, useMemo } from 'react'
 import { Dialog, DialogBody, DialogHeader } from '../../ui'
 
 type LoginDataDialogProps = Readonly<{

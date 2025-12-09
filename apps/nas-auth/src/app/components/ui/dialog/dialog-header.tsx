@@ -1,5 +1,4 @@
-import type { MouseEvent } from 'preact/compat'
-import { useCallback, useEffect } from 'preact/hooks'
+import { useCallback, useEffect, type MouseEvent } from 'react'
 import type { BaseHtmlProps } from '../types'
 
 type DialogHeaderProps = BaseHtmlProps<'header', {

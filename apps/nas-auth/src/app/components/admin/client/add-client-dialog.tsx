@@ -1,6 +1,5 @@
 import { useNavigate } from '@melchor629/nice-ssr'
-import type { ChangeEvent, MouseEvent } from 'preact/compat'
-import { useCallback, useState } from 'preact/hooks'
+import { useCallback, useState, type ChangeEvent, type MouseEvent } from 'react'
 import { useAddClient } from '../../../actions/mutations/add-client'
 import {
   Button,

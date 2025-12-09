@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks'
+import { useState } from 'react'
 import type { GetPermissions } from '../../../../queries/get-permissions'
 import type { GetUserQuery } from '../../../../queries/get-user'
 import {

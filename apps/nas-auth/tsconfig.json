@@ -1,5 +1,5 @@
 {
-  "extends": "@melchor629/tsconfigs/preact.json",
+  "extends": "@melchor629/tsconfigs/react.json",
   "compilerOptions": {
     "allowJs": true,
     "strictBindCallApply": true,

@@ -1,5 +1,4 @@
-import type { ChangeEvent } from 'preact/compat'
-import { useCallback, useMemo } from 'preact/hooks'
+import { useCallback, useMemo, type ChangeEvent } from 'react'
 import Input from './input'
 import Label from './label'
 

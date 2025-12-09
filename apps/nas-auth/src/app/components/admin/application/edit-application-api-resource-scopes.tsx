@@ -1,5 +1,5 @@
-import type { KeyboardEvent } from 'preact/compat'
-import { useCallback, useEffect, useState } from 'preact/hooks'
+import type { KeyboardEvent } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Button,
   Dialog,

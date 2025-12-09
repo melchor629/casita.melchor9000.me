@@ -1,5 +1,5 @@
-import type { ChangeEvent, MouseEvent } from 'preact/compat'
-import { useCallback, useEffect, useState } from 'preact/hooks'
+import type { ChangeEvent, MouseEvent } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useEditUserLogin } from '#actions/mutations/edit-user-login.ts'
 import { useRemoveUserLogin } from '#actions/mutations/remove-user-login.ts'
 import type { GetUserQuery } from '#queries/get-user.ts'
@@ -87,6 +87,7 @@ const EditUserLoginRow = ({
   }, [readOnly, canDelete, removeUserLoginMutation, login.id, userId])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoginData(login.data as Record<string, unknown> | null)
     setIsDisabled(login.disabled)
   }, [login])

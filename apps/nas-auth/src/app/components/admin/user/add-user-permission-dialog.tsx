@@ -1,5 +1,5 @@
-import type { ChangeEvent, MouseEvent } from 'preact/compat'
-import { useCallback, useMemo, useState } from 'preact/hooks'
+import type { ChangeEvent, MouseEvent } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useAddUserPermission } from '#actions/mutations/add-user-permission.ts'
 import type { GetPermissions } from '#queries/get-permissions.ts'
 import {

@@ -1,6 +1,5 @@
 import type { ClientMetadata } from 'oidc-provider'
-import type { KeyboardEvent } from 'preact/compat'
-import { useCallback } from 'preact/hooks'
+import { useCallback, type KeyboardEvent } from 'react'
 import { Button, Input } from '../../ui'
 
 type EditUrlsProps = Readonly<{

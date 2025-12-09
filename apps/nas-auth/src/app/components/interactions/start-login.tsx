@@ -1,4 +1,4 @@
-import { useCallback } from 'preact/hooks'
+import { useCallback } from 'react'
 import { usePublicUrl } from '../../hooks'
 import Button from '../ui/button'
 import { H1 } from '../ui/text'

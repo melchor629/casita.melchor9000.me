@@ -1,5 +1,3 @@
-'use client'
-
 import { Link, useNavigate } from '@melchor629/nice-ssr'
 import {
   useCallback,
@@ -7,7 +5,7 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'preact/hooks'
+} from 'react'
 import { useUpdateSessionUser } from '#actions/mutations/update-session-user.ts'
 import { useUploadUserProfilePicture } from '#actions/mutations/upload-user-profile-picture.ts'
 import { useGetSession } from '#actions/queries/get-session.ts'
@@ -90,6 +88,7 @@ const Profile = () => {
       return
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDisplayName(data.user.displayName)
     setGivenName(data.user.givenName ?? '')
     setFamilyName(data.user.familyName ?? '')

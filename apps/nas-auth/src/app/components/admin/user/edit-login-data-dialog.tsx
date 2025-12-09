@@ -1,5 +1,4 @@
-import type { GenericEventHandler } from 'preact'
-import { useCallback, useEffect, useState } from 'preact/hooks'
+import { useCallback, useEffect, useState, type ChangeEventHandler } from 'react'
 import {
   Button,
   Dialog,
@@ -32,7 +31,7 @@ const EditLoginDataDialog = ({ close, data, opened }: EditLoginDataDialogProps) 
           rows={10}
           className="w-full"
           value={dataAsJson}
-          onChange={useCallback<GenericEventHandler<HTMLTextAreaElement>>((e) => setDataAsJson(e.currentTarget.value), [])}
+          onChange={useCallback<ChangeEventHandler<HTMLTextAreaElement>>((e) => setDataAsJson(e.currentTarget.value), [])}
         />
       </DialogBody>
       <DialogFooter className="text-end">

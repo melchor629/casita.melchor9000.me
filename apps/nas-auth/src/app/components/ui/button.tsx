@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import type { ComponentProps } from 'preact'
+import type { ComponentProps } from 'react'
 import LoadingSpinner from './loading-spinner'
 import type { OverridableComponent } from './types'
 

@@ -1,6 +1,6 @@
 import { useRevalidator } from '@melchor629/nice-ssr'
-import type { ChangeEvent, MouseEvent } from 'preact/compat'
-import { useCallback, useState } from 'preact/hooks'
+import type { ChangeEvent, MouseEvent } from 'react'
+import { useCallback, useState } from 'react'
 import { useAddPermission } from '../../../actions/mutations/add-permission'
 import {
   Button,

@@ -1,6 +1,5 @@
 import { Link } from '@melchor629/nice-ssr'
-import { Fragment } from 'preact'
-import { useMemo } from 'preact/hooks'
+import { Fragment, useMemo } from 'react'
 import { Button, H2 } from '../ui'
 import InteractionFooter from './interaction-footer'
 import type { Client, Interaction } from './types'

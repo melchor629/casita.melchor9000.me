@@ -1,5 +1,5 @@
 import type { ClientMetadata } from 'oidc-provider'
-import { useMemo } from 'preact/hooks'
+import { useMemo } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
 import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
 import { EditClient } from '#components/admin/client/index.ts'

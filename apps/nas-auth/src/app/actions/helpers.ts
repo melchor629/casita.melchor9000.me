@@ -9,7 +9,7 @@ import {
   useMutation,
   type UseMutationResult,
 } from '@tanstack/react-query'
-import { useMemo } from 'preact/hooks'
+import { useMemo } from 'react'
 import type { ActionParameters, ActionReturnType, actions } from './server'
 import { type FailableResult, type FailableValidationFields } from './server/helpers'
 

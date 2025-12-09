@@ -1,5 +1,5 @@
 import { AnimatePresence } from 'motion/react'
-import { createPortal } from 'preact/compat'
+import { createPortal } from 'react-dom'
 import type { BaseHtmlProps } from '../types'
 import DialogBackdrop from './dialog-backdrop'
 import DialogContainer from './dialog-container'

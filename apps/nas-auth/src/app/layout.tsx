@@ -1,6 +1,6 @@
 import { useNavigationStatus } from '@melchor629/nice-ssr'
 import { clsx } from 'clsx'
-import type { PropsWithChildren } from 'preact/compat'
+import type { PropsWithChildren } from 'react'
 import ClientProvider from '#actions/client-provider.tsx'
 import { LoadingSpinner } from '#components/ui/index.ts'
 

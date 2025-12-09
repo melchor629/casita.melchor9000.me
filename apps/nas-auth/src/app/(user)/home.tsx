@@ -1,5 +1,3 @@
-'use client'
-
 import { useGetSession } from '#actions/queries/get-session.ts'
 import { Profile, StartLogin } from '#components/interactions/index.ts'
 

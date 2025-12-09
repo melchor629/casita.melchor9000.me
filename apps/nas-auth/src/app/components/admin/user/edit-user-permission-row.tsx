@@ -1,10 +1,10 @@
-import type { ChangeEvent, MouseEvent } from 'preact/compat'
+import type { ChangeEvent, MouseEvent } from 'react'
 import {
   useCallback,
   useEffect,
   useMemo,
   useState,
-} from 'preact/hooks'
+} from 'react'
 import { useEditUserPermission } from '#actions/mutations/edit-user-permission.ts'
 import { useRemoveUserPermission } from '#actions/mutations/remove-user-permission.ts'
 import type { GetPermissions } from '#queries/get-permissions.ts'
@@ -82,7 +82,7 @@ const EditUserPermissionRow = ({
       id: permission.id,
       userId,
     }, { onSuccess: () => setEditMode(false) })
-  }, [readOnly, editUserPermissionMutation, permissionObj?.name, hasWrite, hasDelete, permission.id, userId])
+  }, [readOnly, editUserPermissionMutation, permissionObj, hasWrite, hasDelete, permission.id, userId])
 
   const remove = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -94,6 +94,7 @@ const EditUserPermissionRow = ({
   }, [readOnly, canDelete, removeUserPermissionMutation, permission.id, userId])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setApplicationKey(permission.permission?.application?.key || '')
     setPermissionObj(permission.permission || null)
     setHasWrite(permission.write)

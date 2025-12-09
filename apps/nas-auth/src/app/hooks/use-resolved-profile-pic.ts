@@ -1,4 +1,4 @@
-import { useMemo } from 'preact/hooks'
+import { useMemo } from 'react'
 
 const nasAuthImageUrl = 'nas-auth://'
 const nasAuthImageEndpoint = '/api/user/profile-image'

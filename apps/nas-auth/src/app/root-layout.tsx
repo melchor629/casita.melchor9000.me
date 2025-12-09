@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from 'preact/compat'
+import type { PropsWithChildren } from 'react'
 import favicon from './favicon.ico'
 import icon from './icon.png'
 import './globals.css'

@@ -1,6 +1,5 @@
 import { Link } from '@melchor629/nice-ssr'
-import { useMemo } from 'preact/hooks'
-import { Fragment } from 'preact/jsx-runtime'
+import { Fragment, useMemo } from 'react'
 
 type AdminBreadcrumbProps = Readonly<{
   sections?: ReadonlyArray<{ part: string, name: string }>

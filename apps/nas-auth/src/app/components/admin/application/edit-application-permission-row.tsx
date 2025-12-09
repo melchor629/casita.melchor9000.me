@@ -1,6 +1,6 @@
 import { useRevalidator } from '@melchor629/nice-ssr'
-import type { ChangeEvent, MouseEvent } from 'preact/compat'
-import { useCallback, useEffect, useState } from 'preact/hooks'
+import type { ChangeEvent, MouseEvent } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useEditPermission } from '#actions/mutations/edit-permission.ts'
 import { useRemovePermission } from '#actions/mutations/remove-permission.ts'
 import type { GetApplication } from '#queries/get-application.ts'
@@ -71,6 +71,7 @@ const EditApplicationPermissionRow = ({
   }, [readOnly, canDelete, removePermissionMutation, permission.id, applicationId, revalidate])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setName(permission.name)
     setDisplayName(permission.displayName || '')
   }, [permission])

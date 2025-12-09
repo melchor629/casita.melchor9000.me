@@ -1,8 +1,7 @@
 'use client'
 
 import { clsx } from 'clsx'
-import type { ChangeEvent } from 'preact/compat'
-import { useCallback, useEffect, useMemo } from 'preact/hooks'
+import { useCallback, useEffect, useMemo, type ChangeEvent } from 'react'
 import type { BaseHtmlProps } from './types'
 
 type SelectProps<T = string> = Omit<BaseHtmlProps<'select', {

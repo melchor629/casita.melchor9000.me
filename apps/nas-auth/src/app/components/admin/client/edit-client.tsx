@@ -6,13 +6,14 @@ import type {
   SigningAlgorithmWithNone,
   SymmetricSigningAlgorithm,
 } from 'oidc-provider'
-import type { ChangeEvent, MouseEvent } from 'preact/compat'
 import {
   useCallback,
   useEffect,
   useMemo,
   useState,
-} from 'preact/hooks'
+  type ChangeEvent,
+  type MouseEvent,
+} from 'react'
 import { useEditClient } from '../../../actions/mutations/edit-client'
 import { useRemoveClient } from '../../../actions/mutations/remove-client'
 import {

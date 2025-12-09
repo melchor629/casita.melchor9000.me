@@ -1,6 +1,6 @@
 import { useRevalidator } from '@melchor629/nice-ssr'
-import type { ChangeEvent, MouseEvent } from 'preact/compat'
-import { useCallback, useEffect, useState } from 'preact/hooks'
+import type { ChangeEvent, MouseEvent } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useEditApiResource } from '#actions/mutations/edit-api-resource.ts'
 import { useRemoveApiResource } from '#actions/mutations/remove-api-resource.ts'
 import type { GetApplication } from '#queries/get-application.ts'
@@ -109,6 +109,7 @@ const EditApplicationApiResourceRow = ({
   }, [readOnly, canDelete, removeApiResourceMutation, appId, apiResource.key, revalidate])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setName(apiResource.name)
     setAudience(apiResource.audience || '')
     setAccessToken({

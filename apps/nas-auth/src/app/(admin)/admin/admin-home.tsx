@@ -1,7 +1,7 @@
 'use client'
 
 import { Link } from '@melchor629/nice-ssr'
-import { useMemo } from 'preact/hooks'
+import { useMemo } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
 import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
 import AdminLink from '#components/admin/admin-link.tsx'

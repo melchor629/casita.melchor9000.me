@@ -1,6 +1,6 @@
 import type { AsymmetricSigningAlgorithm, ResourceServer, TokenFormat } from 'oidc-provider'
-import type { ChangeEvent } from 'preact/compat'
-import { useCallback, useEffect, useState } from 'preact/hooks'
+import type { ChangeEvent } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Button,
   Dialog,

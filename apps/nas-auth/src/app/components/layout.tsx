@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from 'preact/compat'
+import type { PropsWithChildren } from 'react'
 import Footer from './footer'
 
 const Layout = ({ children }: PropsWithChildren) => (
