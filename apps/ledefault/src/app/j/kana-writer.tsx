@@ -1,6 +1,4 @@
-import type { Ref } from 'preact'
-import { memo, type KeyboardEvent, type TargetedEvent } from 'preact/compat'
-import { useCallback, useImperativeHandle, useLayoutEffect, useRef, useState } from 'preact/hooks'
+import { memo, type KeyboardEvent, type Ref, useCallback, useImperativeHandle, useLayoutEffect, useRef, useState, type SyntheticEvent } from 'react'
 import * as wanakana from 'wanakana'
 import { hiraganaCharRows, katakanaCharRows, toRomaji } from './jp-utils'
 import { CharButton, TextArea } from './shared-components'
@@ -47,7 +45,7 @@ function WanaKanaInput({ mode, onLatinChars, ref, toggleMode }: WanaKanaInputPro
     <TextArea
       ref={setTextArea}
       id="jp-writer"
-      class="min-h-48"
+      className="min-h-48"
       cols={18}
       rows={8}
       onKeyUp={useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -76,7 +74,7 @@ function KanaCharacter({ addChar, jp, lat }: KanaCharacterProps) {
     setText(lat)
   }, [lat])
 
-  const renderJpChar = useCallback((e: TargetedEvent<HTMLButtonElement>) => {
+  const renderJpChar = useCallback((e: SyntheticEvent<HTMLButtonElement>) => {
     if (document.activeElement !== e.target) {
       setText(jp)
     }
@@ -104,7 +102,7 @@ function KanaCharacter({ addChar, jp, lat }: KanaCharacterProps) {
     <CharButton
       ref={buttonRef}
       type="button"
-      class="px-0 w-12"
+      className="px-0 w-12"
       tab-index="1"
       onClick={click}
       onPointerEnter={renderLatChar}
@@ -126,7 +124,7 @@ type KanaRowProps = Readonly<{
  */
 function KanaRow({ addChar, row }: KanaRowProps) {
   return (
-    <div class="flex flex-row justify-center gap-2">
+    <div className="flex flex-row justify-center gap-2">
       {row.map(([jp, lat]) => <KanaCharacter key={lat} addChar={addChar} jp={jp} lat={lat} />)}
     </div>
   )
@@ -138,13 +136,13 @@ type KanaRowsProps = Readonly<{
 }>
 /**
  * Renders the kata rows.
- * @param {{ addChar(jpChar: string, latChar: string): void, mode: 'kata' | 'hira' }} props
+ * @param props
  */
 const KanaRows = memo(function KanaRows({ addChar, mode }: KanaRowsProps) {
   const charRows = mode === 'hira' ? hiraganaCharRows : katakanaCharRows
   return (
-    <div class="flex flex-col gap-2 flex-wrap md:max-h-screen">
-      {charRows.map((row) => <KanaRow key={row[1]} addChar={addChar} row={row} />)}
+    <div className="flex flex-col gap-2 flex-wrap md:max-h-screen">
+      {charRows.map((row, i) => <KanaRow key={row.length ? row[0][0] : `space-${charRows[i - 1][0][0]}`} addChar={addChar} row={row} />)}
     </div>
   )
 })
@@ -175,12 +173,12 @@ export default function KanaWriter({ changePage }: { readonly changePage: () => 
   return (
     <>
       <KanaRows mode={mode} addChar={addChar} />
-      <div class="flex flex-col gap-4">
-        <div class="flex flex-row gap-3 justify-center">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-row gap-3 justify-center">
           <div>
             <CharButton
               variant="secondary"
-              tabindex={0}
+              tabIndex={0}
               onClick={onClear}
             >
               clear
@@ -189,7 +187,7 @@ export default function KanaWriter({ changePage }: { readonly changePage: () => 
           <div>
             <CharButton
               variant="secondary"
-              tabindex={0}
+              tabIndex={0}
               onClick={toggleMode}
             >
               {mode === 'hira' ? 'あ' : 'ア'}
@@ -201,14 +199,14 @@ export default function KanaWriter({ changePage }: { readonly changePage: () => 
           <div>
             <CharButton
               variant="secondary"
-              tabindex={0}
+              tabIndex={0}
               onClick={changePage}
             >
               dict
             </CharButton>
           </div>
         </div>
-        <div class="flex flex-row gap-3 justify-center">
+        <div className="flex flex-row gap-3 justify-center">
           <WanaKanaInput
             ref={wanaKanaRef}
             mode={mode}
@@ -217,11 +215,11 @@ export default function KanaWriter({ changePage }: { readonly changePage: () => 
           />
           <TextArea
             id="romanji-result"
-            class="min-h-48"
+            className="min-h-48"
             cols={18}
             rows={8}
             readOnly
-            autocomplete="off"
+            autoComplete="off"
             value={latChars}
           />
         </div>

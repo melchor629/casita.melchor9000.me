@@ -1,6 +1,6 @@
 import { Link } from '@melchor629/nice-ssr'
 import { clsx } from 'clsx'
-import { useMemo } from 'preact/hooks'
+import { useMemo } from 'react'
 import type { EntryRef } from '../jp-utils'
 
 /**
@@ -27,7 +27,7 @@ const RefLink = ({ refLink: ref }: { readonly refLink: EntryRef }) => {
   )
   if (ref.type === 'basic') {
     return (
-      <Link class={vocabRefClasses} to={linkTo}>
+      <Link className={vocabRefClasses} to={linkTo}>
         B
         {ref.chapter}
         {' '}
@@ -38,7 +38,7 @@ const RefLink = ({ refLink: ref }: { readonly refLink: EntryRef }) => {
 
   if (ref.type === 'intermediate') {
     return (
-      <Link class={vocabRefClasses} to={linkTo}>
+      <Link className={vocabRefClasses} to={linkTo}>
         I
         {ref.chapter}
         {' '}
@@ -48,7 +48,7 @@ const RefLink = ({ refLink: ref }: { readonly refLink: EntryRef }) => {
   }
 
   if (ref.type === 'url') {
-    return <a class={vocabRefClasses} href={ref.url.toString()} target="_blank" rel="noreferrer">{ref.name}</a>
+    return <a className={vocabRefClasses} href={ref.url.toString()} target="_blank" rel="noreferrer">{ref.name}</a>
   }
 
   return null

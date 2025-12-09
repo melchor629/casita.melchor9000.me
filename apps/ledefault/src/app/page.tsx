@@ -1,6 +1,6 @@
 import { useBlocker, useNavigate, type Metadata } from '@melchor629/nice-ssr'
 import { clsx } from 'clsx'
-import { useCallback, useEffect, useState } from 'preact/hooks'
+import { useCallback, useEffect, useState } from 'react'
 
 export const metadata: Metadata = {
   title: 'pi',
@@ -30,7 +30,7 @@ export default function HomePage() {
   useEffect(() => {
     console.log("You've found a raspberry pi hosting things.")
     console.log('The owner of it is @melchor629 (aka melchor9000).')
-    console.log('This page is served using an fastify+vite+preact.')
+    console.log('This page is served using an fastify+vite+react.')
     console.log('træfik helps us to publish different containers to the outside.')
     console.log('%cTwitter: https://twitter.com/melchor629', 'color: blue')
     console.log('%cGitHub:  https://github.com/melchor629', 'color: grey')
@@ -70,11 +70,11 @@ export default function HomePage() {
     >
       <div>
         <pre onTouchEnd={useCallback(() => navigate('/w/'), [navigate])}>
-          <span class="text-green-500">
+          <span className="text-green-500">
             {`   .~~.   .~~.
   '. \\ ' ' / .'`}
           </span>
-          <span class="text-red-500">
+          <span className="text-red-500">
             {`
    .~ .~~~..~.
   : .~.'~'.~. :
@@ -83,8 +83,8 @@ export default function HomePage() {
  ~ .~ (   ) ~. ~
   (  : '~' :  ) `}
           </span>
-          <span class="text-inherit" id="pi">Raspberry Pi</span>
-          <span class="text-red-500">
+          <span className="text-inherit" id="pi">Raspberry Pi</span>
+          <span className="text-red-500">
             {`
    '~ .~~~. ~'
        '~'`}
@@ -93,7 +93,7 @@ export default function HomePage() {
       </div>
       <div>
         <pre>
-          <span class="text-blue-500">
+          <span className="text-blue-500">
             {`
                     ##        .
               ## ## ##       ==

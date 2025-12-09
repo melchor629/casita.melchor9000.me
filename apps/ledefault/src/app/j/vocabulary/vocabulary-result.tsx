@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { useCallback, useRef, useState } from 'preact/hooks'
+import { useCallback, useRef, useState } from 'react'
 import type { VocabularyComponentProps } from '../jp-utils'
 import AdjectiveTable from './adjective-table'
 import BasicVerbTable from './basic-verb-table'
@@ -13,7 +13,7 @@ import RefLinkStack from './ref-link-stack'
 const typesWithDetails = Object.freeze(['verb', 'demonstrative', 'adjective', 'ichidan-verb', 'godan-verb', 'irregular-verb', 'kanji'])
 
 /**
- * Renders the given entry to Preact.
+ * Renders the given entry to the list.
  * @param param0 props
  */
 export default function VocabularyResult({ result }: VocabularyComponentProps) {
@@ -45,7 +45,7 @@ export default function VocabularyResult({ result }: VocabularyComponentProps) {
 
   return (
     <div
-      class={clsx(
+      className={clsx(
         'bg-accent-elevated/15',
         'border border-accent-main-light dark:border-accent-main-dark',
         'px-2 py-1',
@@ -54,11 +54,11 @@ export default function VocabularyResult({ result }: VocabularyComponentProps) {
         'flex flex-row gap-2',
       )}
     >
-      <div class="my-0.5 flex flex-col items-center gap-1 min-w-[28px]">
+      <div className="my-0.5 flex flex-col items-center gap-1 min-w-[28px]">
         {hasDetails && (
           <button
             type="button"
-            class={clsx(
+            className={clsx(
               'size-6',
               'p-1',
               'text-xs leading-none',
@@ -79,19 +79,19 @@ export default function VocabularyResult({ result }: VocabularyComponentProps) {
       </div>
 
       <div
-        class={clsx(
+        className={clsx(
           'grow',
           'flex flex-row flex-wrap',
           'gap-x-2 gap-y-1',
           'items-center',
         )}
       >
-        <div class="grow">
+        <div className="grow">
           <JapaneseWithRomaji
             value={result.value}
             otherValue={result.type === 'noun' ? result.pronuntiation : (result.type === 'kanji' ? `${result.onyomi}・${result.kunyomi}` : undefined)}
           />
-          <div class="uppercase text-xs opacity-75 select-none">
+          <div className="uppercase text-xs opacity-75 select-none">
             {result.type}
             {' · '}
             {result.level === 'basic' && 'B'}
@@ -99,12 +99,12 @@ export default function VocabularyResult({ result }: VocabularyComponentProps) {
             {result.chapter}
           </div>
         </div>
-        <div class="p-0">
+        <div className="p-0">
           {result.meaning}
         </div>
         {hasDetails && (
-          <div class="h-0 -mt-1 min-w-full overflow-hidden" ref={detailsDivRef}>
-            <div class="py-1">
+          <div className="h-0 -mt-1 min-w-full overflow-hidden" ref={detailsDivRef}>
+            <div className="py-1">
               {result.type === 'verb' && <BasicVerbTable result={result} />}
               {result.type === 'ichidan-verb' && <InformalVerbTable result={result} />}
               {result.type === 'godan-verb' && <InformalVerbTable result={result} />}

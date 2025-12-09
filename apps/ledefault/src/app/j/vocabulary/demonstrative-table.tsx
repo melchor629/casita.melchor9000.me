@@ -11,7 +11,7 @@ const DemonstrativeTable = ({ result }: VocabularyComponentProps<DemonstrativeDi
     <NaisTable>
       <thead>
         <tr>
-          <th class="w-0">Tipo</th>
+          <th className="w-0">Tipo</th>
           <th>Japonés</th>
           <th>Significado</th>
         </tr>
@@ -48,7 +48,7 @@ const DemonstrativeTable = ({ result }: VocabularyComponentProps<DemonstrativeDi
       </tbody>
     </NaisTable>
 
-    <p class={result.details ? 'pb-2' : ''}>
+    <p className={result.details ? 'pb-2' : ''}>
       Este demostrativo actúa como un
       {' '}
       {result.actsAs === 'adjective' ? 'adjetivo' : 'sustantivo'}

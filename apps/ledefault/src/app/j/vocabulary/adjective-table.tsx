@@ -10,7 +10,7 @@ const AdjectiveTable = ({ result }: VocabularyComponentProps<AdjectiveDictionary
   <NaisTable>
     <thead>
       <tr>
-        <th class="w-0" />
+        <th className="w-0" />
         <th>Positive</th>
         <th>Negative</th>
       </tr>

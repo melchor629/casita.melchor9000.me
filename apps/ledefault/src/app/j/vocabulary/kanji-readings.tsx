@@ -1,4 +1,4 @@
-import { useMemo } from 'preact/hooks'
+import { useMemo } from 'react'
 import type { KanjiEntry, VocabularyComponentProps } from '../jp-utils'
 import { NaisTable } from '../shared-components'
 import JapaneseWithRomaji from './japanese-with-romaji'

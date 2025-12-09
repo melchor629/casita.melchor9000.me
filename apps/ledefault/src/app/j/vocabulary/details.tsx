@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import Markdown, { type MarkdownToJSX } from 'markdown-to-jsx'
-import { useMemo } from 'preact/hooks'
-import { Fragment } from 'preact/jsx-runtime'
+import { Fragment, useMemo } from 'react'
 import type { VocabularyComponentProps } from '../jp-utils'
 
 const BasicDetails = ({ result }: VocabularyComponentProps) => (
@@ -26,9 +25,9 @@ const mdOptions: MarkdownToJSX.Options = {
   disableAutoLink: true,
   wrapper: 'div',
   overrides: {
-    ul: { component: (props) => <ul {...props} class="list-inside" /> },
-    li: { component: (props) => <li {...props} class="list-disc [&_ul]:pl-6" /> },
-    p: { component: (props) => <p {...props} class="pb-2 last:pb-0" /> },
+    ul: { component: (props) => <ul {...props} className="list-inside" /> },
+    li: { component: (props) => <li {...props} className="list-disc [&_ul]:pl-6" /> },
+    p: { component: (props) => <p {...props} className="pb-2 last:pb-0" /> },
     iframe: () => null,
     image: () => null,
     video: () => null,

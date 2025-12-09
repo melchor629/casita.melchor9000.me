@@ -1,6 +1,6 @@
 import { useSearchParams } from '@melchor629/nice-ssr'
 import { clsx } from 'clsx'
-import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks'
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import 'shaka-player/dist/controls.css'
 import type Shaka from 'shaka-player/dist/shaka-player.ui.js'
 import type { Manifest } from './page'
@@ -83,9 +83,9 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
   }, [player, manifest.src])
 
   return (
-    <div class="w-dvw h-dvh flex justify-center items-center bg-black">
+    <div className="w-dvw h-dvh flex justify-center items-center bg-black">
       <main
-        class={clsx(
+        className={clsx(
           'aspect-video relative',
           styles.llea,
         )}
@@ -93,16 +93,16 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
           ref={setVideo}
-          class="video-js w-full h-full"
+          className="video-js w-full h-full"
           preload="auto"
           poster={manifest.poster}
-          autoplay={useMemo(() => !!searchParams.get('ap'), [searchParams])}
+          autoPlay={useMemo(() => !!searchParams.get('ap'), [searchParams])}
         />
         {pendingToPlay && (
           /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
           <div
             role="button"
-            class={clsx(
+            className={clsx(
               'absolute top-0 left-0 w-full h-full z-10',
               'text-white bg-primary-bg-dark/10',
               'cursor-pointer',
@@ -115,7 +115,7 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
             {/* Play Circle (material Icons) */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="w-12 h-12 absolute top-4 left-3"
+              className="w-12 h-12 absolute top-4 left-3"
               viewBox="0 -960 960 960"
               fill="currentColor"
             >

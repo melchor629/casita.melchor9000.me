@@ -1,7 +1,7 @@
 import { useFloating, offset, autoUpdate } from '@floating-ui/react-dom'
 import { type PageLoader, type Metadata, useNavigate, useBlocker } from '@melchor629/nice-ssr'
 import { clsx } from 'clsx'
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { getUser } from '@/auth'
 import entries from './entries'
 
@@ -41,7 +41,7 @@ function DaLink({ entry }: { readonly entry: import('./entries').Entry }) {
         target="_blank"
         referrerPolicy="no-referrer"
         id={`link-${entry.id}`}
-        class={clsx(
+        className={clsx(
           'bg-primary-elevated',
           'rounded-lg',
           'px-6 py-6',
@@ -59,18 +59,18 @@ function DaLink({ entry }: { readonly entry: import('./entries').Entry }) {
         rel="noreferrer"
       >
         {entry.icon
-          ? <img class="w-12 h-12" src={entry.icon} alt={`${entry.name} icon`} />
-          : <div class="flex justify-center items-center w-12 h-12">{entry.id}</div>}
+          ? <img className="w-12 h-12" src={entry.icon} alt={`${entry.name} icon`} />
+          : <div className="flex justify-center items-center w-12 h-12">{entry.id}</div>}
 
         {entry.label && (
-          <div class="absolute right-6 bottom-6">{entry.label}</div>
+          <div className="absolute right-6 bottom-6">{entry.label}</div>
         )}
       </a>
 
       <div
         ref={setFloating}
         style={floatingStyles}
-        class={clsx(
+        className={clsx(
           'fixed top-0 left-0 z-10',
           'pointer-events-none',
           'bg-primary-elevated',
@@ -89,7 +89,7 @@ function DaLink({ entry }: { readonly entry: import('./entries').Entry }) {
   )
 }
 
-export default function Page({ entries }: PageProps) {
+export default function DashboardPage({ entries }: PageProps) {
   const [fadeInEnded, setFadeInEnded] = useState(false)
   const divRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
@@ -129,7 +129,7 @@ export default function Page({ entries }: PageProps) {
   return (
     <div
       ref={divRef}
-      class={clsx(
+      className={clsx(
         'min-h-screen p-4',
         'flex flex-wrap justify-center content-center items-center gap-4',
         fadeInEnded ? 'opacity-100' : 'opacity-0',
@@ -140,7 +140,7 @@ export default function Page({ entries }: PageProps) {
       {entries.map((entry, i) => (
         entry === 'space'
           // eslint-disable-next-line react/no-array-index-key
-          ? <div key={`space-${i}`} class="flex-grow w-full" />
+          ? <div key={`space-${i}`} className="flex-grow w-full" />
           : <DaLink key={entry.id} entry={entry} />
       ))}
     </div>

@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { useMemo } from 'preact/hooks'
+import { useMemo } from 'react'
 import { toRomaji } from '../jp-utils'
 
 type JapaneseWithRomajiProps = Readonly<{
@@ -9,7 +9,7 @@ type JapaneseWithRomajiProps = Readonly<{
 
 const JapaneseWithRomaji = ({ otherValue, value }: JapaneseWithRomajiProps) => (
   <div
-    class={clsx(
+    className={clsx(
       'relative',
       'grow',
       'flex flex-col',
@@ -20,7 +20,7 @@ const JapaneseWithRomaji = ({ otherValue, value }: JapaneseWithRomajiProps) => (
     )}
   >
     <span>{value}</span>
-    <span class="absolute top-0 left-0 w-full opacity-0">
+    <span className="absolute top-0 left-0 w-full opacity-0">
       {useMemo(() => otherValue || toRomaji(value), [value, otherValue])}
     </span>
   </div>

@@ -1,6 +1,6 @@
 import { useBlocker, useNavigate, type Metadata } from '@melchor629/nice-ssr'
 import clsx from 'clsx'
-import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import KanaWriter from './kana-writer'
 import Vocabulary from './vocabulary'
 
@@ -96,7 +96,7 @@ export default function JapanesePage() {
   return (
     <>
       <div
-        class={clsx(
+        className={clsx(
           daContainer,
           'p-4 gap-y-4 gap-x-6',
           'md:flex-wrap',
@@ -107,7 +107,7 @@ export default function JapanesePage() {
         <KanaWriter changePage={useCallback(() => void changePage('vocab'), [changePage])} />
       </div>
       <div
-        class={clsx(
+        className={clsx(
           daContainer,
           'max-h-screen',
           'opacity-0 invisible hidden',

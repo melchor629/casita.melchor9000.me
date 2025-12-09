@@ -1,14 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { clsx } from 'clsx'
-import type { ComponentPropsWithRef } from 'preact/compat'
+import type { ComponentPropsWithRef } from 'react'
 
 type TextAreaProps = Readonly<ComponentPropsWithRef<'textarea'>>
-export function TextArea({ children, class: classs, className, ref, ...props }: TextAreaProps) {
+export function TextArea({ children, className, ref, ...props }: TextAreaProps) {
   return (
     <textarea
       {...props}
       ref={ref}
-      class={clsx(
+      className={clsx(
         'bg-primary-subtle hover:bg-primary-hover',
         'px-2 py-1',
         'rounded-md shadow-lg',
@@ -16,7 +16,7 @@ export function TextArea({ children, class: classs, className, ref, ...props }: 
         'outline-2 outline-offset-2 not-focus:not-active:outline-hidden',
         'outline-primary-hover',
         'transition-colors',
-        classs, className,
+        className,
       )}
     >
       {children}
@@ -27,12 +27,12 @@ export function TextArea({ children, class: classs, className, ref, ...props }: 
 type CharButtonProps = Readonly<ComponentPropsWithRef<'button'> & {
   variant?: 'primary' | 'secondary'
 }>
-export function CharButton({ children, class: classs, className, ref, variant = 'primary', ...props }: CharButtonProps) {
+export function CharButton({ children, className, ref, variant = 'primary', ...props }: CharButtonProps) {
   return (
     <button
       {...props}
       ref={ref}
-      class={clsx(
+      className={clsx(
         'relative',
         'min-w-12',
         'outline-2 outline-offset-2',
@@ -53,7 +53,7 @@ export function CharButton({ children, class: classs, className, ref, variant = 
           'hover:not-disabled:bg-primary-hover/50',
           'outline-primary-text',
         ],
-        classs, className,
+        className,
       )}
     >
       {children}
@@ -62,17 +62,17 @@ export function CharButton({ children, class: classs, className, ref, variant = 
 }
 
 type NaisTableProps = Readonly<ComponentPropsWithRef<'table'>>
-export function NaisTable({ children, class: classs, className, ref, ...props }: NaisTableProps) {
+export function NaisTable({ children, className, ref, ...props }: NaisTableProps) {
   return (
     <table
       {...props}
       ref={ref}
-      class={clsx(
+      className={clsx(
         'border-separate border-spacing-x-2 border-spacing-y-1',
         'w-full',
         'text-center',
         'mb-2',
-        classs, className,
+        className,
       )}
     >
       {children}

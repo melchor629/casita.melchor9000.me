@@ -10,7 +10,7 @@ const InformalVerbTable = ({ result }: VocabularyComponentProps<InformalVerbDict
   <NaisTable>
     <thead>
       <tr>
-        <th class="w-0" />
+        <th className="w-0" />
         <th>Positive</th>
         <th>Negative</th>
       </tr>
@@ -36,22 +36,22 @@ const InformalVerbTable = ({ result }: VocabularyComponentProps<InformalVerbDict
       </tr>
       <tr>
         <th>te</th>
-        <td colspan={2}>
+        <td colSpan={2}>
           <JapaneseWithRomaji value={result.forms.te} />
         </td>
       </tr>
       <tr>
         <th>let's do</th>
-        <td colspan={2}>
+        <td colSpan={2}>
           <JapaneseWithRomaji value={result.forms.letsDo} />
         </td>
       </tr>
       <tr>
-        <th class="text-nowrap">
+        <th className="text-nowrap">
           want to
           <em>(adj)</em>
         </th>
-        <td colspan={2}>
+        <td colSpan={2}>
           <JapaneseWithRomaji value={result.forms.wantTo} />
         </td>
       </tr>
@@ -84,7 +84,7 @@ const InformalVerbTable = ({ result }: VocabularyComponentProps<InformalVerbDict
       </tr>
       <tr>
         <th>let's do</th>
-        <td colspan={2}>
+        <td colSpan={2}>
           <JapaneseWithRomaji value={result.forms.formal.mashou} />
         </td>
       </tr>

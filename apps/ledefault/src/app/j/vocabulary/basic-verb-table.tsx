@@ -10,7 +10,7 @@ const BasicVerbTable = ({ result }: VocabularyComponentProps<BasicVerbDictionary
   <NaisTable>
     <thead>
       <tr>
-        <th class="w-0" />
+        <th className="w-0" />
         <th>Positive</th>
         <th>Negative</th>
       </tr>
@@ -37,7 +37,7 @@ const BasicVerbTable = ({ result }: VocabularyComponentProps<BasicVerbDictionary
       {result.forms.te && (
         <tr>
           <th>te</th>
-          <td colspan={2}>
+          <td colSpan={2}>
             <JapaneseWithRomaji value={result.forms.te} />
           </td>
         </tr>
@@ -45,7 +45,7 @@ const BasicVerbTable = ({ result }: VocabularyComponentProps<BasicVerbDictionary
       {result.forms.mashou && (
         <tr>
           <th>mashou</th>
-          <td colspan={2}>
+          <td colSpan={2}>
             <JapaneseWithRomaji value={result.forms.mashou} />
           </td>
         </tr>
@@ -56,7 +56,7 @@ const BasicVerbTable = ({ result }: VocabularyComponentProps<BasicVerbDictionary
             tai
             <em>(adj)</em>
           </th>
-          <td colspan={2}>
+          <td colSpan={2}>
             <JapaneseWithRomaji value={result.forms.tai} />
           </td>
         </tr>

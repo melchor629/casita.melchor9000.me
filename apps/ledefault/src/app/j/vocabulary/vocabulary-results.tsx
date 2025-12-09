@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'preact/hooks'
+import { useEffect, useMemo, useState } from 'react'
 import type { DictionaryEntry } from '../jp-utils'
 import VocabularyResult from './vocabulary-result'
 
@@ -40,7 +40,7 @@ export default function VocabularyResults({ filter }: Readonly<{ filter: string 
   const vocabDaTextClass = 'select-none text-center'
   if (!filter) {
     return (
-      <div class={vocabDaTextClass}>
+      <div className={vocabDaTextClass}>
         write something in the filter
         <br />
         use t: to filter by type
@@ -53,11 +53,11 @@ export default function VocabularyResults({ filter }: Readonly<{ filter: string 
   }
 
   if (results == null) {
-    return <div class={vocabDaTextClass}>loading ...</div>
+    return <div className={vocabDaTextClass}>loading ...</div>
   }
 
   if (!results.length) {
-    return <div class={vocabDaTextClass}>no results found</div>
+    return <div className={vocabDaTextClass}>no results found</div>
   }
 
   return (
@@ -66,7 +66,7 @@ export default function VocabularyResults({ filter }: Readonly<{ filter: string 
         .slice(0, resultLimit)
         .map((result) => <VocabularyResult key={`${result.chapter}:${result.type}:${result.value}`} result={result} />)}
       {results.length > resultLimit && (
-        <div class={vocabDaTextClass}>
+        <div className={vocabDaTextClass}>
           there are more results that are not shown
           <br />
           tweak the filter to reduce the results
