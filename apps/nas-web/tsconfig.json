@@ -1,0 +1,20 @@
+{
+  "extends": [
+    "@melchor629/tsconfigs/react.json",
+  ],
+  "compilerOptions": {
+    "rootDir": ".",
+    "paths": {
+      "@/api/*": ["./src/api/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/workers/*": ["./src/workers/*"],
+    }
+  },
+  "include": [
+    "src/",
+    "*.config.js",
+    "*.config.ts",
+  ]
+}

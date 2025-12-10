@@ -1,0 +1,29 @@
+@use "bootstrap-vars" as bs-vars;
+
+$enable-print-styles: false;
+
+// colors for the theme system
+$primary: bs-vars.$orange-500;
+
+$secondary: bs-vars.$teal-500;
+
+$body-color: bs-vars.$gray-800;
+$body-color-dark: bs-vars.$gray-300;
+$body-bg: bs-vars.$white;
+$body-bg-dark: bs-vars.$gray-900;
+$body-emphasis-color: bs-vars.$gray-900;
+$body-emphasis-color-dark: bs-vars.$gray-200;
+
+$link-color-dark: $primary;
+
+// colors for those things that do not work with the theme system
+$custom-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+);
+
+$theme-colors: map-merge(bs-vars.$theme-colors, $custom-colors);
+
+$modal-fade-transform: translateY(20px);
+
+@import 'bootstrap/scss/bootstrap';

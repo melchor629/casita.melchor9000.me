@@ -1,0 +1,68 @@
+{
+  "name": "nas-web",
+  "version": "0.14.9",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@dr.pogodin/react-helmet": "^3.0.0",
+    "@floating-ui/react": "^0.27.8",
+    "@react-spring/web": "^10.0.0",
+    "@svg-icons/fa-regular": "^1.86.0",
+    "@svg-icons/material-filled": "^1.86.0",
+    "@svg-icons/material-outlined": "^1.86.0",
+    "@svg-icons/octicons": "^1.86.0",
+    "@tanstack/query-async-storage-persister": "^5.77.0",
+    "@tanstack/react-query": "^5.77.0",
+    "@tanstack/react-query-devtools": "^5.77.0",
+    "@tanstack/react-query-persist-client": "^5.77.0",
+    "bootstrap": "^5.3.0",
+    "highlight.js": "^11.5.1",
+    "lodash-es": "^4.17.21",
+    "nanoid": "^5.0.3",
+    "oidc-client-ts": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-oidc-context": "^3.0.0",
+    "react-router": "^7.0.0",
+    "react-virtuoso": "^4.0.0",
+    "styled-components": "^6.0.4",
+    "zustand": "^5.0.0"
+  },
+  "scripts": {
+    "dev": ". ./env.sh && vite",
+    "build": ". ./env.sh && vite build --base \"${BASE_PATH}\"",
+    "check": "tsc -p .",
+    "lint": "eslint src",
+    "clean": "rm -rf dist node_modules/.cache",
+    "docker": "../../docker_build.sh"
+  },
+  "browserslist": {
+    "production": [
+      ">1%",
+      "not dead",
+      "not ie <= 11",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@melchor629/eslint-config": "^0.3.0",
+    "@melchor629/tsconfigs": "*",
+    "@types/bootstrap": "^5.2.5",
+    "@types/lodash-es": "^4.17.7",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "browserslist-to-esbuild": "^2.1.1",
+    "eslint": "^9.0.0",
+    "sass": "^1.51.0",
+    "typescript": "^5.0.3",
+    "vite": "^7.0.0",
+    "vite-plugin-pwa": "^1.0.0",
+    "vite-plugin-svgr": "^4.2.0",
+    "vite-tsconfig-paths": "^5.0.0"
+  }
+}

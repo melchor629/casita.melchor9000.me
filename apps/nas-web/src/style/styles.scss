@@ -1,0 +1,27 @@
+@forward './directory-entries-list';
+@import 'highlight.js/styles/monokai-sublime.css';
+
+:root {
+  --me-navbar-height: 60px;
+}
+
+.sticky-top {
+  position: sticky;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.full-height {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.padding-nav-bar {
+  padding-top: var(--me-navbar-height);
+}
+
+.no-select {
+  user-select: none
+}
