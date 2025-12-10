@@ -77,7 +77,9 @@ const thumbnailController: Controller<typeof schema> = async (req, reply) => {
 thumbnailController.options = {
   config: {
     authorization: {},
-    jwt: {},
+    jwt: {
+      allowQuery: true,
+    },
   },
   schema,
 }

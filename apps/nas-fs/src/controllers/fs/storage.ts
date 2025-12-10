@@ -93,7 +93,9 @@ const storageController: Controller<typeof schema> = async (req, reply) => {
 storageController.options = {
   config: {
     authorization: {},
-    jwt: {},
+    jwt: {
+      allowQuery: true,
+    },
   },
   schema,
 }
