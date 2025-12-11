@@ -2,7 +2,8 @@ import type { ComponentPropsWithRef, ElementType, JSX } from 'react'
 
 export { clsx } from 'clsx/lite'
 
-type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never
 
 interface OverridableTypeMap {
   props: object

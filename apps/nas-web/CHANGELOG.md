@@ -1,5 +1,11 @@
 # nas-web
 
+## 0.15.1
+
+### Patch Changes
+
+- Deployment fixes
+
 ## 0.15.0
 
 ### Minor Changes

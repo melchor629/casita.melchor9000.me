@@ -3,7 +3,6 @@ import { clsx, type OverridableComponent, type OverridableComponentProps } from 
 
 type LinkTypeMap = {
   props: {
-    variant?: 'normal'
     underline?: 'never' | 'hover' | 'always'
   }
   defaultComponent: 'a'
@@ -15,7 +14,6 @@ const Link: OverridableComponent<LinkTypeMap> = ({
   className,
   component: Comp = 'a',
   underline = 'never',
-  variant = 'normal',
   ...props
 }: LinkProps) => {
   return (

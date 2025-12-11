@@ -1,13 +1,13 @@
 import { Helmet } from '@dr.pogodin/react-helmet'
 import { useMemo } from 'react'
-import { Link, type LoaderFunction, Navigate, useParams } from 'react-router'
+import { type LoaderFunction, Navigate, useParams } from 'react-router'
+import ReactRouterButton from '@/components/core/react-router-button'
 import { Folder, Search } from '../components/icons'
 import { Spinner } from '../components/loaders'
 import ItemsGrid from '../components/media/items-grid'
 import LibraryTypeIcon from '../components/media/library-type-icon'
 import { prefetchMediaLibraryChildren, useMediaLibraryChildren } from '../hooks/api/use-media-library-children'
 import { useTokenInfo } from '../hooks/use-token-info'
-import ReactRouterButton from '@/components/core/react-router-button'
 
 export const loader: LoaderFunction = async ({ params: { module } }) => {
   await prefetchMediaLibraryChildren(module)

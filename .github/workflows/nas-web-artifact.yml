@@ -50,9 +50,9 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }}
           secrets: |
-            IDENTITY_AUTHORITY="${{ vars.NAS_WEB_AUTHORITY }}"
-            IDENTITY_CLIENT_ID="${{ secrets.NAS_WEB_CLIENT_ID }}"
-            IDENTITY_CLIENT_SECRET="${{ secrets.NAS_WEB_CLIENT_SECRET }}"
+            "IDENTITY_AUTHORITY=${{ vars.NAS_WEB_AUTHORITY }}"
+            "IDENTITY_CLIENT_ID=${{ secrets.NAS_WEB_CLIENT_ID }}"
+            "IDENTITY_CLIENT_SECRET=${{ secrets.NAS_WEB_CLIENT_SECRET }}"
 
   deploy:
     runs-on: ubuntu-latest
@@ -73,5 +73,5 @@ jobs:
       - name: Deploy
         uses: ./.github/actions/deploy/pi
         with:
-          project: nas-web
+          project: nas
           service: web
