@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.4.0
+
+### Minor Changes
+
+- fa12e04: Change rendering to react
+
 ## 0.3.2
 
 ### Patch Changes

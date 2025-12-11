@@ -1,5 +1,11 @@
 # nas-fs
 
+## 0.12.26
+
+### Patch Changes
+
+- 29b3ee1: Fix routes missing token in query option.
+
 ## 0.12.25
 
 ### Patch Changes

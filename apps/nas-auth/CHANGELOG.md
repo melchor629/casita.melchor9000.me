@@ -1,5 +1,16 @@
 # nas-auth
 
+## 3.1.0
+
+### Minor Changes
+
+- ec05ce5: Use react instead of preact
+
+### Patch Changes
+
+- Updated dependencies [fa12e04]
+  - @melchor629/nice-ssr@0.4.0
+
 ## 3.0.8
 
 ### Patch Changes

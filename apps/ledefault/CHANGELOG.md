@@ -1,5 +1,16 @@
 # ledefault
 
+## 0.2.0
+
+### Minor Changes
+
+- 943c55e: Use react instead of preact
+
+### Patch Changes
+
+- Updated dependencies [fa12e04]
+  - @melchor629/nice-ssr@0.4.0
+
 ## 0.1.22
 
 ### Patch Changes
