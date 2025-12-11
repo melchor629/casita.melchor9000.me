@@ -72,6 +72,9 @@ const SvgIcon = styled(SvgIconBase)`
   display: inline-block;
   vertical-align: middle;
   overflow: hidden;
+  font-size: inherit;
+  width: 1em;
+  height: 1em;
 `
 
 export const File = (props: SvgIconProps) => <SvgIcon Component={FileSvg} {...props} />

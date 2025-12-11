@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+/* Matches bootstrap theme selector */
+@custom-variant dark (&:where([data-bs-theme="dark"], [data-bs-theme="dark"] *));
+
+@theme {
+  --color-primary-main: light-dark(
+    var(--color-orange-600),
+    var(--color-orange-400)
+  );
+
+  --color-secondary-main: light-dark(
+    var(--color-emerald-500),
+    var(--color-emerald-400)
+  );
+
+  --color-text-light: var(--color-gray-50);
+  --color-text-dark: var(--color-gray-900);
+  --color-text-main: light-dark(
+    var(--color-text-light),
+    var(--color-text-dark)
+  );
+  --color-text-contrasted: light-dark(
+    var(--color-text-dark),
+    var(--color-text-light)
+  );
+}
+
+:root {
+  /* color-scheme: dark light; */
+  --me-navbar-height: 60px;
+}
+
+:where([data-bs-theme="light"], [data-bs-theme="light"] *) {
+  color-scheme: light;
+}
+
+:where([data-bs-theme="dark"], [data-bs-theme="dark"] *) {
+  color-scheme: dark;
+}

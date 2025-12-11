@@ -26,4 +26,8 @@ $theme-colors: map-merge(bs-vars.$theme-colors, $custom-colors);
 
 $modal-fade-transform: translateY(20px);
 
-@import 'bootstrap/scss/bootstrap';
+// define here the layers priority
+@layer properties, theme, base, bootstrap, components, utilities;
+@layer bootstrap {
+  @import 'bootstrap/scss/bootstrap';
+}

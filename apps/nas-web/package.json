@@ -16,6 +16,7 @@
     "@tanstack/react-query-devtools": "^5.77.0",
     "@tanstack/react-query-persist-client": "^5.77.0",
     "bootstrap": "^5.3.0",
+    "clsx": "^2.0.0",
     "highlight.js": "^11.5.1",
     "lodash-es": "^4.17.21",
     "nanoid": "^5.0.3",
@@ -51,6 +52,7 @@
   "devDependencies": {
     "@melchor629/eslint-config": "^0.3.0",
     "@melchor629/tsconfigs": "*",
+    "@tailwindcss/vite": "^4.1.4",
     "@types/bootstrap": "^5.2.5",
     "@types/lodash-es": "^4.17.7",
     "@types/react": "^19.0.0",
@@ -59,6 +61,7 @@
     "browserslist-to-esbuild": "^2.1.1",
     "eslint": "^9.0.0",
     "sass": "^1.51.0",
+    "tailwindcss": "^4.1.4",
     "typescript": "^5.0.3",
     "vite": "^7.0.0",
     "vite-plugin-pwa": "^1.0.0",

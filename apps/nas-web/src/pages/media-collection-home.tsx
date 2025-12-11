@@ -7,6 +7,7 @@ import ItemsGrid from '../components/media/items-grid'
 import LibraryTypeIcon from '../components/media/library-type-icon'
 import { prefetchMediaLibraryChildren, useMediaLibraryChildren } from '../hooks/api/use-media-library-children'
 import { useTokenInfo } from '../hooks/use-token-info'
+import ReactRouterButton from '@/components/core/react-router-button'
 
 export const loader: LoaderFunction = async ({ params: { module } }) => {
   await prefetchMediaLibraryChildren(module)
@@ -36,40 +37,40 @@ export default function MediaCollectionHomePage() {
         <title>{app.name}</title>
       </Helmet>
 
-      <div className="d-flex flex-column full-height padding-nav-bar">
-        <div className="d-flex justify-content-between mb-2">
+      <div className="flex flex-col full-height padding-nav-bar">
+        <div className="flex justify-between mb-2">
           <h1>
-            <LibraryTypeIcon type={type} style={{ height: 'calc(1.375rem + 1.5vw)' }} />
-            <span style={{ verticalAlign: 'middle' }}>
+            <LibraryTypeIcon type={type} style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
+            <span className="align-middle select-none">
               &nbsp;
               {app.name}
             </span>
           </h1>
 
           <div>
-            <Link to={`/m/${module}/search`} className="btn btn-secondary-outline btn-link ml-1">
-              <Search style={{ height: 'calc(1.375rem + 1.5vw)' }} />
-            </Link>
-            <Link to={`/${module}/`} className="btn btn-secondary-outline btn-link">
-              <Folder style={{ height: 'calc(1.375rem + 1.5vw)' }} />
-            </Link>
+            <ReactRouterButton to={`/m/${module}/search`} className="mr-1">
+              <Search style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
+            </ReactRouterButton>
+            <ReactRouterButton to={`/${module}/`}>
+              <Folder style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
+            </ReactRouterButton>
           </div>
         </div>
 
         {isLoading && (
-          <div className="d-flex align-items-center justify-content-center flex-grow-1">
+          <div className="flex items-center justify-center grow">
             <Spinner size="lg" />
           </div>
         )}
 
         {!isLoading && items && type && (
-          <div className="flex-grow-1 position-relative">
+          <div className="grow relative">
             <ItemsGrid libraryType={type} items={items} module={module} />
           </div>
         )}
 
         {!isLoading && (!items || !type) && (
-          <div className="d-flex align-items-center justify-content-center flex-grow-1">
+          <div className="flex items-center justify-center grow">
             This library does not contain any media.
           </div>
         )}

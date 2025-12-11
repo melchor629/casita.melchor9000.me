@@ -41,11 +41,9 @@ const ChildrenCount = styled('div')`
 const ImageThumbnail = styled('img')`
   min-height: 6rem;
   box-shadow: 0 0 10px 1px rgb(10 10 10 / 40%);
-  transition: opacity 75ms ease-in-out,
-    box-shadow 75ms ease-in-out;
+  transition: box-shadow 75ms ease-in-out;
 
   &:hover {
-    opacity: 0.75;
     box-shadow: 0 0 8px 0 rgb(10 10 10 / 50%);
   }
 `

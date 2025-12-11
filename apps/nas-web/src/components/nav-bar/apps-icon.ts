@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { Apps as AppsIconBase } from '../icons'
 
 const AppsIcon = styled(AppsIconBase)`
-  height: 26px;
+  font-size: 26px;
   margin-bottom: 5px;
 `
 

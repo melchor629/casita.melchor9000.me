@@ -1,11 +1,12 @@
 import { type HTMLProps, useCallback, useMemo, useState } from 'react'
-import { Link } from 'react-router'
 import { getDownloadUrl } from '@/api/fs'
 import type { Item } from '@/api/fs/media'
 import useApiClient from '@/hooks/use-api-client'
 import useMediaThumbnailSize from '@/hooks/use-media-thumbnail-size'
+import ReactRouterLink from '../core/react-router-link'
 import { Download, Downloading } from '../icons'
 import ItemThumbnailImage from './item-thumbnail-image'
+import Button from '../core/button'
 
 interface ItemCellProps {
   readonly item: Item
@@ -21,12 +22,12 @@ export default function ItemCell({ item, module, style }: ItemCellProps) {
   const extraContent = useMemo(() => {
     if (item.type === 'album') {
       return (
-        <Link to={`/m/${module}/${item.artistId}`}>
+        <ReactRouterLink to={`/m/${module}/${item.artistId}`} underline="hover">
           <small>
             {item.artistTitle}
             {item.year && ` (${item.year})`}
           </small>
-        </Link>
+        </ReactRouterLink>
       )
     }
 
@@ -65,9 +66,9 @@ export default function ItemCell({ item, module, style }: ItemCellProps) {
 
   return (
     <div className="text-center" style={{ width, ...style }}>
-      <Link to={linkUrl}>
+      <ReactRouterLink to={linkUrl}>
         <ItemThumbnailImage module={module} item={item} forceLoadImage={style ? true : undefined} />
-      </Link>
+      </ReactRouterLink>
       <div className="pt-2 lh-sm">
         <span className="w-100 d-inline-block text-truncate">
           {item.title}
@@ -78,9 +79,9 @@ export default function ItemCell({ item, module, style }: ItemCellProps) {
           </span>
         )}
         {item.type === 'episode' && (
-          <button className="btn btn-outline-secondary btn-sm" disabled={preparing} onClick={download}>
-            {preparing ? <Downloading width="1rem" /> : <Download width="1rem" />}
-          </button>
+          <Button variant="text" size="small" color="secondary" disabled={preparing} onClick={download}>
+            {preparing ? <Downloading /> : <Download />}
+          </Button>
         )}
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
-import { Link } from 'react-router'
 import useRecentlyAddedMedia from '../hooks/api/use-recently-added-media'
+import ReactRouterButton from './core/react-router-button'
+import ReactRouterLink from './core/react-router-link'
 import { Folder, Search } from './icons'
 import HorizontallyScrollableContainer from './media/horizontally-scrollable-container'
 import ItemCell from './media/item-cell'
@@ -29,25 +30,25 @@ export default function RecentMedia({ module, name }: { readonly module: string,
     <div className="mb-3">
       <div className="d-flex justify-content-between mb-2">
         <h1>
-          <Link to={type ? `/m/${module}/` : `/${module}/`} className="text-decoration-none">
-            <LibraryTypeIcon type={type} style={{ height: 'calc(1.375rem + 1.5vw)' }} />
+          <ReactRouterLink to={type ? `/m/${module}/` : `/${module}/`}>
+            <LibraryTypeIcon type={type} style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
             <span style={{ verticalAlign: 'middle' }}>
               &nbsp;
               {name}
             </span>
-          </Link>
+          </ReactRouterLink>
         </h1>
 
         <div>
           {type && (
-            <Link to={`/m/${module}/search`} className="btn btn-secondary-outline btn-link ml-1">
-              <Search style={{ height: 'calc(1.375rem + 1.5vw)' }} />
-            </Link>
+            <ReactRouterButton to={`/m/${module}/search`} className="mr-1">
+              <Search style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
+            </ReactRouterButton>
           )}
           {type && (
-            <Link to={`/${module}/`} className="btn btn-secondary-outline btn-link">
-              <Folder style={{ height: 'calc(1.375rem + 1.5vw)' }} />
-            </Link>
+            <ReactRouterButton to={`/${module}/`}>
+              <Folder style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
+            </ReactRouterButton>
           )}
         </div>
       </div>
