@@ -86,6 +86,18 @@ export async function writeResponse(response: Response, reply: FastifyReply, hij
       reply.header(headerName, headerValue)
     }
     reply.status(response.status)
-    await reply.send(response)
+    if (response.body == null) {
+      // compress does not like null response
+      await reply.send(new Proxy(response, {
+        get(_, p) {
+          if (p === 'body') {
+            return ''
+          }
+          return response[p as keyof Response]
+        },
+      }))
+    } else {
+      await reply.send(response)
+    }
   }
 }
