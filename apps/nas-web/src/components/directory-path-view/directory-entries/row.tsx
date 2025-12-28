@@ -13,7 +13,7 @@ const Row = withTouchEvents(({
 }>) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
   <div {...props}>
-    <DirectoryEntryIconView module={module} size={16} entry={entry} />
+    <DirectoryEntryIconView module={module} size="list" entry={entry} />
     {' '}
     <span className="text-truncate">{isParentItem ? '..' : basename(entry.path)}</span>
   </div>

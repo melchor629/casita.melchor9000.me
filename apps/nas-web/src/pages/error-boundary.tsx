@@ -1,39 +1,40 @@
 import { isRouteErrorResponse, useRouteError } from 'react-router'
+import Text from '@/components/core/text'
 
 export default function ErrorBoundary() {
   const error = useRouteError()
   if (isRouteErrorResponse(error)) {
     return (
-      <div className="container pt-5 text-center">
-        <h2>Error loading data</h2>
-        <p className="lead">
+      <div className="w-full mt-navbar text-center">
+        <Text size="h2" className="mb-1">Error loading data</Text>
+        <Text size="bodyLarge">
           {`There was an error ${error.status} while fetching data for that page.`}
           Try reloading or contacting the master.
-        </p>
+        </Text>
       </div>
     )
   }
 
   if (error instanceof Error) {
     return (
-      <div className="container pt-5 text-center">
-        <h2>Unexpected error</h2>
-        <p className="lead">
+      <div className="w-full mt-navbar text-center">
+        <Text size="h2" className="mb-1">Unexpected error</Text>
+        <Text size="bodyLarge">
           There was an unexpected error in the application. Try reloading or contacting the master.
-        </p>
-        <p>
+        </Text>
+        <Text color="textSecondary" italic>
           {`${error.name}: ${error.message}`}
-        </p>
+        </Text>
       </div>
     )
   }
 
   return (
-    <div className="container pt-5 text-center">
-      <h2>Unexpected error</h2>
-      <p className="lead">
+    <div className="w-full mt-navbar text-center">
+      <Text size="h2" className="mb-1">Unexpected error</Text>
+      <Text size="bodyLarge">
         There was an unexpected error in the application. Try reloading or contacting the master.
-      </p>
+      </Text>
     </div>
   )
 }

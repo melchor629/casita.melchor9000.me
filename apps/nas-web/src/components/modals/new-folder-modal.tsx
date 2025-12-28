@@ -4,6 +4,8 @@ import React, {
 import * as fs from '@/api/fs'
 import useApiClient from '@/hooks/use-api-client'
 import * as Path from '@/utils/path'
+import Alert from '../core/alert'
+import Button from '../core/button'
 import { TextInput } from '../form'
 import Modal from '../modal-view'
 
@@ -30,15 +32,14 @@ export default function NewFolderItemModal({
   }, [onClose, module, path, folderName, apiClient])
 
   const closeButton = useMemo(() => [
-    <button
+    <Button
       type="button"
-      className="btn btn-warning"
       onClick={onNewFolderImpl}
       key="new-folder"
       disabled={!folderName}
     >
       Create
-    </button>,
+    </Button>,
   ], [folderName, onNewFolderImpl])
 
   return (
@@ -56,14 +57,13 @@ export default function NewFolderItemModal({
       portal
     >
       {error && (
-        <div className="alert alert-danger" role="alert" style={{ wordBreak: 'break-all' }}>
+        <Alert severity="error" title="There was an error during creation">
           {JSON.stringify(error)}
-        </div>
+        </Alert>
       )}
       <TextInput
         type="text"
         id="new-folder-name"
-        isInvalid={!!error}
         value={folderName}
         onChange={(e) => setFolderName(e.target.value)}
         helpText={newUrl}

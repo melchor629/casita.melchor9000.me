@@ -69,12 +69,12 @@ export default function ItemCell({ item, module, style }: ItemCellProps) {
       <ReactRouterLink to={linkUrl}>
         <ItemThumbnailImage module={module} item={item} forceLoadImage={style ? true : undefined} />
       </ReactRouterLink>
-      <div className="pt-2 lh-sm">
-        <span className="w-100 d-inline-block text-truncate">
+      <div className="pt-4 leading-5">
+        <span className="w-full inline-block text-truncate">
           {item.title}
         </span>
         {extraContent && (
-          <span className="w-100 d-inline-block text-truncate">
+          <span className="w-full inline-block text-truncate">
             {extraContent}
           </span>
         )}

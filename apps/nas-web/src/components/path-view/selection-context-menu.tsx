@@ -1,4 +1,4 @@
-import type { VirtualElement } from '@popperjs/core'
+import type { VirtualElement } from '@floating-ui/core'
 import { type ReactElement, useMemo } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'

@@ -6,7 +6,7 @@ const AppMenuLink = memo(({ appKey, children, name }: React.PropsWithChildren<{
   readonly appKey: string
   readonly name: string
 }>) => (
-  <NavLink to={`/${appKey}/`} className="list-group-item list-group-item-action">
+  <NavLink to={`/${appKey}/`} className="px-3 py-1.5 transition-colors hover:bg-text-main/10 aria-[current=page]:text-primary-main">
     {children || capitalize(name)}
   </NavLink>
 ))

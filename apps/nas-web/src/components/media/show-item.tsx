@@ -15,11 +15,11 @@ interface ShowItemProps {
 
 const ShowItem = ({ item, module }: ShowItemProps) => (
   <div>
-    <div className="d-flex gap-3">
+    <div className="flex gap-6">
       <ItemThumbnailImage item={item} module={module} />
       <div>
-        <h2>{item.title}</h2>
-        <div className="d-flex gap-3 my-2 flex-wrap">
+        <h2 className="text-h2">{item.title}</h2>
+        <div className="flex gap-4 my-3 flex-wrap">
           <span>{item.year}</span>
           <span>{humanDuration(item.duration)}</span>
           <span>{item.contentRating}</span>
@@ -29,21 +29,21 @@ const ShowItem = ({ item, module }: ShowItemProps) => (
                 <img
                   src="https://m.media-amazon.com/images/S/sash/4ev5okyO1z9l5Hc.png"
                   alt="IMDB logo"
-                  style={{ height: '1rem', filter: 'invert(1)' }}
+                  className="inline-block h-4 invert"
                 />
               )}
               {rating.source === 'tmdb' && (
                 <img
                   src="https://www.themoviedb.org/assets/2/favicon-43c40950dbf3cffd5e6d682c5a8986dfdc0ac90dce9f59da9ef072aaf53aebb3.png"
                   alt="TMDB logo"
-                  style={{ height: '1rem' }}
+                  className="inline-block h-4"
                 />
               )}
               {rating.source === 'rottentomatoes' && (
                 <img
                   src="https://www.rottentomatoes.com/assets/pizza-pie/images/favicon.ico"
                   alt="RottenTomatoes favicon"
-                  style={{ height: '1rem' }}
+                  className="inline-block h-4"
                 />
               )}
               &nbsp;
@@ -70,7 +70,7 @@ const ShowItem = ({ item, module }: ShowItemProps) => (
         )}
         <Tags type="Genres" tags={item.genres} />
         <Tags type="Countries" tags={item.countries} />
-        <div className="d-flex gap-2 my-2">
+        <div className="flex gap-3 my-4">
           {item.paths.map((p) => (
             <ItemPath key={p} icon={Folder} module={module} path={p} />
           ))}
@@ -78,17 +78,17 @@ const ShowItem = ({ item, module }: ShowItemProps) => (
       </div>
     </div>
 
-    <CollapsableText className="lead my-4">
+    <CollapsableText className="text-body-large my-6">
       {item.summary}
     </CollapsableText>
 
     <ItemChildren
-      className="d-flex flex-row gap-4 px-4 py-3 mb-2 overflow-auto"
+      className="flex flex-row gap-6 px-4 py-3 mb-3 overflow-auto"
       module={module}
       itemId={item.id}
     />
 
-    <div className="d-flex flex-row gap-4 px-4 overflow-auto">
+    <div className="flex flex-row gap-4 px-4 overflow-auto">
       {item.roles.map((role) => <RoleProfile key={`${role.id}-${role.role}`} role={role} />)}
     </div>
   </div>

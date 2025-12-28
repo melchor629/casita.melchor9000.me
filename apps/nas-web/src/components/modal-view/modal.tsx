@@ -1,87 +1,38 @@
-import { Modal as BsModal } from 'bootstrap'
-import {
-  useCallback, useLayoutEffect, useMemo, useRef, useState,
+import React, {
+  useCallback, useLayoutEffect, useMemo, useState,
 } from 'react'
 import { createPortal } from 'react-dom'
+import Button from '../core/button'
+import { clsx } from '../core/utils'
 
 interface ModalProps {
   readonly id: string
   readonly title: string
   readonly show?: boolean
   readonly className?: string
-  readonly centered?: boolean
   readonly children?: React.ReactNode
   readonly buttons?: React.ReactNode[]
-  readonly onClose?: () => void
-  readonly onClosing?: () => void
+  readonly onClose: () => void
+  readonly onCloseStart?: () => void
+  readonly onCloseEnd?: () => void
   readonly closeLabel?: string
-  readonly size?: 'xl' | 'lg' | 'sm'
+  readonly size?: 'xl' | 'lg' | 'md' | 'sm'
 }
 
 function LeModal({
   buttons,
-  centered,
   children,
   className,
   closeLabel,
   id,
   onClose,
-  onClosing,
+  onCloseEnd,
+  onCloseStart,
   show,
-  size,
+  size = 'md',
   title,
 }: ModalProps) {
-  const modalRef = useRef<BsModal>(null)
   const [element, setElement] = useState<HTMLDivElement | null>(null)
-  const [lastShow, setLastShow] = useState<boolean>(false)
-
-  useLayoutEffect(() => {
-    if (element) {
-      const modal = new BsModal(element)
-      if (show) {
-        modal.show()
-      }
-      modalRef.current = modal
-      return () => modal.dispose()
-    }
-
-    return undefined
-  }, [element]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useLayoutEffect(() => {
-    if (element) {
-      const cbk = () => onClose?.()
-      element.addEventListener('hidden.bs.modal', cbk)
-      return () => {
-        element.removeEventListener('hidden.bs.modal', cbk)
-      }
-    }
-
-    return undefined
-  }, [onClose, element])
-
-  useLayoutEffect(() => {
-    if (element) {
-      const cbk = () => onClosing?.()
-      element.addEventListener('hide.bs.modal', cbk)
-      return () => {
-        element.removeEventListener('hide.bs.modal', cbk)
-      }
-    }
-
-    return undefined
-  }, [onClosing, element])
-
-  useLayoutEffect(() => {
-    if (!lastShow && show) {
-      modalRef.current?.show()
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLastShow(true)
-    } else if (lastShow && !show) {
-      modalRef.current?.hide()
-      setLastShow(false)
-    }
-  }, [show, lastShow])
 
   const onCloseImpl: React.MouseEventHandler<HTMLButtonElement> = useCallback((e) => {
     e.preventDefault()
@@ -89,40 +40,75 @@ function LeModal({
   }, [onClose])
 
   const finalButtons = useMemo(() => [
-    <button type="button" className="btn btn-secondary" onClick={onCloseImpl} key="close">
+    <Button type="button" color="secondary" variant="text" onClick={onCloseImpl} key="close">
       {closeLabel || 'Close'}
-    </button>,
+    </Button>,
     ...(buttons || []),
   ], [buttons, onCloseImpl, closeLabel])
 
-  const modalDialogClasses = useMemo(() => (
-    [
-      'modal-dialog',
-      size && `modal-${size}`,
-      (centered ?? true) && 'modal-dialog-centered',
-    ].filter((f) => !!f).join(' ')
-  ), [size, centered])
+  useLayoutEffect(() => {
+    const abort = new AbortController()
+    if (element) {
+      window.addEventListener('keyup', (ev) => {
+        if (ev.key === 'Escape') {
+          onClose()
+        }
+      }, { signal: abort.signal, passive: true })
+    }
+
+    return () => abort.abort()
+  }, [element, onClose])
+
+  useLayoutEffect(() => {
+    if (show) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+  }, [show])
 
   return (
     <div
-      className={`modal fade ${className ?? ''}`}
+      className={clsx(
+        'fixed w-dvw h-dvh visible z-40 top-0 left-0',
+        'flex justify-center items-center p-4',
+        'translate-y-0 opacity-100 bg-text-contrasted/20 backdrop-blur-xl transition-all duration-250',
+        'aria-hidden:invisible aria-hidden:opacity-0 aria-hidden:translate-y-4',
+        className,
+      )}
       id={`modal-${id}`}
-      tabIndex={-1}
-      role="dialog"
+      role="presentation"
       aria-labelledby={`modal-${id}-title`}
       aria-hidden={!show ? 'true' : 'false'}
       ref={setElement}
+      onClick={useCallback((e: React.MouseEvent) => e.target === e.currentTarget && onClose(), [onClose])}
+      onTransitionStart={useCallback((e: React.SyntheticEvent) => {
+        if (e.currentTarget === e.target && !show) {
+          onCloseStart?.()
+        }
+      }, [show, onCloseStart])}
+      onTransitionEnd={useCallback((e: React.SyntheticEvent) => {
+        if (e.currentTarget === e.target && !show) {
+          onCloseEnd?.()
+        }
+      }, [show, onCloseEnd])}
     >
-      <div role="presentation" onClick={(e) => e.stopPropagation()}>
-        <div className={modalDialogClasses} role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id={`modal-${id}-title`}>{title}</h5>
-              <button type="button" className="btn-close" aria-label="Close" onClick={onCloseImpl} />
-            </div>
-            <div className="modal-body">{children}</div>
-            <div className="modal-footer">{finalButtons}</div>
+      <div
+        className={clsx(
+          'rounded-lg bg-elevated-1 shadow-xl max-h-full overflow-auto',
+          size === 'sm' && 'w-full sm:w-sm',
+          size === 'md' && 'w-full sm:w-md',
+          size === 'lg' && 'w-full sm:w-lg',
+          size === 'xl' && 'w-full md:w-xl',
+        )}
+        role="dialog"
+      >
+        <div className="px-5 py-4">
+          <div className="mb-5 select-none">
+            <h4 className="text-h4" id={`modal-${id}-title`}>{title}</h4>
           </div>
+          <div className="mb-5">{children}</div>
+          <div className="flex justify-end gap-2 h-8 -mb-1 -mr-1">{finalButtons}</div>
         </div>
       </div>
     </div>

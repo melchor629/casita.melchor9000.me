@@ -4,12 +4,12 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { styled } from 'styled-components'
 import { getItemThumbnail } from '@/api/fs'
 import type { Item } from '@/api/fs/media'
 import useApiClient from '@/hooks/use-api-client'
 import useDevicePixelRatio from '@/hooks/use-device-pixel-ratio'
 import useMediaThumbnailSize from '@/hooks/use-media-thumbnail-size'
+import { styled } from '../core/utils'
 import { Spinner } from '../loaders'
 
 interface ItemImageProps {
@@ -18,35 +18,17 @@ interface ItemImageProps {
   readonly forceLoadImage?: true
 }
 
-const LoadingContainer = styled('div')`
-  position: absolute;
-  left: 0;
-  top: 0;
-  background-color: rgba(var(--bs-body-bg-rgb), 0.25);
-`
+const LoadingContainer = styled('div', 'LoadingContainer')({
+  base: 'absolute left-0 top-0 bg-elevated-0/25',
+})
 
-const ChildrenCount = styled('div')`
-  position: absolute;
-  right: 0.75rem;
-  top: 0.5rem;
-  padding: 0.125rem 0.25rem;
-  font-size: 0.75rem;
-  color: rgb(var(--bs-body-color-rgb));
-  background-color: rgba(var(--bs-body-bg-rgb), 0.55);
-  border: 1px solid rgba(var(--bs-secondary-bg-rgb), 0.75);
-  border-radius: 3px;
-  user-select: none;
-`
+const ChildrenCount = styled('div', 'ChildrenCount')({
+  base: 'absolute right-3 top-2 px-1 py-0.5 text-xs text-text-main bg-elevated-0/65 border border-text-main/25 rounded-sm select-none',
+})
 
-const ImageThumbnail = styled('img')`
-  min-height: 6rem;
-  box-shadow: 0 0 10px 1px rgb(10 10 10 / 40%);
-  transition: box-shadow 75ms ease-in-out;
-
-  &:hover {
-    box-shadow: 0 0 8px 0 rgb(10 10 10 / 50%);
-  }
-`
+const ImageThumbnail = styled('img', 'ImageThumbnail')({
+  base: 'min-h-1.5 rounded-md shadow-md hover:shadow-lg hover:opacity-75 transition-all',
+})
 
 const blobCache = new Map<string, readonly [url: string, blob: Blob]>()
 
@@ -137,19 +119,19 @@ export default function ItemThumbnailImage({ forceLoadImage, item, module }: Ite
           intersectionObserver.disconnect()
         }
       }, [intersectionObserver])}
-      style={{ ...size, position: 'relative', minHeight: '6rem' }}
+      className="relative min-h-24"
+      style={size}
     >
       {imageUrl && (
         <ImageThumbnail
           {...size}
           src={imageUrl}
           alt={`${item.title} cover`}
-          className="rounded"
         />
       )}
       {loading !== false && (
         <LoadingContainer
-          className="w-100 h-100 d-flex justify-content-center align-items-center"
+          className="w-full h-full flex justify-center items-center"
         >
           <Spinner size="lg" />
         </LoadingContainer>

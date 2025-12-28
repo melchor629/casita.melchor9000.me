@@ -1,45 +1,39 @@
-import { styled } from 'styled-components'
 import type { Role } from '@/api/fs/media'
+import { makeStyles } from '../core/utils'
 
 interface RoleProfileProps {
   readonly role: Role
 }
 
-const RoleProfileImage = styled('img')`
-  width: 150px;
-  height: 150px;
-  border-radius: 9999px;
-  object-fit: cover;
-`
+const roleStyles = makeStyles({
+  slots: {
+    base: 'text-center',
+    image: 'w-40 h-40 max-w-40 rounded-full object-cover',
+    circle: 'w-40 h-40 rounded-full border border-text-secondary flex justify-center items-center select-none text-body-large',
+  },
+})
 
-const RoleProfileCircle = styled('div')`
-  width: 150px;
-  height: 150px;
-  border-radius: 9999px;
-  border: 1px solid rgba(var(--bs-body-color), 0.88);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-`
-
-const RoleProfile = ({ role }: RoleProfileProps) => (
-  <div className="text-center">
-    {role.thumbnailUrl
-      ? (
-        <RoleProfileImage
-          src={role.thumbnailUrl}
-          alt={role.tag}
-        />
-        )
-      : (
-        <RoleProfileCircle role="img" aria-label={role.tag}>
-          {role.tag.split(' ').map((n) => n[0]).filter((n) => !!n).join('')}
-        </RoleProfileCircle>
-        )}
-    <div className="mt-1">{role.tag}</div>
-    <div className="text-muted">{role.role}</div>
-  </div>
-)
+const RoleProfile = ({ role }: RoleProfileProps) => {
+  const { base, circle, image } = roleStyles()
+  return (
+    <div className={base()}>
+      {role.thumbnailUrl
+        ? (
+          <img
+            className={image()}
+            src={role.thumbnailUrl}
+            alt={role.tag}
+          />
+          )
+        : (
+          <div className={circle()} role="img" aria-label={role.tag}>
+            {role.tag.split(' ').map((n) => n[0]).filter((n) => !!n).join('')}
+          </div>
+          )}
+      <div className="mt-1">{role.tag}</div>
+      <div className="text-text-secondary">{role.role}</div>
+    </div>
+  )
+}
 
 export default RoleProfile

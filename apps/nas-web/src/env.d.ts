@@ -1,9 +1,6 @@
-/// <reference types="vite/client" />
-/// <reference types="vite-plugin-pwa/client" />
-/// <reference types="vite-plugin-svgr/client" />
-/// <reference types="./changelog" />
-
-import 'styled-components'
+import type {} from 'vite/client'
+import type {} from 'vite-plugin-pwa/client'
+import type {} from 'vite-plugin-svgr/client'
 
 declare global {
   interface ImportMetaEnv {
@@ -14,11 +11,5 @@ declare global {
     readonly VITE_IDENTITY_AUTHORITY?: string
     readonly VITE_IDENTITY_CLIENT_ID?: string
     readonly VITE_IDENTITY_CLIENT_SECRET?: string
-  }
-}
-
-declare module 'styled-components' {
-  export interface DefaultTheme {
-    aspect: 'dark' | 'light'
   }
 }

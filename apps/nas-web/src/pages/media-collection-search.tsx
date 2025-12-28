@@ -5,11 +5,12 @@ import {
   useMemo,
 } from 'react'
 import {
-  Link,
   Navigate,
   useParams,
   useSearchParams,
 } from 'react-router'
+import ReactRouterLink from '@/components/core/react-router-link'
+import { TextInput } from '@/components/form'
 import SearchResults from '../components/media/search-results'
 import NavbarBackdropFilter from '../components/navbar-backdrop-filter'
 import { useTokenInfo } from '../hooks/use-token-info'
@@ -51,20 +52,18 @@ export default function MediaCollectionSearchPage() {
 
       <NavbarBackdropFilter />
 
-      <div className="px-2 px-md-4 pb-3 padding-nav-bar">
-        <h1>
-          <Link to={`/m/${module}/`} className="text-decoration-none">{app.name}</Link>
-        </h1>
+      <div className="px-2 md:px-4 pb-3 pt-navbar">
+        <h2 className="text-h2 mb-3">
+          <ReactRouterLink to={`/m/${module}/`}>{app.name}</ReactRouterLink>
+        </h2>
 
         <form onSubmit={onSearchFilterSubmit}>
-          <label htmlFor={searchInputId} className="visually-hidden form-label">
-            Search Filter
-          </label>
-          <input
+          <TextInput
             type="search"
             id={searchInputId}
+            className="mb-4"
+            size="large"
             placeholder="Search..."
-            className="form-control mb-3"
             value={searchFilter}
             onChange={onSearchFilterChange}
           />

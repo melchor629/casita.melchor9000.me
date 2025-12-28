@@ -1,15 +1,18 @@
 import { Helmet } from '@dr.pogodin/react-helmet'
 import { useEffect, useState } from 'react'
 import {
-  Link,
   type LoaderFunction,
-  Navigate, useLocation, useParams,
+  Navigate,
+  useLocation,
+  useParams,
 } from 'react-router'
+import ReactRouterLink from '@/components/core/react-router-link'
+import Text from '@/components/core/text'
 import type { DirectoryMetadata } from '../api/fs/directory'
 import type { FileMetadata } from '../api/fs/file'
 import DirectoryPathView from '../components/directory-path-view'
 import FilePathView from '../components/file-path-view'
-import { AppLoader, LoadingOverlay } from '../components/loaders'
+import { AppLoader } from '../components/loaders'
 import Header from '../components/path-view'
 import ScrollToTopWhen from '../components/scroll-to-top-when'
 import { prefetchStorageMetadata } from '../hooks/api/use-storage-metadata'
@@ -66,7 +69,7 @@ export default function ModulePathPage() {
 
   if (metadata == null && loadingMetadata) {
     return (
-      <div style={{ marginTop: 60 }}>
+      <div className="mt-navbar">
         <Helmet><title>Loading...</title></Helmet>
         <AppLoader message="Loading information..." />
       </div>
@@ -76,19 +79,19 @@ export default function ModulePathPage() {
   if (error != null) {
     const fullPath = Path.join('/', module, path)
     return (
-      <div className="sticky-top path-view-title" style={{ marginTop: 60 }}>
-        <h1>
+      <div className="sticky top-0 mt-navbar px-6 py-4">
+        <Text size="h2">
           Could not load&nbsp;
           {fullPath}
-        </h1>
+        </Text>
         <div>
           {'Go to '}
-          <Link to={Path.dirname(fullPath)}>parent folder</Link>
+          <ReactRouterLink to={Path.dirname(fullPath)}>parent folder</ReactRouterLink>
           {' or go to '}
-          <Link to={Path.join('/', module)}>root folder</Link>
+          <ReactRouterLink to={Path.join('/', module)}>root folder</ReactRouterLink>
           .
         </div>
-        <pre className="p-3">{JSON.stringify(error, undefined, 2)}</pre>
+        <pre className="p-6 text-text-secondary">{JSON.stringify(error, undefined, 2)}</pre>
       </div>
     )
   }
@@ -100,7 +103,9 @@ export default function ModulePathPage() {
 
   return (
     <>
-      <Helmet><title>{metadata.path === '/' ? module : Path.basename(metadata.path) || module}</title></Helmet>
+      <Helmet>
+        <title>{metadata.path === '/' ? module : Path.basename(metadata.path) || module}</title>
+      </Helmet>
 
       <ScrollToTopWhen deps={metadata.path} />
 
@@ -128,8 +133,6 @@ export default function ModulePathPage() {
             module={module}
           />
           )}
-
-      {loadingMetadata && <LoadingOverlay className="pt-3" />}
     </>
   )
 }

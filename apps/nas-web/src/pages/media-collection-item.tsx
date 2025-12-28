@@ -70,18 +70,17 @@ export default function MediaCollectionItemPage() {
 
       <NavbarBackdropFilter />
 
-      <div className="px-2 px-md-4 pb-3 padding-nav-bar mt-2">
+      <div className="px-4 md:px-6 pb-5 pt-navbar mt-4">
         {isLoading && (
           <div
-            className="text-center position-fixed w-100 pt-2"
-            style={{ top: 'var(--me-navbar-height)' }}
+            className="text-center fixed w-full pt-4 top-navbar"
           >
             <Spinner size="lg" />
           </div>
         )}
 
         {!isLoading && !itemMetadata && (
-          <div className="text-center lead">
+          <div className="text-center text-body-large text-text-secondary">
             Item not found
           </div>
         )}

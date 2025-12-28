@@ -13,14 +13,14 @@ interface ArtistItemProps {
 
 const ArtistItem = ({ item, module }: ArtistItemProps) => (
   <div>
-    <div className="d-flex gap-3">
+    <div className="flex gap-6">
       <ItemThumbnailImage item={item} module={module} />
       <div>
-        <h2>{item.title}</h2>
+        <h2 className="text-h2">{item.title}</h2>
         <Tags type="Genres" tags={item.genres} />
         <Tags type="Styles" tags={item.styles} />
         <Tags type="Countries" tags={item.countries} />
-        <div className="d-flex gap-2 mt-2">
+        <div className="flex gap-3 my-4">
           {item.paths.map((p) => (
             <ItemPath key={p} icon={Folder} module={module} path={p} />
           ))}
@@ -28,12 +28,12 @@ const ArtistItem = ({ item, module }: ArtistItemProps) => (
       </div>
     </div>
 
-    <CollapsableText className="lead my-4">
+    <CollapsableText className="text-body-large my-6">
       {item.summary}
     </CollapsableText>
 
     <ItemChildren
-      className="d-flex flex-row gap-4 px-4 overflow-auto"
+      className="flex flex-row gap-6 px-4 overflow-auto"
       module={module}
       itemId={item.id}
     />

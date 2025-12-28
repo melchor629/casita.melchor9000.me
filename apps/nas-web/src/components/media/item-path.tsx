@@ -1,8 +1,10 @@
 import { useCallback, useState } from 'react'
-import { Link } from 'react-router'
 import { getDownloadUrl } from '@/api/fs'
 import useApiClient from '@/hooks/use-api-client'
 import { basename } from '@/utils/path'
+import Button from '../core/button'
+import ButtonGroup from '../core/button-group'
+import ReactRouterButton from '../core/react-router-button'
 import { Download, Downloading, type SvgIconProps } from '../icons'
 
 type Props = Readonly<{
@@ -26,15 +28,15 @@ export default function ItemPath({ icon: Icon, module, path }: Props) {
   }, [module, path, apiClient])
 
   return (
-    <div className="btn-group btn-group-sm" role="group" aria-label="Links to file and download file">
-      <Link to={`/${module}${path}`} className="btn btn-secondary text-decoration-none">
+    <ButtonGroup role="group" aria-label="Links to file and download file">
+      <ReactRouterButton to={`/${module}${path}`} size="small" variant="filled" color="secondary">
         <Icon height="0.75rem" />
         &nbsp;
         {basename(path)}
-      </Link>
-      <button className="btn btn-secondary text-decoration-none" disabled={preparing} onClick={download}>
+      </ReactRouterButton>
+      <Button size="small" color="secondary" disabled={preparing} onClick={download}>
         {preparing ? <Downloading width="0.75rem" /> : <Download width="0.75rem" />}
-      </button>
-    </div>
+      </Button>
+    </ButtonGroup>
   )
 }

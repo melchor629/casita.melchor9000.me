@@ -6,6 +6,9 @@ import { createAlias } from '@/api/fs'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useApiClient from '@/hooks/use-api-client'
+import Button from '../core/button'
+import Text from '../core/text'
+import { TextInput } from '../form'
 import { ContentCopy, Done } from '../icons'
 import Modal from '../modal-view'
 
@@ -28,18 +31,25 @@ const GeneratedUrl = ({ path, url }: { readonly path: string, readonly url: stri
   }, [url])
 
   return (
-    <div className="mb-3">
-      <label htmlFor={id} className="form-label">{path}</label>
-      <div className="input-group">
-        <input type="url" className="form-control" id={id} value={url} readOnly />
-        <button
-          type="button"
-          className="btn btn-outline-light"
-          onClick={copyUrl}
-        >
-          {isCopied ? <Done height="15px" /> : <ContentCopy height="15px" />}
-        </button>
-      </div>
+    <div className="mb-3 flex">
+      <TextInput
+        type="url"
+        id={id}
+        readOnly
+        value={url}
+        endAdornment={(
+          <Button
+            type="button"
+            variant="text"
+            color="neutral"
+            size="small"
+            onClick={copyUrl}
+            icon={isCopied ? <Done /> : <ContentCopy />}
+          />
+        )}
+      >
+        {path}
+      </TextInput>
     </div>
   )
 }
@@ -90,30 +100,30 @@ const GenerateUrlsModal: FC<GenerateUrlsModalProps> = ({
       title={`Generated Download URL${metadata.length > 1 ? 's' : ''}`}
       show={show}
       onClose={onClose}
-      size="lg"
+      size="xl"
       portal
     >
-      <p className="text-muted my-2">
+      <Text color="textSecondary" className="mb-2">
         {metadata.length === 1 ? 'This URL is' : 'These URLs are'}
         &nbsp;valid for the following 12 hours, after that,&nbsp;
         {metadata.length === 1 ? 'it' : 'they'}
         &nbsp;won&apos;t work anymore…
-      </p>
+      </Text>
       {generatedUrls === null && (
-        <p className="text-muted text-center mt-2">
+        <Text color="textSecondary" align="center" className="mt-2">
           Generating...
-        </p>
+        </Text>
       )}
       {generatedUrls !== null && metadata.length > 1 && (
-        <div className="text-center my-3">
-          <button
+        <div className="text-end my-3">
+          <Button
             type="button"
-            className="btn btn-outline-light"
+            variant="text"
             onClick={copyAllUrls}
+            icon={isCopied ? <Done /> : <ContentCopy />}
           >
-            {isCopied ? <Done height="15px" /> : <ContentCopy height="15px" />}
-            <span> Copy all URLs</span>
-          </button>
+            <span>Copy all URLs</span>
+          </Button>
         </div>
       )}
       {generatedUrls !== null && (

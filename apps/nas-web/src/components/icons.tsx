@@ -17,11 +17,13 @@ import DeleteSweepSvg from '@svg-icons/material-filled/delete-sweep.svg?react'
 import DoneSvg from '@svg-icons/material-filled/done.svg?react'
 import DownloadSvg from '@svg-icons/material-filled/download.svg?react'
 import DownloadingSvg from '@svg-icons/material-filled/downloading.svg?react'
+import ErrorSvg from '@svg-icons/material-filled/error.svg?react'
 import ExpandLessSvg from '@svg-icons/material-filled/expand-less.svg?react'
 import ExpandMoreSvg from '@svg-icons/material-filled/expand-more.svg?react'
 import FileUploadSvg from '@svg-icons/material-filled/file-upload.svg?react'
 import GridViewSvg from '@svg-icons/material-filled/grid-view.svg?react'
 import HomeSvg from '@svg-icons/material-filled/home.svg?react'
+import InfoSvg from '@svg-icons/material-filled/info.svg?react'
 import LaunchSvg from '@svg-icons/material-filled/launch.svg?react'
 import LightModeSvg from '@svg-icons/material-filled/light-mode.svg?react'
 import LinkSvg from '@svg-icons/material-filled/link.svg?react'
@@ -43,15 +45,16 @@ import SyncSvg from '@svg-icons/material-filled/sync.svg?react'
 import DriveFileRenameOutlineSvg from '@svg-icons/material-outlined/drive-file-rename-outline.svg?react'
 import FileBinarySvg from '@svg-icons/octicons/file-binary.svg?react'
 import { forwardRef } from 'react'
-import { styled } from 'styled-components'
+import { clsx } from './core/utils'
 
 export interface SvgIconProps extends React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> {
   readonly size?: number | string
   readonly title?: string
 }
 
-const SvgIconBase = forwardRef<SVGSVGElement, SvgIconProps & { readonly Component: typeof FileSvg }>(({
+const SvgIcon = forwardRef<SVGSVGElement, SvgIconProps & { readonly Component: typeof FileSvg }>(({
   Component,
+  className,
   size,
   title,
   ...props
@@ -65,17 +68,18 @@ const SvgIconBase = forwardRef<SVGSVGElement, SvgIconProps & { readonly Componen
     title,
   }
 
-  return <Component {...moreProps} {...props} ref={ref} />
+  return (
+    <Component
+      {...moreProps}
+      {...props}
+      className={clsx(
+        'inline-block align-middle overflow-hidden w-[1em] h-[1em]',
+        className,
+      )}
+      ref={ref}
+    />
+  )
 })
-
-const SvgIcon = styled(SvgIconBase)`
-  display: inline-block;
-  vertical-align: middle;
-  overflow: hidden;
-  font-size: inherit;
-  width: 1em;
-  height: 1em;
-`
 
 export const File = (props: SvgIconProps) => <SvgIcon Component={FileSvg} {...props} />
 export const FileAudio = (props: SvgIconProps) => <SvgIcon Component={FileAudioSvg} {...props} />
@@ -141,3 +145,5 @@ export const Settings = (props: SvgIconProps) => <SvgIcon Component={SettingsSvg
 export const Stop = (props: SvgIconProps) => <SvgIcon Component={StopSvg} {...props} />
 export const Sync = (props: SvgIconProps) => <SvgIcon Component={SyncSvg} {...props} />
 export const FileBinary = (props: SvgIconProps) => <SvgIcon Component={FileBinarySvg} {...props} />
+export const Error = (props: SvgIconProps) => <SvgIcon Component={ErrorSvg} {...props} />
+export const Info = (props: SvgIconProps) => <SvgIcon Component={InfoSvg} {...props} />

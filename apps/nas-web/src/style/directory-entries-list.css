@@ -1,0 +1,104 @@
+.directory-entries-list {
+  @apply grow;
+
+  .directory-entries-item {
+    > div {
+      @apply flex items-center px-4 min-h-8 gap-1 rounded-sm transition-all duration-200;
+
+      > svg {
+        @apply mr-2;
+      }
+
+      &.off {
+        @apply opacity-60;
+
+        > div > div:last-of-type {
+          @apply pointer-events-none opacity-0;
+        }
+      }
+
+      &.drag-over.drag-over {
+        @apply bg-text-main/20;
+      }
+    }
+
+    &.selected {
+      > div { @apply bg-text-main/10; }
+    }
+
+    .selected + &.selected {
+      > div { @apply rounded-t-none; }
+    }
+
+    &.selected:has(+ .selected) {
+      > div { @apply rounded-b-none; }
+    }
+  }
+
+  .entry-footer {
+    @apply h-3;
+  }
+}
+
+.directory-entries-grid {
+  @apply grow;
+
+  .virtuoso-grid-list {
+    @apply grid justify-around gap-y-2 gap-x-4;
+    grid-template-columns: repeat(auto-fill, 120px);
+
+    & > .virtuoso-grid-item {
+      height: 120px;
+    }
+  }
+
+  .entry {
+    @apply flex flex-col items-center select-none rounded-md transition-all duration-200;
+
+    > span {
+      @apply inline-block p-1 rounded-sm;
+
+      > abbr {
+        --line-height: 1rem;
+        --lines: 2;
+
+        /* https://stackoverflow.com/questions/3922739/limit-text-length-to-n-lines-using-css */
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: var(--lines);
+        line-clamp: var(--lines);
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        overflow: hidden;
+        font-size: calc(var(--line-height) * 0.9);
+        /* fallback lines */
+        line-height: var(--line-height);
+        max-height: calc(var(--line-height) * var(--lines));
+
+        text-decoration: none;
+        cursor: default;
+      }
+    }
+
+    &.selected {
+      @apply bg-text-main/10;
+    }
+
+    &.off {
+      opacity: 0.6;
+
+      > div > div:last-of-type {
+        pointer-events: none;
+        opacity: 0;
+      }
+    }
+
+    &.drag-over {
+      @apply bg-text-main/20;
+    }
+  }
+
+  .entry-footer {
+    height: 24px;
+  }
+}

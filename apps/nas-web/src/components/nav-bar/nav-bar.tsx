@@ -5,16 +5,19 @@ import { useAuth } from 'react-oidc-context'
 import { Link, useLocation, useNavigation } from 'react-router'
 import { useTokenInfo } from '@/hooks/use-token-info'
 import { env } from '@/utils/config'
+import Button from '../core/button'
+import {
+  Apps as AppsIcon,
+  Home as HomeIcon,
+  MiscellaneousServices as MiscellaneousServicesIcon,
+  Logout as LogoutIcon,
+  Settings as SettingsIcon,
+} from '../icons'
 import JobsModal from '../jobs'
 import { Spinner } from '../loaders'
 import SettingsModal from '../modals/settings-modal'
 import AppMenuContainer from './app-menu-container'
 import AppMenuLink from './app-menu-link'
-import AppsIcon from './apps-icon'
-import HomeIcon from './home-icon'
-import LogoutIcon from './logout-icon'
-import MiscellaneousServicesIcon from './miscellaneous-services-icon'
-import SettingsIcon from './settings-icon'
 
 const NavBar = memo(() => {
   const location = useLocation()
@@ -77,67 +80,69 @@ const NavBar = memo(() => {
 
   return (
     <>
-      <nav className="navbar fixed-top bg-transparent">
-        <div className="container-fluid">
-          <div className="d-flex align-items-center">
-            <Link
-              to="/"
-              className="navbar-brand btn btn-sm btn-link m-0"
-            >
-              <HomeIcon />
-            </Link>
-            <button
-              type="button"
-              className="navbar-brand btn btn-sm btn-link"
-              onClick={onBrandButtonClicked}
-            >
-              <AppsIcon />
-              &nbsp;
-              {currentApp?.name ?? 'Home'}
-            </button>
-            {state !== 'idle' && (
-              <Spinner size="md" />
-            )}
+      <nav className="fixed top-0 left-0 right-0 z-40 flex flex-row items-center justify-between px-3 py-2 h-navbar">
+        <div className="flex items-center gap-1">
+          <Button
+            component={Link}
+            to="/"
+            variant="text"
+            color="neutral"
+            size="large"
+            icon={<HomeIcon />}
+          />
+          <Button
+            type="button"
+            variant="text"
+            color="neutral"
+            size="large"
+            icon={<AppsIcon />}
+            onClick={onBrandButtonClicked}
+            aria-checked={showChangeApp}
+          >
+            {currentApp?.name ?? 'Home'}
+          </Button>
+          <Spinner show={state !== 'idle'} />
+        </div>
+        <div className="flex gap-2 items-center">
+          <div
+            className="hidden md:inline text-center text-muted select-none cursor-pointer mr-2"
+            role="button"
+            onClick={openAuth}
+            onKeyDown={openAuth2}
+            tabIndex={0}
+          >
+            <span role="img" aria-label="Saluting hand">👋</span>
+            <span>
+              &nbsp;&nbsp;
+              {tokenInfo.displayName || tokenInfo.userName}
+            </span>
           </div>
-          <div>
-            <div
-              className="d-none d-md-inline text-center text-muted no-select"
-              role="button"
-              onClick={openAuth}
-              onKeyDown={openAuth2}
-              tabIndex={0}
-            >
-              <span role="img" aria-label="Saluting hand">👋</span>
-              <span>
-                &nbsp;&nbsp;
-                {tokenInfo.displayName || tokenInfo.userName}
-              </span>
-            </div>
-            <button
-              type="button"
-              className="ms-4 btn btn-sm btn-outline-secondary"
-              onClick={() => setShowSettingsModal(true)}
-              aria-label="Application Settings"
-            >
-              <SettingsIcon />
-            </button>
-            <button
-              type="button"
-              className="ms-2 btn btn-sm btn-outline-secondary"
-              onClick={() => setShowJobsModal(true)}
-              aria-label="Jobs Management"
-            >
-              <MiscellaneousServicesIcon />
-            </button>
-            <button
-              type="button"
-              className="ms-2 btn btn-sm btn-outline-primary"
-              onClick={onLogout}
-              aria-label="Log out"
-            >
-              <LogoutIcon />
-            </button>
-          </div>
+          <Button
+            type="button"
+            variant="text"
+            color="secondary"
+            size="large"
+            onClick={() => setShowSettingsModal(true)}
+            icon={<SettingsIcon />}
+            title="Application Settings"
+          />
+          <Button
+            type="button"
+            variant="text"
+            color="secondary"
+            size="large"
+            onClick={() => setShowJobsModal(true)}
+            icon={<MiscellaneousServicesIcon />}
+            title="Jobs Management"
+          />
+          <Button
+            type="button"
+            variant="text"
+            size="large"
+            onClick={onLogout}
+            icon={<LogoutIcon />}
+            title="Log out"
+          />
         </div>
       </nav>
 
@@ -151,7 +156,7 @@ const NavBar = memo(() => {
         onClose={onJobsModalClose}
       />
 
-      <AppMenuContainer $show={showChangeApp} className="list-group">
+      <AppMenuContainer show={showChangeApp}>
         {apps.map(({ key, name }) => <AppMenuLink key={key} appKey={key} name={name} />)}
       </AppMenuContainer>
     </>

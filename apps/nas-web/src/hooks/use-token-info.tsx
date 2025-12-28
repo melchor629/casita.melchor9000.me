@@ -7,6 +7,7 @@ import {
   useMemo,
 } from 'react'
 import { useAuth } from 'react-oidc-context'
+import Text from '@/components/core/text'
 import type { TokenApplication, TokenPermission } from '../api/token/token-info'
 import { AppLoader } from '../components/loaders'
 import usePermissions from './api/use-permissions'
@@ -67,11 +68,11 @@ export function TokenInfoProvider({ children }: PropsWithChildren) {
   }
 
   if (error) {
-    // TODO improve screen
     return (
-      <div>
-        Failed login:
-        {error.message}
+      <div className="mt-navbar px-4 py-2 text-center">
+        <Text size="h2">There is an issue during login or relogin :(</Text>
+        <Text size="bodyLarge" color="textSecondary">Try to reload the page or contact the admin.</Text>
+        <Text size="bodySmall" color="textSecondary" italic>{error.message}</Text>
       </div>
     )
   }

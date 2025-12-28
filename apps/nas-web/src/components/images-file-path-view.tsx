@@ -52,10 +52,10 @@ const ImagesSlideShow: FC<{ readonly images: Array<ThumbnailImage & { url: strin
   }, [imgs.length])
 
   return (
-    <div ref={divRef} className="d-flex justify-content-center w-100">
+    <div ref={divRef} className="flex justify-center w-full">
       <div
+        className="relative"
         style={{
-          position: 'relative',
           width: Math.min(allowedWidth, maxWidth),
           height: Math.min(allowedHeight, maxHeight),
         }}
@@ -63,7 +63,7 @@ const ImagesSlideShow: FC<{ readonly images: Array<ThumbnailImage & { url: strin
         {transition((style, item) => (
           <animated.img
             src={item.url}
-            className="mb-2 d-block img-fluid"
+            className="block"
             alt={item.type ?? 'Image extracted from the resource'}
             style={{ ...style, willChange: 'opacity' }}
           />

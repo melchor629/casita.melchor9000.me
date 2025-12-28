@@ -1,4 +1,4 @@
-import type { VirtualElement } from '@popperjs/core'
+import type { VirtualElement } from '@floating-ui/core'
 import debounce from 'lodash-es/debounce'
 import React, {
   type Ref,
@@ -14,6 +14,7 @@ import {
 } from 'react-virtuoso'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
+import { clsx } from '@/components/core/utils'
 import usePermission from '@/hooks/use-permission'
 import { useSettings } from '@/hooks/use-settings'
 import * as path from '@/utils/path'
@@ -58,18 +59,16 @@ const listItemRenderer = (index: number, entry: Metadata, context: EntryData) =>
   />
 )
 
-const ListItem = ({ context: { entries, selectedElements }, item, ...props }: ItemProps<Metadata> & ContextProp<EntryData>) => {
+const ListItem = ({ context: { selectedElements }, item, ...props }: ItemProps<Metadata> & ContextProp<EntryData>) => {
   const isSelected = selectedElements.find((e) => e.path === item.path) !== undefined
-  const isLastSelectedInGroup = isSelected && !selectedElements.includes(entries[props['data-item-index'] + 1])
   return (
     <div
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
-      className={`
-        directory-entries-item
-        ${isSelected ? 'selected' : ''}
-        ${isLastSelectedInGroup ? 'last-selected' : ''}
-      `.trim()}
+      className={clsx(
+        'directory-entries-item',
+        isSelected && 'selected',
+      )}
     />
   )
 }
@@ -322,7 +321,7 @@ const DirectoryEntries = ({
   return (
     <>
       <Virtuoso
-        className="directory-entries-list join-selected"
+        className="directory-entries-list"
         data={entries}
         context={initialData}
         components={{

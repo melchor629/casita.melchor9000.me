@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import useRecentlyAddedMedia from '../hooks/api/use-recently-added-media'
 import ReactRouterButton from './core/react-router-button'
-import ReactRouterLink from './core/react-router-link'
 import { Folder, Search } from './icons'
 import HorizontallyScrollableContainer from './media/horizontally-scrollable-container'
 import ItemCell from './media/item-cell'
@@ -28,33 +27,32 @@ export default function RecentMedia({ module, name }: { readonly module: string,
 
   return (
     <div className="mb-3">
-      <div className="d-flex justify-content-between mb-2">
-        <h1>
-          <ReactRouterLink to={type ? `/m/${module}/` : `/${module}/`}>
-            <LibraryTypeIcon type={type} style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
-            <span style={{ verticalAlign: 'middle' }}>
-              &nbsp;
-              {name}
-            </span>
-          </ReactRouterLink>
-        </h1>
+      <div className="flex justify-between">
+        <ReactRouterButton
+          to={type ? `/m/${module}/` : `/${module}/`}
+          size="large"
+          className="text-h2"
+          icon={<LibraryTypeIcon type={type} className="text-h1" />}
+        >
+          <span>{name}</span>
+        </ReactRouterButton>
 
         <div>
           {type && (
-            <ReactRouterButton to={`/m/${module}/search`} className="mr-1">
-              <Search style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
+            <ReactRouterButton to={`/m/${module}/search`} size="large" color="neutral" className="mr-1" title="Search media">
+              <Search className="text-h1" />
             </ReactRouterButton>
           )}
           {type && (
-            <ReactRouterButton to={`/${module}/`}>
-              <Folder style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
+            <ReactRouterButton to={`/${module}/`} size="large" color="neutral" title="Navigate through files">
+              <Folder className="text-h1" />
             </ReactRouterButton>
           )}
         </div>
       </div>
 
       {!recent.length && (
-        <div className="d-flex align-items-center gap-2 mx-4">
+        <div className="flex items-center gap-2 mt-2 mx-4">
           <span>Nothing special in here...</span>
         </div>
       )}

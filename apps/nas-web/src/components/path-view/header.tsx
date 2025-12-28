@@ -1,9 +1,9 @@
 import { type FC, Fragment, useMemo } from 'react'
-import { Link } from 'react-router'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import { humanBytes, unixPermissions } from '@/utils/number-format'
 import * as Path from '@/utils/path'
+import ReactRouterLink from '../core/react-router-link'
 import ButtonsBar from './buttons-bar'
 import HeaderContainer from './header-container'
 import HeaderElement from './header-element'
@@ -25,54 +25,44 @@ const Header: FC<HeaderProps> = ({
   onClick,
   selectedElements,
 }) => (
-  <HeaderContainer className="sticky-top" onClick={onClick}>
+  <HeaderContainer className="sticky z-10" onClick={onClick}>
     <HeaderTitle>{metadata.path === '/' ? module : Path.basename(metadata.path) || module}</HeaderTitle>
     <HeaderElementsContainer>
-      <small>
+      <div className="text-body-small w-full mb-2">
         {Path.join('/', module, metadata.path)
           .split('/')
           .filter((p) => p)
           .map((p, i, a) => (
             <Fragment key={a.slice(0, i).join('/') || '/'}>
               /
-              <Link to={`/${a.slice(0, i + 1).join('/')}`}>{p}</Link>
+              <ReactRouterLink to={`/${a.slice(0, i + 1).join('/')}`}>{p}</ReactRouterLink>
             </Fragment>
           ))}
-      </small>
+      </div>
 
-      <HeaderElement>
-        <small>Size</small>
-        <span>{useMemo(() => humanBytes(metadata.stat.size), [metadata.stat.size])}</span>
+      <HeaderElement label="Size">
+        {useMemo(() => humanBytes(metadata.stat.size), [metadata.stat.size])}
       </HeaderElement>
-      <HeaderElement>
-        <small>UID</small>
-        <span>{metadata.stat.uid}</span>
+      <HeaderElement label="UID">
+        {metadata.stat.uid}
       </HeaderElement>
-      <HeaderElement>
-        <small>GID</small>
-        <span>{metadata.stat.gid}</span>
+      <HeaderElement label="GID">
+        {metadata.stat.gid}
       </HeaderElement>
-      <HeaderElement>
-        <small>Perms</small>
-        <span>
-          {useMemo(() => unixPermissions(metadata.stat.fileMode), [metadata.stat.fileMode])}
-        </span>
+      <HeaderElement label="Perms">
+        {useMemo(() => unixPermissions(metadata.stat.fileMode), [metadata.stat.fileMode])}
       </HeaderElement>
-      <HeaderElement>
-        <small>Type</small>
-        <span>{(metadata.mime && metadata.mime.mime) || metadata.type}</span>
+      <HeaderElement label="Type">
+        {(metadata.mime && metadata.mime.mime) || metadata.type}
       </HeaderElement>
-      <HeaderElement>
-        <small>Access Time</small>
-        <span>{new Date(metadata.stat.accessTime.timestamp).toLocaleString()}</span>
+      <HeaderElement label="Access Time">
+        {new Date(metadata.stat.accessTime.timestamp).toLocaleString()}
       </HeaderElement>
-      <HeaderElement>
-        <small>Change Time</small>
-        <span>{new Date(metadata.stat.changeTime.timestamp).toLocaleString()}</span>
+      <HeaderElement label="Change Time">
+        {new Date(metadata.stat.changeTime.timestamp).toLocaleString()}
       </HeaderElement>
-      <HeaderElement>
-        <small>Modification Time</small>
-        <span>{new Date(metadata.stat.modificationTime.timestamp).toLocaleString()}</span>
+      <HeaderElement label="Modification Time">
+        {new Date(metadata.stat.modificationTime.timestamp).toLocaleString()}
       </HeaderElement>
     </HeaderElementsContainer>
 

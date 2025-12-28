@@ -6,14 +6,10 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { styled } from 'styled-components'
+import Button from './core/button'
 import { ExpandLess, ExpandMore } from './icons'
 
 type CollapsableTextProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
-
-const CollapsableContainer = styled('div')`
-  transition: max-height 250ms ease-in-out;
-`
 
 const CollapsableText = ({ children, ...props }: CollapsableTextProps) => {
   const [div, setDiv] = useState<HTMLDivElement | null>(null)
@@ -46,21 +42,22 @@ const CollapsableText = ({ children, ...props }: CollapsableTextProps) => {
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <div {...props}>
-      <CollapsableContainer ref={setDiv} className="overflow-hidden">
+      <div ref={setDiv} className="overflow-hidden transition-all duration-250">
         {children}
-      </CollapsableContainer>
+      </div>
       {!ignoreExpand && (
-        <button
+        <Button
           type="button"
-          className="btn btn-link text-decoration-none"
+          variant="text"
+          color="neutral"
+          className="mt-2"
           onClick={toggleOpen}
+          icon={isOpen
+            ? <ExpandLess />
+            : <ExpandMore />}
         >
           {isOpen ? 'Read less' : 'Read more'}
-          &nbsp;
-          {isOpen
-            ? <ExpandLess height="1rem" />
-            : <ExpandMore height="1rem" />}
-        </button>
+        </Button>
       )}
     </div>
   )

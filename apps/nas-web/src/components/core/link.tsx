@@ -3,7 +3,7 @@ import { clsx, type OverridableComponent, type OverridableComponentProps } from 
 
 type LinkTypeMap = {
   props: {
-    underline?: 'never' | 'hover' | 'always'
+    underline?: 'never' | 'hover' | 'always' | true
   }
   defaultComponent: 'a'
 }
@@ -22,9 +22,9 @@ const Link: OverridableComponent<LinkTypeMap> = ({
         'text-primary-main',
         underline === 'never' && 'no-underline',
         underline === 'hover' && 'hover:underline',
-        underline === 'always' && 'underline',
-        'transition-opacity',
-        'hover:opacity-75',
+        (underline === 'always' || underline === true) && 'underline',
+        'transition-colors',
+        'hover:text-primary-selected',
         className,
       )}
       {...props}

@@ -1,10 +1,7 @@
-import { styled } from 'styled-components'
+import { styled } from '../core/utils'
 
-const HeaderTitle = styled('h1')`
-    text-overflow: ellipsis;
-    word-break: break-word;
-    white-space: nowrap;
-    overflow: hidden;
-`
+const HeaderTitle = styled('h1', 'HeaderTitle')({
+  base: 'text-ellipsis text-nowrap overflow-hidden text-h1 mb-3',
+})
 
 export default HeaderTitle

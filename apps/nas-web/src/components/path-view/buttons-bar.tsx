@@ -1,12 +1,12 @@
 import {
-  type FC, useCallback, useEffect, useMemo, useState,
+  type FC, Fragment, useCallback, useEffect, useMemo, useState,
 } from 'react'
-import { Link } from 'react-router'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import * as Path from '@/utils/path'
+import Button from '../core/button'
+import ReactRouterButton from '../core/react-router-button'
 import { ArrowUpward, MoreVert } from '../icons'
-import ButtonContainer from './button-container'
 import ButtonsBarContainer from './buttons-bar-container'
 import ElementContextMenu from './element-context-menu'
 import SelectionContextMenu from './selection-context-menu'
@@ -31,7 +31,6 @@ const ButtonsBar: FC<ButtonsBarProps> = ({
   ] = useState<HTMLElement | null>(null)
   const [showSelectionOptionsMenu, setShowSelectionOptionsMenu] = useState(false)
 
-  const buttonClass = 'btn btn-secondary btn-sm'
   const items = useMemo(() => {
     const buttons: Array<React.ReactElement> = []
 
@@ -39,26 +38,37 @@ const ButtonsBar: FC<ButtonsBarProps> = ({
     const isRootPath = metadata.path === '/'
     if (!isRootPath) {
       buttons.push(
-        <Link to={parentUrl} className={buttonClass} key="parent">
-          <ArrowUpward width="18px" />
-          <span> Parent</span>
-        </Link>,
+        <ReactRouterButton
+          to={parentUrl}
+          variant="filled"
+          color="secondary"
+          key="parent"
+          icon={<ArrowUpward />}
+        >
+          <span>Parent</span>
+        </ReactRouterButton>,
       )
     } else {
       buttons.push(
-        <button type="button" className={buttonClass} disabled key="parent">
-          <ArrowUpward width="18px" />
-          <span> Parent</span>
-        </button>,
+        <Button
+          type="button"
+          variant="filled"
+          color="secondary"
+          disabled
+          key="parent"
+          icon={<ArrowUpward />}
+        >
+          Parent
+        </Button>,
       )
     }
 
     if (metadata.type === 'dir' && selectedElements.length > 0) {
       buttons.push(
-        <button
+        <Button
           key="selection-options-menu"
           type="button"
-          className={buttonClass}
+          color="secondary"
           onClick={(e) => {
             e.stopPropagation()
             setShowOptionsMenu(false)
@@ -66,31 +76,31 @@ const ButtonsBar: FC<ButtonsBarProps> = ({
           }}
           ref={setSelectionOptionsButtonElement}
           disabled={selectedElements.length === 0}
+          icon={<MoreVert />}
         >
-          <MoreVert width="18px" />
           <span>Selection options</span>
-        </button>,
+        </Button>,
       )
     } else {
       buttons.push(
-        <button
+        <Button
           key="options-menu"
           type="button"
-          className={buttonClass}
+          color="secondary"
           onClick={(e) => {
             e.stopPropagation()
             setShowOptionsMenu((v) => !v)
             setShowSelectionOptionsMenu(false)
           }}
           ref={setOptionsButtonElement}
+          icon={<MoreVert />}
         >
-          <MoreVert width="18px" />
           <span>
             {metadata.type === 'dir' ? 'Folder' : 'File'}
             {' '}
             options
           </span>
-        </button>,
+        </Button>,
       )
     }
 
@@ -121,8 +131,8 @@ const ButtonsBar: FC<ButtonsBarProps> = ({
   }, [])
 
   return (
-    <ButtonsBarContainer disabled={loading}>
-      {items.map((i) => <ButtonContainer key={i.key}>{i}</ButtonContainer>)}
+    <ButtonsBarContainer disabled={loading} role="group">
+      {items.map((i) => <Fragment key={i.key}>{i}</Fragment>)}
 
       <ElementContextMenu
         buttonElement={optionsButtonElement}

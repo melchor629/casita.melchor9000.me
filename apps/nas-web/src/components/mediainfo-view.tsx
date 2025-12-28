@@ -7,6 +7,8 @@ import {
 import type { MediaInfo, MediaInfoTrack } from '../api/fs/mediainfo'
 import { humanBytes, humanDuration } from '../utils/number-format'
 import highlightCode from '../workers/code-highlighter'
+import Button from './core/button'
+import Text from './core/text'
 import { Launch } from './icons'
 import Modal from './modal-view'
 
@@ -32,7 +34,7 @@ const MediaInfoTrackView = memo(({
 }: { readonly track: MediaInfoTrack, readonly properties: MediaInfoTrackPropertyMapper[] }) => (
   <li>
     {`${track['@type']} #${track['@typeorder'] || '1'}`}
-    <ul>
+    <ul className="ml-4">
       {properties
         .map((property) => [
           property,
@@ -124,7 +126,7 @@ const subtitleProperties: MediaInfoTrackPropertyMapper[] = [
 const MediaInfoChaptersView = memo(({ value }: { readonly value: MediaInfoTrack }) => (
   <li>
     Chapters
-    <ul>
+    <ul className="ml-4">
       {Object.entries(value.extra!)
         .map(([time, chapter]) => [
           time.split('_').slice(1),
@@ -179,17 +181,18 @@ export default function MediaInfoView({ mediainfo }: { readonly mediainfo: Media
   }, [rawMediainfo])
 
   return (
-    <>
-      <div className="d-flex mb-2">
-        <h3 className="mb-0">Media info</h3>
-        <button
+    <div>
+      <div className="flex mb-3 gap-1 items-center">
+        <Text size="h3">Media info</Text>
+        &nbsp;
+        <Button
           type="button"
-          className="btn btn-sm btn-outline-secondary ms-3"
+          variant="text"
+          color="secondary"
           onClick={() => setShowRaw(true)}
           aria-label="Expand media info"
-        >
-          <Launch height="16px" />
-        </button>
+          icon={<Launch />}
+        />
       </div>
       <ul>
         <li>
@@ -224,15 +227,14 @@ export default function MediaInfoView({ mediainfo }: { readonly mediainfo: Media
       <Modal
         id="mediainfo-raw"
         title="Complete Media Info"
-        size="lg"
+        size="xl"
         show={showRaw}
         onClose={() => setShowRaw(false)}
       >
-        <pre>
-          {}
+        <pre className="overflow-auto">
           <code dangerouslySetInnerHTML={{ __html: highlightedMediainfo || rawMediainfo }} />
         </pre>
       </Modal>
-    </>
+    </div>
   )
 }

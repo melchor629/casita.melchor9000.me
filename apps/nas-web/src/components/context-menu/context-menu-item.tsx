@@ -1,27 +1,13 @@
-import { css, styled } from 'styled-components'
+import { styled } from '../core/utils'
 
-const ContextMenuItem = styled.button<{ disabled?: boolean }>`
-  width: 100%;
-  user-select: none;
-  padding: 0.25rem 0.5rem;
-  border: none;
-  background-color: transparent;
-  transition: opacity 125ms ease-in-out,
-      background-color 125ms ease-in-out;
-
-  ${({ disabled }) => (disabled
-    ? css`
-      opacity: 0.75;
-      pointer-events: none;
-    `
-    : css`
-      cursor: pointer;
-
-      &:hover {
-        opacity: 0.95;
-        background-color: rgba(var(--bs-secondary-bg-rgb), 0.75);
-      }
-    `)}
-`
+const ContextMenuItem = styled('button', 'ContextMenuItem')({
+  base: `
+    w-full inline-flex items-center gap-1.5 px-2 py-1 select-none text-nowrap
+    transition-colors
+    hover:not-disabled:bg-text-main/10
+    not-disabled:cursor-pointer
+    disabled:text-text-secondary
+  `,
+})
 
 export default ContextMenuItem

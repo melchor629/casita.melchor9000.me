@@ -11,6 +11,7 @@ import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useApiClient from '@/hooks/use-api-client'
 import * as path from '@/utils/path'
+import { TextInput } from '../form'
 import DirectoryEntries from './directory-entries'
 
 interface DirectoryPathViewProps {
@@ -145,10 +146,10 @@ export default function DirectoryPathView({
 
   return (
     <>
-      <div className="my-3">
-        <input
+      <div className="mt-2 mb-6">
+        <TextInput
           type="text"
-          className="form-control form-control-sm"
+          size="small"
           value={filter}
           onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
             setFilter(e.target.value)
@@ -176,7 +177,7 @@ export default function DirectoryPathView({
           />
           )
         : (
-          <div className="text-center">
+          <div className="text-center text-text-secondary">
             {filter.length === 0 ? 'This folder is empty' : 'No entries match the filter'}
           </div>
           )}

@@ -5,6 +5,8 @@ import { useMediaLibraryItemChildren } from '@/hooks/api/use-media-library-item-
 import { humanDuration } from '@/utils/number-format'
 import { dirname } from '@/utils/path'
 import CollapsableText from '../collapsable-text'
+import ReactRouterButton from '../core/react-router-button'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeaderCell, TableRow } from '../core/table'
 import { File, Folder } from '../icons'
 import ItemPath from './item-path'
 import ItemThumbnailImage from './item-thumbnail-image'
@@ -31,58 +33,62 @@ const AlbumItem = ({ item, module }: AlbumItemProps) => {
 
   return (
     <div>
-      <div className="d-flex gap-3">
+      <div className="flex gap-6">
         <ItemThumbnailImage item={item} module={module} />
         <div>
-          <h2>{item.title}</h2>
+          <h2 className="text-h2">{item.title}</h2>
           <h3>
             <Link to={`/m/${module}/${item.artistId}`}>
               {item.artistTitle}
             </Link>
           </h3>
-          <div className="d-flex gap-2">
+          <div className="flex gap-3">
             <span>{item.year}</span>
             {item.rating && <span>{`${item.rating}/10`}</span>}
           </div>
           <Tags type="Genres" tags={item.genres} />
           <Tags type="Styles" tags={item.styles} />
-          <div className="d-flex flex-wrap gap-2 my-2">
+          <div className="flex gap-3 my-4">
             {folderLinks}
           </div>
         </div>
       </div>
 
-      <CollapsableText className="lead my-4">
+      <CollapsableText className="text-body-large my-6">
         {item.summary}
       </CollapsableText>
 
-      <div className="table-responsive">
-        <table className="table table-dark table-hover">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
+      <TableContainer>
+        <Table hover>
+          <TableHead>
+            <TableRow>
+              <TableHeaderCell>#</TableHeaderCell>
               {/* @ts-expect-error don't know why... */}
-              <th scope="col" width="100%">Title</th>
-              <th scope="col">Duration</th>
-              <th scope="col"><span className="visually-hidden">Actions</span></th>
-            </tr>
-          </thead>
-          <tbody>
+              <TableHeaderCell width="100%">Title</TableHeaderCell>
+              <TableHeaderCell>Duration</TableHeaderCell>
+              <TableHeaderCell><span className="invisible">Actions</span></TableHeaderCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {itemChildren?.items.map((child, i) => child.type === 'track' && (
-              <tr key={child.id}>
-                <th scope="row">{i + 1}</th>
-                <td>{child.title}</td>
-                <td>{humanDuration(child.duration)}</td>
-                <td>
-                  <Link to={`/${module}${child.paths[0]}`} className="px-2" aria-label="Album files">
-                    <File height="1rem" />
-                  </Link>
-                </td>
-              </tr>
+              <TableRow key={child.id}>
+                <TableHeaderCell>{i + 1}</TableHeaderCell>
+                <TableCell>{child.title}</TableCell>
+                <TableCell>{humanDuration(child.duration)}</TableCell>
+                <TableCell>
+                  <ReactRouterButton
+                    to={`/${module}${child.paths[0]}`}
+                    aria-label="Album files"
+                    icon={<File />}
+                    size="small"
+                    color="neutral"
+                  />
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
 }

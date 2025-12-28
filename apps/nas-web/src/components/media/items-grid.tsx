@@ -1,7 +1,7 @@
-import { VirtuosoGrid, type GridListProps } from 'react-virtuoso'
-import styled from 'styled-components'
+import { VirtuosoGrid } from 'react-virtuoso'
 import type { Item, LibraryType } from '@/api/fs/media'
 import useMediaThumbnailSize from '@/hooks/use-media-thumbnail-size'
+import { styled } from '../core/utils'
 import ItemCell from './item-cell'
 
 interface ItemsGridProps {
@@ -24,13 +24,9 @@ const itemContent = (_: number, item: Item, module: string) => (
   />
 )
 
-const GridContainer = styled('div')<GridListProps>`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, var(--grid-item-width));
-  justify-content: space-around;
-  row-gap: 16px;
-  column-gap: 24px;
-`
+const GridContainer = styled('div', 'GridContainer')({
+  base: 'grid justify-around gap-y-4 gap-x-6 grid-cols-[repeat(auto-fill,var(--grid-item-width))]',
+})
 
 export default function ItemsGrid({ items, libraryType, module }: ItemsGridProps) {
   const { size: imageSize } = useMediaThumbnailSize(sizes[libraryType])

@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { useSettingsContext } from '@/hooks/use-settings'
 import { env } from '@/utils/config'
+import { RadioButton, RadioButtonGroup } from '../core/radio-button-group'
 import { Switch } from '../form'
 import {
   Contrast as CircleHalfStrokeIcon,
@@ -15,7 +16,7 @@ import Modal from '../modal-view'
 
 interface SettingsModalProps {
   readonly show?: boolean
-  readonly onClose?: () => void
+  readonly onClose: () => void
 }
 
 export default function SettingsModal({
@@ -32,115 +33,35 @@ export default function SettingsModal({
     needRefresh: [needRefresh],
   } = useRegisterSW()
 
-  const onSystemThemeClicked = useCallback(() => update('theme', 'system'), [update])
-  const onDarkThemeClicked = useCallback(() => update('theme', 'dark'), [update])
-  const onLightThemeClicked = useCallback(() => update('theme', 'light'), [update])
+  const onThemeChanged = useCallback((value: string) => update('theme', value as never), [update])
   const onHideFilesVisibilityClicked = useCallback(() => update('hidden', (v) => !v), [update])
-  const onListEntryViewTypeClicked = useCallback(() => update('entryViewType', 'list'), [update])
-  const onGridEntryViewTypeClicked = useCallback(() => update('entryViewType', 'grid'), [update])
+  const onEntryViewTypeChanged = useCallback((value: string) => update('entryViewType', value as never), [update])
   const onShowThumbnailsVisibilityClicked = useCallback(() => update('showThumbnails', (v) => !v), [update])
 
   return (
     <Modal id="settings-modal" title="Settings" show={show} onClose={onClose}>
       <div className="text-center">
         <div className="mb-2">
-          <div className="mb-1 user-select-none">Theme</div>
+          <div className="mb-1 select-none">Theme</div>
           <div className="btn-group btn-group-toggle btn-group-sm" role="group">
-            <input
-              type="radio"
-              name="theme"
-              id="theme-system"
-              className="btn-check"
-              checked={theme === 'system'}
-              onChange={onSystemThemeClicked}
-            />
-            <label
-              className={`btn btn-outline-primary ${theme === 'system' ? 'active' : ''}`}
-              htmlFor="theme-system"
-            >
-              <CircleHalfStrokeIcon height={14} />
-              {' '}
-              System
-            </label>
-
-            <input
-              type="radio"
-              name="theme"
-              id="theme-dark"
-              className="btn-check"
-              checked={theme === 'dark'}
-              onChange={onDarkThemeClicked}
-            />
-            <label
-              className={`btn btn-outline-primary ${theme === 'dark' ? 'active' : ''}`}
-              htmlFor="theme-dark"
-            >
-              <MoonIcon height={14} />
-              {' '}
-              Dark
-            </label>
-
-            <input
-              type="radio"
-              name="theme"
-              id="theme-light"
-              className="btn-check"
-              checked={theme === 'light'}
-              onChange={onLightThemeClicked}
-            />
-            <label
-              className={`btn btn-outline-primary ${theme === 'light' ? 'active' : ''}`}
-              htmlFor="theme-light"
-            >
-              <SunIcon height={14} />
-              {' '}
-              Light
-            </label>
+            <RadioButtonGroup color="secondary" name="theme" value={theme} onChange={onThemeChanged}>
+              <RadioButton value="system" icon={<CircleHalfStrokeIcon />}>System</RadioButton>
+              <RadioButton value="dark" icon={<MoonIcon />}>Dark</RadioButton>
+              <RadioButton value="light" icon={<SunIcon />}>Light</RadioButton>
+            </RadioButtonGroup>
           </div>
         </div>
         <div className="mb-2">
-          <div className="mb-1 user-select-none">Item View Style</div>
-          <div className="btn-group btn-group-toggle btn-group-sm">
-            <input
-              type="radio"
-              name="entryViewType"
-              id="entry-view-type-list"
-              className="btn-check"
-              checked={entryViewType === 'list'}
-              onChange={onListEntryViewTypeClicked}
-            />
-            <label
-              className={`btn btn-outline-primary ${entryViewType === 'list' ? 'active' : ''}`}
-              htmlFor="entry-view-type-list"
-            >
-              <BarsIcon height={14} />
-              {' '}
-              List
-            </label>
-
-            <input
-              type="radio"
-              name="entryViewType"
-              id="entry-view-type-grid"
-              className="btn-check"
-              checked={entryViewType === 'grid'}
-              onChange={onGridEntryViewTypeClicked}
-            />
-            <label
-              className={`btn btn-outline-primary ${entryViewType === 'grid' ? 'active' : ''}`}
-              htmlFor="entry-view-type-grid"
-            >
-              <GridIcon height={14} />
-              {' '}
-              Grid
-            </label>
-          </div>
+          <div className="mb-1 select-none">Item View Style</div>
+          <RadioButtonGroup color="secondary" name="entryViewType" value={entryViewType} onChange={onEntryViewTypeChanged}>
+            <RadioButton value="list" icon={<BarsIcon />}>List</RadioButton>
+            <RadioButton value="grid" icon={<GridIcon />}>Grid</RadioButton>
+          </RadioButtonGroup>
         </div>
 
         <div>
           <Switch
             id="toggle-hidden-files"
-            className="d-inline-block"
             checked={hidden}
             onChange={onHideFilesVisibilityClicked}
           >
@@ -151,7 +72,6 @@ export default function SettingsModal({
         <div>
           <Switch
             id="toggle-thumbnails"
-            className="d-inline-block"
             checked={showThumbnails}
             onChange={onShowThumbnailsVisibilityClicked}
           >
@@ -160,13 +80,13 @@ export default function SettingsModal({
         </div>
 
         <div
-          className="text-muted mt-3 no-select"
+          className="text-text-secondary mt-3 select-none"
         >
           {`v${env.version} (${env.revision})`}
           {needRefresh && ' (New Version available!)'}
         </div>
         <div
-          className="text-muted mt-1 no-select"
+          className="text-text-secondary mt-0.5 select-none"
         >
           {env.buildDate.toLocaleString()}
         </div>

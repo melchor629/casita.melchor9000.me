@@ -37,22 +37,22 @@ export default function MediaCollectionHomePage() {
         <title>{app.name}</title>
       </Helmet>
 
-      <div className="flex flex-col full-height padding-nav-bar">
-        <div className="flex justify-between mb-2">
-          <h1>
-            <LibraryTypeIcon type={type} style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
+      <div className="flex flex-col h-dvh pt-navbar">
+        <div className="flex justify-between mb-4">
+          <h2 className="text-h2">
+            <LibraryTypeIcon type={type} className="text-h1" />
             <span className="align-middle select-none">
               &nbsp;
               {app.name}
             </span>
-          </h1>
+          </h2>
 
           <div>
-            <ReactRouterButton to={`/m/${module}/search`} className="mr-1">
-              <Search style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
+            <ReactRouterButton to={`/m/${module}/search`} className="mr-1" size="large">
+              <Search className="text-h1" />
             </ReactRouterButton>
-            <ReactRouterButton to={`/${module}/`}>
-              <Folder style={{ fontSize: 'calc(1.375rem + 1.5vw)' }} />
+            <ReactRouterButton to={`/${module}/`} size="large">
+              <Folder className="text-h1" />
             </ReactRouterButton>
           </div>
         </div>

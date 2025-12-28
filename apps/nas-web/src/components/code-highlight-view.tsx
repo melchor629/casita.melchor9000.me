@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { downloadFile } from '../api/fs'
 import useApiClient from '../hooks/use-api-client'
 import highlightCode from '../workers/code-highlighter'
-import { Spinner } from './loaders'
-import DotsLoadingAnimation from './loaders/dots'
+import Text from './core/text'
+import { AppLoader, Spinner } from './loaders'
 
 interface CodeHighlightViewProps {
   readonly module: string
@@ -65,8 +65,7 @@ export default function CodeHighlightView({ forceLanguage, module, path }: CodeH
   if (codeHighlight === null && error === null) {
     return (
       <div className="text-center">
-        <DotsLoadingAnimation />
-        <p>Loading code...</p>
+        <AppLoader message="Loading code..." />
       </div>
     )
   }
@@ -74,7 +73,7 @@ export default function CodeHighlightView({ forceLanguage, module, path }: CodeH
   if (codeHighlight === null && error !== null) {
     return (
       <div className="text-center">
-        Could not load code
+        <Text size="bodyLarge">Loading code contents failed</Text>
         <br />
         {error}
       </div>
@@ -84,14 +83,13 @@ export default function CodeHighlightView({ forceLanguage, module, path }: CodeH
   if (codeHighlight !== null) {
     return (
       <div>
-        <p>
-          <small>
-            {`${codeHighlight.lang ?? 'Unknown'} (${codeHighlight.relevance}%) `}
-            {!codeHighlight.highlighted && <Spinner size="sm" />}
-          </small>
-        </p>
-        {}
-        <pre><code dangerouslySetInnerHTML={{ __html: codeHighlight.value }} /></pre>
+        <Text size="bodySmall" color="textSecondary" className="mb-1">
+          {`${codeHighlight.lang ?? 'Unknown'} (${codeHighlight.relevance}%) `}
+          {!codeHighlight.highlighted && <Spinner />}
+        </Text>
+        <pre className="overflow-x-auto">
+          <code dangerouslySetInnerHTML={{ __html: codeHighlight.value }} />
+        </pre>
       </div>
     )
   }

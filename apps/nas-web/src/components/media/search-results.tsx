@@ -42,7 +42,7 @@ export default function SearchResults({ module, searchFilter }: SearchResultsPro
 
   if (isLoading && !results) {
     return (
-      <div className="text-center w-100">
+      <div className="text-center w-full">
         <Spinner size="lg" />
       </div>
     )
@@ -50,7 +50,7 @@ export default function SearchResults({ module, searchFilter }: SearchResultsPro
 
   if (delayedSearchFilter.length <= 1) {
     return (
-      <div className="text-center lead text-muted w-100">
+      <div className="text-center text-body-large text-text-secondary w-full select-none">
         Type something above to start searching…
       </div>
     )
@@ -60,7 +60,7 @@ export default function SearchResults({ module, searchFilter }: SearchResultsPro
     <div style={{ position: 'relative' }}>
       {!!results?.areas.length && results.areas.map((area) => (
         <div key={area.type} className="mb-2" role="region">
-          <h2>{areaTitles[area.type]}</h2>
+          <h2 className="text-h2">{areaTitles[area.type]}</h2>
           <HorizontallyScrollableContainer>
             {area.results.map((areaResult) => (
               <ItemCell key={areaResult.id} item={areaResult} module={module} />
@@ -70,13 +70,13 @@ export default function SearchResults({ module, searchFilter }: SearchResultsPro
       ))}
 
       {results && !results.areas.length && (
-        <div className="text-center lead text-muted w-100">
+        <div className="text-center text-body-large text-text-secondary w-full select-none">
           No results with the provided search.
         </div>
       )}
 
       {isLoading && (
-        <div className="text-center w-100 h-100" style={{ position: 'absolute', top: 0, left: 0 }}>
+        <div className="text-center w-full h-full" style={{ position: 'absolute', top: 0, left: 0 }}>
           <Spinner size="lg" />
         </div>
       )}

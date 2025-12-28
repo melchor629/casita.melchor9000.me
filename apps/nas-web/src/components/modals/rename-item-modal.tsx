@@ -6,6 +6,8 @@ import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useApiClient from '@/hooks/use-api-client'
 import * as Path from '@/utils/path'
+import Alert from '../core/alert'
+import Button from '../core/button'
 import { TextInput } from '../form'
 import Modal from '../modal-view'
 
@@ -13,7 +15,7 @@ interface RenameItemModalProps {
   readonly module: string
   readonly entry?: FileMetadata | DirectoryMetadata
   readonly show?: boolean
-  readonly onClose?: (hasRenamed?: boolean) => void
+  readonly onClose: (hasRenamed?: boolean) => void
 }
 
 export default function RenameItemModal({
@@ -41,21 +43,21 @@ export default function RenameItemModal({
   }, [module, path, show])
 
   const closeButton = useMemo(() => [
-    <button
+    <Button
       type="button"
-      className="btn btn-warning"
       onClick={onRenameImpl}
       key="rename"
       disabled={!newName}
     >
       Rename
-    </button>,
+    </Button>,
   ], [onRenameImpl, newName])
 
   return (
     <Modal
       id="rename-item"
-      title={`Rename ${Path.basename(path) || path}`}
+      size="xl"
+      title="Rename item"
       onClose={onClose}
       show={show}
       buttons={closeButton}
@@ -63,14 +65,13 @@ export default function RenameItemModal({
       portal
     >
       {error && (
-        <div className="alert alert-danger" role="alert" style={{ wordBreak: 'break-all' }}>
+        <Alert severity="error" title="There was an error during rename">
           {JSON.stringify(error)}
-        </div>
+        </Alert>
       )}
       <TextInput
         type="text"
         id="rename-item-name"
-        isInvalid={!!error}
         value={newName}
         onChange={(e) => setNewName(e.target.value)}
         helpText={newUrl}

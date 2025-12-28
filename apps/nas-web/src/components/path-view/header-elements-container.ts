@@ -1,22 +1,7 @@
-import { styled } from 'styled-components'
+import { styled } from '../core/utils'
 
-const HeaderElementsContainer = styled('div')`
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-bottom: 0.5rem;
-    column-gap: 0.75rem;
-    row-gap: 0.25rem;
-
-    > small {
-        flex-grow: 1;
-        width: 100%;
-        margin-bottom: 0.25rem;
-
-        > a {
-            text-decoration: none;
-        }
-    }
-`
+const HeaderElementsContainer = styled('div', 'HeaderElementsContainer')({
+  base: 'flex flex-wrap mb-2 gap-x-3 gap-y-1',
+})
 
 export default HeaderElementsContainer

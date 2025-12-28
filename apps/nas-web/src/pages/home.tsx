@@ -25,7 +25,7 @@ export default function HomePage() {
 
       <NavbarBackdropFilter />
 
-      <div style={{ marginTop: 'var(--me-navbar-height)' }}>
+      <div className="mt-navbar">
         <Suspense fallback={<div className="text-center my-2"><Spinner show size="lg" /></div>}>
           {apps.map(({ key, name }) => <RecentMedia key={key} name={name} module={key} />)}
         </Suspense>

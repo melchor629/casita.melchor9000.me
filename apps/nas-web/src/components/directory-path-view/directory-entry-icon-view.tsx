@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { styled } from 'styled-components'
 import { openFileSystemEvents } from '@/api/fs'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
@@ -7,6 +6,7 @@ import useApiClient from '@/hooks/use-api-client'
 import { useSettings } from '@/hooks/use-settings'
 import { hasAvifSupport, hasWebpSupport } from '@/utils/image-support'
 import * as thumbnailManager from '@/utils/thumbnail-manager'
+import { styled } from '../core/utils'
 import {
   File,
   FileAudio,
@@ -21,7 +21,7 @@ import {
 interface DirectoryEntryIconViewProps {
   readonly entry: DirectoryMetadata | FileMetadata
   readonly module: string
-  readonly size: number
+  readonly size: 'list' | 'grid'
 }
 
 const archiveTypes = [
@@ -32,28 +32,25 @@ const archiveTypes = [
   'application/x-xz',
 ]
 
-const ThumbnailIconContainer = styled.div<{ size: number }>`
-  width: ${({ size }) => size}px;
-  height: ${({ size }) => size}px;
-  padding: ${({ size }) => (size <= 64 ? 0 : 0.25)}rem;
-  margin-right: ${({ size }) => (size <= 64 ? 5 : 0)}px;
+const ThumbnailIconContainer = styled('div', 'ThumbnailIconContainer')({
+  base: '*:w-full *:h-full *:block',
+  variants: {
+    size: {
+      list: 'w-4 h-4 mr-1',
+      grid: 'w-20 h-20 p-1',
+    },
+  },
+})
 
-  > svg {
-    && { display: block; }
-    display: block;
-    width: calc(${({ size }) => size}px - ${({ size }) => (size <= 64 ? 0 : 0.5)}rem);
-    height: 100%;
-  }
-`
-
-const ThumbnailIcon = styled.div<{ size: number, src: string }>`
-  width: 100%;
-  padding-bottom: 100%;
-  border-radius: ${({ size }) => (size <= 64 ? '2px' : '8px')};
-  background-image: url(${({ src }) => src});
-  background-size: contain;
-  background-position: center;
-`
+const ThumbnailIcon = styled('div', 'ThumbnailIcon')({
+  base: 'w-full pb-[100%] bg-contain bg-center bg-[attr(data-src)]',
+  variants: {
+    size: {
+      list: 'rounded-xs',
+      grid: 'rounded-lg',
+    },
+  },
+})
 
 function DirectoryEntryIconView({ entry, module, size }: DirectoryEntryIconViewProps) {
   const [blobUrl, setBlobUrl] = useState<string | null>(null)
@@ -88,7 +85,7 @@ function DirectoryEntryIconView({ entry, module, size }: DirectoryEntryIconViewP
         apiClient,
         module,
         entry,
-        { format, size: size < 64 ? 'sm' : 'lg' },
+        { format, size: size === 'list' ? 'sm' : 'lg' },
         ac.signal,
         // force ignore cache if the function is called from the fs-events
         !!path,
@@ -108,7 +105,7 @@ function DirectoryEntryIconView({ entry, module, size }: DirectoryEntryIconViewP
 
   let icon
   if (blobUrl !== null) {
-    icon = <ThumbnailIcon src={blobUrl} size={size} />
+    icon = <ThumbnailIcon data-src={blobUrl} size={size} />
   } else {
     const { mime, type } = entry
     if (type === 'dir') {

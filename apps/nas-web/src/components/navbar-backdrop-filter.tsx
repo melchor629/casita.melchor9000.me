@@ -1,14 +1,7 @@
-import { styled } from 'styled-components'
+import { styled } from './core/utils'
 
-const NavbarBackdropFilter = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: var(--me-navbar-height);
-  backdrop-filter: blur(20px);
-  background-color: rgba(var(--bs-body-bg), 0.75);
-  z-index: 1;
-`
+const NavbarBackdropFilter = styled('div', 'NavbarBackdropFilter')({
+  base: 'fixed top-0 left-0 w-full h-navbar bg-elevated-0/70 backdrop-blur-lg z-1',
+})
 
 export default NavbarBackdropFilter

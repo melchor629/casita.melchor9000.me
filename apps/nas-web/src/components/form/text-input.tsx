@@ -1,51 +1,64 @@
-import type { ComponentPropsWithoutRef, FC } from 'react'
+import type { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
+import Text from '../core/text'
+import { clsx } from '../core/utils'
 
 type TextInputProps = Omit<ComponentPropsWithoutRef<'input'>, 'size'> & {
   readonly id?: string
   readonly className?: string
-  readonly isInvalid?: boolean
-  readonly isValid?: boolean
-  readonly invalidFeedback?: string
-  readonly validFeedback?: string
   readonly helpText?: React.ReactNode
   readonly type: 'text' | 'password' | 'color' | 'date' | 'datetime-local' | 'email' | 'month' | 'number' | 'search' |
   'tel' | 'time' | 'url' | 'week'
-  readonly size?: 'sm' | 'lg'
+  readonly size?: 'small' | 'medium' | 'large'
+  readonly endAdornment?: ReactNode
 }
 
 const TextInput: FC<TextInputProps> = ({
   children,
   className,
+  endAdornment,
   helpText,
   id,
-  invalidFeedback,
-  isInvalid,
-  isValid,
-  size,
+  size = 'medium',
   type,
-  validFeedback,
   ...props
 }) => (
-  <div className="form-group">
-    <label htmlFor={id}>{children}</label>
-    <input
-      type={type}
-      id={id}
-      name={id}
-      aria-describedby={helpText ? `${id}-help-text` : undefined}
-      className={[
-        'form-control',
-        isInvalid && 'is-invalid',
-        isValid && 'is-valid',
-        size && `form-control-${size}`,
-      ].filter((f) => f).join(' ')}
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      {...props}
-    />
-    {invalidFeedback && <div className="invalid-feedback">{invalidFeedback}</div>}
-    {validFeedback && <div className="valid-feedback">{validFeedback}</div>}
+  <div className={clsx('max-w-full', className)}>
+    {children && id && <Text component="label" htmlFor={id} className="inline-block" ellipsize>{children}</Text>}
+    <div
+      className={clsx(
+        'w-full rounded-md flex gap-1',
+        'border border-text-secondary',
+        size === 'small' && 'px-1.5 py-1 text-body-small placeholder:text-body-small',
+        size === 'medium' && 'px-2 py-1',
+        size === 'large' && 'px-3 py-1.5',
+        'focus-within:outline-3 outline-0 outline-text-secondary/50',
+        'transition-all',
+        helpText && 'mb-0.5',
+      )}
+    >
+      <input
+        type={type}
+        id={id}
+        name={id}
+        aria-describedby={helpText ? `${id}-help-text` : undefined}
+        className={clsx('appearance-none w-full focus:outline-none')}
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...props}
+      />
+      {endAdornment && (
+        <div
+          className={clsx(
+            size === 'small' && '-mr-0.5 -my-0.5',
+            size === 'medium' && '-mr-1 -my-0.5',
+            size === 'large' && '-mr-1.5 -my-1',
+          )}
+        >
+          {endAdornment}
+        </div>
+      )}
+    </div>
     {helpText && (
-      <small id={`${id}-help-text`} className="form-text text-muted">{helpText}</small>
+      <Text id={`${id}-help-text`} size="bodySmall" color="textSecondary">{helpText}</Text>
     )}
   </div>
 )

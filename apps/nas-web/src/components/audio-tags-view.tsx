@@ -1,6 +1,7 @@
 import capitalize from 'lodash-es/capitalize'
 import { memo } from 'react'
 import type { AudioTags, CommonTags } from '../api/fs/audio-tags'
+import Text from './core/text'
 
 const tagKeyToHuman = (tagKey: string) => ({
   albumartist: 'Album Artist',
@@ -51,9 +52,9 @@ export default function AudioTagsView({ tags: { rawTags, ...tags } }: { readonly
   const liStyle: React.CSSProperties = { wordBreak: 'break-all' }
   return (
     <div>
-      <h3>Track metadata</h3>
+      <Text size="h3" className="mb-2">Track metadata</Text>
       <ul>
-        {Object.entries(tags).map(([key, value]) => (
+        {Object.entries(tags).toSorted(([ak], [bk]) => ak.localeCompare(bk)).map(([key, value]) => (
           <li key={key} style={liStyle}>
             <b>{tagKeyToHuman(key)}</b>
             {': '}

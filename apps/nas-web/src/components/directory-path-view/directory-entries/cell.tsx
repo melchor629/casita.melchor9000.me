@@ -17,8 +17,8 @@ const Cell = withTouchEvents(({
     // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
   >
-    <DirectoryEntryIconView module={module} size={80} entry={entry} />
-    <span style={{ width: '100%' }}>
+    <DirectoryEntryIconView module={module} size="grid" entry={entry} />
+    <span className="w-full">
       <ClampedText lines={2}>{isParentItem ? '..' : basename(entry.path)}</ClampedText>
     </span>
   </div>

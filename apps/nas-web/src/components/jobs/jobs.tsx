@@ -1,5 +1,6 @@
 import { type FC, useCallback, useEffect } from 'react'
 import useJobHandler from '@/hooks/use-job-handler'
+import Button from '../core/button'
 import Job from './job'
 
 const Jobs: FC<{ readonly shouldUpdate: boolean }> = ({ shouldUpdate }) => {
@@ -24,7 +25,7 @@ const Jobs: FC<{ readonly shouldUpdate: boolean }> = ({ shouldUpdate }) => {
 
   if (!jobs.length) {
     return (
-      <div className="text-center">
+      <div className="text-center text-text-secondary select-none">
         <span>No jobs</span>
       </div>
     )
@@ -33,9 +34,9 @@ const Jobs: FC<{ readonly shouldUpdate: boolean }> = ({ shouldUpdate }) => {
   return (
     <>
       <div className="text-right">
-        <button type="button" className="btn btn-sm btn-outline-primary" onClick={clearCompleted}>
+        <Button type="button" size="small" variant="text" onClick={clearCompleted}>
           Clear completed
-        </button>
+        </Button>
       </div>
 
       {jobs.map((job) => <Job key={job.id} job={job} queue={job.queue} />)}

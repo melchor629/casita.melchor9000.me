@@ -1,40 +1,112 @@
 @import "tailwindcss";
 
-/* Matches bootstrap theme selector */
-@custom-variant dark (&:where([data-bs-theme="dark"], [data-bs-theme="dark"] *));
+/* Manual theme selector */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme {
   --color-primary-main: light-dark(
     var(--color-orange-600),
     var(--color-orange-400)
   );
+  --color-primary-alt: light-dark(
+    var(--color-orange-300),
+    var(--color-orange-700)
+  );
+  --color-primary-selected: light-dark(
+    var(--color-orange-700),
+    var(--color-orange-300)
+  );
 
   --color-secondary-main: light-dark(
     var(--color-emerald-500),
     var(--color-emerald-400)
   );
+  --color-secondary-alt: light-dark(
+    var(--color-emerald-200),
+    var(--color-emerald-700)
+  );
+  --color-secondary-selected: light-dark(
+    var(--color-emerald-600),
+    var(--color-emerald-200)
+  );
 
-  --color-text-light: var(--color-gray-50);
-  --color-text-dark: var(--color-gray-900);
+  --color-error-main: light-dark(
+    var(--color-red-500),
+    var(--color-red-500)
+  );
+  --color-error-alt: light-dark(
+    var(--color-red-300),
+    var(--color-red-700)
+  );
+  --color-error-selected: light-dark(
+    var(--color-red-700),
+    var(--color-red-300)
+  );
+
   --color-text-main: light-dark(
-    var(--color-text-light),
-    var(--color-text-dark)
+    var(--color-gray-900),
+    var(--color-gray-50)
   );
+  --color-text-secondary: oklch(from var(--color-text-main) l c h / 0.7);
   --color-text-contrasted: light-dark(
-    var(--color-text-dark),
-    var(--color-text-light)
+    var(--color-gray-50),
+    var(--color-gray-900)
   );
+
+  --color-elevated-0: light-dark(
+    var(--color-white),
+    var(--color-gray-900)
+  );
+  --color-elevated-1: light-dark(
+    var(--color-gray-200),
+    var(--color-gray-700)
+  );
+
+  --spacing-navbar: 60px;
+
+  --text-body: var(--text-base);
+  --text-body--line-height: var(--text-base--line-height);
+  --text-body-large: var(--text-lg);
+  --text-body-large--line-height: var(--text-lg--line-height);
+  --text-body-small: var(--text-sm);
+  --text-body-small--line-height: var(--text-sm--line-height);
+  --text-h1: var(--text-4xl);
+  --text-h1--line-height: var(--text-4xl--line-height);
+  --text-h2: var(--text-3xl);
+  --text-h2--line-height: var(--text-3xl--line-height);
+  --text-h3: var(--text-2xl);
+  --text-h3--line-height: var(--text-2xl--line-height);
+  --text-h4: var(--text-xl);
+  --text-h4--line-height: var(--text-xl--line-height);
+
+  --animate-dots-size-pulse: dots-size-pulse 1.8s infinite ease-in-out;
+  --animate-dots-color-pulse: dots-color-pulse 18s infinite ease-in-out;
+  --animate-dots-pulse: var(--animate-dots-size-pulse), var(--animate-dots-color-pulse);
+}
+
+@utility text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@utility animation-delay-* {
+  animation-delay: --value([*]);
+  animation-delay: calc(--value(integer) * 1ms);
 }
 
 :root {
-  /* color-scheme: dark light; */
-  --me-navbar-height: 60px;
+  color-scheme: light dark;
+  --svg-check: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
 }
 
-:where([data-bs-theme="light"], [data-bs-theme="light"] *) {
+:where([data-theme="light"], [data-theme="light"] *) {
   color-scheme: light;
 }
 
-:where([data-bs-theme="dark"], [data-bs-theme="dark"] *) {
+:where([data-theme="dark"], [data-theme="dark"] *) {
   color-scheme: dark;
 }
+
+@import "./animations.css";
+@import "./directory-entries-list.css";

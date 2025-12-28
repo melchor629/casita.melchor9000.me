@@ -105,10 +105,11 @@ const ContextMenu: FC<ContextMenuProps> = ({
   const content = (
     <div
       ref={setContainerElementRef}
-      style={{ ...floatingStyles, zIndex: 1035, visibility }}
+      className="z-20"
+      style={{ ...floatingStyles, visibility }}
       onContextMenuCapture={ignoreEvent}
     >
-      <ContextMenuContainer $show={show ?? true} role="list">
+      <ContextMenuContainer data-show={show ?? true} role="list">
         {items.map((item) => <div key={item.key} role="listitem">{item.content}</div>)}
       </ContextMenuContainer>
     </div>

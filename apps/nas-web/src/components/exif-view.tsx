@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { FileMetadata } from '../api/fs/file'
+import Text from './core/text'
 
 function ExifView({ exif }: { readonly exif: FileMetadata['exif'] }) {
   const keys = useMemo(() => (
@@ -19,12 +20,13 @@ function ExifView({ exif }: { readonly exif: FileMetadata['exif'] }) {
 
   return (
     <div>
+      <Text size="h3">EXIF</Text>
       <ul>
         {keys
           .map(([key, v]) => (
             <li key={key}>
               <strong>{key}</strong>
-              <ul>
+              <ul className="ml-4">
                 {v.map(([k, vv]) => (
                   <li key={k}>
                     <strong>{k}</strong>

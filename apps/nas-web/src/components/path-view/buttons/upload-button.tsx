@@ -1,12 +1,9 @@
 import { useCallback, useRef } from 'react'
-import { styled } from 'styled-components'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useJobHandler from '@/hooks/use-job-handler'
 import { FileUpload } from '../../icons'
 import Button from './button'
-
-const HiddenInput = styled('input')`display: none;`
 
 interface UploadButtonProps {
   readonly module: string
@@ -42,9 +39,10 @@ export default function UploadButton({ metadata, module }: UploadButtonProps) {
         <FileUpload width="18px" />
         <span> Upload</span>
       </Button>
-      <HiddenInput
+      <input
         type="file"
         id="upload-file-input"
+        className="hidden"
         ref={inputRef}
         onChange={onChangeImpl}
       />
