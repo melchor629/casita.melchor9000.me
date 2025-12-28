@@ -36,6 +36,21 @@ const mediainfo = async (path: string) => {
  * @return {Promise} A promise with the information.
  * */
 export default async (path: string): Promise<MediaInfo> => {
-  const object = await mediainfo(path)
-  return object
+  try {
+    const object = await mediainfo(path)
+    return object
+  } catch (e) {
+    // TODO log error
+    return {
+      creatingLibrary: {
+        name: 'failed',
+        url: 'https://example.com',
+        version: '',
+      },
+      media: {
+        '@ref': e instanceof Error ? e.message : '',
+        track: [],
+      },
+    }
+  }
 }

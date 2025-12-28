@@ -51,6 +51,8 @@ const start = async () => {
         statusCode: 500,
         type,
         message: 'message' in error ? error.message : undefined,
+        method: req.method,
+        path: req.url,
         requestId: req.id,
       })
     } else {
@@ -59,6 +61,8 @@ const start = async () => {
         statusCode: error.statusCode,
         type,
         message: 'message' in error ? error.message : undefined,
+        method: req.method,
+        path: req.url,
         requestId: req.id,
       })
     }

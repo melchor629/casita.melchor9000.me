@@ -11,6 +11,12 @@ export const ApiErrorSchema = Type.Object({
   message: Type.String({
     description: 'Summary of the error',
   }),
+  method: Type.String({
+    description: 'HTTP Method of the request',
+  }),
+  path: Type.String({
+    description: 'HTTP Path of the request',
+  }),
   requestId: Type.String({
     description: 'Internal request id for error tracking purposes',
   }),
@@ -21,9 +27,8 @@ export const ApiErrorSchema = Type.Object({
 
 export const NotFoundApiErrorSchema = Type.Interface([ApiErrorSchema], {
   statusCode: Type.Literal(404),
-  type: Type.Literal('NotFound'),
-  // eslint-disable-next-line no-template-curly-in-string
-  message: Type.TemplateLiteral('Cannot ${string} ${string}'),
+  type: Type.Literal('not-found'),
+  message: Type.String(),
   method: Type.String({
     description: 'HTTP Method of the request',
   }),

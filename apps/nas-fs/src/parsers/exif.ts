@@ -48,15 +48,24 @@ const mapGpsTags = ({ gps }: ExpandedTags): ImageGpsTags | null => (gps
   : null)
 
 const readExif = async (file: string): Promise<ImageTags> => {
-  const tags = await exifreader.load(file, { async: true, expanded: true })
-  delete tags.exif?.MakerNote
-  delete tags.Thumbnail
-  delete tags.jfif?.['JFIF Thumbnail']
-  return Object.freeze({
-    file: mapFileTags(tags),
-    exif: mapExifTags(tags),
-    gps: mapGpsTags(tags),
-  })
+  try {
+    const tags = await exifreader.load(file, { async: true, expanded: true })
+    delete tags.exif?.MakerNote
+    delete tags.Thumbnail
+    delete tags.jfif?.['JFIF Thumbnail']
+    return Object.freeze({
+      file: mapFileTags(tags),
+      exif: mapExifTags(tags),
+      gps: mapGpsTags(tags),
+    })
+  } catch {
+    // TODO log error
+    return Object.freeze({
+      file: { fileType: 'unknown' },
+      exif: {},
+      gps: { latitude: null, longitude: null, altitude: null },
+    })
+  }
 }
 
 export default readExif

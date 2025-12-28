@@ -40,14 +40,14 @@ export const IRating = Type.Object({
 
 export type ICommonTagsResult = Static<typeof ICommonTagsResult>
 export const ICommonTagsResult = Type.Object({
-  track: Type.Object({
+  track: Type.Optional(Type.Object({
     no: Type.Union([Type.Number(), Type.Null()]),
     of: Type.Union([Type.Number(), Type.Null()]),
-  }),
-  disk: Type.Object({
+  })),
+  disk: Type.Optional(Type.Object({
     no: Type.Union([Type.Number(), Type.Null()]),
     of: Type.Union([Type.Number(), Type.Null()]),
-  }),
+  })),
   year: Type.Optional(Type.Number()),
   title: Type.Optional(Type.String()),
   artist: Type.Optional(Type.String()),
@@ -160,10 +160,10 @@ export const ICommonTagsResult = Type.Object({
   hdVideo: Type.Optional(Type.Number()),
   keywords: Type.Optional(Type.Array(Type.String())),
   movement: Type.Optional(Type.String()),
-  movementIndex: Type.Object({
+  movementIndex: Type.Optional(Type.Object({
     no: Type.Union([Type.Number(), Type.Null()]),
     of: Type.Union([Type.Number(), Type.Null()]),
-  }),
+  })),
   podcastId: Type.Optional(Type.String()),
   showMovement: Type.Optional(Type.Boolean()),
   stik: Type.Optional(Type.Number()),
