@@ -96,9 +96,9 @@ const Entry = memo(({ Component, data, entry, index }: EntryProps) => {
       onDragOver={acceptsDraggedElements ? onDragOver(entry) : undefined}
       onDragLeave={acceptsDraggedElements ? onDragLeave : undefined}
       onDrop={acceptsDraggedElements ? onDrop(entry) : undefined}
-      onTap={parentItemShouldNotBeSelected ? () => onTap(entry, isSelected, isParentItem) : undefined}
+      onTap={() => onTap(entry, isSelected, isParentItem)}
       onLongTap={
-        parentItemShouldNotBeSelected ? () => onLongTap(entry, isSelected, isParentItem) : undefined
+        !parentItemShouldNotBeSelected ? () => onLongTap(entry, isSelected, isParentItem) : undefined
       }
       onContextMenu={isParentItem ? undefined : onContextMenu(entry, isSelected)}
     />

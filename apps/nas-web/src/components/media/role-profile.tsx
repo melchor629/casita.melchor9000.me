@@ -8,7 +8,7 @@ interface RoleProfileProps {
 const roleStyles = makeStyles({
   slots: {
     base: 'text-center',
-    image: 'w-40 h-40 max-w-40 rounded-full object-cover',
+    image: 'w-30 h-30 md:w-40 md:h-40 max-w-40 rounded-full object-cover',
     circle: 'w-40 h-40 rounded-full border border-text-secondary flex justify-center items-center select-none text-body-large',
   },
 })

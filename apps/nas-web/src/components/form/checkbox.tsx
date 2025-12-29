@@ -28,10 +28,10 @@ const SwitchInput = ({ className, ...props }: ComponentProps<'input'>) => (
     {...props}
     className={clsx(
       'w-[2em] h-[1em] rounded-full relative',
-      'appearance-none border border-text-secondary bg-transparent',
+      'appearance-none border border-text-secondary bg-text-main/20',
       'align-middle cursor-pointer',
       'hover:not-checked:border-text-main',
-      'checked:border-primary-selected checked:bg-primary-main',
+      'checked:border-primary-selected checked:bg-primary-alt',
       'focus:outline-2 outline-text-secondary/50 checked:outline-primary-selected/30',
       'transition-colors',
 

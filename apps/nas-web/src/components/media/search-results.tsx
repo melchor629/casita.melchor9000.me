@@ -59,7 +59,7 @@ export default function SearchResults({ module, searchFilter }: SearchResultsPro
   return (
     <div style={{ position: 'relative' }}>
       {!!results?.areas.length && results.areas.map((area) => (
-        <div key={area.type} className="mb-2" role="region">
+        <div key={area.type} className="mb-2 -mx-2" role="region">
           <h2 className="text-h2">{areaTitles[area.type]}</h2>
           <HorizontallyScrollableContainer>
             {area.results.map((areaResult) => (
