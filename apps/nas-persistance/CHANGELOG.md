@@ -1,5 +1,14 @@
 # nas-persistance
 
+## 2.0.9
+
+### Patch Changes
+
+- 8ac7dd9: Update dependencies.
+- Updated dependencies [8ac7dd9]
+  - @melchor629/fastify-infra@0.1.4
+  - @melchor629/infra@0.1.1
+
 ## 2.0.8
 
 ### Patch Changes

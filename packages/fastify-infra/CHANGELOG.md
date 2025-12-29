@@ -1,5 +1,11 @@
 # @melchor629/fastify-infra
 
+## 0.1.4
+
+### Patch Changes
+
+- 8ac7dd9: Update dependencies.
+
 ## 0.1.3
 
 ### Patch Changes

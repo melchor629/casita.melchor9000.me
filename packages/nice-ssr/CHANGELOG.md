@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.4.1
+
+### Patch Changes
+
+- 1485ef9: Use proxy to add empty string body for null bodies in response.
+
 ## 0.4.0
 
 ### Minor Changes

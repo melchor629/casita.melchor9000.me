@@ -1,5 +1,15 @@
 # nas-web
 
+## 0.16.0
+
+### Minor Changes
+
+- 05d0227: Remove bootstrap and styled-components by using tailwindcss
+
+### Patch Changes
+
+- 8ac7dd9: Update dependencies.
+
 ## 0.15.1
 
 ### Patch Changes

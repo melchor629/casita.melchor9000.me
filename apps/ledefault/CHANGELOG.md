@@ -1,5 +1,16 @@
 # ledefault
 
+## 0.2.1
+
+### Patch Changes
+
+- 8ac7dd9: Update dependencies.
+- Updated dependencies [1485ef9]
+- Updated dependencies [8ac7dd9]
+  - @melchor629/nice-ssr@0.4.1
+  - @melchor629/fastify-infra@0.1.4
+  - @melchor629/infra@0.1.1
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,5 +1,15 @@
 # nas-fs
 
+## 0.12.27
+
+### Patch Changes
+
+- 8ac7dd9: Update dependencies.
+- 1bacdc4: Fix not found models and improve error handling.
+- Updated dependencies [8ac7dd9]
+  - @melchor629/fastify-infra@0.1.4
+  - @melchor629/infra@0.1.1
+
 ## 0.12.26
 
 ### Patch Changes
