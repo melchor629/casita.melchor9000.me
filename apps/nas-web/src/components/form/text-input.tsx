@@ -10,19 +10,21 @@ type TextInputProps = Omit<ComponentPropsWithoutRef<'input'>, 'size'> & {
   'tel' | 'time' | 'url' | 'week'
   readonly size?: 'small' | 'medium' | 'large'
   readonly endAdornment?: ReactNode
+  readonly fullWidth?: boolean
 }
 
 const TextInput: FC<TextInputProps> = ({
   children,
   className,
   endAdornment,
+  fullWidth,
   helpText,
   id,
   size = 'medium',
   type,
   ...props
 }) => (
-  <div className={clsx('max-w-full', className)}>
+  <div className={clsx('max-w-full', fullWidth && 'w-full', className)}>
     {children && id && <Text component="label" htmlFor={id} className="inline-block" ellipsize>{children}</Text>}
     <div
       className={clsx(

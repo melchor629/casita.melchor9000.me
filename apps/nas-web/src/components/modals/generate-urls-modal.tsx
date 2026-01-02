@@ -37,6 +37,7 @@ const GeneratedUrl = ({ path, url }: { readonly path: string, readonly url: stri
         id={id}
         readOnly
         value={url}
+        fullWidth
         endAdornment={(
           <Button
             type="button"

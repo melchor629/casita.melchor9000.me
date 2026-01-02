@@ -3,7 +3,7 @@
 
   .directory-entries-item {
     > div {
-      @apply flex items-center px-4 min-h-8 gap-1 rounded-sm transition-all duration-200;
+      @apply flex items-center px-4 min-h-8 gap-1 rounded-sm transition-all duration-200 select-none;
 
       > svg {
         @apply mr-2;

@@ -103,12 +103,12 @@ function LeModal({
         )}
         role="dialog"
       >
-        <div className="px-5 py-4 flex flex-col grow min-w-0 min-h-0">
-          <div className="mb-5 select-none">
+        <div className="flex flex-col grow min-w-0 min-h-0">
+          <div className="px-5 pt-4 mb-5 select-none">
             <h4 className="text-h4" id={`modal-${id}-title`}>{title}</h4>
           </div>
-          <div className="overflow-y-auto shrink">{children}</div>
-          <div className="flex justify-end gap-2 h-8 mt-5 -mb-1 -mr-1">{finalButtons}</div>
+          <div className="px-5 overflow-y-auto shrink">{children}</div>
+          <div className="flex justify-end gap-2 h-8 mt-5 mb-3 mx-3">{finalButtons}</div>
         </div>
       </div>
     </div>
