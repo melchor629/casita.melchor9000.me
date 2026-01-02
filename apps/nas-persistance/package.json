@@ -40,7 +40,7 @@
     "graphql-scalars": "^1.0.0"
   },
   "devDependencies": {
-    "@eddeee888/gcg-typescript-resolver-files": "^0.14.0",
+    "@eddeee888/gcg-typescript-resolver-files": "^0.15.0",
     "@fastify/cors": "^11.0.0",
     "@graphql-codegen/cli": "^6.0.0",
     "@melchor629/tsconfigs": "*",
