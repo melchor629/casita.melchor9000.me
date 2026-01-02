@@ -1,5 +1,11 @@
 # nas-web
 
+## 0.16.1
+
+### Patch Changes
+
+- 25a425d: Fix style issues around certain components.
+
 ## 0.16.0
 
 ### Minor Changes
