@@ -102,6 +102,13 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
     url: 'https://gatus.melchor9000.me',
   },
   {
+    id: 'grafana',
+    name: 'Grafana',
+    url: 'https://grafana.melchor9000.me',
+    icon: 'https://grafana.melchor9000.me/public/img/apple-touch-icon.png',
+    limitedTo: [...melchorSubs],
+  },
+  {
     id: 'sonarr',
     name: 'sonarr',
     url: 'https://sonarr.melchor9000.me',
@@ -113,6 +120,19 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
     name: 'prowlarr',
     url: 'https://prowlarr.melchor9000.me',
     icon: 'https://prowlarr.melchor9000.me/Content/Images/Icons/apple-touch-icon.png',
+    limitedTo: [...melchorSubs],
+  },
+  {
+    id: 'radarr',
+    name: 'radarr',
+    url: 'https://radarr.melchor9000.me',
+    icon: 'https://radarr.melchor9000.me/Content/Images/Icons/apple-touch-icon.png',
+    limitedTo: [...melchorSubs],
+  },
+  {
+    id: 'bubbleupnp',
+    name: 'BubbleUPNP',
+    url: 'http://192.168.2.3:58050/',
     limitedTo: [...melchorSubs],
   },
 ] satisfies Array<Entry | 'space'>)

@@ -1,5 +1,11 @@
 # ledefault
 
+## 0.2.2
+
+### Patch Changes
+
+- Add more links to priv home.
+
 ## 0.2.1
 
 ### Patch Changes

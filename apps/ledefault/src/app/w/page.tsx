@@ -140,7 +140,7 @@ export default function DashboardPage({ entries }: PageProps) {
       {entries.map((entry, i) => (
         entry === 'space'
           // eslint-disable-next-line react/no-array-index-key
-          ? <div key={`space-${i}`} className="flex-grow w-full" />
+          ? <div key={`space-${i}`} className="grow w-full" />
           : <DaLink key={entry.id} entry={entry} />
       ))}
     </div>
