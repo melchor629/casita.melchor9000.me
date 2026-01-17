@@ -57,7 +57,7 @@ const Button: OverridableComponent<ButtonTypeMap> = ({
             size === 'small' && 'text-body',
             size === 'medium' && 'text-body-large',
             size === 'large' && 'text-h4',
-            !children && size === 'small' && '-mx-0.5',
+            !children && size === 'small' && '',
             !children && size === 'medium' && '-mx-0.5',
             !children && size === 'large' && '-mx-1',
             'leading-0',
