@@ -33,6 +33,29 @@ const createLogger = (service: string, logLevel: LevelWithSilentOrString = 'info
     formatters: {
       level: (label) => ({ level: label }),
     },
+    serializers: {
+      req: (req: import('fastify').FastifyRequest) => {
+        const url = new URL(req.url, 'https://example.com')
+        url.searchParams.delete('token')
+        return {
+          method: req.method,
+          path: url.pathname,
+          search: url.searchParams.toString(),
+          params: req.params,
+          host: url.host,
+          remote: req.ip,
+        }
+      },
+      res: (reply: import('fastify').FastifyReply) => {
+        return {
+          status: reply.statusCode,
+          contentType: reply.getHeader('content-type'),
+          contentLength: parseInt(reply.getHeader('content-length') as string || '-1', 10),
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+          user: (reply.request as any).jwtToken?.payload?.sub,
+        }
+      },
+    },
     transport: process.env.NODE_ENV !== 'production'
       ? {
           target: 'pino-pretty',
