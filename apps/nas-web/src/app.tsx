@@ -21,6 +21,7 @@ function AppMain() {
             client_secret={env.identity.clientSecret}
             scope="openid profile offline_access"
             redirect_uri={env.identity.redirectUri}
+            silent_redirect_uri={env.identity.redirectUri}
             silentRequestTimeoutInSeconds={10}
             accessTokenExpiringNotificationTimeInSeconds={120}
           >
