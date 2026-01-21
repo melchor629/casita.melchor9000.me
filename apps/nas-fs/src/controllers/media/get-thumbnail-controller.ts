@@ -34,7 +34,7 @@ const schema = {
     }, {
       description: 'Item thumbnail',
     }),
-    404: Type.Null({ description: 'Item does not exist or does not have a thumbnail' }),
+    404: { type: 'null', description: 'Item does not exist or does not have a thumbnail' },
   },
   tags: ['media'],
 }

@@ -8,6 +8,7 @@ interface Route extends GenericRoute {
   Reply:
     | PermissionsForUser
     | { message: string, statusCode: number }
+    | void
 }
 
 const jwks = createRemoteJWKSet(new URL(`${publicUrl}/oidc/jwks`))
