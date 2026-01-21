@@ -1,7 +1,8 @@
-import type { VerifyOptions } from '@fastify/jwt'
 import type { FastifyRequest } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
-import buildGetJwks from 'get-jwks'
+import { JOSEError } from 'jose/errors'
+import { createRemoteJWKSet } from 'jose/jwks/remote'
+import { jwtVerify } from 'jose/jwt/verify'
 
 declare module 'fastify' {
   interface FastifyContextConfig {
@@ -26,52 +27,50 @@ declare module 'fastify' {
      * The decoded JWT token.
      */
     jwtToken?: Readonly<{
-      header: { alg: string, kid?: string } & Record<string, string>
+      header: { alg: string, kid?: string } & Record<string, unknown>
       payload: {
-        aud?: string
-        sub?: string
-        iss?: string
-      } & Record<string, string | undefined>
-      signature: Record<string, string>
+        aud: string
+        sub: string
+        iss: string
+      } & Record<string, unknown>
       token: string
     }>
   }
 }
 
 type JwtPluginOptions = Readonly<{
-  oidcUrl: URL | URL[]
-  verify?: Partial<VerifyOptions>
+  oidcUrl: URL
+  verify?: Readonly<Partial<{
+    audience?: string | string[]
+    clockTolerance?: string | number
+    requiredClaims?: string[]
+  }>>
 }>
 
-const jwtPlugin = fastifyPlugin(async (fastify, { oidcUrl, verify }: JwtPluginOptions) => {
-  const issuers = Array.isArray(oidcUrl) ? oidcUrl.map((url) => url.origin) : [oidcUrl.origin]
-  const getJwks = buildGetJwks({
-    issuersWhitelist: issuers,
-    providerDiscovery: true,
-    max: 100,
-    ttl: 5 * 60 * 1000,
+const createRemoteJWKSetFromOidc = async (url: URL) => {
+  const response = await fetch(new URL('./.well-known/openid-configuration', url), {
+    redirect: 'follow',
   })
-
-  const getSecret = (_: unknown, asdf: NonNullable<FastifyRequest['jwtToken']>) => {
-    const { header: { alg, kid }, payload } = asdf
-    return getJwks.getPublicKey({ kid, domain: payload.iss ?? issuers[0], alg })
+  if (!response.ok) {
+    throw new Error('Could not contact OIDC (status ' + response.status + ')')
+  }
+  const { jwks_uri: jwksUri } = await response.json() as { jwks_uri?: string }
+  if (!jwksUri) {
+    throw new Error('Could not read OIDC configuration')
   }
 
-  await fastify.register(import('@fastify/jwt'), {
-    decode: {
-      complete: true,
-    },
-    secret: getSecret as never,
-    verify: {
-      ...verify,
-      cache: true,
-      complete: true,
-      allowedIss: issuers,
-    },
+  return createRemoteJWKSet(new URL(jwksUri), {
+    timeoutDuration: 5000,
+    cacheMaxAge: 6 * 3600,
   })
+}
+
+const jwtPlugin = fastifyPlugin((fastify, { oidcUrl, verify }: JwtPluginOptions) => {
+  let jwks: Awaited<ReturnType<typeof createRemoteJWKSetFromOidc>> | null = null
 
   fastify.decorateRequest('jwtToken')
   fastify.addHook('preValidation', async (req, reply) => {
+    let token: string | null = null
     if (
       req.routeOptions.config.jwt?.allowQuery
         && req.query
@@ -81,31 +80,49 @@ const jwtPlugin = fastifyPlugin(async (fastify, { oidcUrl, verify }: JwtPluginOp
         && req.query.token
         && !req.headers.authorization
     ) {
-      // DO NOT DO THIS AT HOME
-      req.headers.authorization = `Bearer ${req.query.token}`
+      token = req.query.token
     }
 
-    const { authorization } = req.headers
+    if (req.headers.authorization?.startsWith('Bearer ')) {
+      token = req.headers.authorization.slice(7)
+    }
+
     const optional = !req.routeOptions.config.jwt || req.routeOptions.config.jwt.optional
-    if (optional && (!authorization || !authorization.startsWith('Bearer '))) {
+    if (optional && !token) {
       return
+    } else if (!token) {
+      return reply.code(401)
     }
 
     try {
+      jwks ??= await createRemoteJWKSetFromOidc(oidcUrl)
+      const result = await jwtVerify(token, jwks, {
+        issuer: oidcUrl.origin,
+        audience: verify?.audience,
+        clockTolerance: verify?.clockTolerance,
+        requiredClaims: verify?.requiredClaims ?? ['sub', 'iss', 'aud'],
+      })
       req.jwtToken = Object.freeze({
-        ...(await req.jwtVerify()),
-        token: req.server.jwt.lookupToken(req),
+        header: result.protectedHeader,
+        payload: {
+          ...result.payload,
+          aud: result.payload.aud as string,
+          iss: result.payload.iss!,
+          sub: result.payload.sub!,
+        },
+        token,
       } satisfies NonNullable<FastifyRequest['jwtToken']>)
     } catch (err) {
-      if (err && typeof err === 'object' && 'code' in err && typeof err.code === 'string') {
-        if (err.code === 'FAST_JWT_MALFORMED') {
-          reply.code(401)
-        }
+      if (err && err instanceof JOSEError) {
+        req.log.warn({ err }, 'Invalid token received')
+        return reply.code(401)
       }
 
       reply.send(err)
     }
   })
+
+  return Promise.resolve()
 }, {
   name: '@melchor629/fastify-infra/jwt',
   fastify: '>=4',

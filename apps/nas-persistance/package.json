@@ -22,7 +22,6 @@
   "dependencies": {
     "@apollo/server": "^5.0.0",
     "@as-integrations/fastify": "^3.0.0",
-    "@fastify/jwt": "^10.0.0",
     "@fastify/otel": "^0.16.0",
     "@graphql-tools/schema": "^10.0.0",
     "@melchor629/fastify-infra": "*",
@@ -33,11 +32,11 @@
     "@prisma/instrumentation": "^7.0.0",
     "dataloader": "^2.0.0",
     "fastify": "^5.0.0",
-    "get-jwks": "^11.0.0",
     "graphql": "^16.6.0",
     "graphql-constraint-directive": "^6.0.0",
     "graphql-tag": "^2.11.0",
-    "graphql-scalars": "^1.0.0"
+    "graphql-scalars": "^1.0.0",
+    "jose": "^6.0.0"
   },
   "devDependencies": {
     "@eddeee888/gcg-typescript-resolver-files": "^0.15.0",

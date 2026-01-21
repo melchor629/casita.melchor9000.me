@@ -11,8 +11,7 @@ const appRoutesPlugin = async (fastify: FastifyInstance) => {
   await fastify.register(import('@melchor629/fastify-infra/jwt'), {
     oidcUrl: new URL(authApiBaseUrl),
     verify: {
-      allowedAud: ['nas-fs'],
-      requiredClaims: ['sub'],
+      audience: ['nas-fs'],
     },
   })
   await fastify.register(import('../middlewares/swagger.ts'))

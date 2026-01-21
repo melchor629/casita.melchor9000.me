@@ -13,10 +13,7 @@ export const nasAuthApiKeys = (process.env.NAS_PERSISTANCE_AUTH_API_KEYS || '')
   .map((apiKey) => apiKey.trim())
   .filter((apiKey) => !!apiKey)
 
-export const authorities = (process.env.NAS_PERSISTANCE_AUTHORITIES || 'http://localhost:8001')
-  .split(',')
-  .map((authority) => authority.trim())
-  .filter((authority) => !!authority)
+export const authorities = process.env.NAS_PERSISTANCE_AUTHORITIES || 'http://localhost:8001'
 
 export const otlp = Object.freeze({
   enabled: ['1', 'true', 'yes'].includes(process.env.NAS_PERSISTANCE_OTLP_ENABLED?.toLowerCase() || ''),

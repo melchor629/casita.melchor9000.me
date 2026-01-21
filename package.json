@@ -24,9 +24,10 @@
     "eslint": "^9.0.0",
     "turbo": "^2.0.0"
   },
-  "#": "https://github.com/prisma/prisma/issues/28752",
+  "#": "https://github.com/prisma/prisma/issues/29027",
   "overrides": {
-    "hono": "^4.10.3",
-    "valibot": "^1.2.0"
+    "@prisma/dev": {
+      "hono": "4.11.4"
+    }
   }
 }

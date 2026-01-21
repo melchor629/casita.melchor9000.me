@@ -45,7 +45,7 @@ const buildNasAuthServer = async (app: FastifyInstance) => {
 
   await app.register(import('@melchor629/fastify-infra/jwt'), {
     prefix: `${pathPrefix}/nas-auth`,
-    oidcUrl: authorities.map((a) => new URL(a)),
+    oidcUrl: new URL(authorities),
   })
 
   await app.register(fastifyApollo(nasAuthServer), {
