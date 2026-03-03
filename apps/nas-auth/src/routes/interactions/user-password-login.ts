@@ -40,6 +40,15 @@ const userPasswordLoginController: Controller<Route> = async (req, res) => {
   ))
 }
 
-userPasswordLoginController.options = {}
+userPasswordLoginController.options = {
+  config: {
+    rateLimit: {
+      max: 3,
+      ban: 10,
+      timeWindow: '1min',
+      groupId: 'login',
+    },
+  },
+}
 
 export default userPasswordLoginController

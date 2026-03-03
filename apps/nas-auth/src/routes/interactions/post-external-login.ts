@@ -131,6 +131,15 @@ const postExternalLoginController: Controller<Route> = async (req, res) => {
   ))
 }
 
-postExternalLoginController.options = {}
+postExternalLoginController.options = {
+  config: {
+    rateLimit: {
+      max: 3,
+      ban: 10,
+      timeWindow: '1min',
+      groupId: 'login',
+    },
+  },
+}
 
 export default postExternalLoginController

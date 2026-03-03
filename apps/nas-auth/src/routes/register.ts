@@ -7,11 +7,11 @@ import userPasswordLoginController from './interactions/user-password-login.ts'
 import getPermissionsForToken from './permissions.ts'
 
 const registerRoutes = (app: FastifyInstance) => {
-  app.get('/i/:uid/login', alreadyLoggedInController)
-  app.post('/i/:uid/login', userPasswordLoginController)
-  app.post('/i/:uid/confirm', confirmGrantsController)
-  app.get('/i/:uid/cancel', cancelController)
-  app.get('/i/:uid/post-external', postExternalLoginController)
+  app.get('/i/:uid/login', alreadyLoggedInController.options, alreadyLoggedInController)
+  app.post('/i/:uid/login', userPasswordLoginController.options, userPasswordLoginController)
+  app.post('/i/:uid/confirm', confirmGrantsController.options, confirmGrantsController)
+  app.get('/i/:uid/cancel', cancelController.options, cancelController)
+  app.get('/i/:uid/post-external', postExternalLoginController.options, postExternalLoginController)
 
   app.options('/token/permissions', getPermissionsForToken)
   app.get('/token/permissions', getPermissionsForToken)
