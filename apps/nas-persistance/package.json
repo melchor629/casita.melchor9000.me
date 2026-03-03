@@ -22,7 +22,7 @@
   "dependencies": {
     "@apollo/server": "^5.4.0",
     "@as-integrations/fastify": "^3.0.0",
-    "@fastify/otel": "^0.16.0",
+    "@fastify/otel": "^0.17.0",
     "@graphql-tools/schema": "^10.0.0",
     "@melchor629/fastify-infra": "*",
     "@melchor629/infra": "*",
