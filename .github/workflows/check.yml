@@ -30,9 +30,11 @@ jobs:
 
       - name: Build
         run: npx turbo run build --continue=dependencies-successful
+        if: ${{ failure() }}
 
       - name: Check linter
         run: npx turbo run check lint --continue=always
+        if: ${{ failure() }}
 
   docker:
     name: Docker image build
