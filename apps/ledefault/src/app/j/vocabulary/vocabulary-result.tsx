@@ -54,7 +54,7 @@ export default function VocabularyResult({ result }: VocabularyComponentProps) {
         'flex flex-row gap-2',
       )}
     >
-      <div className="my-0.5 flex flex-col items-center gap-1 min-w-[28px]">
+      <div className="my-0.5 flex flex-col items-center gap-1 min-w-7">
         {hasDetails && (
           <button
             type="button"
@@ -89,7 +89,7 @@ export default function VocabularyResult({ result }: VocabularyComponentProps) {
         <div className="grow">
           <JapaneseWithRomaji
             value={result.value}
-            otherValue={result.type === 'noun' ? result.pronuntiation : (result.type === 'kanji' ? `${result.onyomi}・${result.kunyomi}` : undefined)}
+            otherValue={'pronuntiation' in result ? result.pronuntiation : (result.type === 'kanji' ? `${result.onyomi}・${result.kunyomi}` : undefined)}
           />
           <div className="uppercase text-xs opacity-75 select-none">
             {result.type}

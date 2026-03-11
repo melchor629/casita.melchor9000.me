@@ -188,17 +188,18 @@ export type BaseDictionaryEntry<TType extends string = string> = Readonly<{
   refs?: ReadonlyArray<EntryRef>
 }>
 
-export type NounDictionaryEntry = BaseDictionaryEntry<'noun'> & Readonly<{
+export type WordDictionaryEntry<TType extends string = string> = BaseDictionaryEntry<TType> & Readonly<{
   pronuntiation?: string
 }>
 
+export type NounDictionaryEntry = WordDictionaryEntry<'noun'>
 export type MarkerDictionaryEntry = BaseDictionaryEntry<'marker'>
 export type PhraseDictionaryEntry = BaseDictionaryEntry<'phrase'>
-export type InterrogativeDictionaryEntry = BaseDictionaryEntry<'interrogative'>
-export type NaAdjectiveDictionaryEntry = BaseDictionaryEntry<'na-adj'>
-export type NoAdjectiveDictionaryEntry = BaseDictionaryEntry<'no-adj'>
+export type InterrogativeDictionaryEntry = WordDictionaryEntry<'interrogative'>
+export type NaAdjectiveDictionaryEntry = WordDictionaryEntry<'na-adj'>
+export type NoAdjectiveDictionaryEntry = WordDictionaryEntry<'no-adj'>
 
-export type BasicVerbDictionaryEntry = BaseDictionaryEntry<'verb'> & Readonly<{
+export type BasicVerbDictionaryEntry = WordDictionaryEntry<'verb'> & Readonly<{
   forms: Readonly<{
     present: {
       readonly positive: string
@@ -214,7 +215,7 @@ export type BasicVerbDictionaryEntry = BaseDictionaryEntry<'verb'> & Readonly<{
   }>
 }>
 
-export type AdjectiveDictionaryEntry = BaseDictionaryEntry<'adjective'> & Readonly<{
+export type AdjectiveDictionaryEntry = WordDictionaryEntry<'adjective'> & Readonly<{
   forms: Readonly<{
     present: {
       readonly positive: string
@@ -227,7 +228,7 @@ export type AdjectiveDictionaryEntry = BaseDictionaryEntry<'adjective'> & Readon
   }>
 }>
 
-export type DemonstrativeDictionaryEntry = BaseDictionaryEntry<'demonstrative'> & Readonly<{
+export type DemonstrativeDictionaryEntry = WordDictionaryEntry<'demonstrative'> & Readonly<{
   actsAs: 'noun' | 'adjective'
   forms: Readonly<{
     k: readonly [jp: string, sp: string]
@@ -237,7 +238,7 @@ export type DemonstrativeDictionaryEntry = BaseDictionaryEntry<'demonstrative'> 
   }>
 }>
 
-export type InformalVerbDictionaryEntry = BaseDictionaryEntry<'ichidan-verb' | 'godan-verb' | 'irregular-verb'> & Readonly<{
+export type InformalVerbDictionaryEntry = WordDictionaryEntry<'ichidan-verb' | 'godan-verb' | 'irregular-verb'> & Readonly<{
   forms: Readonly<{
     present: {
       readonly positive: string
