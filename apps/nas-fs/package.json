@@ -43,7 +43,7 @@
     "fs-extra": "^11.1.0",
     "ioredis": "^5.0.6",
     "jose": "^6.0.0",
-    "music-metadata": "^11.0.0",
+    "music-metadata": "^11.12.3",
     "nanoid": "^5.0.1",
     "sharp": "^0.34.0",
     "tar-fs": "^3.0.3",
