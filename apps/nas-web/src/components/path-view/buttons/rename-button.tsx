@@ -1,9 +1,9 @@
+import { MenuItem } from '@melchor629/ui'
+import { DriveFileRenameOutline } from '@melchor629/ui/icons'
 import { type FC, useCallback, useState } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
-import { DriveFileRenameOutline } from '../../icons'
 import RenameItemModal from '../../modals/rename-item-modal'
-import Button from './button'
 
 interface RenameButtonProps {
   readonly module: string
@@ -20,10 +20,12 @@ const RenameButton: FC<RenameButtonProps> = ({ disabled, metadata, module }) => 
 
   return (
     <>
-      <Button onClick={openModal} disabled={disabled}>
-        <DriveFileRenameOutline height="18px" />
-        <span> Rename</span>
-      </Button>
+      <MenuItem
+        onAction={openModal}
+        disabled={disabled}
+        icon={<DriveFileRenameOutline />}
+        label="Rename"
+      />
 
       <RenameItemModal
         module={module}

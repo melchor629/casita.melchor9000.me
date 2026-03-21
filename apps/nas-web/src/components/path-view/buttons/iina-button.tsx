@@ -1,9 +1,9 @@
+import { MenuItem } from '@melchor629/ui'
 import { type FC, useCallback, useState } from 'react'
 import { getDownloadUrl } from '@/api/fs'
 import type { FileMetadata } from '@/api/fs/file'
 import useApiClient from '@/hooks/use-api-client'
 import { iina } from '@/utils/url-generator'
-import Button from './button'
 
 interface IinaButtonProps {
   readonly module: string
@@ -31,15 +31,19 @@ const IinaButton: FC<IinaButtonProps> = ({ disabled, metadata, module }) => {
   }, [module, metadata, apiClient])
 
   return (
-    <Button onClick={openOnIina} disabled={preparing || disabled}>
-      <img
-        src="https://iina.io/images/iina_triangle_s.png"
-        alt="iina logo"
-        width="18px"
-        className="inline-block pb-0.5 invert-100 dark:invert-0"
-      />
-      <span> Open in iina</span>
-    </Button>
+    <MenuItem
+      onAction={openOnIina}
+      disabled={preparing || disabled}
+      icon={(
+        <img
+          src="https://iina.io/images/iina_triangle_s.png"
+          alt="iina logo"
+          width="1em"
+          className="inline-block pb-0.5 invert-100 dark:invert-0"
+        />
+      )}
+      label="Open in iina"
+    />
   )
 }
 

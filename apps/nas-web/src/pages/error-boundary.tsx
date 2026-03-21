@@ -1,5 +1,5 @@
+import { Text } from '@melchor629/ui'
 import { isRouteErrorResponse, useRouteError } from 'react-router'
-import Text from '@/components/core/text'
 
 export default function ErrorBoundary() {
   const error = useRouteError()

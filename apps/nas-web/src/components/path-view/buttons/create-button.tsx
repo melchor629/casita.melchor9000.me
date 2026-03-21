@@ -1,9 +1,9 @@
+import { MenuItem } from '@melchor629/ui'
+import { CreateNewFolder } from '@melchor629/ui/icons'
 import { type FC, useCallback, useState } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
-import { CreateNewFolder } from '../../icons'
 import NewFolderItemModal from '../../modals/new-folder-modal'
-import Button from './button'
 
 interface CreateButtonProps {
   readonly module: string
@@ -19,10 +19,11 @@ const CreateButton: FC<CreateButtonProps> = ({ metadata, module }) => {
 
   return (
     <>
-      <Button onClick={newFolderOpen}>
-        <CreateNewFolder width="18px" />
-        <span> New folder</span>
-      </Button>
+      <MenuItem
+        onAction={newFolderOpen}
+        icon={<CreateNewFolder />}
+        label="New folder"
+      />
 
       <NewFolderItemModal
         module={module}

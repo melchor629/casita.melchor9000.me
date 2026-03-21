@@ -1,13 +1,12 @@
+import { CollapsableText, Table, TableBody, TableCell, TableContainer, TableHead, TableHeadCell, TableRow } from '@melchor629/ui'
+import ReactRouterButton from '@melchor629/ui/ReactRouterButton'
+import { File, Folder } from '@melchor629/ui/icons'
 import { useMemo } from 'react'
 import { Link } from 'react-router'
 import type { ItemMetadata } from '@/api/fs/media'
 import { useMediaLibraryItemChildren } from '@/hooks/api/use-media-library-item-children'
 import { humanDuration } from '@/utils/number-format'
 import { dirname } from '@/utils/path'
-import CollapsableText from '../collapsable-text'
-import ReactRouterButton from '../core/react-router-button'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeaderCell, TableRow } from '../core/table'
-import { File, Folder } from '../icons'
 import ItemPath from './item-path'
 import ItemThumbnailImage from './item-thumbnail-image'
 import Tags from './tags'
@@ -62,17 +61,17 @@ const AlbumItem = ({ item, module }: AlbumItemProps) => {
         <Table hover>
           <TableHead>
             <TableRow>
-              <TableHeaderCell>#</TableHeaderCell>
+              <TableHeadCell>#</TableHeadCell>
               {/* @ts-expect-error don't know why... */}
-              <TableHeaderCell width="100%">Title</TableHeaderCell>
-              <TableHeaderCell>Duration</TableHeaderCell>
-              <TableHeaderCell><span className="invisible">Actions</span></TableHeaderCell>
+              <TableHeadCell width="100%">Title</TableHeadCell>
+              <TableHeadCell>Duration</TableHeadCell>
+              <TableHeadCell><span className="invisible">Actions</span></TableHeadCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {itemChildren?.items.map((child, i) => child.type === 'track' && (
               <TableRow key={child.id}>
-                <TableHeaderCell>{i + 1}</TableHeaderCell>
+                <TableHeadCell>{i + 1}</TableHeadCell>
                 <TableCell>{child.title}</TableCell>
                 <TableCell>{humanDuration(child.duration)}</TableCell>
                 <TableCell>

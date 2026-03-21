@@ -1,7 +1,7 @@
+import { Text } from '@melchor629/ui'
 import { useEffect, useState } from 'react'
 import { downloadFile } from '../api/fs'
 import useApiClient from '../hooks/use-api-client'
-import Text from './core/text'
 import { AppLoader } from './loaders'
 
 interface PdfViewProps {

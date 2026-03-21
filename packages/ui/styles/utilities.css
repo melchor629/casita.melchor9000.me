@@ -1,0 +1,18 @@
+@utility text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@utility animation-delay-* {
+  animation-delay: --value([*]);
+  animation-delay: calc(--value(integer) * 1ms);
+}
+
+@utility body {
+  @apply
+    text-text-main bg-elevated-0
+    accent-primary-main
+    selection:bg-primary-main selection:text-text-contrasted
+    transition-colors;
+}

@@ -1,5 +1,5 @@
-import Text from '@/components/core/text'
-import { clsx } from '@/components/core/utils'
+import { Text } from '@melchor629/ui'
+import { clsx } from '@melchor629/ui/utils'
 import DotsAnimationLoader from '../dots'
 
 interface AppLoaderProps {

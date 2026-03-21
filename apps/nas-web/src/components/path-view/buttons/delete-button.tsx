@@ -1,9 +1,9 @@
+import { MenuItem } from '@melchor629/ui'
+import { DeleteForever } from '@melchor629/ui/icons'
 import { type FC, useCallback, useState } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
-import { DeleteForever } from '../../icons'
 import DeleteItemModal from '../../modals/delete-item-modal'
-import Button from './button'
 
 interface DeleteButtonProps {
   readonly module: string
@@ -20,10 +20,12 @@ const DeleteButton: FC<DeleteButtonProps> = ({ disabled, entries, module }) => {
 
   return (
     <>
-      <Button onClick={openModal} disabled={disabled}>
-        <DeleteForever width="18px" />
-        <span> Delete</span>
-      </Button>
+      <MenuItem
+        onAction={openModal}
+        disabled={disabled}
+        icon={<DeleteForever />}
+        label="Delete"
+      />
 
       <DeleteItemModal
         module={module}

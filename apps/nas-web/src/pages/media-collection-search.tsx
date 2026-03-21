@@ -1,4 +1,6 @@
 import { Helmet } from '@dr.pogodin/react-helmet'
+import { TextInput } from '@melchor629/ui'
+import ReactRouterLink from '@melchor629/ui/ReactRouterLink'
 import {
   type ChangeEventHandler,
   useCallback,
@@ -9,8 +11,6 @@ import {
   useParams,
   useSearchParams,
 } from 'react-router'
-import ReactRouterLink from '@/components/core/react-router-link'
-import { TextInput } from '@/components/form'
 import SearchResults from '../components/media/search-results'
 import NavbarBackdropFilter from '../components/navbar-backdrop-filter'
 import { useTokenInfo } from '../hooks/use-token-info'
@@ -35,7 +35,7 @@ export default function MediaCollectionSearchPage() {
     setSearchParams({ q: e.target.value }, { replace: shouldReplaceHistory })
   }, [setSearchParams, shouldReplaceHistory])
 
-  const onSearchFilterSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
+  const onSearchFilterSubmit = useCallback((e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setSearchParams((s) => ({ q: s.get('q') || '' }))
   }, [setSearchParams])

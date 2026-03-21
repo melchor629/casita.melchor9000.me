@@ -1,4 +1,5 @@
 import type { VirtualElement } from '@floating-ui/core'
+import { clsx } from '@melchor629/ui/utils'
 import debounce from 'lodash-es/debounce'
 import React, {
   type Ref,
@@ -14,7 +15,7 @@ import {
 } from 'react-virtuoso'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
-import { clsx } from '@/components/core/utils'
+import ElementContextMenu from '@/components/path-view/element-context-menu'
 import usePermission from '@/hooks/use-permission'
 import { useSettings } from '@/hooks/use-settings'
 import * as path from '@/utils/path'
@@ -28,6 +29,7 @@ type Metadata = DirectoryMetadata | FileMetadata
 interface DirectoryEntriesProps {
   readonly isRoot: boolean
   readonly module: string
+  readonly metadata: DirectoryMetadata
   readonly entries: Metadata[]
   readonly selectedElements: Array<Metadata>
   readonly onEntrySelected: (entry: Metadata, multi?: boolean) => void
@@ -76,6 +78,7 @@ const ListItem = ({ context: { selectedElements }, item, ...props }: ItemProps<M
 const DirectoryEntries = ({
   entries,
   isRoot,
+  metadata,
   module,
   onEntryDeselected,
   onEntryMove,
@@ -90,6 +93,7 @@ const DirectoryEntries = ({
   const [draggingElement, setDraggingElement] = useState<Metadata | null>(null)
   const [dragOverElement, setDragOverElement] = useState<Metadata | null>(null)
   const [selectionElement, setSelectionElement] = useState<VirtualElement | null>(null)
+  const [folderElement, setFolderElement] = useState<VirtualElement | null>(null)
   const [prevEntries, setPrevEntries] = useState(entries)
   const [prevSelectedElements, setPrevSelectedElements] = useState(selectedElements)
   const permission = usePermission(module)!
@@ -194,7 +198,7 @@ const DirectoryEntries = ({
       if (entryViewType === 'grid') {
         const tagName = (e.target as HTMLElement).tagName.toLowerCase()
         shouldCall = ['abbr', 'span', 'svg', 'path'].includes(tagName)
-        shouldCall = shouldCall || (tagName === 'div' && !!(e.target as HTMLDivElement).getAttribute('size'))
+        shouldCall = shouldCall || (tagName === 'div' && !!(e.target as HTMLDivElement).getAttribute('style'))
       }
 
       if (!shouldCall) {
@@ -242,6 +246,7 @@ const DirectoryEntries = ({
   const onContextMenu = useCallback((entry: Metadata, isSelected: boolean) =>
     (e: React.MouseEvent<HTMLElement>) => {
       e.preventDefault()
+      e.stopPropagation()
       if (!isSelected) {
         onEntrySelected(entry)
       }
@@ -249,19 +254,41 @@ const DirectoryEntries = ({
       const { pageX, pageY } = e
       setSelectionElement({
         getBoundingClientRect: () => ({
-          top: pageY - 8,
+          top: pageY,
           left: pageX,
           bottom: 0,
           right: 0,
-          x: pageX - 8,
+          x: pageX,
           y: pageY,
           width: 1,
           height: 1,
           toJSON: () => null,
         }),
       })
+      setFolderElement(null)
     }
   , [onEntrySelected])
+
+  const onOtherContextMenu = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    onUnselectAll()
+
+    const { pageX, pageY } = e
+    setSelectionElement(null)
+    setFolderElement({
+      getBoundingClientRect: () => ({
+        top: pageY,
+        left: pageX,
+        bottom: 0,
+        right: 0,
+        x: pageX,
+        y: pageY,
+        width: 1,
+        height: 1,
+        toJSON: () => null,
+      }),
+    })
+  }, [onUnselectAll])
 
   const onScrollerRefUpdated = useCallback((ref: HTMLElement | Window | null) => {
     if (typeof scrollingDiv === 'function') {
@@ -291,9 +318,9 @@ const DirectoryEntries = ({
     selectedElements,
   }
 
-  if (entryViewType === 'grid') {
-    return (
-      <>
+  return (
+    <>
+      {entryViewType === 'grid' && (
         <VirtuosoGrid
           className="directory-entries-grid"
           data={entries}
@@ -304,36 +331,26 @@ const DirectoryEntries = ({
           itemContent={gridCellRenderer}
           scrollerRef={onScrollerRefUpdated}
           onClick={onUnselectAll}
+          onContextMenu={onOtherContextMenu}
         />
-
-        <SelectionContextMenu
-          buttonElement={selectionElement}
-          module={module}
-          selectedElements={selectedElements}
-          show={!!selectionElement}
-          shouldClose={() => setSelectionElement(null)}
-          placeStart
+      )}
+      {entryViewType === 'list' && (
+        <Virtuoso
+          className="directory-entries-list"
+          data={entries}
+          context={initialData}
+          components={{
+            Footer: footerRenderer,
+            Item: ListItem,
+          }}
+          itemContent={listItemRenderer}
+          computeItemKey={(_, item) => item.path}
+          fixedItemHeight={32}
+          scrollerRef={onScrollerRefUpdated}
+          onClick={onUnselectAll}
+          onContextMenu={onOtherContextMenu}
         />
-      </>
-    )
-  }
-
-  return (
-    <>
-      <Virtuoso
-        className="directory-entries-list"
-        data={entries}
-        context={initialData}
-        components={{
-          Footer: footerRenderer,
-          Item: ListItem,
-        }}
-        itemContent={listItemRenderer}
-        computeItemKey={(_, item) => item.path}
-        fixedItemHeight={32}
-        scrollerRef={onScrollerRefUpdated}
-        onClick={onUnselectAll}
-      />
+      )}
 
       <SelectionContextMenu
         buttonElement={selectionElement}
@@ -341,6 +358,15 @@ const DirectoryEntries = ({
         selectedElements={selectedElements}
         show={!!selectionElement}
         shouldClose={() => setSelectionElement(null)}
+        placeStart
+      />
+
+      <ElementContextMenu
+        buttonElement={folderElement}
+        module={module}
+        metadata={metadata}
+        show={!!folderElement}
+        shouldClose={() => setFolderElement(null)}
         placeStart
       />
     </>

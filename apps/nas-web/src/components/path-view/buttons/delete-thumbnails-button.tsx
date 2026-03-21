@@ -1,9 +1,9 @@
+import { MenuItem } from '@melchor629/ui'
+import { DeleteSweep } from '@melchor629/ui/icons'
 import { type FC, useCallback } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useJobHandler from '@/hooks/use-job-handler'
-import { DeleteSweep } from '../../icons'
-import Button from './button'
 
 interface DeleteThumbnailsButtonProps {
   readonly entries: Array<DirectoryMetadata | FileMetadata>
@@ -19,10 +19,11 @@ const DeleteThumbnailsButton: FC<DeleteThumbnailsButtonProps> = ({ entries, modu
   }, [module, entries, jobsActions])
 
   return (
-    <Button onClick={action}>
-      <DeleteSweep width="18px" />
-      <span> Delete Thumbnails</span>
-    </Button>
+    <MenuItem
+      onAction={action}
+      icon={<DeleteSweep />}
+      label="Delete thumbnails"
+    />
   )
 }
 

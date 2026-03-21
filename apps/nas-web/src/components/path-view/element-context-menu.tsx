@@ -1,8 +1,9 @@
-import { type ReactElement, useMemo } from 'react'
+import { flip, offset, type VirtualElement } from '@floating-ui/react'
+import { MenuItemSeparator, PopoverMenu } from '@melchor629/ui'
+import { useMemo, type ReactElement } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import usePermission from '@/hooks/use-permission'
-import { ContextMenu } from '../context-menu'
 import AndroidButton from './buttons/android-button'
 import CreateButton from './buttons/create-button'
 import DeleteThumbnailsButton from './buttons/delete-thumbnails-button'
@@ -15,10 +16,11 @@ import SynchronizeButton from './buttons/synchronize-button'
 import UploadButton from './buttons/upload-button'
 
 interface ElementContextMenuProps {
-  readonly buttonElement: HTMLElement | null
+  readonly buttonElement: HTMLElement | VirtualElement | null
   readonly metadata: DirectoryMetadata | FileMetadata
   readonly module: string
   readonly show: boolean
+  readonly placeStart?: boolean
   readonly shouldClose?: () => void
 }
 
@@ -26,6 +28,7 @@ function ElementContextMenu({
   buttonElement,
   metadata,
   module,
+  placeStart,
   shouldClose,
   show,
 }: ElementContextMenuProps) {
@@ -45,106 +48,86 @@ function ElementContextMenu({
       ))
       : metadata?.mime?.mime.startsWith('audio') || metadata?.mime?.mime.startsWith('video')
 
-    const elements: Array<{ key: string, content: ReactElement }> = []
+    const elements: Array<ReactElement> = []
 
     if (metadata.type === 'file') {
-      elements.push({
-        key: 'download',
-        content: <DownloadButton module={module} metadata={metadata} />,
-      })
-      elements.push({
-        key: 'generate-url',
-        content: <GenerateDownloadUrl module={module} metadata={[metadata]} />,
-      })
+      elements.push(<DownloadButton key="download" module={module} metadata={metadata} />)
+      elements.push(<GenerateDownloadUrl key="generate-url" module={module} metadata={[metadata]} />)
 
       if (containsMediaForPlaylist) {
-        elements.push({
-          key: 'playlist',
-          content: <DownloadPlsButton module={module} metadata={metadata} />,
-        })
+        elements.push(<DownloadPlsButton key="playlist" module={module} metadata={metadata} />)
       }
 
       if (isMedia && isMac) {
-        elements.push({
-          key: 'iina',
-          content: <IinaButton module={module} metadata={metadata} />,
-        })
+        elements.push(<IinaButton key="iina" module={module} metadata={metadata} />)
       }
       if ((isMedia || isImage) && isAndroid) {
-        elements.push({
-          key: 'android',
-          content: <AndroidButton module={module} metadata={metadata} />,
-        })
+        elements.push(<AndroidButton key="android" module={module} metadata={metadata} />)
       }
     }
 
     if (metadata.type === 'dir') {
-      elements.push({
-        key: 'download',
-        content: <DownloadButton module={module} metadata={metadata} disabled={isRootPath} />,
-      })
-      elements.push({
-        key: 'generate-url',
-        content: <GenerateDownloadUrl
+      elements.push(
+        <DownloadButton
+          key="download"
+          module={module}
+          metadata={metadata}
+          disabled={isRootPath}
+        />,
+      )
+      elements.push(
+        <GenerateDownloadUrl
+          key="generate-url"
           module={module}
           metadata={[metadata]}
           disabled={isRootPath}
-                 />,
-      })
+        />,
+      )
 
       if (containsMediaForPlaylist) {
-        elements.push({
-          key: 'playlist',
-          content: <DownloadPlsButton module={module} metadata={metadata} />,
-        })
+        elements.push(<DownloadPlsButton key="playlist" module={module} metadata={metadata} />)
       }
 
       if (modulePermission.write) {
-        elements.push({
-          key: 'upload',
-          content: <UploadButton module={module} metadata={metadata} />,
-        })
-        elements.push({
-          key: 'create',
-          content: <CreateButton module={module} metadata={metadata} />,
-        })
+        elements.push(<UploadButton key="upload" module={module} metadata={metadata} />)
+        elements.push(<CreateButton key="create" module={module} metadata={metadata} />)
       }
     }
 
     if (moduleAdminPermission?.write && moduleAdminPermission?.delete) {
-      elements.push({
-        key: 'space-1',
-        content: <div style={{ height: '0.75rem' }} />,
-      })
+      elements.push(<MenuItemSeparator key="space-1" />)
 
-      elements.push({
-        key: 'sync',
-        content: <SynchronizeButton module={module} entries={[metadata]} />,
-      })
-      elements.push({
-        key: 'generate-thumbnails',
-        content: <GenerateThumbnailsButton module={module} selectedElements={[metadata]} />,
-      })
-      elements.push({
-        key: 'delete-thumbnails',
-        content: <DeleteThumbnailsButton
+      elements.push(<SynchronizeButton key="sync" module={module} entries={[metadata]} />)
+      elements.push(
+        <GenerateThumbnailsButton
+          key="generate-thumbnails"
+          module={module}
+          selectedElements={[metadata]}
+        />,
+      )
+      elements.push(
+        <DeleteThumbnailsButton
           key="delete-thumbnails"
           module={module}
           entries={[metadata]}
-                 />,
-      })
+        />,
+      )
     }
 
     return elements
   }, [metadata, module, modulePermission, moduleAdminPermission])
 
   return (
-    <ContextMenu
-      items={items}
+    <PopoverMenu
       referenceElement={buttonElement}
-      show={show}
-      shouldClose={shouldClose}
-    />
+      open={show}
+      onClose={shouldClose}
+      portal
+      placement={placeStart ? 'bottom-start' : 'bottom'}
+      middleware={placeStart ? [flip()] : [offset(8)]}
+    >
+      {items}
+    </PopoverMenu>
   )
 }
 

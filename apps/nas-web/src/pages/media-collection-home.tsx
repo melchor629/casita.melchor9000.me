@@ -1,9 +1,9 @@
 import { Helmet } from '@dr.pogodin/react-helmet'
+import { CircularProgress } from '@melchor629/ui'
+import ReactRouterButton from '@melchor629/ui/ReactRouterButton'
+import { Folder, Search } from '@melchor629/ui/icons'
 import { useMemo } from 'react'
 import { type LoaderFunction, Navigate, useParams } from 'react-router'
-import ReactRouterButton from '@/components/core/react-router-button'
-import { Folder, Search } from '../components/icons'
-import { Spinner } from '../components/loaders'
 import ItemsGrid from '../components/media/items-grid'
 import LibraryTypeIcon from '../components/media/library-type-icon'
 import { prefetchMediaLibraryChildren, useMediaLibraryChildren } from '../hooks/api/use-media-library-children'
@@ -40,8 +40,8 @@ export default function MediaCollectionHomePage() {
       <div className="flex flex-col h-dvh pt-navbar">
         <div className="flex justify-between mb-4">
           <h2 className="text-h2">
-            <LibraryTypeIcon type={type} className="text-h1" />
-            <span className="align-middle select-none">
+            <LibraryTypeIcon type={type} className="text-h1 align-middle" />
+            <span className="select-none align-middle">
               &nbsp;
               {app.name}
             </span>
@@ -59,7 +59,7 @@ export default function MediaCollectionHomePage() {
 
         {isLoading && (
           <div className="flex items-center justify-center grow">
-            <Spinner size="lg" />
+            <CircularProgress size="large" />
           </div>
         )}
 

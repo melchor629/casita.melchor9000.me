@@ -1,5 +1,5 @@
+import { makeStyles } from '@melchor629/ui/utils'
 import { memo } from 'react'
-import { makeStyles } from '@/components/core/utils'
 
 const dotsStyles = makeStyles({
   slots: {

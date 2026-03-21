@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "@melchor629/tsconfigs/react.json",
+  ],
+  "compilerOptions": {
+    "rootDir": "./",
+  },
+  "include": [
+    "src/",
+    ".storybook/*.ts",
+    "*.config.js",
+    "*.config.ts",
+    "vitest.shims.d.ts",
+  ]
+}

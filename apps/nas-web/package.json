@@ -6,6 +6,7 @@
   "dependencies": {
     "@dr.pogodin/react-helmet": "^3.0.0",
     "@floating-ui/react": "^0.27.8",
+    "@melchor629/ui": "*",
     "@react-spring/web": "^10.0.0",
     "@svg-icons/fa-regular": "^1.86.0",
     "@svg-icons/material-filled": "^1.86.0",

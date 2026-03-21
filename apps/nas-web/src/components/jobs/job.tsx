@@ -1,10 +1,9 @@
+import { Button, LinearProgress } from '@melchor629/ui'
+import { Redo, Remove, Stop } from '@melchor629/ui/icons'
 import startCase from 'lodash-es/startCase'
 import type { FC } from 'react'
 import { ApiClientException } from '@/api/api-client'
 import useJobHandler, { type Job as IJob, type JobWorkerTypes } from '@/hooks/use-job-handler'
-import Button from '../core/button'
-import ProgressBar from '../core/progress-bar'
-import { Redo, Remove, Stop } from '../icons'
 
 interface Props {
   readonly job: IJob
@@ -72,7 +71,7 @@ const Job: FC<Props> = ({ job, queue }) => {
       <div>
         {job.state === 'processing' && job.progress && (
           <div className="mt-2">
-            <ProgressBar value={Math.trunc(progressValue)} aria-labelledby={`job-progress-${job.id}-label`} />
+            <LinearProgress value={Math.trunc(progressValue)} aria-labelledby={`job-progress-${job.id}-label`} />
             <div className="text-center" id={`job-progress-${job.id}-label`}>
               <small>{progressDescription}</small>
             </div>

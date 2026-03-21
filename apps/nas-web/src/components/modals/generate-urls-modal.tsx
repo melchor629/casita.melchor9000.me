@@ -1,3 +1,5 @@
+import { Button, Dialog, Text, TextInput } from '@melchor629/ui'
+import { ContentCopy, Done } from '@melchor629/ui/icons'
 import {
   type FC, useCallback, useEffect, useId, useState,
 } from 'react'
@@ -6,11 +8,6 @@ import { createAlias } from '@/api/fs'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useApiClient from '@/hooks/use-api-client'
-import Button from '../core/button'
-import Text from '../core/text'
-import { TextInput } from '../form'
-import { ContentCopy, Done } from '../icons'
-import Modal from '../modal-view'
 
 interface GenerateUrlsModalProps {
   readonly show: boolean
@@ -96,12 +93,12 @@ const GenerateUrlsModal: FC<GenerateUrlsModalProps> = ({
   }, [apiClient, module, show, metadata])
 
   return (
-    <Modal
+    <Dialog
       id={`download-url-${id}`}
       title={`Generated Download URL${metadata.length > 1 ? 's' : ''}`}
       show={show}
       onClose={onClose}
-      size="xl"
+      size="extra-large"
       portal
     >
       <Text color="textSecondary" className="mb-2">
@@ -131,7 +128,7 @@ const GenerateUrlsModal: FC<GenerateUrlsModalProps> = ({
         generatedUrls
           .map(([path, url]) => <GeneratedUrl key={path} path={path} url={url} />)
       )}
-    </Modal>
+    </Dialog>
   )
 }
 

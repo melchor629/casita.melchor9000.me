@@ -1,0 +1,48 @@
+@font-face {
+  font-family: "Font Awesome Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2");
+}
+
+@font-face {
+  font-family: "Font Awesome Solid";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2");
+}
+
+@font-face {
+  font-family: "Font Awesome Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2");
+}
+
+.fa-regular, .fa-solid, .fa-brands {
+  font-weight: 400;
+  font-style: normal;
+  user-select: none;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+}
+
+.fa-regular {
+  font-family: "Font Awesome Regular";
+}
+
+.fa-solid {
+  font-family: "Font Awesome Solid";
+}
+
+.fa-brands {
+  font-family: "Font Awesome Brands";
+}

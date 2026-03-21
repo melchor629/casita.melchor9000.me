@@ -1,6 +1,6 @@
+import { CollapsableText } from '@melchor629/ui'
+import { Folder } from '@melchor629/ui/icons'
 import type { ItemMetadata } from '@/api/fs/media'
-import CollapsableText from '../collapsable-text'
-import { Folder } from '../icons'
 import ItemChildren from './item-children'
 import ItemPath from './item-path'
 import ItemThumbnailImage from './item-thumbnail-image'

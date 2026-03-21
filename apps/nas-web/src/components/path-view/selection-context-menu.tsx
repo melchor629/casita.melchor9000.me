@@ -1,9 +1,9 @@
-import type { VirtualElement } from '@floating-ui/core'
-import { type ReactElement, useMemo } from 'react'
+import { flip, offset, type VirtualElement } from '@floating-ui/react'
+import { MenuItemSeparator, PopoverMenu } from '@melchor629/ui'
+import { useMemo, type ReactElement } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import usePermission from '@/hooks/use-permission'
-import { ContextMenu } from '../context-menu'
 import AndroidButton from './buttons/android-button'
 import DeleteButton from './buttons/delete-button'
 import DeleteThumbnailsButton from './buttons/delete-thumbnails-button'
@@ -35,38 +35,25 @@ function SelectionContextMenu({
   const modulePermission = usePermission(module)!
   const moduleAdminPermission = usePermission(`${module}:admin`)
   const items = useMemo(() => {
-    const buttons: Array<{ key: string, content: ReactElement }> = []
+    const buttons: Array<ReactElement> = []
 
-    buttons.push({
-      key: 'download',
-      content: <DownloadButton
-        module={module}
-        metadata={selectedElements}
-               />,
-    })
+    buttons.push(<DownloadButton key="download" module={module} metadata={selectedElements} />)
 
-    buttons.push({
-      key: 'generate-url',
-      content: <GenerateDownloadUrl
-        module={module}
-        metadata={selectedElements}
-        disabled={selectedElements.length === 0}
-               />,
-    })
+    buttons.push(<GenerateDownloadUrl key="generate-url" module={module} metadata={selectedElements} />)
 
     const containsMediaForPlaylist = selectedElements.find((e) => (
       e.type === 'file'
         && !e.hidden
         && (e.mime?.mime.startsWith('audio') || e.mime?.mime.startsWith('video'))
     ))
-    buttons.push({
-      key: 'playlist',
-      content: <DownloadPlsButton
+    buttons.push(
+      <DownloadPlsButton
+        key="playlist"
         module={module}
         metadata={selectedElements}
         disabled={!containsMediaForPlaylist}
-               />,
-    })
+      />,
+    )
 
     if (selectedElements.length === 1) {
       const [metadata] = selectedElements
@@ -78,80 +65,65 @@ function SelectionContextMenu({
         const isAndroid = navigator.userAgent.includes('Android ')
 
         if (isMedia && isMac) {
-          buttons.push({
-            key: 'iina',
-            content: <IinaButton module={module} metadata={metadata} />,
-          })
+          buttons.push(<IinaButton key="iina" module={module} metadata={metadata} />)
         }
         if ((isMedia || isImage) && isAndroid) {
-          buttons.push({
-            key: 'android',
-            content: <AndroidButton module={module} metadata={metadata} />,
-          })
+          buttons.push(<AndroidButton key="android" module={module} metadata={metadata} />)
         }
       }
     }
 
     if (modulePermission.write) {
-      buttons.push({
-        key: 'rename',
-        content: <RenameButton
+      buttons.push(
+        <RenameButton
           key="rename"
           module={module}
           metadata={selectedElements[0]}
           disabled={selectedElements.length !== 1}
-                 />,
-      })
+        />,
+      )
     }
 
     if (modulePermission.delete) {
-      buttons.push({
-        key: 'delete',
-        content: <DeleteButton module={module} entries={selectedElements} />,
-      })
+      buttons.push(<DeleteButton key="delete" module={module} entries={selectedElements} />)
     }
 
     if (moduleAdminPermission?.write && moduleAdminPermission?.delete) {
-      buttons.push({
-        key: 'space-1',
-        content: <div style={{ height: '0.75rem' }} />,
-      })
+      buttons.push(<MenuItemSeparator key="space-1" />)
 
-      buttons.push({
-        key: 'sync',
-        content: <SynchronizeButton module={module} entries={selectedElements} />,
-      })
+      buttons.push(<SynchronizeButton key="sync" module={module} entries={selectedElements} />)
 
-      buttons.push({
-        key: 'generate-thumbnails',
-        content: <GenerateThumbnailsButton
+      buttons.push(
+        <GenerateThumbnailsButton
           key="generate-thumbnails"
           module={module}
           selectedElements={selectedElements}
-                 />,
-      })
+        />,
+      )
 
-      buttons.push({
-        key: 'delete-thumbnails',
-        content: <DeleteThumbnailsButton
+      buttons.push(
+        <DeleteThumbnailsButton
           key="delete-thumbnails"
           module={module}
           entries={selectedElements}
-                 />,
-      })
+        />,
+      )
     }
 
     return buttons
   }, [module, selectedElements, modulePermission, moduleAdminPermission])
 
   return (
-    <ContextMenu
-      items={items}
+    <PopoverMenu
       referenceElement={buttonElement}
-      show={show}
-      shouldClose={shouldClose}
+      open={show}
+      onClose={shouldClose}
+      portal
       placement={placeStart ? 'bottom-start' : 'bottom'}
-    />
+      middleware={placeStart ? [flip()] : [offset(8)]}
+    >
+      {items}
+    </PopoverMenu>
   )
 }
 

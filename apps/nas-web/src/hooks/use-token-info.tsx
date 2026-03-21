@@ -1,3 +1,4 @@
+import { Text } from '@melchor629/ui'
 import { Log } from 'oidc-client-ts'
 import {
   type PropsWithChildren,
@@ -7,7 +8,6 @@ import {
   useMemo,
 } from 'react'
 import { useAuth } from 'react-oidc-context'
-import Text from '@/components/core/text'
 import type { TokenApplication, TokenPermission } from '../api/token/token-info'
 import { AppLoader } from '../components/loaders'
 import usePermissions from './api/use-permissions'

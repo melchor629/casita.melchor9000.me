@@ -1,11 +1,11 @@
+import { Button } from '@melchor629/ui'
+import ReactRouterLink from '@melchor629/ui/ReactRouterLink'
+import { Download, Downloading } from '@melchor629/ui/icons'
 import { type HTMLProps, useCallback, useMemo, useState } from 'react'
 import { getDownloadUrl } from '@/api/fs'
 import type { Item } from '@/api/fs/media'
 import useApiClient from '@/hooks/use-api-client'
 import useMediaThumbnailSize from '@/hooks/use-media-thumbnail-size'
-import Button from '../core/button'
-import ReactRouterLink from '../core/react-router-link'
-import { Download, Downloading } from '../icons'
 import ItemThumbnailImage from './item-thumbnail-image'
 
 interface ItemCellProps {

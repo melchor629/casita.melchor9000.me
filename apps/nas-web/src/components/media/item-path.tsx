@@ -1,16 +1,15 @@
+import { Button, ButtonGroup } from '@melchor629/ui'
+import ReactRouterButton from '@melchor629/ui/ReactRouterButton'
+import { Download, Downloading, type IconProps } from '@melchor629/ui/icons'
 import { useCallback, useState } from 'react'
 import { getDownloadUrl } from '@/api/fs'
 import useApiClient from '@/hooks/use-api-client'
 import { basename } from '@/utils/path'
-import Button from '../core/button'
-import ButtonGroup from '../core/button-group'
-import ReactRouterButton from '../core/react-router-button'
-import { Download, Downloading, type SvgIconProps } from '../icons'
 
 type Props = Readonly<{
   module: string
   path: string
-  icon: React.FC<SvgIconProps>
+  icon: React.FC<IconProps>
 }>
 
 export default function ItemPath({ icon: Icon, module, path }: Props) {
@@ -28,15 +27,21 @@ export default function ItemPath({ icon: Icon, module, path }: Props) {
   }, [module, path, apiClient])
 
   return (
-    <ButtonGroup role="group" aria-label="Links to file and download file">
-      <ReactRouterButton to={`/${module}${path}`} size="small" variant="filled" color="secondary">
-        <Icon height="0.75rem" />
+    <ButtonGroup
+      aria-label="Links to file and download file"
+      variant="filled"
+      color="secondary"
+      size="small"
+    >
+      <ReactRouterButton to={`/${module}${path}`} icon={<Icon />}>
         &nbsp;
         {basename(path)}
       </ReactRouterButton>
-      <Button size="small" color="secondary" disabled={preparing} onClick={download}>
-        {preparing ? <Downloading width="0.75rem" /> : <Download width="0.75rem" />}
-      </Button>
+      <Button
+        disabled={preparing}
+        onClick={download}
+        icon={preparing ? <Downloading /> : <Download />}
+      />
     </ButtonGroup>
   )
 }

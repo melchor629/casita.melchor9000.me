@@ -1,9 +1,9 @@
+import { MenuItem } from '@melchor629/ui'
+import { Sync } from '@melchor629/ui/icons'
 import { type FC, useCallback } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useJobHandler from '@/hooks/use-job-handler'
-import { Sync } from '../../icons'
-import Button from './button'
 
 interface SynchronizeButtonProps {
   readonly module: string
@@ -25,10 +25,11 @@ const SynchronizeButton: FC<SynchronizeButtonProps> = ({ entries, module }) => {
   }, [module, entries, jobsActions])
 
   return (
-    <Button onClick={synchronize}>
-      <Sync width="14px" />
-      <span> Synchronize</span>
-    </Button>
+    <MenuItem
+      onAction={synchronize}
+      icon={<Sync />}
+      label="Synchronize"
+    />
   )
 }
 

@@ -1,7 +1,7 @@
 import { Helmet } from '@dr.pogodin/react-helmet'
+import { CircularProgress } from '@melchor629/ui'
 import { useMemo } from 'react'
 import { type LoaderFunction, useParams } from 'react-router'
-import { Spinner } from '../components/loaders'
 import AlbumItem from '../components/media/album-item'
 import ArtistItem from '../components/media/artist-item'
 import MovieItem from '../components/media/movie-item'
@@ -75,7 +75,7 @@ export default function MediaCollectionItemPage() {
           <div
             className="text-center fixed w-full pt-4 top-navbar"
           >
-            <Spinner size="lg" />
+            <CircularProgress size="large" />
           </div>
         )}
 

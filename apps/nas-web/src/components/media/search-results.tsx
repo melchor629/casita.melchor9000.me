@@ -1,8 +1,8 @@
+import { CircularProgress } from '@melchor629/ui'
 import debounce from 'lodash-es/debounce'
 import { useEffect, useMemo, useState, useTransition } from 'react'
 import type { SearchResults as SearchResultsType } from '@/api/fs/media'
 import useMediaLibrarySearchResults from '@/hooks/api/use-media-library-search-results'
-import { Spinner } from '../loaders'
 import HorizontallyScrollableContainer from './horizontally-scrollable-container'
 import ItemCell from './item-cell'
 
@@ -43,7 +43,7 @@ export default function SearchResults({ module, searchFilter }: SearchResultsPro
   if (isLoading && !results) {
     return (
       <div className="text-center w-full">
-        <Spinner size="lg" />
+        <CircularProgress size="large" />
       </div>
     )
   }
@@ -77,7 +77,7 @@ export default function SearchResults({ module, searchFilter }: SearchResultsPro
 
       {isLoading && (
         <div className="text-center w-full h-full" style={{ position: 'absolute', top: 0, left: 0 }}>
-          <Spinner size="lg" />
+          <CircularProgress size="large" />
         </div>
       )}
     </div>

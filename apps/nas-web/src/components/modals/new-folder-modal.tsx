@@ -1,13 +1,10 @@
+import { Alert, Button, Dialog, FormControl, TextInput } from '@melchor629/ui'
 import React, {
   useCallback, useMemo, useState,
 } from 'react'
 import * as fs from '@/api/fs'
 import useApiClient from '@/hooks/use-api-client'
 import * as Path from '@/utils/path'
-import Alert from '../core/alert'
-import Button from '../core/button'
-import { TextInput } from '../form'
-import Modal from '../modal-view'
 
 interface NewFolderItemModalProps {
   readonly module: string
@@ -43,7 +40,7 @@ export default function NewFolderItemModal({
   ], [folderName, onNewFolderImpl])
 
   return (
-    <Modal
+    <Dialog
       id="new-folder"
       title={`Create a new folder at ${Path.basename(path) || path}`}
       onClose={useCallback(() => {
@@ -61,15 +58,17 @@ export default function NewFolderItemModal({
           {JSON.stringify(error)}
         </Alert>
       )}
-      <TextInput
-        type="text"
-        id="new-folder-name"
-        value={folderName}
-        onChange={(e) => setFolderName(e.target.value)}
-        helpText={newUrl}
+      <FormControl
+        label="Write the new folder's name"
+        helperText={newUrl}
       >
-        Write the new folder&apos;s name
-      </TextInput>
-    </Modal>
+        <TextInput
+          type="text"
+          id="new-folder-name"
+          value={folderName}
+          onChange={(e) => setFolderName(e.target.value)}
+        />
+      </FormControl>
+    </Dialog>
   )
 }

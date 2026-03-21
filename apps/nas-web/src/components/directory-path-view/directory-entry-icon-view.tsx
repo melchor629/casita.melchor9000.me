@@ -1,3 +1,13 @@
+import {
+  File,
+  FileAudio,
+  FileCode,
+  FileImage,
+  FileVideo,
+  FileZipper,
+  Folder,
+} from '@melchor629/ui/icons'
+import { styled } from '@melchor629/ui/utils'
 import { useEffect, useState } from 'react'
 import { openFileSystemEvents } from '@/api/fs'
 import type { DirectoryMetadata } from '@/api/fs/directory'
@@ -6,17 +16,6 @@ import useApiClient from '@/hooks/use-api-client'
 import { useSettings } from '@/hooks/use-settings'
 import { hasAvifSupport, hasWebpSupport } from '@/utils/image-support'
 import * as thumbnailManager from '@/utils/thumbnail-manager'
-import { styled } from '../core/utils'
-import {
-  File,
-  FileAudio,
-  FileBinary,
-  FileCode,
-  FileImage,
-  FileVideo,
-  FileZipper,
-  Folder,
-} from '../icons'
 
 interface DirectoryEntryIconViewProps {
   readonly entry: DirectoryMetadata | FileMetadata
@@ -33,17 +32,17 @@ const archiveTypes = [
 ]
 
 const ThumbnailIconContainer = styled('div', 'ThumbnailIconContainer')({
-  base: '*:w-full *:h-full *:block',
+  base: '*:w-full *:h-full *:block leading-0',
   variants: {
     size: {
       list: 'w-4 h-4 mr-1',
-      grid: 'w-20 h-20 p-1',
+      grid: 'w-20 h-20 p-1 text-7xl',
     },
   },
 })
 
 const ThumbnailIcon = styled('div', 'ThumbnailIcon')({
-  base: 'w-full pb-[100%] bg-contain bg-center bg-[attr(data-src)]',
+  base: 'w-full pb-[100%] bg-contain bg-center',
   variants: {
     size: {
       list: 'rounded-xs',
@@ -105,7 +104,7 @@ function DirectoryEntryIconView({ entry, module, size }: DirectoryEntryIconViewP
 
   let icon
   if (blobUrl !== null) {
-    icon = <ThumbnailIcon data-src={blobUrl} size={size} />
+    icon = <ThumbnailIcon style={{ backgroundImage: `url(${blobUrl})` }} size={size} />
   } else {
     const { mime, type } = entry
     if (type === 'dir') {
@@ -123,7 +122,8 @@ function DirectoryEntryIconView({ entry, module, size }: DirectoryEntryIconViewP
     } else if (archiveTypes.includes(mime.mime)) {
       icon = <FileZipper />
     } else {
-      icon = <FileBinary />
+      // this was originally file binary
+      icon = <File />
     }
   }
 

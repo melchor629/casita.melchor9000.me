@@ -1,7 +1,7 @@
+import { Text } from '@melchor629/ui'
 import capitalize from 'lodash-es/capitalize'
 import { memo } from 'react'
 import type { AudioTags, CommonTags } from '../api/fs/audio-tags'
-import Text from './core/text'
 
 const tagKeyToHuman = (tagKey: string) => ({
   albumartist: 'Album Artist',

@@ -1,6 +1,6 @@
+import { Text } from '@melchor629/ui'
 import { useMemo } from 'react'
 import type { FileMetadata } from '../api/fs/file'
-import Text from './core/text'
 
 function ExifView({ exif }: { readonly exif: FileMetadata['exif'] }) {
   const keys = useMemo(() => (

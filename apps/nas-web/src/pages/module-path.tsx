@@ -1,4 +1,6 @@
 import { Helmet } from '@dr.pogodin/react-helmet'
+import { Text } from '@melchor629/ui'
+import ReactRouterLink from '@melchor629/ui/ReactRouterLink'
 import { useEffect, useState } from 'react'
 import {
   type LoaderFunction,
@@ -6,8 +8,6 @@ import {
   useLocation,
   useParams,
 } from 'react-router'
-import ReactRouterLink from '@/components/core/react-router-link'
-import Text from '@/components/core/text'
 import type { DirectoryMetadata } from '../api/fs/directory'
 import type { FileMetadata } from '../api/fs/file'
 import DirectoryPathView from '../components/directory-path-view'

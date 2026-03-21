@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "./manual-theme.css";
+@import "./tailwind.css";
+
+body, .docs-story { @apply body }

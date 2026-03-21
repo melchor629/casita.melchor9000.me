@@ -1,7 +1,7 @@
+import { styled } from '@melchor629/ui/utils'
 import { VirtuosoGrid } from 'react-virtuoso'
 import type { Item, LibraryType } from '@/api/fs/media'
 import useMediaThumbnailSize from '@/hooks/use-media-thumbnail-size'
-import { styled } from '../core/utils'
 import ItemCell from './item-cell'
 
 interface ItemsGridProps {

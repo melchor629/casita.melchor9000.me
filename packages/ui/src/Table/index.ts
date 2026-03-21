@@ -1,0 +1,7 @@
+export { default as TableBody, type TableBodyProps } from './table-body'
+export { default as TableCell, type TableCellProps } from './table-cell'
+export { default as TableContainer, type TableContainerProps } from './table-container'
+export { default as TableHeadCell, type TableHeadCellProps } from './table-head-cell'
+export { default as TableHead, type TableHeadProps } from './table-head'
+export { default as TableRow, type TableRowProps } from './table-row'
+export { default as Table, type TableProps } from './table'

@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import "@melchor629/ui/styles/manual-theme";
+@import "@melchor629/ui/styles";
+@import "./directory-entries-list.css";
+
+@source "../../../../node_modules/@melchor629/ui";

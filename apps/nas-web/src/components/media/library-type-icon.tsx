@@ -1,15 +1,15 @@
-import { useMemo } from 'react'
-import type { LibraryType } from '@/api/fs/media'
 import {
   Folder,
   LiveTv,
   Movie,
   MusicNote,
   PhotoLibrary,
-  type SvgIconProps,
-} from '../icons'
+  type IconProps,
+} from '@melchor629/ui/icons'
+import { useMemo } from 'react'
+import type { LibraryType } from '@/api/fs/media'
 
-interface LibraryTypeIconProps extends Omit<SvgIconProps, 'type'> {
+interface LibraryTypeIconProps extends Omit<IconProps, 'type'> {
   readonly type: LibraryType | null
 }
 

@@ -1,5 +1,5 @@
+import { makeStyles } from '@melchor629/ui/utils'
 import type { Role } from '@/api/fs/media'
-import { makeStyles } from '../core/utils'
 
 interface RoleProfileProps {
   readonly role: Role

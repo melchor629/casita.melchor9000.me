@@ -1,11 +1,11 @@
+import { MenuItem } from '@melchor629/ui'
+import { Downloading, PlaylistPlay } from '@melchor629/ui/icons'
 import { type FC, useCallback, useState } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useApiClient from '@/hooks/use-api-client'
 import { basename } from '@/utils/path'
 import { plsFromFiles } from '@/utils/url-generator'
-import { Downloading, PlaylistPlay } from '../../icons'
-import Button from './button'
 
 interface DownloadPlsButtonProps {
   readonly disabled?: boolean
@@ -53,10 +53,12 @@ const DownloadPlsButton: FC<DownloadPlsButtonProps> = ({ disabled, metadata, mod
   }, [module, metadata, apiClient])
 
   return (
-    <Button onClick={downloadPls} disabled={preparing || disabled}>
-      {preparing ? <Downloading width="18px" /> : <PlaylistPlay width="18px" />}
-      <span> Download as Playlist</span>
-    </Button>
+    <MenuItem
+      onAction={downloadPls}
+      disabled={preparing || disabled}
+      icon={preparing ? <Downloading /> : <PlaylistPlay />}
+      label="Download as Playlist"
+    />
   )
 }
 

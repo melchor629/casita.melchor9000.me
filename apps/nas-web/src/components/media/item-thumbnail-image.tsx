@@ -1,3 +1,5 @@
+import { CircularProgress } from '@melchor629/ui'
+import { styled } from '@melchor629/ui/utils'
 import {
   useCallback,
   useEffect,
@@ -9,8 +11,6 @@ import type { Item } from '@/api/fs/media'
 import useApiClient from '@/hooks/use-api-client'
 import useDevicePixelRatio from '@/hooks/use-device-pixel-ratio'
 import useMediaThumbnailSize from '@/hooks/use-media-thumbnail-size'
-import { styled } from '../core/utils'
-import { Spinner } from '../loaders'
 
 interface ItemImageProps {
   readonly item: Item
@@ -133,7 +133,7 @@ export default function ItemThumbnailImage({ forceLoadImage, item, module }: Ite
         <LoadingContainer
           className="w-full h-full flex justify-center items-center"
         >
-          <Spinner size="lg" />
+          <CircularProgress size="large" />
         </LoadingContainer>
       )}
       {childrenCount != null && (

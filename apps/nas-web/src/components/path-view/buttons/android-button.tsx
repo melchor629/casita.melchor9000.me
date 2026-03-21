@@ -1,10 +1,10 @@
-import { type FC, useCallback, useState } from 'react'
+import { MenuItem } from '@melchor629/ui'
+import { Android } from '@melchor629/ui/icons'
+import { useCallback, useState } from 'react'
 import { getDownloadUrl } from '@/api/fs'
 import type { FileMetadata } from '@/api/fs/file'
 import useApiClient from '@/hooks/use-api-client'
 import { androidIntent } from '@/utils/url-generator'
-import { Android } from '../../icons'
-import Button from './button'
 
 interface AndroidButtonProps {
   readonly module: string
@@ -12,7 +12,7 @@ interface AndroidButtonProps {
   readonly disabled?: boolean
 }
 
-const AndroidButton: FC<AndroidButtonProps> = ({ disabled, metadata, module }) => {
+const AndroidButton = ({ disabled, metadata, module }: AndroidButtonProps) => {
   const apiClient = useApiClient()
   const [preparing, setPreparing] = useState(false)
 
@@ -32,10 +32,12 @@ const AndroidButton: FC<AndroidButtonProps> = ({ disabled, metadata, module }) =
   }, [module, metadata, apiClient])
 
   return (
-    <Button onClick={openIntent} disabled={preparing || disabled}>
-      <Android width="16px" />
-      <span> Open in Android</span>
-    </Button>
+    <MenuItem
+      onAction={openIntent}
+      disabled={preparing || disabled}
+      icon={<Android />}
+      label="Open in Android"
+    />
   )
 }
 

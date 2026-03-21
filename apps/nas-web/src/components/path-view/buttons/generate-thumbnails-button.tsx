@@ -1,9 +1,9 @@
+import { MenuItem } from '@melchor629/ui'
+import { PhotoLibrary } from '@melchor629/ui/icons'
 import { type FC, useCallback } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useJobHandler from '@/hooks/use-job-handler'
-import { PhotoLibrary } from '../../icons'
-import Button from './button'
 
 interface GenerateThumbnailsButtonProps {
   readonly module: string
@@ -23,10 +23,11 @@ const GenerateThumbnailsButton: FC<GenerateThumbnailsButtonProps> = ({
   }, [module, selectedElements, jobsActions])
 
   return (
-    <Button onClick={generateThumbnails}>
-      <PhotoLibrary height="18px" />
-      <span> Generate thumbnails</span>
-    </Button>
+    <MenuItem
+      onAction={generateThumbnails}
+      icon={<PhotoLibrary />}
+      label="Generate thumbnails"
+    />
   )
 }
 

@@ -1,10 +1,10 @@
+import { MenuItem } from '@melchor629/ui'
+import { Download, Downloading } from '@melchor629/ui/icons'
 import { type FC, useCallback, useState } from 'react'
 import { getDownloadUrl } from '@/api/fs'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useApiClient from '@/hooks/use-api-client'
-import { Download, Downloading } from '../../icons'
-import Button from './button'
 
 interface DownloadButtonProps {
   readonly module: string
@@ -34,11 +34,16 @@ const DownloadButton: FC<DownloadButtonProps> = ({ disabled, metadata, module })
   }, [module, metadata, apiClient])
 
   return (
-    <Button onClick={download} disabled={preparing || disabled}>
-      {preparing ? <Downloading width="18px" /> : <Download width="18px" />}
-      {!Array.isArray(metadata) && (metadata?.type === 'dir' ? <span> Download Folder</span> : <span> Download</span>)}
-      {Array.isArray(metadata) && <span> Download All</span>}
-    </Button>
+    <MenuItem
+      onAction={download}
+      disabled={preparing || disabled}
+      icon={preparing ? <Downloading /> : <Download />}
+      label={
+        !Array.isArray(metadata)
+          ? (metadata?.type === 'dir' ? 'Download Folder' : 'Download')
+          : (metadata.length === 1 ? 'Download' : 'Download All')
+      }
+    />
   )
 }
 

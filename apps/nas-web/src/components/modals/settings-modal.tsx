@@ -1,18 +1,16 @@
-import { useCallback } from 'react'
-// eslint-disable-next-line import-x/no-unresolved
-import { useRegisterSW } from 'virtual:pwa-register/react'
-import { useSettingsContext } from '@/hooks/use-settings'
-import { env } from '@/utils/config'
-import { RadioButton, RadioButtonGroup } from '../core/radio-button-group'
-import { Switch } from '../form'
+import { Dialog, InputLabel, RadioButton, RadioButtonGroup, Switch } from '@melchor629/ui'
 import {
   Contrast as CircleHalfStrokeIcon,
   DarkMode as MoonIcon,
   GridView as GridIcon,
   LightMode as SunIcon,
   Menu as BarsIcon,
-} from '../icons'
-import Modal from '../modal-view'
+} from '@melchor629/ui/icons'
+import { useCallback } from 'react'
+// eslint-disable-next-line import-x/no-unresolved
+import { useRegisterSW } from 'virtual:pwa-register/react'
+import { useSettingsContext } from '@/hooks/use-settings'
+import { env } from '@/utils/config'
 
 interface SettingsModalProps {
   readonly show?: boolean
@@ -39,7 +37,7 @@ export default function SettingsModal({
   const onShowThumbnailsVisibilityClicked = useCallback(() => update('showThumbnails', (v) => !v), [update])
 
   return (
-    <Modal id="settings-modal" title="Settings" show={show} onClose={onClose}>
+    <Dialog id="settings-modal" title="Settings" show={show} onClose={onClose}>
       <div className="text-center">
         <div className="mb-2">
           <div className="mb-1 select-none">Theme</div>
@@ -60,23 +58,33 @@ export default function SettingsModal({
         </div>
 
         <div>
-          <Switch
-            id="toggle-hidden-files"
-            checked={hidden}
-            onChange={onHideFilesVisibilityClicked}
+          <InputLabel
+            htmlFor="toggle-hidden-files"
+            input={
+              <Switch
+                id="toggle-hidden-files"
+                checked={hidden}
+                onChange={onHideFilesVisibilityClicked}
+              />
+            }
           >
             Show hidden files
-          </Switch>
+          </InputLabel>
         </div>
 
         <div>
-          <Switch
-            id="toggle-thumbnails"
-            checked={showThumbnails}
-            onChange={onShowThumbnailsVisibilityClicked}
+          <InputLabel
+            htmlFor="toggle-thumbnails"
+            input={
+              <Switch
+                id="toggle-thumbnails"
+                checked={showThumbnails}
+                onChange={onShowThumbnailsVisibilityClicked}
+              />
+            }
           >
             Show thumbnails
-          </Switch>
+          </InputLabel>
         </div>
 
         <div
@@ -91,6 +99,6 @@ export default function SettingsModal({
           {env.buildDate.toLocaleString()}
         </div>
       </div>
-    </Modal>
+    </Dialog>
   )
 }

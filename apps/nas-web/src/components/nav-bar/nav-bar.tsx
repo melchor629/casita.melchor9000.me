@@ -1,23 +1,21 @@
-import React, {
+import { Button, CircularProgress, PopoverMenu } from '@melchor629/ui'
+import {
+  Apps as AppsIcon,
+  Home as HomeIcon,
+  Manufacturing as MiscellaneousServicesIcon,
+  Logout as LogoutIcon,
+  Settings as SettingsIcon,
+} from '@melchor629/ui/icons'
+import {
   memo, useCallback, useEffect, useMemo, useState,
 } from 'react'
 import { useAuth } from 'react-oidc-context'
 import { Link, useLocation, useNavigation } from 'react-router'
 import { useTokenInfo } from '@/hooks/use-token-info'
 import { env } from '@/utils/config'
-import Button from '../core/button'
-import {
-  Apps as AppsIcon,
-  Home as HomeIcon,
-  MiscellaneousServices as MiscellaneousServicesIcon,
-  Logout as LogoutIcon,
-  Settings as SettingsIcon,
-} from '../icons'
 import JobsModal from '../jobs'
-import { Spinner } from '../loaders'
 import SettingsModal from '../modals/settings-modal'
-import AppMenuContainer from './app-menu-container'
-import AppMenuLink from './app-menu-link'
+import AppLink from './app-link'
 
 const NavBar = memo(() => {
   const location = useLocation()
@@ -25,6 +23,7 @@ const NavBar = memo(() => {
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [showChangeApp, setShowChangeApp] = useState(false)
   const [showJobsModal, setShowJobsModal] = useState(false)
+  const [appButtonRef, setAppButtonRef] = useState<HTMLButtonElement | null>(null)
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { removeUser } = useAuth()
   const tokenInfo = useTokenInfo()
@@ -98,10 +97,11 @@ const NavBar = memo(() => {
             icon={<AppsIcon />}
             onClick={onBrandButtonClicked}
             aria-checked={showChangeApp}
+            ref={setAppButtonRef}
           >
             {currentApp?.name ?? 'Home'}
           </Button>
-          <Spinner show={state !== 'idle'} />
+          <CircularProgress show={state !== 'idle'} />
         </div>
         <div className="flex gap-2 items-center">
           <div
@@ -156,9 +156,14 @@ const NavBar = memo(() => {
         onClose={onJobsModalClose}
       />
 
-      <AppMenuContainer show={showChangeApp}>
-        {apps.map(({ key, name }) => <AppMenuLink key={key} appKey={key} name={name} />)}
-      </AppMenuContainer>
+      <PopoverMenu
+        open={showChangeApp}
+        referenceElement={appButtonRef}
+      >
+        {apps.map(({ key, name }) => (
+          <AppLink key={key} appKey={key} name={name} />
+        ))}
+      </PopoverMenu>
     </>
   )
 })

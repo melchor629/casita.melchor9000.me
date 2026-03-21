@@ -1,9 +1,9 @@
+import { CircularProgress, Text } from '@melchor629/ui'
 import { useEffect, useState } from 'react'
 import { downloadFile } from '../api/fs'
 import useApiClient from '../hooks/use-api-client'
 import highlightCode from '../workers/code-highlighter'
-import Text from './core/text'
-import { AppLoader, Spinner } from './loaders'
+import { AppLoader } from './loaders'
 
 interface CodeHighlightViewProps {
   readonly module: string
@@ -85,7 +85,7 @@ export default function CodeHighlightView({ forceLanguage, module, path }: CodeH
       <div>
         <Text size="bodySmall" color="textSecondary" className="mb-1">
           {`${codeHighlight.lang ?? 'Unknown'} (${codeHighlight.relevance}%) `}
-          {!codeHighlight.highlighted && <Spinner />}
+          {!codeHighlight.highlighted && <CircularProgress />}
         </Text>
         <pre className="overflow-x-auto">
           <code dangerouslySetInnerHTML={{ __html: codeHighlight.value }} />

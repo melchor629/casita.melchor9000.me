@@ -1,3 +1,5 @@
+import { Button, Dialog, Text } from '@melchor629/ui'
+import { Launch } from '@melchor629/ui/icons'
 import {
   memo,
   useEffect,
@@ -7,10 +9,6 @@ import {
 import type { MediaInfo, MediaInfoTrack } from '../api/fs/mediainfo'
 import { humanBytes, humanDuration } from '../utils/number-format'
 import highlightCode from '../workers/code-highlighter'
-import Button from './core/button'
-import Text from './core/text'
-import { Launch } from './icons'
-import Modal from './modal-view'
 
 type NullableTupleValues<T extends readonly [...unknown[]]> = (
   T extends readonly [...infer Item]
@@ -224,17 +222,17 @@ export default function MediaInfoView({ mediainfo }: { readonly mediainfo: Media
         {!!chapters[0]?.extra && <MediaInfoChaptersView value={chapters[0]} />}
       </ul>
 
-      <Modal
+      <Dialog
         id="mediainfo-raw"
         title="Complete Media Info"
-        size="xl"
+        size="extra-large"
         show={showRaw}
         onClose={() => setShowRaw(false)}
       >
         <pre className="overflow-auto">
           <code dangerouslySetInnerHTML={{ __html: highlightedMediainfo || rawMediainfo }} />
         </pre>
-      </Modal>
+      </Dialog>
     </div>
   )
 }

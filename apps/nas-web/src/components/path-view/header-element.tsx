@@ -1,4 +1,4 @@
-import { makeStyles } from '../core/utils'
+import { makeStyles } from '@melchor629/ui/utils'
 
 const headerElementClasses = makeStyles({
   base: 'inline-flex flex-col text-body text-text-main',

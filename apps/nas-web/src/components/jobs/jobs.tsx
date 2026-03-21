@@ -1,6 +1,6 @@
+import { Button } from '@melchor629/ui'
 import { type FC, useCallback, useEffect } from 'react'
 import useJobHandler from '@/hooks/use-job-handler'
-import Button from '../core/button'
 import Job from './job'
 
 const Jobs: FC<{ readonly shouldUpdate: boolean }> = ({ shouldUpdate }) => {

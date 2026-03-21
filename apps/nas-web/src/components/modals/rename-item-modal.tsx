@@ -1,3 +1,4 @@
+import { Alert, Button, Dialog, FormControl, TextInput } from '@melchor629/ui'
 import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react'
@@ -6,10 +7,6 @@ import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useApiClient from '@/hooks/use-api-client'
 import * as Path from '@/utils/path'
-import Alert from '../core/alert'
-import Button from '../core/button'
-import { TextInput } from '../form'
-import Modal from '../modal-view'
 
 interface RenameItemModalProps {
   readonly module: string
@@ -54,9 +51,9 @@ export default function RenameItemModal({
   ], [onRenameImpl, newName])
 
   return (
-    <Modal
+    <Dialog
       id="rename-item"
-      size="xl"
+      size="extra-large"
       title="Rename item"
       onClose={onClose}
       show={show}
@@ -69,18 +66,17 @@ export default function RenameItemModal({
           {JSON.stringify(error)}
         </Alert>
       )}
-      <TextInput
-        type="text"
-        id="rename-item-name"
-        value={newName}
-        onChange={(e) => setNewName(e.target.value)}
-        helpText={newUrl}
+      <FormControl
+        label={`Write the new ${type === 'dir' ? 'folder' : 'file'}'s name`}
+        helperText={newUrl}
       >
-        Write the new
-        {' '}
-        {type === 'dir' ? 'folder' : 'file'}
-        &apos;s name
-      </TextInput>
-    </Modal>
+        <TextInput
+          type="text"
+          id="rename-item-name"
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+        />
+      </FormControl>
+    </Dialog>
   )
 }

@@ -1,9 +1,9 @@
+import { MenuItem } from '@melchor629/ui'
+import { Link } from '@melchor629/ui/icons'
 import { type FC, useCallback, useState } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
-import { Link } from '../../icons'
 import GenerateUrlsModal from '../../modals/generate-urls-modal'
-import Button from './button'
 
 interface GenerateDownloadUrlButtonProps {
   readonly module: string
@@ -33,11 +33,12 @@ const GenerateDownloadUrl: FC<GenerateDownloadUrlButtonProps> = ({
 
   return (
     <>
-      <Button onClick={openModal} disabled={disabled}>
-        {}
-        <Link width="18px" />
-        <span> Generate URL</span>
-      </Button>
+      <MenuItem
+        onAction={openModal}
+        disabled={disabled}
+        icon={<Link />}
+        label="Generate URLs"
+      />
 
       <GenerateUrlsModal
         show={!!metadataToGenerate}

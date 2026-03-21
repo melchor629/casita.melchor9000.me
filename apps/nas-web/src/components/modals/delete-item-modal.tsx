@@ -1,3 +1,4 @@
+import { Alert, Button, Dialog, Text } from '@melchor629/ui'
 import React, {
   useCallback, useMemo, useState,
 } from 'react'
@@ -6,10 +7,6 @@ import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useApiClient from '@/hooks/use-api-client'
 import * as Path from '@/utils/path'
-import Alert from '../core/alert'
-import Button from '../core/button'
-import Text from '../core/text'
-import Modal from '../modal-view'
 
 interface DeleteItemModalProps {
   readonly module: string
@@ -49,9 +46,9 @@ export default function DeleteItemModal({
     ? `this ${entries[0].type === 'dir' ? 'folder and all its content' : 'file'}`
     : 'these items'
   return (
-    <Modal
+    <Dialog
       id="delete-item"
-      size="lg"
+      size="large"
       title={title}
       onClose={close}
       show={show}
@@ -79,6 +76,6 @@ export default function DeleteItemModal({
           {entries.map((entry) => <li key={entry.path}>{Path.basename(entry.path)}</li>)}
         </ul>
       )}
-    </Modal>
+    </Dialog>
   )
 }

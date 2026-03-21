@@ -1,9 +1,9 @@
+import { MenuItem } from '@melchor629/ui'
+import { FileUpload } from '@melchor629/ui/icons'
 import { useCallback, useRef } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useJobHandler from '@/hooks/use-job-handler'
-import { FileUpload } from '../../icons'
-import Button from './button'
 
 interface UploadButtonProps {
   readonly module: string
@@ -16,7 +16,10 @@ export default function UploadButton({ metadata, module }: UploadButtonProps) {
 
   const startUploading = useCallback((file: File) => {
     jobsActions.register({
-      type: 'upload', module, directoryPath: metadata.path, file,
+      type: 'upload',
+      module,
+      directoryPath: metadata.path,
+      file,
     }).catch(() => {})
   }, [metadata.path, module, jobsActions])
 
@@ -28,17 +31,16 @@ export default function UploadButton({ metadata, module }: UploadButtonProps) {
   }, [startUploading])
 
   const onClickImpl = useCallback(() => {
-    if (inputRef.current) {
-      inputRef.current.click()
-    }
+    inputRef.current?.click()
   }, [])
 
   return (
-    <div className="upload-button">
-      <Button onClick={onClickImpl}>
-        <FileUpload width="18px" />
-        <span> Upload</span>
-      </Button>
+    <div>
+      <MenuItem
+        onAction={onClickImpl}
+        icon={<FileUpload />}
+        label="Upload"
+      />
       <input
         type="file"
         id="upload-file-input"

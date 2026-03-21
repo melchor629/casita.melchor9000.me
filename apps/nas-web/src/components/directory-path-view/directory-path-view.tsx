@@ -1,3 +1,4 @@
+import { TextInput } from '@melchor629/ui'
 import React, {
   useCallback,
   useEffect,
@@ -11,7 +12,6 @@ import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import useApiClient from '@/hooks/use-api-client'
 import * as path from '@/utils/path'
-import { TextInput } from '../form'
 import DirectoryEntries from './directory-entries'
 
 interface DirectoryPathViewProps {
@@ -166,6 +166,7 @@ export default function DirectoryPathView({
             ref={entriesDivRef}
             isRoot={isRoot}
             module={module}
+            metadata={metadata}
             entries={entries}
             selectedElements={selectedElements}
             onEntryMove={onEntryMove}
