@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import Menu from './menu'
-import MenuItem from './menu-item'
 import { fn } from 'storybook/test'
 import { Android, Github, Home, Settings } from '../icons'
+import Menu from './menu'
+import MenuItem from './menu-item'
 
 const meta = {
   title: 'molecules/Menu',

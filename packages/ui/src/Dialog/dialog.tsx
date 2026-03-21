@@ -15,9 +15,9 @@ export type DialogProps = Readonly<{
   onClose: () => void
   onCloseStart?: () => void
   onCloseEnd?: () => void
+  portal?: boolean | HTMLElement
   closeLabel?: string
   size?: 'extra-large' | 'large' | 'medium' | 'small'
-  portal?: boolean | HTMLElement
 }>
 
 export default function Dialog({
@@ -29,10 +29,10 @@ export default function Dialog({
   onClose,
   onCloseEnd,
   onCloseStart,
+  portal,
   show,
   size = 'medium',
   title,
-  portal,
 }: DialogProps) {
   const [element, setElement] = useState<HTMLDivElement | null>(null)
 

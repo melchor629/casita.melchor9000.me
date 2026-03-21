@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import TextArea from './text-area'
 import FormControl from '../FormControl'
+import TextArea from './text-area'
 
 const meta = {
   title: 'atoms/Text Area',

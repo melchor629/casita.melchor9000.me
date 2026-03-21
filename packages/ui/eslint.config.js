@@ -10,7 +10,7 @@ export default [
   }),
   ...storybook['flat/recommended'],
   {
-    files: ['.storybook/*', '*.stories.{ts,js,tsx,jsx}'],
+    files: ['.storybook/**', 'src/**/*.stories.{ts,js,tsx,jsx}'],
     rules: {
       'import-x/no-extraneous-dependencies': ['error', {
         devDependencies: true,
