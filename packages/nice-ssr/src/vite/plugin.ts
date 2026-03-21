@@ -43,16 +43,24 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
     },
 
     async config(config, env) {
+      if (!this.meta.rolldownVersion) {
+        throw new Error('This plugin only supports vite 8 or higher with rolldown')
+      }
+
+      config.resolve = {
+        ...config.resolve,
+        tsconfigPaths: true,
+      }
+
       if (env.command === 'build') {
         config.build ??= {}
-        config.build.rollupOptions ??= {}
+        config.build.rolldownOptions ??= {}
         config.build.assetsDir = '.p/assets'
-        if (Array.isArray(config.build.rollupOptions.output)) {
+        if (Array.isArray(config.build.rolldownOptions.output)) {
           throw new Error('Configuration error: build.rollupOptions.output cannot be an array')
         }
-        config.build.rollupOptions.output ??= {}
-        config.build.rollupOptions.output.importAttributesKey = 'with'
-        config.build.rollupOptions.output.entryFileNames = (chunkInfo) => {
+        config.build.rolldownOptions.output ??= {}
+        config.build.rolldownOptions.output.entryFileNames = (chunkInfo) => {
           if (env.isSsrBuild && chunkInfo.name === 'server') {
             return '[name].js'
           }
@@ -73,42 +81,43 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
         if (!env.isSsrBuild) {
           config.build.outDir = 'dist/client'
           config.build.manifest = true
-          config.build.rollupOptions.input = ['virtual:entry-csr']
-          config.build.rollupOptions.output.chunkFileNames = (chunkInfo) =>
+          config.build.rolldownOptions.input = ['virtual:entry-csr']
+          config.build.rolldownOptions.output.chunkFileNames = (chunkInfo) =>
             `.p/chunks/${chunkInfo.name}.[hash].js`
           // needed for the csr pages, otherwise the export default is trimmed
-          config.build.rollupOptions.preserveEntrySignatures = 'exports-only'
+          config.build.rolldownOptions.preserveEntrySignatures = 'exports-only'
 
           const rootLayoutPath = getRootLayoutPath()
           if (await unsafeExists(rootLayoutPath)) {
-            config.build.rollupOptions.input.push(getRelativeSourcePath(rootLayoutPath))
+            config.build.rolldownOptions.input.push(getRelativeSourcePath(rootLayoutPath))
           }
           for await (const page of fs.glob(getAppPath('**', 'page.tsx'))) {
             const lePath = path.relative(getAppPath(), page).replace(/page\.tsx$/, '')
-            config.build.rollupOptions.input.push(csrPageModuleId(lePath))
+            config.build.rolldownOptions.input.push(csrPageModuleId(lePath))
           }
           for await (const page of fs.glob(getAppPath('**', 'not-found.tsx'))) {
             const lePath = path.relative(getAppPath(), page).replace(/not-found\.tsx$/, '')
-            config.build.rollupOptions.input.push(csrPageModuleId(lePath) + '/_not_found')
+            config.build.rolldownOptions.input.push(csrPageModuleId(lePath) + '/_not_found')
           }
           for await (const page of fs.glob(getAppPath('**', 'error.tsx'))) {
             const lePath = path.relative(getAppPath(), page).replace(/error\.tsx$/, '')
-            config.build.rollupOptions.input.push(csrPageModuleId(lePath) + '/_error')
+            config.build.rolldownOptions.input.push(csrPageModuleId(lePath) + '/_error')
           }
         } else {
           config.build.ssr = path.join(import.meta.dirname, '..', 'entry/server.js')
-          config.build.target = 'node22'
+          config.build.target = 'node24'
           config.build.outDir = 'dist/server'
-          config.build.rollupOptions.external = ['../client/.vite/manifest.json']
+          config.build.rolldownOptions.external = ['../client/.vite/manifest.json']
         }
       }
     },
 
     transform(code, id, options) {
       if (!options?.ssr && id.endsWith('page.tsx')) {
-        const ast = this.parse(code, { jsx: true })
+        const ast = this.parse(code, { sourceType: 'module', lang: 'tsx' })
+        // @ts-expect-error types between OXC and estree are not 100% compatible
         const newCode = transformPage(ast)
-        return { code: newCode, moduleSideEffects: false }
+        return { code: newCode, moduleSideEffects: false, moduleType: 'tsx' }
       }
     },
   }
