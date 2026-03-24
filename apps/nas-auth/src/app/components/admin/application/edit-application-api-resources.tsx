@@ -1,14 +1,7 @@
+import { Button, Table, TableBody, TableContainer, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
+import { Add } from '@melchor629/ui/icons'
 import { useState } from 'react'
 import type { GetApplication } from '../../../../queries/get-application'
-import {
-  Button,
-  H3,
-  Table,
-  TableBody,
-  TableHead,
-  TableHeadColumn,
-  TableRow,
-} from '../../ui'
 import AddApplicationApiResourceDialog from './add-application-api-resource-dialog'
 import EditApplicationApiResourceRow from './edit-application-api-resource-row'
 
@@ -27,34 +20,36 @@ const EditApplicationApiResources = ({
 
   return (
     <div className="mt-8 mb-6">
-      <div className="flex justify-between mb-2">
-        <H3>API Resources</H3>
-        {!readOnly && <Button type="button" size="sm" onClick={() => setOpened(true)}>Add</Button>}
+      <div className="flex justify-between items-baseline mb-2">
+        <Text size="h3">API Resources</Text>
+        {!readOnly && <Button type="button" size="small" onClick={() => setOpened(true)} icon={<Add />} />}
       </div>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableHeadColumn>Key</TableHeadColumn>
-            <TableHeadColumn>Name</TableHeadColumn>
-            <TableHeadColumn>Audience</TableHeadColumn>
-            <TableHeadColumn>Scopes</TableHeadColumn>
-            <TableHeadColumn>Token Format</TableHeadColumn>
-            <TableHeadColumn>Token TTL</TableHeadColumn>
-            <TableHeadColumn shrink>Actions</TableHeadColumn>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {apiResources.map((apiResource) => (
-            <EditApplicationApiResourceRow
-              key={apiResource.key}
-              appId={applicationId}
-              apiResource={apiResource}
-              canDelete={canDelete}
-              readOnly={readOnly}
-            />
-          ))}
-        </TableBody>
-      </Table>
+      <TableContainer>
+        <Table hover full>
+          <TableHead>
+            <TableRow>
+              <TableHeadCell>Key</TableHeadCell>
+              <TableHeadCell>Name</TableHeadCell>
+              <TableHeadCell>Audience</TableHeadCell>
+              <TableHeadCell>Scopes</TableHeadCell>
+              <TableHeadCell>Token Format</TableHeadCell>
+              <TableHeadCell>Token TTL</TableHeadCell>
+              <TableHeadCell shrink>Actions</TableHeadCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {apiResources.map((apiResource) => (
+              <EditApplicationApiResourceRow
+                key={apiResource.key}
+                appId={applicationId}
+                apiResource={apiResource}
+                canDelete={canDelete}
+                readOnly={readOnly}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {!readOnly && (
         <AddApplicationApiResourceDialog

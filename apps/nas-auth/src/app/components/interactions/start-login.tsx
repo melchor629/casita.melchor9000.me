@@ -1,7 +1,6 @@
+import { Button, Text } from '@melchor629/ui'
 import { useCallback } from 'react'
 import { usePublicUrl } from '../../hooks'
-import Button from '../ui/button'
-import { H1 } from '../ui/text'
 
 const StartLogin = () => {
   const publicUrl = usePublicUrl()
@@ -26,7 +25,7 @@ const StartLogin = () => {
 
   return (
     <>
-      <H1 className="mb-4">Hello again!</H1>
+      <Text className="mb-4" size="h1">Hello again!</Text>
       <Button type="button" onClick={startLoginProcess}>Login</Button>
     </>
   )

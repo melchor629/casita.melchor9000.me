@@ -1,5 +1,5 @@
+import { Dialog } from '@melchor629/ui'
 import { useCallback, useMemo } from 'react'
-import { Dialog, DialogBody, DialogHeader } from '../../ui'
 
 type LoginDataDialogProps = Readonly<{
   data: unknown
@@ -11,15 +11,10 @@ const LoginDataDialog = ({ data, opened, setOpened }: LoginDataDialogProps) => {
   const dataAsJson = useMemo(() => JSON.stringify(data, undefined, 2), [data])
 
   return (
-    <Dialog portal size="xl" open={opened}>
-      <DialogHeader onClose={useCallback(() => setOpened(false), [setOpened])}>
-        Login Data
-      </DialogHeader>
-      <DialogBody>
-        <pre className="overflow-x-auto">
-          <code>{dataAsJson}</code>
-        </pre>
-      </DialogBody>
+    <Dialog id="show-login-data" portal size="extra-large" title="Login Data" show={opened} onClose={useCallback(() => setOpened(false), [setOpened])}>
+      <pre className="overflow-x-auto">
+        <code>{dataAsJson}</code>
+      </pre>
     </Dialog>
   )
 }

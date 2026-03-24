@@ -1,11 +1,11 @@
 'use client'
 
 import { Link } from '@melchor629/nice-ssr'
+import { Text } from '@melchor629/ui'
 import { useMemo } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
 import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
 import AdminLink from '#components/admin/admin-link.tsx'
-import { H2 } from '#components/ui/index.ts'
 
 const AdminHome = () => {
   const { data: { permissions } } = useEnsureGetSession()
@@ -16,7 +16,7 @@ const AdminHome = () => {
 
   return (
     <>
-      <H2>Administration</H2>
+      <Text size="h2">Administration</Text>
 
       <div className="my-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-3">
         {hasApplications && <Link to="/admin/applications"><AdminLink>Applications</AdminLink></Link>}

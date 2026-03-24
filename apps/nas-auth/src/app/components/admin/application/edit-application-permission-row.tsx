@@ -1,15 +1,10 @@
 import { useRevalidator } from '@melchor629/nice-ssr'
+import { Button, TableCell, TableRow, TextInput } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { useEditPermission } from '#actions/mutations/edit-permission.ts'
 import { useRemovePermission } from '#actions/mutations/remove-permission.ts'
 import type { GetApplication } from '#queries/get-application.ts'
-import {
-  Button,
-  Input,
-  TableColumn,
-  TableRow,
-} from '../../ui'
 
 type EditApplicationPermissionRowProps = Readonly<{
   applicationId: string
@@ -78,47 +73,51 @@ const EditApplicationPermissionRow = ({
 
   if (editMode) {
     return (
-      <TableRow hover>
-        <TableColumn>{permission.id}</TableColumn>
-        <TableColumn>
-          <Input type="text" className="mb-0" value={name} onChange={nameChanged} />
-        </TableColumn>
-        <TableColumn>
-          <Input type="text" className="mb-0" value={displayName} onChange={displayNameChanged} />
-        </TableColumn>
-        <TableColumn>
+      <TableRow>
+        <TableCell>{permission.id}</TableCell>
+        <TableCell>
+          <TextInput type="text" size="small" className="mb-0" value={name} onChange={nameChanged} />
+        </TableCell>
+        <TableCell>
+          <TextInput type="text" size="small" className="mb-0" value={displayName} onChange={displayNameChanged} />
+        </TableCell>
+        <TableCell noWrap>
           <Button
-            size="sm"
+            size="small"
             onClick={cancelEditMode}
             disabled={editPermissionMutation.isPending || removePermissionMutation.isPending}
+            variant="text"
+            color="secondary"
           >
             Cancel
           </Button>
           &nbsp;
           <Button
-            size="sm"
+            size="small"
             onClick={save}
             disabled={removePermissionMutation.isPending}
             loading={editPermissionMutation.isPending}
+            variant="text"
           >
             Save
           </Button>
-        </TableColumn>
+        </TableCell>
       </TableRow>
     )
   }
 
   return (
-    <TableRow hover>
-      <TableColumn>{permission.id}</TableColumn>
-      <TableColumn>{permission.name}</TableColumn>
-      <TableColumn>{permission.displayName}</TableColumn>
-      <TableColumn>
+    <TableRow>
+      <TableCell>{permission.id}</TableCell>
+      <TableCell>{permission.name}</TableCell>
+      <TableCell>{permission.displayName}</TableCell>
+      <TableCell noWrap>
         {!readOnly && (
           <Button
-            size="sm"
+            size="small"
             onClick={activateEditMode}
             disabled={removePermissionMutation.isPending}
+            variant="text"
           >
             Edit
           </Button>
@@ -126,15 +125,17 @@ const EditApplicationPermissionRow = ({
         &nbsp;
         {!readOnly && canDelete && (
           <Button
-            size="sm"
+            size="small"
             onClick={remove}
             disabled={editPermissionMutation.isPending}
             loading={removePermissionMutation.isPending}
+            variant="text"
+            color="error"
           >
             Delete
           </Button>
         )}
-      </TableColumn>
+      </TableCell>
     </TableRow>
   )
 }

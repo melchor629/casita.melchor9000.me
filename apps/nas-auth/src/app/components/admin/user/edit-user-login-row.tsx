@@ -1,15 +1,9 @@
+import { Button, Checkbox, InputLabel, TableCell, TableRow } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { useEditUserLogin } from '#actions/mutations/edit-user-login.ts'
 import { useRemoveUserLogin } from '#actions/mutations/remove-user-login.ts'
 import type { GetUserQuery } from '#queries/get-user.ts'
-import {
-  Button,
-  Input,
-  Label,
-  TableColumn,
-  TableRow,
-} from '../../ui'
 import EditLoginDataDialog from './edit-login-data-dialog'
 import LoginDataDialog from './login-data-dialog'
 
@@ -94,34 +88,39 @@ const EditUserLoginRow = ({
 
   if (editMode) {
     return (
-      <TableRow hover>
-        <TableColumn>{login.type}</TableColumn>
-        <TableColumn><code>{login.loginId}</code></TableColumn>
-        <TableColumn>
-          <Button size="sm" onClick={openData}>Edit</Button>
-        </TableColumn>
-        <TableColumn className="select-none">
-          <Input type="checkbox" id={`${login.id}-disabled`} checked={isDisabled} onChange={isDisabledChanged} />
-          &nbsp;
-          <Label htmlFor={`${login.id}-disabled`}>{isDisabled ? 'Yes' : 'No'}</Label>
-        </TableColumn>
-        <TableColumn>
+      <TableRow>
+        <TableCell>{login.type}</TableCell>
+        <TableCell><code>{login.loginId}</code></TableCell>
+        <TableCell>
+          <Button size="small" onClick={openData} variant="text">Edit</Button>
+        </TableCell>
+        <TableCell className="select-none">
+          <InputLabel
+            input={<Checkbox id={`${login.id}-disabled`} checked={isDisabled} onChange={isDisabledChanged} />}
+          >
+            {isDisabled ? 'Yes' : 'No'}
+          </InputLabel>
+        </TableCell>
+        <TableCell noWrap>
           <Button
-            size="sm"
+            size="small"
             onClick={cancelEditMode}
             disabled={editUserLoginMutation.isPending || removeUserLoginMutation.isPending}
+            variant="text"
+            color="secondary"
           >
             Cancel
           </Button>
           &nbsp;
           <Button
-            size="sm"
+            size="small"
             onClick={save}
             loading={editUserLoginMutation.isPending}
+            variant="text"
           >
             Save
           </Button>
-        </TableColumn>
+        </TableCell>
 
         <EditLoginDataDialog data={loginData} opened={opened} close={editLoginDataClose} />
       </TableRow>
@@ -129,27 +128,29 @@ const EditUserLoginRow = ({
   }
 
   return (
-    <TableRow hover>
-      <TableColumn>{login.type}</TableColumn>
-      <TableColumn><code>{login.loginId}</code></TableColumn>
-      <TableColumn>
-        {login.data ? <Button size="sm" onClick={openData}>See</Button> : ''}
-      </TableColumn>
-      <TableColumn>{login.disabled ? 'Yes' : 'No'}</TableColumn>
-      <TableColumn>
-        {!readOnly && <Button size="sm" onClick={activateEditMode} disabled={removeUserLoginMutation.isPending}>Edit</Button>}
+    <TableRow>
+      <TableCell>{login.type}</TableCell>
+      <TableCell><code>{login.loginId}</code></TableCell>
+      <TableCell>
+        {login.data ? <Button size="small" onClick={openData} variant="text">See</Button> : ''}
+      </TableCell>
+      <TableCell>{login.disabled ? 'Yes' : 'No'}</TableCell>
+      <TableCell noWrap>
+        {!readOnly && <Button size="small" onClick={activateEditMode} disabled={removeUserLoginMutation.isPending} variant="text">Edit</Button>}
         &nbsp;
         {!readOnly && canDelete && (
           <Button
-            size="sm"
+            size="small"
             onClick={remove}
             disabled={editUserLoginMutation.isPending}
             loading={removeUserLoginMutation.isPending}
+            variant="text"
+            color="error"
           >
             Delete
           </Button>
         )}
-      </TableColumn>
+      </TableCell>
 
       <LoginDataDialog data={login.data as unknown} opened={opened} setOpened={setOpened} />
     </TableRow>

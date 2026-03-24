@@ -1,15 +1,10 @@
 import { useRevalidator } from '@melchor629/nice-ssr'
+import { Button, TableCell, TableRow, TextInput } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { useEditApiResource } from '#actions/mutations/edit-api-resource.ts'
 import { useRemoveApiResource } from '#actions/mutations/remove-api-resource.ts'
 import type { GetApplication } from '#queries/get-application.ts'
-import {
-  Button,
-  Input,
-  TableColumn,
-  TableRow,
-} from '../../ui'
 import EditApplicationApiResourceAccessToken from './edit-application-api-resource-access-token'
 import EditApplicationApiResourceScopes from './edit-application-api-resource-scopes'
 
@@ -122,59 +117,65 @@ const EditApplicationApiResourceRow = ({
 
   if (editMode) {
     return (
-      <TableRow hover>
-        <TableColumn>{apiResource.key}</TableColumn>
-        <TableColumn>
-          <Input type="text" className="mb-0" value={name} onChange={nameChanged} />
-        </TableColumn>
-        <TableColumn>
-          <Input type="text" className="mb-0" value={audience} onChange={audienceChanged} />
-        </TableColumn>
-        <TableColumn>
+      <TableRow>
+        <TableCell>{apiResource.key}</TableCell>
+        <TableCell>
+          <TextInput type="text" className="mb-0" value={name} onChange={nameChanged} size="small" />
+        </TableCell>
+        <TableCell>
+          <TextInput type="text" className="mb-0" value={audience} onChange={audienceChanged} size="small" />
+        </TableCell>
+        <TableCell>
           <Button
-            size="sm"
+            size="small"
             onClick={() => setScopesOpened(true)}
             disabled={removeApiResourceMutation.isPending || editApiResourceMutation.isPending}
+            variant="text"
           >
             Edit
           </Button>
-        </TableColumn>
-        <TableColumn>
+        </TableCell>
+        <TableCell>
           <Button
-            size="sm"
+            size="small"
             onClick={() => setAccessTokenOpened(true)}
             disabled={removeApiResourceMutation.isPending || editApiResourceMutation.isPending}
+            variant="text"
           >
             Edit
           </Button>
-        </TableColumn>
-        <TableColumn>
-          <Input
+        </TableCell>
+        <TableCell>
+          <TextInput
             type="number"
             className="mb-0"
             value={accessTokenTTL}
             min={60}
             onChange={accessTokenTTLChanged}
+            size="small"
           />
-        </TableColumn>
-        <TableColumn>
+        </TableCell>
+        <TableCell noWrap>
           <Button
-            size="sm"
+            size="small"
             onClick={cancelEditMode}
             disabled={editApiResourceMutation.isPending}
+            variant="text"
+            color="secondary"
           >
             Cancel
           </Button>
           &nbsp;
           <Button
-            size="sm"
+            size="small"
             onClick={save}
             loading={editApiResourceMutation.isPending}
             disabled={removeApiResourceMutation.isPending}
+            variant="text"
           >
             Save
           </Button>
-        </TableColumn>
+        </TableCell>
 
         <EditApplicationApiResourceAccessToken
           accessToken={accessToken}
@@ -192,33 +193,35 @@ const EditApplicationApiResourceRow = ({
   }
 
   return (
-    <TableRow hover>
-      <TableColumn>{apiResource.key}</TableColumn>
-      <TableColumn>{apiResource.name}</TableColumn>
-      <TableColumn>{apiResource.audience}</TableColumn>
-      <TableColumn>
+    <TableRow>
+      <TableCell>{apiResource.key}</TableCell>
+      <TableCell>{apiResource.name}</TableCell>
+      <TableCell>{apiResource.audience}</TableCell>
+      <TableCell>
         {apiResource.scopes.length}
         &nbsp;scope
         {apiResource.scopes.length === 1 ? '' : 's'}
-      </TableColumn>
-      <TableColumn>{apiResource.accessTokenFormat}</TableColumn>
-      <TableColumn>{apiResource.accessTokenTTL ?? 'default'}</TableColumn>
-      <TableColumn>
+      </TableCell>
+      <TableCell>{apiResource.accessTokenFormat}</TableCell>
+      <TableCell>{apiResource.accessTokenTTL ?? 'default'}</TableCell>
+      <TableCell noWrap>
         {!readOnly && (
-          <Button size="sm" onClick={activateEditMode} disabled={removeApiResourceMutation.isPending}>Edit</Button>
+          <Button size="small" onClick={activateEditMode} disabled={removeApiResourceMutation.isPending} variant="text">Edit</Button>
         )}
         &nbsp;
         {!readOnly && canDelete && (
           <Button
-            size="sm"
+            size="small"
             onClick={remove}
             disabled={editApiResourceMutation.isPending}
             loading={removeApiResourceMutation.isPending}
+            variant="text"
+            color="error"
           >
             Delete
           </Button>
         )}
-      </TableColumn>
+      </TableCell>
     </TableRow>
   )
 }

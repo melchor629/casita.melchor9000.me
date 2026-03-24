@@ -31,7 +31,7 @@ const Menu = ({ children, className, items, ...props }: MenuProps) => {
       {...props}
       className={clsx(
         'relative min-w-40 max-w-80 p-1',
-        'bg-elevated-1/85 backdrop-blur-sm rounded-md shadow-xl border border-text-main/25',
+        'bg-elevated-1/85 backdrop-blur-sm rounded-md shadow-xl border border-elevated-border',
         'flex flex-col gap-0.5',
         className,
       )}

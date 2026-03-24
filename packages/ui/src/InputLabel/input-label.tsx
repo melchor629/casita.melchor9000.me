@@ -3,6 +3,7 @@ import { makeStyles } from '../utils'
 
 export type InputLabelProps = Readonly<ComponentProps<'label'> & {
   input: ReactElement
+  margin?: 'none' | 'dense' | 'normal'
 }>
 
 const createStyles = makeStyles({
@@ -15,10 +16,17 @@ const createStyles = makeStyles({
       group-has-required/input-label:after:content-['_*']
     `,
   },
+  variants: {
+    margin: {
+      none: { base: '' },
+      dense: { base: 'mt-1' },
+      normal: { base: 'mt-2' },
+    },
+  },
 })
 
-export default function InputLabel({ children, className, htmlFor, input, ...props }: InputLabelProps) {
-  const styles = createStyles()
+export default function InputLabel({ children, className, htmlFor, input, margin = 'none', ...props }: InputLabelProps) {
+  const styles = createStyles({ margin })
   return (
     <label {...props} className={styles.base({ className })}>
       {input}

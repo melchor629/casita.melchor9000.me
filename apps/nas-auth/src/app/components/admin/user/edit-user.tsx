@@ -1,13 +1,9 @@
+import { Button, Checkbox, FormControlLabel, InputLabel, TextInput } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { useEditUser } from '#actions/mutations/edit-user.ts'
 import { useRemoveUser } from '#actions/mutations/remove-user.ts'
 import type { GetUserQuery } from '#queries/get-user.ts'
-import {
-  Button,
-  Input,
-  Label,
-} from '../../ui'
 
 type EditUserProps = Readonly<{
   canDelete: boolean
@@ -72,8 +68,8 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
 
   return (
     <fieldset className="my-2" disabled={readOnly || updateUserMutation.isPending || removeUserMutation.isPending}>
-      <Label htmlFor="user-name">User Name</Label>
-      <Input
+      <FormControlLabel htmlFor="user-name">User Name</FormControlLabel>
+      <TextInput
         type="text"
         id="user-name"
         value={userName}
@@ -81,8 +77,8 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
         onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setUserName(e.currentTarget.value), [])}
       />
 
-      <Label htmlFor="display-name">Display Name</Label>
-      <Input
+      <FormControlLabel htmlFor="display-name" margin="normal">Display Name</FormControlLabel>
+      <TextInput
         type="text"
         id="display-name"
         value={displayName}
@@ -90,8 +86,8 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
         onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setDisplayName(e.currentTarget.value), [])}
       />
 
-      <Label htmlFor="given-name">Given Name</Label>
-      <Input
+      <FormControlLabel htmlFor="given-name" margin="normal">Given Name</FormControlLabel>
+      <TextInput
         type="text"
         id="given-name"
         value={givenName}
@@ -99,8 +95,8 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
         onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setGivenName(e.currentTarget.value), [])}
       />
 
-      <Label htmlFor="family-name">Family Name</Label>
-      <Input
+      <FormControlLabel htmlFor="family-name" margin="normal">Family Name</FormControlLabel>
+      <TextInput
         type="text"
         id="family-name"
         value={familyName}
@@ -108,8 +104,8 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
         onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setFamilyName(e.currentTarget.value), [])}
       />
 
-      <Label htmlFor="profile-image-url">Profile Image URL</Label>
-      <Input
+      <FormControlLabel htmlFor="profile-image-url" margin="normal">Profile Image URL</FormControlLabel>
+      <TextInput
         type="url"
         id="profile-image-url"
         value={profileImageUrl}
@@ -117,8 +113,8 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
         onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setProfileImageUrl(e.currentTarget.value), [])}
       />
 
-      <Label htmlFor="email">Email</Label>
-      <Input
+      <FormControlLabel htmlFor="email" margin="normal">Email</FormControlLabel>
+      <TextInput
         type="email"
         id="email"
         value={email}
@@ -127,14 +123,19 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
       />
 
       <div>
-        <Input
-          type="checkbox"
-          id="disabled"
-          checked={disabled}
-          readOnly={readOnly}
-          onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setDisabled(e.currentTarget.checked), [])}
-        />
-        <Label htmlFor="disabled">Disabled?</Label>
+        <InputLabel
+          margin="normal"
+          input={
+            <Checkbox
+              id="disabled"
+              checked={disabled}
+              readOnly={readOnly}
+              onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setDisabled(e.currentTarget.checked), [])}
+            />
+          }
+        >
+          Disabled?
+        </InputLabel>
       </div>
 
       <div className="text-end">
@@ -151,6 +152,8 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
         {!readOnly && canDelete && (
           <Button
             type="button"
+            variant="text"
+            color="error"
             className="ml-2"
             loading={removeUserMutation.isPending}
             disabled={updateUserMutation.isPending}

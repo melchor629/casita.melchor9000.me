@@ -1,20 +1,22 @@
 import { useRevalidator } from '@melchor629/nice-ssr'
-import { useCallback, useEffect, useState } from 'react'
+import { Button, FormControlLabel, TextInput } from '@melchor629/ui'
+import { useCallback, useEffect, useState, type ChangeEvent, type MouseEvent } from 'react'
 import { useEditApplication } from '../../../actions/mutations/edit-application'
 import { useRemoveApplication } from '../../../actions/mutations/remove-application'
-import {
-  Button,
-  Input,
-  Label,
-} from '../../ui'
 
-const EditApplication = ({ application, canDelete, readOnly }) => {
+type EditApplicationProps = Readonly<{
+  application: { key: string, name: string }
+  canDelete: boolean
+  readOnly: boolean
+}>
+
+const EditApplication = ({ application, canDelete, readOnly }: EditApplicationProps) => {
   const editApplicationMutation = useEditApplication()
   const removeApplicationMutation = useRemoveApplication()
   const revalidate = useRevalidator()
   const [name, setName] = useState(application.name || '')
 
-  const save = useCallback((e) => {
+  const save = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
     if (readOnly) {
@@ -24,14 +26,14 @@ const EditApplication = ({ application, canDelete, readOnly }) => {
     editApplicationMutation.mutate({
       key: application.key,
       name,
-    }, { onSuccess: revalidate })
+    }, { onSuccess: () => { revalidate().catch(() => {}) } })
   }, [
     application.key, readOnly,
     editApplicationMutation, revalidate,
     name,
   ])
 
-  const remove = useCallback((e) => {
+  const remove = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
     if (readOnly || !canDelete) {
@@ -48,21 +50,21 @@ const EditApplication = ({ application, canDelete, readOnly }) => {
 
   return (
     <fieldset className="my-2" disabled={readOnly || editApplicationMutation.isPending || removeApplicationMutation.isPending}>
-      <Label htmlFor="key">Key</Label>
-      <Input
+      <FormControlLabel htmlFor="key">Key</FormControlLabel>
+      <TextInput
         type="text"
         id="key"
         value={application.key}
         readOnly
       />
 
-      <Label htmlFor="name">Name</Label>
-      <Input
+      <FormControlLabel htmlFor="name" margin="normal">Name</FormControlLabel>
+      <TextInput
         type="text"
         id="name"
         value={name}
         readOnly={readOnly}
-        onChange={useCallback((e) => setName(e.target.value), [])}
+        onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setName(e.target.value), [])}
       />
 
       <div className="flex justify-end gap-2 mt-4">
@@ -72,6 +74,7 @@ const EditApplication = ({ application, canDelete, readOnly }) => {
             disabled={removeApplicationMutation.isPending}
             loading={editApplicationMutation.isPending}
             onClick={save}
+            variant="text"
           >
             Save
           </Button>
@@ -82,6 +85,8 @@ const EditApplication = ({ application, canDelete, readOnly }) => {
             disabled={editApplicationMutation.isPending}
             loading={removeApplicationMutation.isPending}
             onClick={remove}
+            variant="text"
+            color="error"
           >
             Delete
           </Button>

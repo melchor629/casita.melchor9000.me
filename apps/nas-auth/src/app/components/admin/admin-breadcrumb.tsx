@@ -6,7 +6,7 @@ type AdminBreadcrumbProps = Readonly<{
 }>
 
 const LinkContent = ({ children }: { readonly children: string }) => (
-  <span className="text-slate-900 dark:text-slate-100 bg-slate-400 dark:bg-slate-600 hover:bg-slate-200 dark:hover:bg-slate-800 px-1 py-0.5 rounded-sm transition">{children}</span>
+  <span className="text-text-main bg-elevated-border hover:bg-elevated-1 px-1 py-0.5 rounded-sm transition">{children}</span>
 )
 
 export default function AdminBreadcrumb({ sections = [] }: AdminBreadcrumbProps) {
@@ -19,7 +19,7 @@ export default function AdminBreadcrumb({ sections = [] }: AdminBreadcrumbProps)
   ), [sections])
 
   return (
-    <div className="mt-2 text-xs text-slate-900 dark:text-slate-100 select-none">
+    <div className="mt-2 text-xs text-text-main select-none">
       <Link to="/"><LinkContent>Home</LinkContent></Link>
       &nbsp;&gt;&nbsp;
       <Link to="/admin"><LinkContent>Admin</LinkContent></Link>

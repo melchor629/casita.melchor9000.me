@@ -1,15 +1,7 @@
+import { Button, Checkbox, Dialog, FormControlLabel, InputLabel, TextInput } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useState } from 'react'
 import { useAddUserLogin } from '../../../actions/mutations/add-user-login'
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-  Input,
-  Label,
-} from '../../ui'
 
 const getLoginId = async (userName: string, password: string) => {
   const value = `_${password}@${userName}_`
@@ -77,23 +69,32 @@ const AddUserLoginDialog = ({ opened, setOpened, userId, userName }: AddUserLogi
   }, [setOpened, addUserLoginMutation, userId, userName, disabled, password1, password2])
 
   return (
-    <Dialog open={opened} size="md" portal onClosed={clearState}>
-      <DialogHeader onClose={onClose}>Add Local login</DialogHeader>
-      <DialogBody>
-        <Label htmlFor="password-1">Password</Label>
-        <Input type="password" id="password-1" value={password1} onChange={password1Changed} />
+    <Dialog
+      id="add-user-login"
+      show={opened}
+      size="medium"
+      portal
+      title="Add Local login"
+      onClose={onClose}
+      onCloseEnd={clearState}
+      buttons={[
+        <Button key="save" onClick={save} loading={addUserLoginMutation.isPending}>Save</Button>,
+      ]}
+    >
+      <FormControlLabel htmlFor="password-1">Password</FormControlLabel>
+      <TextInput type="password" id="password-1" value={password1} onChange={password1Changed} />
 
-        <Label htmlFor="password-2">Repeat Password</Label>
-        <Input type="password" id="password-2" value={password2} onChange={password2Changed} />
+      <FormControlLabel htmlFor="password-2" margin="normal">Repeat Password</FormControlLabel>
+      <TextInput type="password" id="password-2" value={password2} onChange={password2Changed} />
 
-        <Input type="checkbox" id="disabled" checked={disabled} onChange={disabledChanged} />
-        <Label htmlFor="disabled">Disabled</Label>
+      <InputLabel
+        input={<Checkbox id="disabled" checked={disabled} onChange={disabledChanged} />}
+        margin="normal"
+      >
+        Disabled
+      </InputLabel>
 
-        {error && <p className="text-orange-700 dark:text-orange-300">{error}</p>}
-      </DialogBody>
-      <DialogFooter className="text-end">
-        <Button onClick={save} loading={addUserLoginMutation.isPending}>Save</Button>
-      </DialogFooter>
+      {error && <p className="text-orange-700 dark:text-orange-300">{error}</p>}
     </Dialog>
   )
 }

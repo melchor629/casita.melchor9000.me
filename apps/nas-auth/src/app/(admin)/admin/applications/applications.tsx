@@ -1,18 +1,10 @@
 import { useNavigate } from '@melchor629/nice-ssr'
+import { Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
+import { Add } from '@melchor629/ui/icons'
 import { useMemo, useState } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
 import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
 import { AddApplicationDialog } from '#components/admin/application/index.ts'
-import {
-  Button,
-  H2,
-  Table,
-  TableBody,
-  TableColumn,
-  TableHead,
-  TableHeadColumn,
-  TableRow,
-} from '#components/ui/index.ts'
 import type { GetApplications } from '#queries/get-applications.ts'
 
 const breadcrumbSections = [{ name: 'Applications', part: 'applications' }]
@@ -29,29 +21,28 @@ const Applications = ({ applications }: ApplicationsProps) => {
 
   return (
     <>
-      <div className="flex justify-between mb-2">
-        <H2>Applications</H2>
-        {permission.write && <Button type="button" size="sm" onClick={() => setOpened(true)}>Add</Button>}
+      <div className="flex justify-between items-baseline mb-2">
+        <Text size="h2">Applications</Text>
+        {permission.write && <Button type="button" size="small" onClick={() => setOpened(true)} icon={<Add />} />}
       </div>
 
-      <Table className="mt-2 mb-2">
+      <Table className="mt-2 mb-4" hover full>
         <TableHead>
           <TableRow>
-            <TableHeadColumn>Key</TableHeadColumn>
-            <TableHeadColumn>Name</TableHeadColumn>
+            <TableHeadCell>Key</TableHeadCell>
+            <TableHeadCell>Name</TableHeadCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {applications.map((application) => (
             <TableRow
               key={application.key}
-              hover
               className="cursor-pointer"
               role="button"
               onClick={() => navigate(`/admin/applications/${application.key}`)}
             >
-              <TableColumn>{application.key}</TableColumn>
-              <TableColumn>{application.name}</TableColumn>
+              <TableCell>{application.key}</TableCell>
+              <TableCell>{application.name}</TableCell>
             </TableRow>
           ))}
         </TableBody>

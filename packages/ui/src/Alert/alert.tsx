@@ -5,8 +5,8 @@ import { makeStyles, type MakeStylesProps } from '../utils'
 const alertStyles = makeStyles({
   slots: {
     base: 'flex gap-2 px-4 py-2 border rounded-md',
-    text: 'text-body break-all',
-    title: 'text-h4',
+    text: 'text-body break-all text-text-secondary',
+    title: 'text-h4 font-medium',
     icon: 'text-h3 mt-0.5 -ml-1.5',
   },
   variants: {

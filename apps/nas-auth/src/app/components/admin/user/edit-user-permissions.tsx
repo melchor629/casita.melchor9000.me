@@ -1,15 +1,8 @@
+import { Button, Table, TableBody, TableContainer, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
+import { Add } from '@melchor629/ui/icons'
 import { useState } from 'react'
 import type { GetPermissions } from '../../../../queries/get-permissions'
 import type { GetUserQuery } from '../../../../queries/get-user'
-import {
-  Button,
-  H3,
-  Table,
-  TableBody,
-  TableHead,
-  TableHeadColumn,
-  TableRow,
-} from '../../ui'
 import AddUserPermissionDialog from './add-user-permission-dialog'
 import EditUserPermissionRow from './edit-user-permission-row'
 
@@ -30,33 +23,35 @@ const EditUserPermissions = ({
 
   return (
     <div className="mt-8 mb-2">
-      <div className="flex justify-between mb-2">
-        <H3>Permissions</H3>
-        {!readOnly && <Button type="button" size="sm" onClick={() => setOpened(true)}>Add</Button>}
+      <div className="flex justify-between items-baseline mb-2">
+        <Text size="h3">Permissions</Text>
+        {!readOnly && <Button type="button" size="small" onClick={() => setOpened(true)} icon={<Add />} />}
       </div>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableHeadColumn>App</TableHeadColumn>
-            <TableHeadColumn>Key</TableHeadColumn>
-            <TableHeadColumn>Can Write?</TableHeadColumn>
-            <TableHeadColumn>Can Delete?</TableHeadColumn>
-            <TableHeadColumn shrink>Actions</TableHeadColumn>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {permissions!.map((permission) => (
-            <EditUserPermissionRow
-              key={permission.id}
-              allPermissions={allPermissions}
-              canDelete={canDelete}
-              permission={permission}
-              readOnly={readOnly}
-              userId={id}
-            />
-          ))}
-        </TableBody>
-      </Table>
+      <TableContainer>
+        <Table hover full>
+          <TableHead>
+            <TableRow>
+              <TableHeadCell>App</TableHeadCell>
+              <TableHeadCell>Key</TableHeadCell>
+              <TableHeadCell>Can Write?</TableHeadCell>
+              <TableHeadCell>Can Delete?</TableHeadCell>
+              <TableHeadCell shrink>Actions</TableHeadCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {permissions!.map((permission) => (
+              <EditUserPermissionRow
+                key={permission.id}
+                allPermissions={allPermissions}
+                canDelete={canDelete}
+                permission={permission}
+                readOnly={readOnly}
+                userId={id}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {!readOnly && (
         <AddUserPermissionDialog

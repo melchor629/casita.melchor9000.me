@@ -1,3 +1,4 @@
+import { Text } from '@melchor629/ui'
 import { useMemo } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
 import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
@@ -6,7 +7,6 @@ import {
   EditApplicationApiResources,
   EditApplicationPermissions,
 } from '#components/admin/application/index.ts'
-import { H2 } from '#components/ui/index.ts'
 import type { GetApplication } from '#queries/get-application.ts'
 
 type ApplicationProps = Readonly<{
@@ -25,10 +25,10 @@ const Application = ({ application }: ApplicationProps) => {
 
   return (
     <>
-      <H2>
+      <Text size="h3">
         Application&nbsp;
         {application.name}
-      </H2>
+      </Text>
 
       <EditApplication
         application={application}

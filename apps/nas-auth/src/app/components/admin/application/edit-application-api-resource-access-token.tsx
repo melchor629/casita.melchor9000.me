@@ -1,16 +1,7 @@
+import { Button, Dialog, FormControlLabel, Select, TextInput } from '@melchor629/ui'
 import type { AsymmetricSigningAlgorithm, ResourceServer, TokenFormat } from 'oidc-provider'
 import type { ChangeEvent } from 'react'
 import { useCallback, useEffect, useState } from 'react'
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-  Input,
-  Label,
-  Select,
-} from '../../ui'
 
 const accessTokenFormats = Object.freeze(['jwt', 'opaque'] satisfies Array<TokenFormat>)
 const asymmetricSigningAlgorithms = Object.freeze([
@@ -76,56 +67,54 @@ const EditApplicationApiResourceAccessToken = ({ accessToken, close, opened }: E
   }, [accessToken])
 
   return (
-    <Dialog portal size="xl" open={opened}>
-      <DialogHeader onClose={useCallback(() => close(), [close])}>
-        Access Token
-      </DialogHeader>
-      <DialogBody>
-        <Label htmlFor="at-format">Format</Label>
-        &nbsp;
-        <Select
-          className="w-full"
-          id="at-format"
-          values={accessTokenFormats}
-          value={state.format}
-          onChange={formatChanged}
-        />
-
-        {state.format === 'jwt' && (
-          <>
-            <Label htmlFor="at-jwt-alg">Sign Algorithm</Label>
-            <Select
-              className="w-full"
-              id="at-jwt-alg"
-              values={asymmetricSigningAlgorithms}
-              value={state.jwt?.sign?.alg as AsymmetricSigningAlgorithm ?? 'unset'}
-              onChange={jwtSignAlgorithmChanged}
-            />
-
-            <Label htmlFor="at-jwt-kid">Sign Key ID</Label>
-            &nbsp;
-            <Input
-              type="text"
-              id="at-jwt-kid"
-              value={state.jwt?.sign?.kid ?? ''}
-              onChange={jwtSignKidChanged}
-            />
-          </>
-        )}
-
-        {state.format === 'opaque' && (
-          <div>
-            opaque format does not have options
-          </div>
-        )}
-      </DialogBody>
-      <DialogFooter className="text-end">
-        <Button onClick={useCallback(() => close(state), [close, state])}>
+    <Dialog
+      id="edit-application-api-resource-access-token"
+      show={opened}
+      portal
+      size="extra-large"
+      onClose={useCallback(() => close(), [close])}
+      title="Access Token"
+      buttons={[
+        <Button key="save" onClick={useCallback(() => close(state), [close, state])}>
           Save
-        </Button>
-        &nbsp;
-        <Button onClick={useCallback(() => close(), [close])}>Cancel</Button>
-      </DialogFooter>
+        </Button>,
+      ]}
+    >
+      <FormControlLabel htmlFor="at-format">Format</FormControlLabel>
+      <Select
+        fullWidth
+        id="at-format"
+        values={accessTokenFormats}
+        value={state.format}
+        onChange={formatChanged}
+      />
+
+      {state.format === 'jwt' && (
+        <>
+          <FormControlLabel htmlFor="at-jwt-alg" margin="normal">Sign Algorithm</FormControlLabel>
+          <Select
+            fullWidth
+            id="at-jwt-alg"
+            values={asymmetricSigningAlgorithms}
+            value={state.jwt?.sign?.alg as AsymmetricSigningAlgorithm ?? 'unset'}
+            onChange={jwtSignAlgorithmChanged}
+          />
+
+          <FormControlLabel htmlFor="at-jwt-kid" margin="normal">Sign Key ID</FormControlLabel>
+          <TextInput
+            type="text"
+            id="at-jwt-kid"
+            value={state.jwt?.sign?.kid ?? ''}
+            onChange={jwtSignKidChanged}
+          />
+        </>
+      )}
+
+      {state.format === 'opaque' && (
+        <div>
+          opaque format does not have options
+        </div>
+      )}
     </Dialog>
   )
 }

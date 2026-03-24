@@ -18,6 +18,7 @@ const meta = {
   args: {
     referenceElement: 'contextMenu',
     portal: false,
+    unmountWhenHidden: false,
     items: [
       {
         key: 'home',

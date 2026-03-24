@@ -1,8 +1,8 @@
 import React, {
   useCallback, useLayoutEffect, useMemo, useState,
 } from 'react'
-import { createPortal } from 'react-dom'
 import Button from '../Button'
+import Portal from '../Portal'
 import { clsx } from '../utils'
 
 export type DialogProps = Readonly<{
@@ -69,59 +69,52 @@ export default function Dialog({
     }
   }, [show])
 
-  const tree = (
-    <div
-      className={clsx(
-        'fixed w-dvw h-dvh visible z-40 top-0 left-0',
-        'flex justify-center items-center p-4',
-        'translate-y-0 opacity-100 bg-text-contrasted/20 backdrop-blur-xl transition-all duration-250',
-        'aria-hidden:invisible aria-hidden:opacity-0 aria-hidden:translate-y-4',
-        className,
-      )}
-      id={`dialog-${id}`}
-      role="presentation"
-      aria-hidden={!show ? 'true' : 'false'}
-      ref={setElement}
-      onClick={useCallback((e: React.MouseEvent) => e.target === e.currentTarget && onClose(), [onClose])}
-      onTransitionStart={useCallback((e: React.SyntheticEvent) => {
-        if (e.currentTarget === e.target && !show) {
-          onCloseStart?.()
-        }
-      }, [show, onCloseStart])}
-      onTransitionEnd={useCallback((e: React.SyntheticEvent) => {
-        if (e.currentTarget === e.target && !show) {
-          onCloseEnd?.()
-        }
-      }, [show, onCloseEnd])}
-    >
+  return (
+    <Portal portal={portal}>
       <div
         className={clsx(
-          'rounded-lg bg-elevated-1 shadow-xl max-h-full flex',
-          size === 'small' && 'w-full sm:w-sm',
-          size === 'medium' && 'w-full sm:w-md',
-          size === 'large' && 'w-full sm:w-lg',
-          size === 'extra-large' && 'w-full md:w-xl',
+          'fixed w-dvw h-dvh visible z-40 top-0 left-0',
+          'flex justify-center items-center p-4',
+          'translate-y-0 opacity-100 bg-text-contrasted/20 backdrop-blur-xl transition-all duration-250',
+          'aria-hidden:invisible aria-hidden:opacity-0 aria-hidden:translate-y-4',
+          className,
         )}
-        role="dialog"
-        aria-labelledby={`dialog-${id}-title`}
+        id={`dialog-${id}`}
+        role="presentation"
+        aria-hidden={!show ? 'true' : 'false'}
+        ref={setElement}
+        onClick={useCallback((e: React.MouseEvent) => e.target === e.currentTarget && onClose(), [onClose])}
+        onTransitionStart={useCallback((e: React.SyntheticEvent) => {
+          if (e.currentTarget === e.target && !show) {
+            onCloseStart?.()
+          }
+        }, [show, onCloseStart])}
+        onTransitionEnd={useCallback((e: React.SyntheticEvent) => {
+          if (e.currentTarget === e.target && !show) {
+            onCloseEnd?.()
+          }
+        }, [show, onCloseEnd])}
       >
-        <div className="flex flex-col grow min-w-0 min-h-0">
-          <div className="px-5 pt-4 mb-5 select-none">
-            <h4 className="text-h4" id={`dialog-${id}-title`}>{title}</h4>
+        <div
+          className={clsx(
+            'rounded-lg bg-elevated-1 border border-elevated-border shadow-xl max-h-full flex',
+            size === 'small' && 'w-full sm:w-sm',
+            size === 'medium' && 'w-full sm:w-md',
+            size === 'large' && 'w-full sm:w-lg',
+            size === 'extra-large' && 'w-full md:w-xl',
+          )}
+          role="dialog"
+          aria-labelledby={`dialog-${id}-title`}
+        >
+          <div className="flex flex-col grow min-w-0 min-h-0">
+            <div className="px-5 pt-4 mb-5 select-none">
+              <h4 className="text-h4" id={`dialog-${id}-title`}>{title}</h4>
+            </div>
+            <div className="px-5 overflow-y-auto shrink">{children}</div>
+            <div className="flex justify-end gap-2 h-8 mt-5 mb-3 mx-3">{finalButtons}</div>
           </div>
-          <div className="px-5 overflow-y-auto shrink">{children}</div>
-          <div className="flex justify-end gap-2 h-8 mt-5 mb-3 mx-3">{finalButtons}</div>
         </div>
       </div>
-    </div>
+    </Portal>
   )
-
-  if (portal) {
-    return createPortal(
-      tree,
-      typeof portal === 'boolean' ? document.body : portal,
-    )
-  }
-
-  return tree
 }

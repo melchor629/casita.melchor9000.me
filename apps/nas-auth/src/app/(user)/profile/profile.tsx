@@ -1,4 +1,6 @@
 import { Link, useNavigate } from '@melchor629/nice-ssr'
+import { Button, FormControl, Select, Text, TextInput } from '@melchor629/ui'
+import { FileUpload } from '@melchor629/ui/icons'
 import {
   useCallback,
   useEffect,
@@ -10,14 +12,7 @@ import { useUpdateSessionUser } from '#actions/mutations/update-session-user.ts'
 import { useUploadUserProfilePicture } from '#actions/mutations/upload-user-profile-picture.ts'
 import { useGetSession } from '#actions/queries/get-session.ts'
 import { useGetUserProfilePictures } from '#actions/queries/get-user-profile-pictures.ts'
-import {
-  Button,
-  H1,
-  Input,
-  Label,
-  LoadingContent,
-  Select,
-} from '#components/ui/index.ts'
+import { LoadingContent } from '#components/ui/index.ts'
 import { useResolvedProfilePic } from '../../hooks'
 
 const nasAuthImageUrl = 'nas-auth://'
@@ -104,89 +99,114 @@ const Profile = () => {
   }
 
   return (
-    <fieldset>
-      <H1 className="mb-6">Edit profile</H1>
+    <fieldset disabled={updateSessionUser.isPending}>
+      <Text size="h1" className="mb-6">Edit profile</Text>
 
-      <Label htmlFor="displayName">Display name</Label>
-      <Input
-        type="text"
-        required
-        id="displayName"
-        name="displayName"
-        placeholder="Display Name"
-        value={displayName}
-        onChange={(e) => setDisplayName(e.currentTarget.value)}
-      />
-
-      <Label htmlFor="givenName">Given name</Label>
-      <Input
-        type="text"
-        required
-        id="givenName"
-        name="givenName"
-        placeholder="Given Name"
-        value={givenName}
-        onChange={(e) => setGivenName(e.currentTarget.value)}
-      />
-
-      <Label htmlFor="familyName">Family name</Label>
-      <Input
-        type="text"
-        required
-        id="familyName"
-        name="familyName"
-        placeholder="Family Name"
-        value={familyName}
-        onChange={(e) => setFamilyName(e.currentTarget.value)}
-      />
-
-      <Label htmlFor="profileImageUrl">Profile Image URL</Label>
-      {realProfileImageUrl
-        ? (
-          <p className="flex justify-center mb-2">
-            <img
-              src={realProfileImageUrl}
-              alt="profile"
-              className="w-36 h-36 rounded-full"
-            />
-          </p>
-          )
-        : (
-          <p className="mb-2 flex justify-center">
-            <span className="w-36 h-36 flex justify-center items-center border rounded-full">Nop</span>
-          </p>
-          )}
-      <div className="flex flex-nowrap justify-between mb-2 gap-2">
-        <Select
-          values={pictures}
-          value={selectedPfp}
-          labelSelector={(value) => value || 'Select one file'}
-          onChange={selectPfp}
-          emptyValue=""
-          className="grow-0 w-full"
+      <FormControl
+        label="Display name"
+        htmlFor="displayName"
+        className="mb-2"
+      >
+        <TextInput
+          type="text"
+          required
+          id="displayName"
+          name="displayName"
+          placeholder="Display Name"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.currentTarget.value)}
         />
-        <Button type="button" onClick={selectFile}>Upload</Button>
-        <input
-          ref={inputFileRef}
-          type="file"
-          accept="image/jpeg,image/webp,image/avif,image/png"
-          className="hidden"
-          onChange={startUpload}
+      </FormControl>
+
+      <FormControl
+        label="Given name"
+        htmlFor="givenName"
+        className="mb-2"
+      >
+        <TextInput
+          type="text"
+          required
+          id="givenName"
+          name="givenName"
+          placeholder="Given Name"
+          value={givenName}
+          onChange={(e) => setGivenName(e.currentTarget.value)}
         />
-      </div>
-      <Input
-        type="url"
-        id="profileImageUrl"
-        name="profileImageUrl"
-        placeholder="Profile Image URL"
-        value={profileImageUrl}
-        onChange={(e) => setProfileImageUrl(e.currentTarget.value)}
-      />
+      </FormControl>
+
+      <FormControl
+        label="Family name"
+        htmlFor="familyName"
+        className="mb-2"
+      >
+        <TextInput
+          type="text"
+          required
+          id="familyName"
+          name="familyName"
+          placeholder="Family Name"
+          value={familyName}
+          onChange={(e) => setFamilyName(e.currentTarget.value)}
+        />
+      </FormControl>
+
+      <FormControl
+        htmlFor="profileImageUrl"
+        label="Profile Image URL"
+        className="mb-2"
+      >
+        {realProfileImageUrl
+          ? (
+            <p className="flex justify-center mb-2">
+              <img
+                src={realProfileImageUrl}
+                alt="profile"
+                className="w-36 h-36 rounded-full"
+              />
+            </p>
+            )
+          : (
+            <p className="mb-2 flex justify-center">
+              <span className="w-36 h-36 flex justify-center items-center border rounded-full">Nop</span>
+            </p>
+            )}
+        <div className="flex flex-nowrap justify-between mb-2 gap-2">
+          <Select
+            values={pictures}
+            value={selectedPfp}
+            labelSelector={(value) => value || 'Select one file'}
+            onChange={selectPfp}
+            emptyValue=""
+            className="grow-0 w-full"
+          />
+          <Button
+            type="button"
+            onClick={selectFile}
+            icon={<FileUpload />}
+            color="neutral"
+          />
+          <input
+            ref={inputFileRef}
+            type="file"
+            accept="image/jpeg,image/webp,image/avif,image/png"
+            className="hidden"
+            onChange={startUpload}
+          />
+        </div>
+        <TextInput
+          type="url"
+          id="profileImageUrl"
+          name="profileImageUrl"
+          placeholder="Profile Image URL"
+          value={profileImageUrl}
+          onChange={(e) => setProfileImageUrl(e.currentTarget.value)}
+        />
+      </FormControl>
 
       <div className="mt-6 flex justify-between">
-        <Button type="button" onClick={save}>Save</Button>
+        <Button type="button" onClick={save} loading={updateSessionUser.isPending}>Save</Button>
         <Link to="/">
-          <Button>Cancel</Button>
+          <Button variant="text" color="neutral">Cancel</Button>
         </Link>
       </div>
     </fieldset>

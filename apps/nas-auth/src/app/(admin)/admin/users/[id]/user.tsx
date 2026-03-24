@@ -1,8 +1,8 @@
+import { Text } from '@melchor629/ui'
 import { useMemo } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
 import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
 import { EditUser, EditUserLogins, EditUserPermissions } from '#components/admin/user/index.ts'
-import { H2 } from '#components/ui/index.ts'
 import type { GetPermissions } from '#queries/get-permissions.ts'
 import type { GetUserQuery } from '#queries/get-user.ts'
 
@@ -20,10 +20,10 @@ const User = ({ permissions, user }: {
 
   return (
     <>
-      <H2>
+      <Text size="h2">
         User&nbsp;
         {user.userName}
-      </H2>
+      </Text>
 
       <EditUser
         canDelete={userPermission.delete}

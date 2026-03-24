@@ -1,3 +1,4 @@
+import { Button, Checkbox, FormControlLabel, InputLabel, Select, TextInput } from '@melchor629/ui'
 import type {
   AsymmetricSigningAlgorithm,
   ClientAuthMethod,
@@ -14,15 +15,9 @@ import {
   type ChangeEvent,
   type MouseEvent,
 } from 'react'
+import CheckboxList from '#components/ui/checkbox-list.tsx'
 import { useEditClient } from '../../../actions/mutations/edit-client'
 import { useRemoveClient } from '../../../actions/mutations/remove-client'
-import {
-  Button,
-  CheckboxList,
-  Input,
-  Label,
-  Select,
-} from '../../ui'
 import EditUrls from './edit-urls'
 
 const grantTypes = ['implicit', 'authorization_code', 'client_credentials'] as const
@@ -151,16 +146,16 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
 
   return (
     <fieldset className="my-2" disabled={readOnly || editClientMutation.isPending}>
-      <Label htmlFor="client-id">Client ID</Label>
-      <Input
+      <FormControlLabel htmlFor="client-id">Client ID</FormControlLabel>
+      <TextInput
         type="text"
         id="client-id"
         value={client.client_id}
         readOnly
       />
 
-      <Label htmlFor="client-name">Client Name</Label>
-      <Input
+      <FormControlLabel htmlFor="client-name" margin="normal">Client Name</FormControlLabel>
+      <TextInput
         type="text"
         id="client-name"
         name="client_name"
@@ -169,8 +164,8 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         readOnly={readOnly}
       />
 
-      <Label htmlFor="app-uri">Application URI</Label>
-      <Input
+      <FormControlLabel htmlFor="app-uri" margin="normal">Application URI</FormControlLabel>
+      <TextInput
         type="url"
         id="app-uri"
         name="client_uri"
@@ -179,8 +174,8 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         readOnly={readOnly}
       />
 
-      <Label htmlFor="tos-uri">Terms Of Service URI</Label>
-      <Input
+      <FormControlLabel htmlFor="tos-uri" margin="normal">Terms Of Service URI</FormControlLabel>
+      <TextInput
         type="url"
         id="tos-uri"
         name="tos_uri"
@@ -189,8 +184,8 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         readOnly={readOnly}
       />
 
-      <Label htmlFor="policy-uri">Privacy Policy URI</Label>
-      <Input
+      <FormControlLabel htmlFor="policy-uri" margin="normal">Privacy Policy URI</FormControlLabel>
+      <TextInput
         type="url"
         id="policy-uri"
         name="policy_uri"
@@ -199,8 +194,8 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         readOnly={readOnly}
       />
 
-      <Label htmlFor="logo-uri">Logo URI</Label>
-      <Input
+      <FormControlLabel htmlFor="logo-uri" margin="normal">Logo URI</FormControlLabel>
+      <TextInput
         type="url"
         id="logo-uri"
         name="logo_uri"
@@ -218,14 +213,14 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         options={grantTypes}
       />
 
-      <div>Response Types</div>
+      <div className="mt-2">Response Types</div>
       <CheckboxList
         selected={client.response_types || []}
         onChange={responseTypesChanged}
         options={responseTypes}
       />
 
-      <Label htmlFor="token-endpoint-auth-method">Token Endpoint Auth Method</Label>
+      <FormControlLabel htmlFor="token-endpoint-auth-method" margin="normal">Token Endpoint Auth Method</FormControlLabel>
       <Select
         className="block w-full"
         id="token-endpoint-auth-method"
@@ -241,8 +236,8 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
       )
         ? (
           <>
-            <Label htmlFor="client-secret">Client Secret</Label>
-            <Input
+            <FormControlLabel htmlFor="client-secret" margin="normal">Client Secret</FormControlLabel>
+            <TextInput
               type="text"
               id="client-secret"
               name="client_secret"
@@ -256,7 +251,7 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
           <div>{`Not implemented ${client.token_endpoint_auth_method}`}</div>
         )}
 
-      <Label htmlFor="id-token-signed-response-alg">ID Token Signed Response Algorithm</Label>
+      <FormControlLabel htmlFor="id-token-signed-response-alg" margin="normal">ID Token Signed Response Algorithm</FormControlLabel>
       <Select
         className="block w-full"
         id="id-token-signed-response-alg"
@@ -266,30 +261,33 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         values={signingAlgorithmWithNone}
       />
 
-      <Label htmlFor="set-pkce-optional">
-        <Input
-          type="checkbox"
-          id="set-pkce-optional"
-          name="set-pkce-optional"
-          checked={client[setPkceOptionalProp] as boolean ?? false}
-          onChange={setPkceDisabledChanged}
-        />
-        &nbsp;
+      <InputLabel
+        htmlFor="set-pkce-optional"
+        margin="normal"
+        input={
+          <Checkbox
+            id="set-pkce-optional"
+            name="set-pkce-optional"
+            checked={client[setPkceOptionalProp] as boolean ?? false}
+            onChange={setPkceDisabledChanged}
+          />
+        }
+      >
         Set PKCE optional?
-      </Label>
+      </InputLabel>
 
       <div className="my-6" />
 
-      <Label htmlFor="redirect_uris">Redirect URIs</Label>
+      <FormControlLabel htmlFor="redirect_uris">Redirect URIs</FormControlLabel>
       <EditUrls client={client} setClient={setClient} field="redirect_uris" />
 
-      <Label htmlFor="post_logout_redirect_uris">Post Logout Redirect URIs</Label>
+      <FormControlLabel htmlFor="post_logout_redirect_uris">Post Logout Redirect URIs</FormControlLabel>
       <EditUrls client={client} setClient={setClient} field="post_logout_redirect_uris" />
 
-      <Label htmlFor={corsProp}>CORS Origins</Label>
+      <FormControlLabel htmlFor={corsProp}>CORS Origins</FormControlLabel>
       <EditUrls client={client} setClient={setClient} field={corsProp} />
 
-      <Label htmlFor="default-api-resource">Default API Resource</Label>
+      <FormControlLabel htmlFor="default-api-resource">Default API Resource</FormControlLabel>
       <Select
         className="block w-full"
         id="default-api-resource"
@@ -318,6 +316,8 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
             loading={removeClientMutation.isPending}
             disabled={editClientMutation.isPending}
             onClick={remove}
+            color="error"
+            variant="text"
           >
             Delete
           </Button>

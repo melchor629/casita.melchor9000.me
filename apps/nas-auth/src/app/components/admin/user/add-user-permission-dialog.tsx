@@ -1,17 +1,8 @@
+import { Button, Checkbox, Dialog, FormControlLabel, InputLabel, Select } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useMemo, useState } from 'react'
 import { useAddUserPermission } from '#actions/mutations/add-user-permission.ts'
 import type { GetPermissions } from '#queries/get-permissions.ts'
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-  Input,
-  Label,
-  Select,
-} from '../../ui'
 
 type AddUserPermissionDialogProps = Readonly<{
   allPermissions: GetPermissions
@@ -77,62 +68,77 @@ const AddUserPermissionDialog = ({
   }, [setOpened, addUserPermissionMutation, userId, applicationId, permission, hasWrite, hasDelete])
 
   return (
-    <Dialog open={opened} size="md" portal onClosed={clearState}>
-      <DialogHeader onClose={onClose}>Add Permission</DialogHeader>
-      <DialogBody>
-        <div className="mb-2">
-          <Label htmlFor="application-id">Application</Label>
-          &nbsp;
-          <Select
-            id="application-id"
-            value={[applicationId, '']}
-            onChange={useCallback((app: [string, string] | null) => setApplicationId(app ? app[0] : ''), [])}
-            values={applications}
-            keySelector={useCallback(([k]: [string, string]) => k, [])}
-            labelSelector={useCallback(([, v]: [string, string]) => v, [])}
-            emptyValue={['', 'Select One']}
-          />
-        </div>
+    <Dialog
+      id="add-user-permission"
+      show={opened}
+      size="medium"
+      portal
+      title="Add Permission"
+      onClose={onClose}
+      onCloseEnd={clearState}
+      buttons={[
+        <Button key="save" onClick={save} loading={addUserPermissionMutation.isPending}>Save</Button>,
+      ]}
+    >
+      <div className="mb-2">
+        <FormControlLabel htmlFor="application-id">Application</FormControlLabel>
+        &nbsp;
+        <Select
+          id="application-id"
+          value={[applicationId, '']}
+          onChange={useCallback((app: [string, string] | null) => setApplicationId(app ? app[0] : ''), [])}
+          values={applications}
+          keySelector={useCallback(([k]: [string, string]) => k, [])}
+          labelSelector={useCallback(([, v]: [string, string]) => v, [])}
+          emptyValue={['', 'Select One']}
+        />
+      </div>
 
-        <div className="mb-2">
-          <Label htmlFor="permission">Permission</Label>
-          &nbsp;
-          <Select
-            id="permission"
-            value={permission}
-            onChange={setPermission}
-            values={permissionsForApplication}
-            keySelector={useCallback((p: GetPermissions[0]) => p.id.toString(), [])}
-            labelSelector={useCallback((p: GetPermissions[0]) => p.name, [])}
-            emptyValue={{ id: -1, name: 'Select One' } as GetPermissions[0]}
-          />
-        </div>
+      <div className="mb-2">
+        <FormControlLabel htmlFor="permission">Permission</FormControlLabel>
+        &nbsp;
+        <Select
+          id="permission"
+          value={permission}
+          onChange={setPermission}
+          values={permissionsForApplication}
+          keySelector={useCallback((p: GetPermissions[0]) => p.id.toString(), [])}
+          labelSelector={useCallback((p: GetPermissions[0]) => p.name, [])}
+          emptyValue={{ id: -1, name: 'Select One' } as GetPermissions[0]}
+        />
+      </div>
 
-        <div>
-          <Input
-            type="checkbox"
-            id="has-write"
-            checked={hasWrite}
-            onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setHasWrite(e.currentTarget.checked), [])}
-          />
-          <Label htmlFor="has-write">Write?</Label>
-        </div>
+      <div>
+        <InputLabel
+          input={
+            <Checkbox
+              type="checkbox"
+              id="has-write"
+              checked={hasWrite}
+              onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setHasWrite(e.currentTarget.checked), [])}
+            />
+          }
+        >
+          Write?
+        </InputLabel>
+      </div>
 
-        <div>
-          <Input
-            type="checkbox"
-            id="has-delete"
-            checked={hasDelete}
-            onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setHasDelete(e.currentTarget.checked), [])}
-          />
-          <Label htmlFor="has-delete">Delete?</Label>
-        </div>
+      <div>
+        <InputLabel
+          input={
+            <Checkbox
+              type="checkbox"
+              id="has-delete"
+              checked={hasDelete}
+              onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setHasDelete(e.currentTarget.checked), [])}
+            />
+          }
+        >
+          Delete?
+        </InputLabel>
+      </div>
 
-        {error && <p className="text-orange-700 dark:text-orange-300">{error}</p>}
-      </DialogBody>
-      <DialogFooter className="text-end">
-        <Button onClick={save} loading={addUserPermissionMutation.isPending}>Save</Button>
-      </DialogFooter>
+      {error && <p className="text-orange-700 dark:text-orange-300">{error}</p>}
     </Dialog>
   )
 }

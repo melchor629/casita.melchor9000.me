@@ -1,15 +1,7 @@
 import { useNavigate } from '@melchor629/nice-ssr'
+import { Button, Dialog, FormControlLabel, TextInput } from '@melchor629/ui'
 import { useCallback, useState, type ChangeEvent, type MouseEvent } from 'react'
 import { useAddClient } from '../../../actions/mutations/add-client'
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-  Input,
-  Label,
-} from '../../ui'
 
 type AddClientDialogProps = Readonly<{
   opened: boolean
@@ -61,20 +53,25 @@ const AddClientDialog = ({ opened, setOpened }: AddClientDialogProps) => {
   }, [id, name, addClientMutation, navigate, setOpened])
 
   return (
-    <Dialog open={opened} size="md" portal onClosed={clearState}>
-      <DialogHeader onClose={onClose}>Add Client</DialogHeader>
-      <DialogBody>
-        <Label htmlFor="id">ID</Label>
-        <Input type="text" id="id" value={id} onChange={idChanged} />
+    <Dialog
+      id="add-client"
+      show={opened}
+      size="medium"
+      portal
+      title="Add Client"
+      onClose={onClose}
+      onCloseEnd={clearState}
+      buttons={[
+        <Button key="save" onClick={save} loading={addClientMutation.isPending}>Save</Button>,
+      ]}
+    >
+      <FormControlLabel htmlFor="id">ID</FormControlLabel>
+      <TextInput type="text" id="id" value={id} onChange={idChanged} />
 
-        <Label htmlFor="name">Name</Label>
-        <Input type="text" id="name" value={name} onChange={nameChanged} />
+      <FormControlLabel htmlFor="name" margin="normal">Name</FormControlLabel>
+      <TextInput type="text" id="name" value={name} onChange={nameChanged} />
 
-        {error && <p className="text-orange-700 dark:text-orange-300">{error}</p>}
-      </DialogBody>
-      <DialogFooter className="text-end">
-        <Button onClick={save} loading={addClientMutation.isPending}>Save</Button>
-      </DialogFooter>
+      {error && <p className="text-orange-700 dark:text-orange-300">{error}</p>}
     </Dialog>
   )
 }

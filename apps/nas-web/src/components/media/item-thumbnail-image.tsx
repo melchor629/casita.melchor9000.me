@@ -23,7 +23,7 @@ const LoadingContainer = styled('div', 'LoadingContainer')({
 })
 
 const ChildrenCount = styled('div', 'ChildrenCount')({
-  base: 'absolute right-3 top-2 px-1 py-0.5 text-xs text-text-main bg-elevated-0/65 border border-text-main/25 rounded-sm select-none',
+  base: 'absolute right-3 top-2 px-1 py-0.5 text-xs text-text-main bg-elevated-0/65 border border-elevated-border rounded-sm select-none',
 })
 
 const ImageThumbnail = styled('img', 'ImageThumbnail')({

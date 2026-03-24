@@ -10,6 +10,7 @@ export type PopoverMenuProps = Readonly<
   & {
     open?: boolean
     referenceElement: PopoverProps['referenceElement'] | 'contextMenu'
+    unmountWhenHidden?: boolean
   }
 >
 
@@ -26,6 +27,7 @@ export default function PopoverMenu({
   portal,
   referenceElement,
   strategy,
+  unmountWhenHidden,
   ...props
 }: PopoverMenuProps) {
   const [pos, setPos] = useState<VirtualElement | null>(null)
@@ -65,6 +67,7 @@ export default function PopoverMenu({
     return () => document.body.addEventListener('contextmenu', fn, false)
   }, [referenceElement])
 
+  const isOpen = referenceElement === 'contextMenu' ? pos != null : open
   return (
     <Popover
       referenceElement={referenceElement === 'contextMenu' ? pos : referenceElement}
@@ -74,8 +77,9 @@ export default function PopoverMenu({
       middleware={referenceElement === 'contextMenu' ? [flip()] : middleware}
       portal={portal}
       onContextMenu={ignore}
+      className={!isOpen ? 'pointer-events-none' : undefined}
     >
-      <FadeAndMove show={referenceElement === 'contextMenu' ? pos != null : open} unmountWhenHidden>
+      <FadeAndMove show={isOpen} unmountWhenHidden={unmountWhenHidden}>
         <Menu {...props} />
       </FadeAndMove>
     </Popover>

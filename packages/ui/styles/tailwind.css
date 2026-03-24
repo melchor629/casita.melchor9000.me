@@ -67,8 +67,14 @@
   );
   --color-elevated-1: light-dark(
     var(--color-gray-100),
+    var(--color-gray-800)
+  );
+  --color-elevated-2: light-dark(
+    var(--color-gray-200),
     var(--color-gray-700)
   );
+
+  --color-elevated-border: oklch(from var(--color-text-main) l c h / 0.25);
 
   --spacing-navbar: 60px;
 

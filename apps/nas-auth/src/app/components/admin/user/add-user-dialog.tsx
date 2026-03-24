@@ -1,16 +1,8 @@
 import { useNavigate } from '@melchor629/nice-ssr'
+import { Button, Checkbox, Dialog, FormControlLabel, InputLabel, TextInput } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useState } from 'react'
 import { useAddUser } from '../../../actions/mutations/add-user'
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-  Input,
-  Label,
-} from '../../ui'
 
 type AddUserDialogProps = Readonly<{
   opened: boolean
@@ -63,24 +55,33 @@ const AddUserDialog = ({ opened, setOpened }: AddUserDialogProps) => {
   }, [navigate, addUserMutation, userName, displayName, disabled])
 
   return (
-    <Dialog open={opened} size="md" portal onClosed={clearState}>
-      <DialogHeader onClose={onClose}>Add User</DialogHeader>
-      <DialogBody>
-        <Label htmlFor="user-name">User Name</Label>
-        <Input type="text" id="user-name" value={userName} onChange={userNameChanged} />
+    <Dialog
+      show={opened}
+      size="medium"
+      id="add-user-dialog"
+      portal
+      onClose={onClose}
+      onCloseEnd={clearState}
+      title="Add User"
+      buttons={[
+        <Button key="save" onClick={save} loading={addUserMutation.isPending}>Save</Button>,
+      ]}
+    >
+      <FormControlLabel htmlFor="user-name">User Name</FormControlLabel>
+      <TextInput type="text" id="user-name" value={userName} onChange={userNameChanged} />
 
-        <Label htmlFor="display-name">Display Name</Label>
-        <Input type="text" id="display-name" value={displayName} onChange={displayNameChanged} />
+      <FormControlLabel htmlFor="display-name" className="mt-2">Display Name</FormControlLabel>
+      <TextInput type="text" id="display-name" value={displayName} onChange={displayNameChanged} />
 
-        <Input type="checkbox" id="disabled" checked={disabled} onChange={disabledChanged} />
-        <Label htmlFor="disabled">Disabled</Label>
+      <InputLabel
+        input={<Checkbox id="disabled" checked={disabled} onChange={disabledChanged} />}
+        className="mt-2"
+      >
+        Disabled
+      </InputLabel>
 
-        {error && <p className="text-orange-700 dark:text-orange-300">{error}</p>}
-        {addUserMutation.error && <p className="text-orange-700 dark:text-orange-300">{addUserMutation.error.message}</p>}
-      </DialogBody>
-      <DialogFooter className="text-end">
-        <Button onClick={save} disabled={addUserMutation.isPending}>Save</Button>
-      </DialogFooter>
+      {error && <p className="text-orange-700 dark:text-orange-300">{error}</p>}
+      {addUserMutation.error && <p className="text-orange-700 dark:text-orange-300">{addUserMutation.error.message}</p>}
     </Dialog>
   )
 }

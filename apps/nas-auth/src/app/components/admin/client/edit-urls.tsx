@@ -1,6 +1,6 @@
+import { Button, TextInput } from '@melchor629/ui'
 import type { ClientMetadata } from 'oidc-provider'
 import { useCallback, type KeyboardEvent } from 'react'
-import { Button, Input } from '../../ui'
 
 type EditUrlsProps = Readonly<{
   client: ClientMetadata
@@ -36,10 +36,10 @@ const EditUrls = ({ client, field, setClient }: EditUrlsProps) => {
   if (typeof field !== 'string') return null
   const fieldValue = (client[field] ?? []) as readonly string[]
   return (
-    <div>
+    <div className="mb-4">
       {fieldValue.map((value) => (
         <div key={value} className="m-1">
-          <Button size="sm" onClick={() => removeValue(value)}>&times;</Button>
+          <Button size="small" variant="text" color="error" onClick={() => removeValue(value)}>&times;</Button>
           <span>{` ${value}`}</span>
         </div>
       ))}
@@ -49,7 +49,7 @@ const EditUrls = ({ client, field, setClient }: EditUrlsProps) => {
         </div>
       )}
 
-      <Input type="url" id={field} onKeyUp={valueKeyUp} placeholder="URL (press enter to add)" />
+      <TextInput size="small" type="url" id={field} onKeyUp={valueKeyUp} placeholder="URL (press enter to add)" />
     </div>
   )
 }

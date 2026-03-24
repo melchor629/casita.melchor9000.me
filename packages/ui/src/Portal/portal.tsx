@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useLayoutEffect, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
 export type PortalProps = Readonly<{
@@ -23,8 +23,20 @@ export type PortalProps = Readonly<{
  * @returns Element or portal
  */
 export default function Portal({ children, portal }: PortalProps) {
+  // trick to for SSR
+  const [mountElement, setMountElement] = useState<HTMLElement | null>(null)
+
+  useLayoutEffect(() => {
+    if (portal) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setMountElement(typeof portal === 'boolean' ? document.body : portal)
+    } else {
+      setMountElement(null)
+    }
+  }, [portal])
+
   if (portal) {
-    return createPortal(children, typeof portal === 'boolean' ? document.body : portal)
+    return mountElement && createPortal(children, mountElement)
   }
 
   return children

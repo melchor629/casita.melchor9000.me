@@ -1,16 +1,9 @@
+import { Button, Table, TableBody, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
+import { Add } from '@melchor629/ui/icons'
 import { useMemo, useState } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
 import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
 import { AddUserDialog } from '#components/admin/user/index.ts'
-import {
-  Button,
-  H2,
-  Table,
-  TableBody,
-  TableHead,
-  TableHeadColumn,
-  TableRow,
-} from '#components/ui/index.ts'
 import type { GetUsers } from '#queries/get-users.ts'
 import UserRow from './user-row'
 
@@ -23,18 +16,18 @@ const Users = ({ users }: { readonly users: GetUsers }) => {
 
   return (
     <>
-      <div className="flex justify-between mb-2">
-        <H2>Users</H2>
-        {userPermission?.write && <Button type="button" size="sm" onClick={() => setOpened(true)}>Add</Button>}
+      <div className="flex justify-between items-baseline mb-2">
+        <Text size="h2">Users</Text>
+        {userPermission?.write && <Button type="button" size="small" onClick={() => setOpened(true)} icon={<Add />} />}
       </div>
 
-      <Table className="mt-2 mb-2">
+      <Table className="mt-2 mb-6" hover full>
         <TableHead>
           <TableRow>
-            <TableHeadColumn>ID</TableHeadColumn>
-            <TableHeadColumn>Pic</TableHeadColumn>
-            <TableHeadColumn>User Name</TableHeadColumn>
-            <TableHeadColumn>Display Name</TableHeadColumn>
+            <TableHeadCell shrink>ID</TableHeadCell>
+            <TableHeadCell>Pic</TableHeadCell>
+            <TableHeadCell>User Name</TableHeadCell>
+            <TableHeadCell>Display Name</TableHeadCell>
           </TableRow>
         </TableHead>
         <TableBody>

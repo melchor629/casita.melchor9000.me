@@ -109,7 +109,15 @@ const Button: OverridableComponent<ButtonTypeMap> = ({
           {icon}
         </span>
       )}
-      <div className={clsx('transition-opacity duration-200', !loading && 'opacity-100', loading && 'opacity-0')}>{children}</div>
+      <div
+        className={clsx(
+          'text-center w-full transition-opacity duration-200',
+          !loading && 'opacity-100',
+          loading && 'opacity-0',
+        )}
+      >
+        {children}
+      </div>
       <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
         <CircularProgress
           size={size}

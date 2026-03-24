@@ -1,16 +1,8 @@
 import { useRevalidator } from '@melchor629/nice-ssr'
+import { Button, Dialog, FormControlLabel, TextInput } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useState } from 'react'
 import { useAddPermission } from '../../../actions/mutations/add-permission'
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-  Input,
-  Label,
-} from '../../ui'
 
 type AddApplicationPermissionDialogProps = Readonly<{
   applicationId: string
@@ -53,21 +45,26 @@ const AddApplicationPermissionDialog = ({ applicationId, opened, setOpened }: Ad
   }, [name, addPermissionMutation, applicationId, displayName, setOpened, revalidate])
 
   return (
-    <Dialog open={opened} size="md" portal onClosed={clearState}>
-      <DialogHeader onClose={onClose}>Add Permission</DialogHeader>
-      <DialogBody>
-        <Label htmlFor="perm-name">Name</Label>
-        <Input type="text" id="perm-name" value={name} onChange={nameChanged} />
+    <Dialog
+      id="add-application-permission"
+      show={opened}
+      size="medium"
+      portal
+      title="Add Permission"
+      onClose={onClose}
+      onCloseEnd={clearState}
+      buttons={[
+        <Button key="save" onClick={save} loading={addPermissionMutation.isPending}>Save</Button>,
+      ]}
+    >
+      <FormControlLabel htmlFor="perm-name">Name</FormControlLabel>
+      <TextInput type="text" id="perm-name" value={name} onChange={nameChanged} />
 
-        <Label htmlFor="perm-name">Display Name</Label>
-        <Input type="text" id="perm-name" value={displayName} onChange={displayNameChanged} />
+      <FormControlLabel htmlFor="perm-name" margin="none">Display Name</FormControlLabel>
+      <TextInput type="text" id="perm-name" value={displayName} onChange={displayNameChanged} />
 
-        {error && <p className="text-orange-700 dark:text-orange-300">{error}</p>}
-        {addPermissionMutation.error && <p className="text-orange-700 dark:text-orange-300">{addPermissionMutation.error.message}</p>}
-      </DialogBody>
-      <DialogFooter className="text-end">
-        <Button onClick={save} loading={addPermissionMutation.isPending}>Save</Button>
-      </DialogFooter>
+      {error && <p className="text-orange-700 dark:text-orange-300">{error}</p>}
+      {addPermissionMutation.error && <p className="text-orange-700 dark:text-orange-300">{addPermissionMutation.error.message}</p>}
     </Dialog>
   )
 }

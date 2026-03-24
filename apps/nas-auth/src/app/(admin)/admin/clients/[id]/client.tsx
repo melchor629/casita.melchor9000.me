@@ -1,9 +1,9 @@
+import { Text } from '@melchor629/ui'
 import type { ClientMetadata } from 'oidc-provider'
 import { useMemo } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
 import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
 import { EditClient } from '#components/admin/client/index.ts'
-import { H2 } from '#components/ui/index.ts'
 
 type ClientProps = Readonly<{
   apiResources: ReadonlyArray<{ key: string, name: string }>
@@ -21,10 +21,10 @@ const Client = ({ apiResources, client }: ClientProps) => {
 
   return (
     <>
-      <H2>
+      <Text size="h2">
         Client&nbsp;
         {client.client_name}
-      </H2>
+      </Text>
 
       <EditClient
         apiResources={apiResources}

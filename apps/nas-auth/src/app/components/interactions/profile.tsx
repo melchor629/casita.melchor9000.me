@@ -1,8 +1,8 @@
 import { Link } from '@melchor629/nice-ssr'
+import { Button, Text } from '@melchor629/ui'
+import { Logout, PersonEdit, Settings } from '@melchor629/ui/icons'
 import { useMemo } from 'react'
 import { usePublicUrl, useResolvedProfilePic } from '../../hooks'
-import Button from '../ui/button'
-import { H1 } from '../ui/text'
 
 type ProfileProps = Readonly<{
   role?: 'admin' | 'user'
@@ -30,11 +30,11 @@ const Profile = ({ role, user }: ProfileProps) => {
 
   return (
     <>
-      <H1 className="mb-6">
+      <Text size="h1" className="mb-6">
         Hello again&nbsp;
         {user.givenName || user.userName}
         !
-      </H1>
+      </Text>
 
       {resolvedProfilePicUrl && (
         <p className="flex justify-center mb-2">
@@ -54,20 +54,24 @@ const Profile = ({ role, user }: ProfileProps) => {
         {user.userName}
       </p>
 
-      <div className="mt-6 flex justify-center flex-wrap">
+      <div className="mt-6 flex justify-center flex-wrap gap-1.5">
         <Link to="/profile">
-          <Button>Edit profile</Button>
+          <Button icon={<PersonEdit />}>Edit profile</Button>
         </Link>
-        &nbsp;
-        <Button as="a" href={logoutUrl}>Logout</Button>
         {role === 'admin' && (
-          <>
-            &nbsp;
-            <Link to="/admin">
-              <Button>Admin</Button>
-            </Link>
-          </>
+          <Link to="/admin">
+            <Button variant="text" color="secondary" icon={<Settings />}>Admin</Button>
+          </Link>
         )}
+        <Button
+          component="a"
+          href={logoutUrl}
+          color="error"
+          variant="text"
+          icon={<Logout />}
+        >
+          Logout
+        </Button>
       </div>
     </>
   )

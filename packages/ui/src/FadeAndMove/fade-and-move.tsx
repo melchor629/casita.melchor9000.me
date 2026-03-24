@@ -11,7 +11,7 @@ export default function FadeAndMove({
   className,
   onTransitionEnd,
   show,
-  unmountWhenHidden,
+  unmountWhenHidden = false,
   ...props
 }: FadeAndMoveProps) {
   const [animationFinished, setAnimationFinished] = useState(true)
@@ -33,12 +33,13 @@ export default function FadeAndMove({
       className={clsx(
         'invisible translate-y-4 opacity-0 transition-all',
         'data-[show=true]:visible data-[show=true]:translate-y-0 data-[show=true]:opacity-100',
+        (!show && animationFinished) && 'pointer-events-none',
         className,
       )}
       onTransitionEnd={onTransitionEndWrapper}
       data-show={show}
     >
-      {(show || (unmountWhenHidden && !animationFinished)) && children}
+      {(show || !unmountWhenHidden || !animationFinished) && children}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { H1 } from '#components/ui/index.ts'
+import { Text } from '@melchor629/ui'
 
 export const metadata = {
   title: 'Sign out',
@@ -12,8 +12,8 @@ type PostLogoutPageProps = Readonly<{
 export default function PostLogoutPage({ clientName, clientUri }: PostLogoutPageProps) {
   return (
     <div>
-      <H1 className="mb-4">Sign-out succesfully</H1>
-      <p>
+      <Text size="h2" className="mb-4">Sign-out succesfully</Text>
+      <Text>
         Your sign-out
         {clientName ? ` with ${clientName} ` : ' '}
         was succesful.
@@ -31,7 +31,7 @@ export default function PostLogoutPage({ clientName, clientUri }: PostLogoutPage
               You can now close the tab.
             </>
             )}
-      </p>
+      </Text>
     </div>
   )
 }

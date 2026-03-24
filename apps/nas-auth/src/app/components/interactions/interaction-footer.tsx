@@ -2,7 +2,7 @@ import { memo } from 'react'
 import type { Client } from './types'
 
 const InteractionFooter = ({ client }: { readonly client: Client }) => (
-  <div className="text-color-default opacity-70 text-sm text-center">
+  <div className="text-text-main opacity-70 text-sm text-center">
     {client.logoUri && (
       <div className="flex justify-center mb-1">
         <img src={client.logoUri} width={32} alt="client logo" className="rounded-full mb-1" />

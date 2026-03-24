@@ -1,6 +1,6 @@
 import { Link } from '@melchor629/nice-ssr'
+import { Button, Text } from '@melchor629/ui'
 import { Fragment, useMemo } from 'react'
-import { Button, H2 } from '../ui'
 import InteractionFooter from './interaction-footer'
 import type { Client, Interaction } from './types'
 
@@ -30,7 +30,7 @@ const Consent = ({ client, interaction: { details, params, uid } }: ConsentProps
   ].some(Boolean)
   return (
     <>
-      <H2 className="mb-3">Authorize</H2>
+      <Text size="h2" className="mb-3">Authorize</Text>
 
       <ul className="list-none">
         {noConsentToShow && (

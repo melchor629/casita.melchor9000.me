@@ -1,5 +1,5 @@
+import { Text } from '@melchor629/ui'
 import type { ErrorOut } from 'oidc-provider'
-import { H1 } from '#components/ui/index.ts'
 
 export const metadata = {
   title: 'Something went wrong',
@@ -8,13 +8,13 @@ export const metadata = {
 export default function InteractionErrorPage({ out }: { readonly out: ErrorOut }) {
   return (
     <div>
-      <H1 className="mb-4">oops! something went wrong :(</H1>
+      <Text size="h1" className="mb-4">oops! something went wrong :(</Text>
 
-      <p className="mb-2">
+      <Text className="mb-2">
         Try again or contact the admin.
-      </p>
+      </Text>
 
-      <div className="opacity-70">
+      <Text component="div" color="textSecondary">
         <p>{`What: ${out.error}`}</p>
         {out.error_description && <p><small>{`Details: ${out.error_description}`}</small></p>}
         {out.scope && (
@@ -29,7 +29,7 @@ export default function InteractionErrorPage({ out }: { readonly out: ErrorOut }
             {`: ${out.state}`}
           </pre>
         )}
-      </div>
+      </Text>
     </div>
   )
 }

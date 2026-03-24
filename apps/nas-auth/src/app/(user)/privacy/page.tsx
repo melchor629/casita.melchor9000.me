@@ -1,5 +1,5 @@
 import { Link } from '@melchor629/nice-ssr'
-import { H1, H2 } from '#components/ui/index.ts'
+import { Text } from '@melchor629/ui'
 
 export const metadata = {
   title: 'Privacy Policy',
@@ -7,7 +7,7 @@ export const metadata = {
 
 const PrivacyPage = () => (
   <>
-    <H1 className="pb-4">Privacy policy</H1>
+    <Text size="h1" className="pb-4">Privacy policy</Text>
     <p className="pb-2">
       This policy talks about the privacy of your data ("Personal Information") used
       in this website ("Website" or "Service") and related services. This site
@@ -23,7 +23,7 @@ const PrivacyPage = () => (
       that I do not control or own.
     </p>
 
-    <H2 className="py-3">Collection of personal information</H2>
+    <Text size="h2" className="py-3">Collection of personal information</Text>
     <p className="pb-2">
       The required information about you is a username, email and personal name.
       This information will be obtained at login through other Services (as Google)
@@ -38,7 +38,7 @@ const PrivacyPage = () => (
       may not be able to use the Website.
     </p>
 
-    <H2 className="py-3">Managing information</H2>
+    <Text size="h2" className="py-3">Managing information</Text>
     <p className="pb-2">
       You are able to see and alter your information in the Website in the
       <Link to="/profile">Profile</Link>
@@ -46,18 +46,18 @@ const PrivacyPage = () => (
       can be asked to me.
     </p>
 
-    <H2 className="py-3">Disclosure of information</H2>
+    <Text size="h2" className="py-3">Disclosure of information</Text>
     <p className="pb-2">
       Your information is never shared to anyone, to keep your privacy and
       protect it from other agents.
     </p>
 
-    <H2 className="py-3">Retention of Information</H2>
+    <Text size="h2" className="py-3">Retention of Information</Text>
     <p className="pb-2">
       Your information is kept until your account is removed.
     </p>
 
-    <H2 className="py-3">Cookies</H2>
+    <Text size="h2" className="py-3">Cookies</Text>
     <p className="pb-2">
       Our Website and Services use "cookies" for providing the session service.
       No other cookies are used like for personalized experience or tracking.
@@ -66,7 +66,7 @@ const PrivacyPage = () => (
       If cookies are not allowed, you may not use the Website at all.
     </p>
 
-    <H2 className="py-3">Information security</H2>
+    <Text size="h2" className="py-3">Information security</Text>
     <p className="pb-2">
       I secure information you provide on our servers in a controlled, secure
       environment, protected from unauthorized access, use or disclosure. I
@@ -74,7 +74,7 @@ const PrivacyPage = () => (
       unauthorized access.
     </p>
 
-    <H2 className="py-3">Data breach</H2>
+    <Text size="h2" className="py-3">Data breach</Text>
     <p className="pb-2">
       In the event I become aware that the security of the Website and Services
       has been compromised or Personal Information has been disclosed, I will take
@@ -85,7 +85,7 @@ const PrivacyPage = () => (
       In case of this event, I will make reasonable efforts to notify the affected
       individuals by email or other ways.
     </p>
-    <H2 className="py-3">Contacting us</H2>
+    <Text size="h2" className="py-3">Contacting us</Text>
     <p className="pb-2">
       If you have any questions, concerns or complaints regarding this Policy, the
       information we hold about you, or with to exercise your rights, we encourage

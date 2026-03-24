@@ -1,3 +1,4 @@
+import { Button, Checkbox, InputLabel, Select, TableCell, TableRow } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import {
   useCallback,
@@ -9,14 +10,6 @@ import { useEditUserPermission } from '#actions/mutations/edit-user-permission.t
 import { useRemoveUserPermission } from '#actions/mutations/remove-user-permission.ts'
 import type { GetPermissions } from '#queries/get-permissions.ts'
 import type { GetUserQuery } from '#queries/get-user.ts'
-import {
-  Button,
-  Input,
-  Label,
-  Select,
-  TableColumn,
-  TableRow,
-} from '../../ui'
 
 const permissionKeySelector = (p: Permission) => p.id.toString()
 const permissionLabelSelector = (p: Permission) => p.name
@@ -103,8 +96,8 @@ const EditUserPermissionRow = ({
 
   if (editMode) {
     return (
-      <TableRow hover>
-        <TableColumn>
+      <TableRow>
+        <TableCell>
           <Select
             value={[applicationKey, '']}
             onChange={applicationIdChanged}
@@ -112,8 +105,8 @@ const EditUserPermissionRow = ({
             keySelector={([k]) => k}
             labelSelector={([, v]) => v}
           />
-        </TableColumn>
-        <TableColumn>
+        </TableCell>
+        <TableCell>
           <Select
             value={permissionObj ?? null}
             onChange={setPermissionObj}
@@ -121,20 +114,22 @@ const EditUserPermissionRow = ({
             keySelector={permissionKeySelector}
             labelSelector={permissionLabelSelector}
           />
-        </TableColumn>
-        <TableColumn className="select-none">
-          <Input type="checkbox" id={`${permission.id}-write`} checked={hasWrite} onChange={hasWriteChanged} />
-          &nbsp;
-          <Label htmlFor={`${permission.id}-write`}>{hasWrite ? 'Yes' : 'No'}</Label>
-        </TableColumn>
-        <TableColumn className="select-none">
-          <Input type="checkbox" id={`${permission.id}-delete`} checked={hasDelete} onChange={hasDeleteChanged} />
-          &nbsp;
-          <Label htmlFor={`${permission.id}-delete`}>{hasDelete ? 'Yes' : 'No'}</Label>
-        </TableColumn>
-        <TableColumn>
+        </TableCell>
+        <TableCell className="select-none">
+          <InputLabel input={<Checkbox id={`${permission.id}-write`} checked={hasWrite} onChange={hasWriteChanged} />}>
+            {hasWrite ? 'Yes' : 'No'}
+          </InputLabel>
+        </TableCell>
+        <TableCell className="select-none">
+          <InputLabel input={<Checkbox id={`${permission.id}-delete`} checked={hasDelete} onChange={hasDeleteChanged} />}>
+            {hasDelete ? 'Yes' : 'No'}
+          </InputLabel>
+        </TableCell>
+        <TableCell noWrap>
           <Button
-            size="sm"
+            size="small"
+            variant="text"
+            color="secondary"
             onClick={cancelEditMode}
             disabled={editUserPermissionMutation.isPending}
             loading={removeUserPermissionMutation.isPending}
@@ -143,28 +138,29 @@ const EditUserPermissionRow = ({
           </Button>
           &nbsp;
           <Button
-            size="sm"
+            size="small"
             onClick={save}
             disabled={removeUserPermissionMutation.isPending}
             loading={editUserPermissionMutation.isPending}
           >
             Save
           </Button>
-        </TableColumn>
+        </TableCell>
       </TableRow>
     )
   }
 
   return (
-    <TableRow hover>
-      <TableColumn>{applications[permission.permission!.application.key]}</TableColumn>
-      <TableColumn>{permission.permission!.name}</TableColumn>
-      <TableColumn>{permission.write ? 'Yes' : 'No'}</TableColumn>
-      <TableColumn>{permission.delete ? 'Yes' : 'No'}</TableColumn>
-      <TableColumn>
+    <TableRow>
+      <TableCell>{applications[permission.permission!.application.key]}</TableCell>
+      <TableCell>{permission.permission!.name}</TableCell>
+      <TableCell>{permission.write ? 'Yes' : 'No'}</TableCell>
+      <TableCell>{permission.delete ? 'Yes' : 'No'}</TableCell>
+      <TableCell noWrap>
         {!readOnly && (
           <Button
-            size="sm"
+            size="small"
+            variant="text"
             onClick={activateEditMode}
             disabled={removeUserPermissionMutation.isPending}
             loading={editUserPermissionMutation.isPending}
@@ -175,7 +171,9 @@ const EditUserPermissionRow = ({
         &nbsp;
         {!readOnly && canDelete && (
           <Button
-            size="sm"
+            size="small"
+            variant="text"
+            color="error"
             onClick={remove}
             disabled={editUserPermissionMutation.isPending}
             loading={removeUserPermissionMutation.isPending}
@@ -183,7 +181,7 @@ const EditUserPermissionRow = ({
             Delete
           </Button>
         )}
-      </TableColumn>
+      </TableCell>
     </TableRow>
   )
 }

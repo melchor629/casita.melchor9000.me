@@ -1,8 +1,8 @@
 import { useNavigationStatus } from '@melchor629/nice-ssr'
+import { CircularProgress } from '@melchor629/ui'
 import { clsx } from 'clsx'
 import type { PropsWithChildren } from 'react'
 import ClientProvider from '#actions/client-provider.tsx'
-import { LoadingSpinner } from '#components/ui/index.ts'
 
 export default function Layout({ children }: PropsWithChildren) {
   const status = useNavigationStatus()
@@ -15,7 +15,7 @@ export default function Layout({ children }: PropsWithChildren) {
           status === 'navigating' && 'opacity-100',
         )}
       >
-        <LoadingSpinner size="md" />
+        <CircularProgress size="medium" />
       </div>
       {children}
     </ClientProvider>

@@ -39,6 +39,7 @@
     "@fortawesome/react-fontawesome": "^3.1.0",
     "@melchor629/fastify-infra": "^0.1.4",
     "@melchor629/infra": "*",
+    "@melchor629/ui": "*",
     "@melchor629/nice-ssr": "^0.4.1",
     "@tanstack/react-query": "^5.0.0",
     "@opentelemetry/api": "^1.7.0",

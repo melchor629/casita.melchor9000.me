@@ -1,13 +1,6 @@
+import { Button, Dialog, TextInput } from '@melchor629/ui'
 import type { KeyboardEvent } from 'react'
 import { useCallback, useEffect, useState } from 'react'
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-  Input,
-} from '../../ui'
 
 type EditApplicationApiResourceScopesProps = Readonly<{
   close: (scopes?: EditApplicationApiResourceScopesProps['scopes']) => void
@@ -44,29 +37,30 @@ const EditApplicationApiResourceScopes = ({ close, opened, scopes }: EditApplica
   }, [scopes])
 
   return (
-    <Dialog portal size="xl" open={opened}>
-      <DialogHeader onClose={useCallback(() => close(), [close])}>
-        Scopes
-      </DialogHeader>
-      <DialogBody>
-        <div className="px-3 pt-2 pb-1 mb-2 border rounded-sm flex flex-wrap">
-          {state.map((scope) => (
-            <div key={scope} className="px-2 py-1 mr-1 mb-1 border rounded-sm select-none">
-              {scope}
-              &nbsp;
-              <button type="button" onClick={() => deleteScope(scope)}>&times;</button>
-            </div>
-          ))}
-        </div>
-        <Input type="text" onKeyUp={newScopeKeyUp} />
-      </DialogBody>
-      <DialogFooter className="text-end">
-        <Button onClick={useCallback(() => close(state), [close, state])}>
+    <Dialog
+      id="edit-applicaiton-api-resource-scopes"
+      show={opened}
+      portal
+      size="extra-large"
+      title="Scopes"
+      onClose={useCallback(() => close(), [close])}
+      buttons={[
+        <Button key="save" onClick={useCallback(() => close(state), [close, state])}>
           Save
-        </Button>
-        &nbsp;
-        <Button onClick={useCallback(() => close(), [close])}>Cancel</Button>
-      </DialogFooter>
+        </Button>,
+      ]}
+    >
+      <div className="px-3 pt-2 pb-1 mb-2 border rounded-sm flex flex-wrap">
+        {state.map((scope) => (
+          <div key={scope} className="px-2 py-1 mr-1 mb-1 border rounded-sm select-none">
+            {scope}
+            &nbsp;
+            <button type="button" onClick={() => deleteScope(scope)}>&times;</button>
+          </div>
+        ))}
+        {state.length === 0 && <div className="text-body text-text-secondary">No scopes defined</div>}
+      </div>
+      <TextInput type="text" onKeyUp={newScopeKeyUp} />
     </Dialog>
   )
 }

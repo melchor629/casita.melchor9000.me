@@ -1,6 +1,5 @@
+import { Checkbox, InputLabel } from '@melchor629/ui'
 import { useCallback, useMemo, type ChangeEvent } from 'react'
-import Input from './input'
-import Label from './label'
 
 type CheckboxListOption = Readonly<{ label: string, value: string }>
 type CheckboxListProps<T extends string | CheckboxListOption> = Readonly<{
@@ -39,11 +38,9 @@ function CheckboxList<T extends string | CheckboxListOption = string>({
   return (
     <div className={className}>
       {data.map(({ checked, key, label }, i) => (
-        <Label key={key} className="mx-1">
-          <Input type="checkbox" checked={checked} onChange={inputChanged(i)} />
-          &nbsp;
+        <InputLabel key={key} className="mx-1" input={<Checkbox checked={checked} onChange={inputChanged(i)} />}>
           {label}
-        </Label>
+        </InputLabel>
       ))}
     </div>
   )

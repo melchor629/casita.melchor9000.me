@@ -1,14 +1,7 @@
+import { Button, Table, TableBody, TableContainer, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
+import { Add } from '@melchor629/ui/icons'
 import { useState } from 'react'
 import type { GetApplication } from '../../../../queries/get-application'
-import {
-  Button,
-  H3,
-  Table,
-  TableBody,
-  TableHead,
-  TableHeadColumn,
-  TableRow,
-} from '../../ui'
 import AddApplicationPermissionDialog from './add-application-permission-dialog'
 import EditApplicationPermissionRow from './edit-application-permission-row'
 
@@ -27,31 +20,33 @@ const EditApplicationPermissions = ({
 
   return (
     <div className="mt-8 mb-2">
-      <div className="flex justify-between mb-2">
-        <H3>Permissions</H3>
-        {!readOnly && <Button type="button" size="sm" onClick={() => setOpened(true)}>Add</Button>}
+      <div className="flex justify-between items-baseline mb-2">
+        <Text size="h3">Permissions</Text>
+        {!readOnly && <Button type="button" size="small" onClick={() => setOpened(true)} icon={<Add />} />}
       </div>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableHeadColumn>ID</TableHeadColumn>
-            <TableHeadColumn>Name</TableHeadColumn>
-            <TableHeadColumn>Display Name</TableHeadColumn>
-            <TableHeadColumn shrink>Actions</TableHeadColumn>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {permissions.map((permission) => (
-            <EditApplicationPermissionRow
-              key={permission.id}
-              applicationId={applicationId}
-              canDelete={canDelete}
-              permission={permission}
-              readOnly={readOnly}
-            />
-          ))}
-        </TableBody>
-      </Table>
+      <TableContainer>
+        <Table hover full>
+          <TableHead>
+            <TableRow>
+              <TableHeadCell>ID</TableHeadCell>
+              <TableHeadCell>Name</TableHeadCell>
+              <TableHeadCell>Display Name</TableHeadCell>
+              <TableHeadCell shrink>Actions</TableHeadCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {permissions.map((permission) => (
+              <EditApplicationPermissionRow
+                key={permission.id}
+                applicationId={applicationId}
+                canDelete={canDelete}
+                permission={permission}
+                readOnly={readOnly}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {!readOnly && (
         <AddApplicationPermissionDialog

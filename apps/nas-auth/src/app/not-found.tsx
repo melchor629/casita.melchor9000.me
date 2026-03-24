@@ -1,12 +1,12 @@
 import type { Metadata } from '@melchor629/nice-ssr'
+import { Text } from '@melchor629/ui'
 import Layout from '#components/layout.tsx'
-import { H1 } from '#components/ui/index.ts'
 
 const NotFoundPage = () => (
   <Layout>
     <div className="text-center">
-      <H1 className="mb-4">404</H1>
-      <p>This page could not be found.</p>
+      <Text size="h4" className="mb-4">404</Text>
+      <Text>This page could not be found.</Text>
     </div>
   </Layout>
 )

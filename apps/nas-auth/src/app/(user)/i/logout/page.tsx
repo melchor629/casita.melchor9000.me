@@ -1,5 +1,5 @@
 import { notFound } from '@melchor629/nice-ssr'
-import { Button, H1 } from '#components/ui/index.ts'
+import { Button, Text } from '@melchor629/ui'
 
 export const metadata = {
   title: 'Sign out',
@@ -12,15 +12,15 @@ export default function LogoutPage({ form }: { readonly form?: string }) {
 
   return (
     <div>
-      <H1 className="mb-6">Do you want to logout?</H1>
+      <Text size="h2" className="mb-6">Do you want to logout?</Text>
 
       <div dangerouslySetInnerHTML={{ __html: form }} />
 
-      <div className="flex justify-between">
-        <Button type="submit" form="op.logoutForm" value="yes" name="logout">
-          Yes, sign me out
+      <div className="flex gap-1.5 justify-center">
+        <Button type="submit" form="op.logoutForm" value="yes" name="logout" color="error">
+          Sign out
         </Button>
-        <Button type="submit" form="op.logoutForm">No, stay signed in</Button>
+        <Button type="submit" form="op.logoutForm" color="primary">Stay in</Button>
       </div>
     </div>
   )
