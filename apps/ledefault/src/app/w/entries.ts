@@ -137,6 +137,13 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
     limitedTo: [...melchorSubs],
   },
   {
+    id: 'seerr',
+    name: 'seerr',
+    url: 'https://seerr.melchor9000.me/',
+    icon: 'https://seerr.melchor9000.me/android-chrome-192x192.png',
+    limitedTo: [...melchorSubs],
+  },
+  {
     id: 'bubbleupnp',
     name: 'BubbleUPNP',
     url: 'http://192.168.2.3:58050/',

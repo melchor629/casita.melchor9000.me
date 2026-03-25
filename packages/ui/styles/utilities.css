@@ -9,10 +9,24 @@
   animation-delay: calc(--value(integer) * 1ms);
 }
 
+@utility animation-easing-in-out {
+  animation-timing-function: ease-in-out;
+}
+
+@utility animation-easing-linear {
+  animation-timing-function: linear;
+}
+
 @utility body {
   @apply
     text-text-main bg-elevated-0
     accent-primary-main
     selection:bg-primary-main selection:text-text-contrasted
     transition-colors;
+}
+
+@custom-variant last-of-group {
+  & + &:has(+ :not(&)) {
+    @slot;
+  }
 }

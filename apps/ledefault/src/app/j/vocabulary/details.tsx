@@ -36,7 +36,7 @@ const mdOptions: MarkdownToJSX.Options = {
         <p className="block last-of-group:pb-3">
           <span>{jp.trim()}</span>
           {jp.trim().at(-1) !== '。' && <span>{' '}</span>}
-          <span className="text-primary-text-subtle">{lat}</span>
+          <span className="text-text-secondary">{lat}</span>
         </p>
       ),
     },

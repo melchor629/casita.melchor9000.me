@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 import faviconUrl from './favicon.ico'
-import '../theme/styles.css'
+import '../styles.css'
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
@@ -9,7 +9,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link href={faviconUrl} rel="icon" />
       </head>
-      <body className="h-full text-primary-text bg-primary-bg">
+      <body className="body h-full">
         <div id="app" className="h-full">{children}</div>
       </body>
     </html>

@@ -64,7 +64,7 @@ export default function HomePage() {
         'pointer-events-none select-none',
         'font-mono text-xs leading-4',
         animated ? 'opacity-100' : 'opacity-0',
-        'animate-fade-in animation-easing-linear animation-delay-1s animation-duration-2s',
+        'animate-fade-in animation-easing-linear animation-delay-1000 animation-duration-2s',
       )}
       onAnimationEnd={useCallback(() => setAnimated((v) => !v), [])}
     >

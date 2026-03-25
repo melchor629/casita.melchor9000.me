@@ -23,7 +23,7 @@ const RefLink = ({ refLink: ref }: { readonly refLink: EntryRef }) => {
     'rounded-sm',
     'cursor-pointer',
     'transition-colors',
-    'hover:bg-accent-elevated/20',
+    'hover:bg-text-main/15',
   )
   if (ref.type === 'basic') {
     return (

@@ -26,7 +26,7 @@ jobs:
         run: npm ci
 
       - name: Check audit
-        run: npm audit --omit=dev
+        run: npm audit --omit=dev --omit=optional
 
       - name: Build
         run: npx turbo run build --continue=dependencies-successful

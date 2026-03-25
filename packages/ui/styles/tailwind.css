@@ -98,6 +98,8 @@
   --animate-dots-size-pulse: dots-size-pulse 1.8s infinite ease-in-out;
   --animate-dots-color-pulse: dots-color-pulse 18s infinite ease-in-out;
   --animate-dots-pulse: var(--animate-dots-size-pulse), var(--animate-dots-color-pulse);
+  --animate-fade-in: fade-in 1s ease-in-out;
+  --animate-fade-out: fade-in 1s ease-in-out reverse;
 }
 
 :root {

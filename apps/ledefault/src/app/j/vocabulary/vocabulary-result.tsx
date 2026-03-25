@@ -46,8 +46,8 @@ export default function VocabularyResult({ result }: VocabularyComponentProps) {
   return (
     <div
       className={clsx(
-        'bg-accent-elevated/15',
-        'border border-accent-main-light dark:border-accent-main-dark',
+        'bg-primary-main/15',
+        'border border-primary-main',
         'px-2 py-1',
         'shadow-xs shadow-accent-elevated',
         'rounded-md',
@@ -63,10 +63,9 @@ export default function VocabularyResult({ result }: VocabularyComponentProps) {
               'p-1',
               'text-xs leading-none',
               'rounded-full',
-              'border-fuchsia-200',
-              'bg-accent-main-light/35 dark:bg-accent-main-dark/40',
+              'bg-primary-main/35',
               'cursor-pointer',
-              'hover:bg-accent-main-light/25 hover:dark:bg-accent-main-dark/30',
+              'hover:bg-primary-main/25',
               'active:opacity-80',
               'transition duration-75 ease-in-out',
               detailsOpen && 'rotate-180',

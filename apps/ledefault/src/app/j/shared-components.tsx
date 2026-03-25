@@ -9,12 +9,12 @@ export function TextArea({ children, className, ref, ...props }: TextAreaProps) 
       {...props}
       ref={ref}
       className={clsx(
-        'bg-primary-subtle hover:bg-primary-hover',
+        'bg-elevated-2 hover:bg-elevated-2/80',
         'px-2 py-1',
         'rounded-md shadow-lg',
         'resize-y',
         'outline-2 outline-offset-2 not-focus:not-active:outline-hidden',
-        'outline-primary-hover',
+        'outline-elevated-2',
         'transition-colors',
         className,
       )}
@@ -37,21 +37,21 @@ export function CharButton({ children, className, ref, variant = 'primary', ...p
         'min-w-12',
         'outline-2 outline-offset-2',
         'not-focus:not-active:outline-hidden',
-        'rounded-lg shadow-md',
+        'rounded-lg',
         'cursor-pointer',
         'transition-colors',
         'disabled:opacity-75',
         variant === 'primary' && [
           'px-4 py-3',
-          'bg-primary-elevated text-primary-text',
-          'hover:not-disabled:bg-primary-hover',
-          'outline-primary-hover',
+          'bg-elevated-2 text-text-main shadow-md',
+          'hover:not-disabled:bg-elevated-2/70',
+          'outline-elevated-2',
         ],
         variant === 'secondary' && [
           'px-2 py-1',
-          'bg-transparent border border-solid border-primary-text',
-          'hover:not-disabled:bg-primary-hover/50',
-          'outline-primary-text',
+          'bg-transparent',
+          'hover:not-disabled:bg-elevated-2/70',
+          'outline-elevated-2',
         ],
         className,
       )}

@@ -93,7 +93,7 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
           ref={setVideo}
-          className="video-js w-full h-full"
+          className="video-js size-full"
           preload="auto"
           poster={manifest.poster}
           autoPlay={useMemo(() => !!searchParams.get('ap'), [searchParams])}
@@ -104,10 +104,10 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
             role="button"
             className={clsx(
               'absolute top-0 left-0 w-full h-full z-10',
-              'text-white bg-primary-bg-dark/10',
+              'text-white bg-black/10',
               'cursor-pointer',
               'transition ease-in-out duration-150',
-              'hover:bg-primary-bg-dark/25 hover:text-white/85',
+              'hover:bg-black/30 hover:text-white/85',
             )}
             onClick={pendingToPlay ? onVideoPosterClick : undefined}
             tabIndex={-1}
@@ -115,7 +115,7 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
             {/* Play Circle (material Icons) */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-12 h-12 absolute top-4 left-3"
+              className="size-12 absolute top-4 left-3"
               viewBox="0 -960 960 960"
               fill="currentColor"
             >
