@@ -58,12 +58,7 @@ export default function Vocabulary({ changePage }: { readonly changePage: () => 
           </CharButton>
         </div>
       </div>
-      <div
-        className="flex grow flex-col gap-2 -mt-16 px-4 pt-17 pb-5 w-full max-w-3xl overflow-y-auto"
-        id="vocab-results"
-      >
-        <VocabularyResults filter={filter} />
-      </div>
+      <VocabularyResults filter={filter} />
     </>
   )
 }

@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { useCallback, useRef, useState } from 'react'
+import { memo, useCallback, useRef, useState } from 'react'
 import type { VocabularyComponentProps } from '../jp-utils'
 import AdjectiveTable from './adjective-table'
 import BasicVerbTable from './basic-verb-table'
@@ -16,7 +16,7 @@ const typesWithDetails = Object.freeze(['verb', 'demonstrative', 'adjective', 'i
  * Renders the given entry to the list.
  * @param param0 props
  */
-export default function VocabularyResult({ result }: VocabularyComponentProps) {
+const VocabularyResult = memo(function VocabularyResult({ result }: VocabularyComponentProps) {
   const [detailsOpen, setDetailsOpen] = useState(false)
   const detailsDivRef = useRef<HTMLDivElement>(null)
   const hasDetails = result.details || typesWithDetails.includes(result.type) || result.refs != null
@@ -119,4 +119,6 @@ export default function VocabularyResult({ result }: VocabularyComponentProps) {
       </div>
     </div>
   )
-}
+})
+
+export default VocabularyResult

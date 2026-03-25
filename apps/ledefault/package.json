@@ -32,6 +32,7 @@
     "nanoid": "^5.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-virtuoso": "^4.0.0",
     "shaka-player": "^5.0.0",
     "wanakana": "^5.3.1"
   },

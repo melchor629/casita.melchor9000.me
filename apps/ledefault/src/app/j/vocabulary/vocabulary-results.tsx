@@ -1,8 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Virtuoso, type Components } from 'react-virtuoso'
 import type { DictionaryEntry } from '../jp-utils'
 import VocabularyResult from './vocabulary-result'
 
-const resultLimit = 50
+const virtuosoComponents: Components<DictionaryEntry> = {
+  Header: () => <div className="w-full h-17" />,
+  Footer: () => <div className="w-full h-5" />,
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  Scroller: (props) => <div {...props} className="grow w-full max-w-3xl -mt-16" />,
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  List: (props) => <div {...props} className="flex grow flex-col gap-2 px-4 overflow-y-auto" />,
+}
+
+const virtuosoItemRender = (_: number, result: DictionaryEntry) => <VocabularyResult result={result} />
 
 /**
  * Renders the vocabulary list with using the provided filter.
@@ -61,17 +71,13 @@ export default function VocabularyResults({ filter }: Readonly<{ filter: string 
   }
 
   return (
-    <>
-      {results
-        .slice(0, resultLimit)
-        .map((result) => <VocabularyResult key={`${result.chapter}:${result.type}:${result.value}`} result={result} />)}
-      {results.length > resultLimit && (
-        <div className={vocabDaTextClass}>
-          there are more results that are not shown
-          <br />
-          tweak the filter to reduce the results
-        </div>
-      )}
-    </>
+    <Virtuoso
+      data={results}
+      itemContent={virtuosoItemRender}
+      initialItemCount={50}
+      minOverscanItemCount={15}
+      components={virtuosoComponents}
+      // key={`${result.chapter}:${result.type}:${result.value}`}
+    />
   )
 }
