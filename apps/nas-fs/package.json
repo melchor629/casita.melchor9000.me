@@ -37,7 +37,7 @@
     "etag": "^1.8.1",
     "execa": "^9.0.0",
     "exifreader": "^4.4.0",
-    "fastify": "^5.8.1",
+    "fastify": "^5.8.3",
     "fastify-plugin": "^5.0.1",
     "fresh": "^0.5.2",
     "fs-extra": "^11.1.0",
