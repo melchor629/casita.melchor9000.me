@@ -51,6 +51,20 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
   },
   'space',
   {
+    id: 'router',
+    icon: 'https://192.168.2.1/images/favicon.png',
+    name: 'Router',
+    url: 'https://192.168.2.1',
+    limitedTo: [...melchorSubs],
+  },
+  {
+    id: 'adguard',
+    icon: 'https://adguard.melchor9000.me/assets/favicon.png',
+    name: 'AdGuard Home',
+    url: 'https://adguard.melchor9000.me/',
+    limitedTo: [...melchorSubs],
+  },
+  {
     id: 'traefik',
     icon: 'https://traefik.melchor9000.me/dashboard/icons/apple-icon-152x152.png',
     name: 'Traefik dashboard',
