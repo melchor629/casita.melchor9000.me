@@ -1,5 +1,15 @@
 # nas-web
 
+## 0.16.2
+
+### Patch Changes
+
+- 01edc22: Update dependencies
+- 711e25a: Fix small icon button is not a square.
+- Updated dependencies [1d8844c]
+- Updated dependencies [ffce9bb]
+  - @melchor629/ui@0.0.1
+
 ## 0.16.1
 
 ### Patch Changes

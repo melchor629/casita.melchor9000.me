@@ -1,5 +1,32 @@
 # ledefault
 
+## 0.3.0
+
+### Minor Changes
+
+- 1d8844c: Use shared UI theme and components.
+
+### Patch Changes
+
+- 01edc22: Update dependencies
+- b9c2fd2: Update to vite 8
+- 26dd0ce: chore: update deps
+- 1e64004: Add adguard link
+- 00ad083: Added new link to private home
+- 9e69aa0: Add virtualized results list for japanese results
+- 96d93c9: Add support for pronuntiation in other kind of words.
+- Updated dependencies [7543734]
+- Updated dependencies [01edc22]
+- Updated dependencies [b9c2fd2]
+- Updated dependencies [1d8844c]
+- Updated dependencies [26dd0ce]
+- Updated dependencies [ffce9bb]
+- Updated dependencies [c09b71c]
+  - @melchor629/infra@0.1.2
+  - @melchor629/nice-ssr@0.5.0
+  - @melchor629/ui@0.0.1
+  - @melchor629/fastify-infra@0.2.0
+
 ## 0.2.2
 
 ### Patch Changes

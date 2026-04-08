@@ -1,7 +1,7 @@
 {
   "name": "@melchor629/fastify-infra",
   "private": true,
-  "version": "0.1.4",
+  "version": "0.2.0",
   "type": "module",
   "sideEffects": false,
   "engines": {

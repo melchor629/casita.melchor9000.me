@@ -1,5 +1,29 @@
 # nas-auth
 
+## 3.2.0
+
+### Minor Changes
+
+- ffce9bb: Use shared UI package for components and design.
+
+### Patch Changes
+
+- 01edc22: Update dependencies
+- b9c2fd2: Update to vite 8
+- 26dd0ce: chore: update deps
+- f409831: Apply rate limits to login endpoints and whole app.
+- Updated dependencies [7543734]
+- Updated dependencies [01edc22]
+- Updated dependencies [b9c2fd2]
+- Updated dependencies [1d8844c]
+- Updated dependencies [26dd0ce]
+- Updated dependencies [ffce9bb]
+- Updated dependencies [c09b71c]
+  - @melchor629/infra@0.1.2
+  - @melchor629/nice-ssr@0.5.0
+  - @melchor629/ui@0.0.1
+  - @melchor629/fastify-infra@0.2.0
+
 ## 3.1.1
 
 ### Patch Changes

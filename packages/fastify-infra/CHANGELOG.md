@@ -1,5 +1,15 @@
 # @melchor629/fastify-infra
 
+## 0.2.0
+
+### Minor Changes
+
+- c09b71c: Replace get-jwks and @fastify/jwk to jose.
+
+### Patch Changes
+
+- 26dd0ce: chore: update deps
+
 ## 0.1.4
 
 ### Patch Changes

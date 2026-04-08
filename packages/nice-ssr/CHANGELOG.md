@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.5.0
+
+### Minor Changes
+
+- b9c2fd2: Update to vite 8
+
 ## 0.4.1
 
 ### Patch Changes

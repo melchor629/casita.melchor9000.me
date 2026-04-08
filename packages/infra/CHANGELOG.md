@@ -1,5 +1,13 @@
 # @melchor629/infra
 
+## 0.1.2
+
+### Patch Changes
+
+- 7543734: Change how fastify request and reply are serialized in logger, including more information.
+- 01edc22: Update dependencies
+- 26dd0ce: chore: update deps
+
 ## 0.1.1
 
 ### Patch Changes

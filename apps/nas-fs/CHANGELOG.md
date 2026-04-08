@@ -1,5 +1,19 @@
 # nas-fs
 
+## 0.12.28
+
+### Patch Changes
+
+- 01edc22: Update dependencies
+- 26dd0ce: chore: update deps
+- c09b71c: Replace get-jwks and @fastify/jwk to jose.
+- Updated dependencies [7543734]
+- Updated dependencies [01edc22]
+- Updated dependencies [26dd0ce]
+- Updated dependencies [c09b71c]
+  - @melchor629/infra@0.1.2
+  - @melchor629/fastify-infra@0.2.0
+
 ## 0.12.27
 
 ### Patch Changes
