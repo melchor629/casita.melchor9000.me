@@ -49,7 +49,7 @@ export function CharButton({ children, className, ref, variant = 'primary', ...p
         ],
         variant === 'secondary' && [
           'px-2 py-1',
-          'bg-transparent',
+          'bg-elevated-2',
           'hover:not-disabled:bg-elevated-2/70',
           'outline-elevated-2',
         ],

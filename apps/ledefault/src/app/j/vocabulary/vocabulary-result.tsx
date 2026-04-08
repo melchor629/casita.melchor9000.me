@@ -1,3 +1,4 @@
+import { ArrowUpward } from '@melchor629/ui/icons'
 import { clsx } from 'clsx'
 import { memo, useCallback, useRef, useState } from 'react'
 import type { VocabularyComponentProps } from '../jp-utils'
@@ -61,18 +62,18 @@ const VocabularyResult = memo(function VocabularyResult({ result }: VocabularyCo
             className={clsx(
               'size-6',
               'p-1',
-              'text-xs leading-none',
+              'text-base leading-none',
               'rounded-full',
               'bg-primary-main/35',
               'cursor-pointer',
               'hover:bg-primary-main/25',
               'active:opacity-80',
               'transition duration-75 ease-in-out',
-              detailsOpen && 'rotate-180',
+              !detailsOpen && 'rotate-180',
             )}
             onClick={detailsButtonClick}
           >
-            ▽
+            <ArrowUpward />
           </button>
         )}
       </div>
