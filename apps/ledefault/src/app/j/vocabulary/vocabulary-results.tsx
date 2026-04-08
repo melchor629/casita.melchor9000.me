@@ -47,7 +47,7 @@ export default function VocabularyResults({ filter }: Readonly<{ filter: string 
     }
   }, [vocabularyWorker])
 
-  const vocabDaTextClass = 'select-none text-center'
+  const vocabDaTextClass = 'select-none text-center grow h-full'
   if (!filter) {
     return (
       <div className={vocabDaTextClass}>
@@ -74,10 +74,8 @@ export default function VocabularyResults({ filter }: Readonly<{ filter: string 
     <Virtuoso
       data={results}
       itemContent={virtuosoItemRender}
-      initialItemCount={50}
-      minOverscanItemCount={15}
+      increaseViewportBy={200}
       components={virtuosoComponents}
-      // key={`${result.chapter}:${result.type}:${result.value}`}
     />
   )
 }
