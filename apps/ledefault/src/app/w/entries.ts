@@ -1,9 +1,8 @@
-import plexImage from './plex.png'
-import qbittorrentImage from './qbittorrent.svg'
+import type ownImages from './imgs'
 
 export type Entry = Readonly<{
   id: string
-  icon?: string
+  icon?: `https://${string}` | keyof typeof ownImages
   name: string
   url: string
   label?: string
@@ -15,13 +14,13 @@ const melchorSubs = ['melchor9000', 'Melchor']
 const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
   {
     id: 'plex',
-    icon: plexImage,
+    icon: 'plex',
     name: 'Plex',
     url: 'https://media.melchor9000.me',
   },
   {
     id: 'nas-web',
-    icon: '//nas.melchor9000.me/icon-64.png',
+    icon: 'https://nas.melchor9000.me/icon-64.png',
     name: 'NAS Web',
     url: 'https://nas.melchor9000.me',
   },
@@ -33,7 +32,7 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
   },
   {
     id: 'immich',
-    icon: 'https://photos.melchor9000.me/favicon-96.png',
+    icon: 'immich',
     name: 'Immich',
     url: 'https://photos.melchor9000.me',
   },
@@ -77,7 +76,7 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
   },
   {
     id: 'qbittorrent',
-    icon: qbittorrentImage,
+    icon: 'qbittorrent',
     name: 'qBittorrent',
     url: 'https://qbittorrent.melchor9000.me/',
     limitedTo: [...melchorSubs],

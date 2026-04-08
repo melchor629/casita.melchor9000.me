@@ -3,7 +3,8 @@ import { type PageLoader, type Metadata, useNavigate, useBlocker } from '@melcho
 import { clsx } from 'clsx'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getUser } from '@/auth'
-import entries from './entries'
+import entries, { type Entry } from './entries'
+import ownImages from './imgs'
 
 type PageProps = {
   readonly entries: ReadonlyArray<import('./entries').Entry | 'space'>
@@ -22,7 +23,7 @@ export const loader: PageLoader<PageProps> = async (req) => {
   }
 }
 
-function DaLink({ entry }: { readonly entry: import('./entries').Entry }) {
+function DaLink({ entry }: { readonly entry: Entry }) {
   const [showTooltip, setShowTooltip] = useState(false)
   const { floatingStyles, refs: { setFloating, setReference } } = useFloating({
     strategy: 'fixed',
@@ -59,7 +60,7 @@ function DaLink({ entry }: { readonly entry: import('./entries').Entry }) {
         rel="noreferrer"
       >
         {entry.icon
-          ? <img className="size-12" src={entry.icon} alt={`${entry.name} icon`} />
+          ? <img className="size-12" src={ownImages[entry.icon as never] ?? entry.icon} alt={`${entry.name} icon`} />
           : <div className="flex justify-center items-center size-12">{entry.id}</div>}
 
         {entry.label && (
