@@ -16,7 +16,10 @@ export const {
     if (sessionData && data) {
       queryClient.setQueryData(queryKey, {
         ...sessionData,
-        user: data,
+        user: {
+          ...sessionData.user,
+          ...data,
+        },
       })
     }
   },

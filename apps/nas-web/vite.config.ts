@@ -1,14 +1,11 @@
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-import browserslistToEsbuild from 'browserslist-to-esbuild'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
-import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    tsconfigPaths(),
     react(),
     tailwindcss(),
     VitePWA({
@@ -55,6 +52,7 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: { tsconfigPaths: true },
   server: {
     port: 3000,
     open: true,
@@ -72,8 +70,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    target: browserslistToEsbuild(),
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         manualChunks(id) {
           return id.includes('node_modules') && !id.endsWith('.svg') ? 'vendor' : undefined

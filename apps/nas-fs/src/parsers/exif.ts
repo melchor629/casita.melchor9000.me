@@ -9,7 +9,6 @@ import type {
 const mapFileTags = ({ file }: ExpandedTags): ImageFileTags | null => (file
   ? {
       // @ts-expect-error sometimes it returns an object like the others
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       fileType: file.FileType?.description ?? file.FileType ?? 'unknown',
       bitsPerSample: file['Bits Per Sample']?.description,
       width: file['Image Width']?.description,

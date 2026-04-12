@@ -1,7 +1,11 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
   "tailwindCSS.experimental.classRegex": [
     ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
-  "tailwindCSS.classFunctions": ["tv", "styled", "makeStyles"]
+  "tailwindCSS.classFunctions": [
+    "tv",
+    "styled",
+    "makeStyles"
+  ],
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }
