@@ -588,6 +588,13 @@ export type FindLoginInfoForExternalAuthQueryVariables = Exact<{
 
 export type FindLoginInfoForExternalAuthQuery = { __typename?: 'Query', findLogin?: { __typename?: 'Login', id: number, disabled: boolean, user: { __typename?: 'User', id: number, userName: string } } | null, user?: { __typename?: 'User', id: number, userName: string, displayName: string, givenName?: string | null, familyName?: string | null, profileImageUrl?: string | null, email?: string | null, disabled: boolean } | null };
 
+export type FindLoginInfoForPasskeyQueryVariables = Exact<{
+  loginId: Scalars['String']['input'];
+}>;
+
+
+export type FindLoginInfoForPasskeyQuery = { __typename?: 'Query', findLogin?: { __typename?: 'Login', id: number, disabled: boolean, data?: any | null, user: { __typename?: 'User', id: number, userName: string, displayName: string, givenName?: string | null, familyName?: string | null, profileImageUrl?: string | null, email?: string | null, disabled: boolean } } | null };
+
 export type FindLoginInfoForUsernameAndPasswordQueryVariables = Exact<{
   loginId: Scalars['String']['input'];
   userId: Scalars['ID']['input'];
@@ -885,6 +892,25 @@ export const FindLoginInfoForExternalAuthDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<FindLoginInfoForExternalAuthQuery, FindLoginInfoForExternalAuthQueryVariables>;
+export const FindLoginInfoForPasskeyDocument = new TypedDocumentString(`
+    query findLoginInfoForPasskey($loginId: String!) {
+  findLogin(provider: "passkey", loginId: $loginId) {
+    id
+    disabled
+    data
+    user {
+      id
+      userName
+      displayName
+      givenName
+      familyName
+      profileImageUrl
+      email
+      disabled
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<FindLoginInfoForPasskeyQuery, FindLoginInfoForPasskeyQueryVariables>;
 export const FindLoginInfoForUsernameAndPasswordDocument = new TypedDocumentString(`
     query findLoginInfoForUsernameAndPassword($loginId: String!, $userId: ID!) {
   findLogin(provider: "local", loginId: $loginId, userId: $userId) {

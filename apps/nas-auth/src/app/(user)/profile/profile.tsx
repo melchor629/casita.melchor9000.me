@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@melchor629/nice-ssr'
 import { Button, FormControl, Select, Text, TextInput } from '@melchor629/ui'
-import { FileUpload } from '@melchor629/ui/icons'
+import { FileUpload, KeyVertical, Passkey } from '@melchor629/ui/icons'
 import {
   useCallback,
   useEffect,
@@ -14,6 +14,9 @@ import { useGetSession } from '#actions/queries/get-session.ts'
 import { useGetUserProfilePictures } from '#actions/queries/get-user-profile-pictures.ts'
 import { LoadingContent } from '#components/ui/index.ts'
 import { useResolvedProfilePic } from '../../hooks'
+import ChangePasswordDialog from './change-password-dialog'
+import LoginRow from './login-row'
+import RegisterPasskeyDialog from './register-passkey-dialog'
 
 const nasAuthImageUrl = 'nas-auth://'
 
@@ -27,6 +30,8 @@ const Profile = () => {
   const [givenName, setGivenName] = useState(data!.user?.givenName ?? '')
   const [familyName, setFamilyName] = useState(data!.user?.familyName ?? '')
   const [profileImageUrl, setProfileImageUrl] = useState(data!.user?.profileImageUrl ?? '')
+  const [showChangePasswordDialog, setShowChangePasswordDialog] = useState(false)
+  const [showRegisterPasskeyDialog, setShowRegisterPasskeyDialog] = useState(false)
   const inputFileRef = useRef<HTMLInputElement | null>(null)
 
   const selectedPfp = useMemo(() => {
@@ -78,6 +83,11 @@ const Profile = () => {
     }
   }, [])
 
+  const openChangePasswordDialog = useCallback(() => setShowChangePasswordDialog(true), [])
+  const closeChangePasswordDialog = useCallback(() => setShowChangePasswordDialog(false), [])
+  const openRegisterPasskeyDialog = useCallback(() => setShowRegisterPasskeyDialog(true), [])
+  const closeRegisterPasskeyDialog = useCallback(() => setShowRegisterPasskeyDialog(false), [])
+
   useEffect(() => {
     if (!data?.user) {
       return
@@ -99,7 +109,7 @@ const Profile = () => {
   }
 
   return (
-    <fieldset disabled={updateSessionUser.isPending}>
+    <fieldset className="min-inline-auto" disabled={updateSessionUser.isPending}>
       <Text size="h1" className="mb-6">Edit profile</Text>
 
       <FormControl
@@ -172,6 +182,7 @@ const Profile = () => {
             )}
         <div className="flex flex-nowrap justify-between mb-2 gap-2">
           <Select
+            name="uploadedProfileImages"
             values={pictures}
             value={selectedPfp}
             labelSelector={(value) => value || 'Select one file'}
@@ -203,12 +214,48 @@ const Profile = () => {
         />
       </FormControl>
 
-      <div className="mt-6 flex justify-between">
+      <div className="mt-6 mb-8 flex justify-between">
         <Button type="button" onClick={save} loading={updateSessionUser.isPending}>Save</Button>
         <Link to="/">
           <Button variant="text" color="neutral">Cancel</Button>
         </Link>
       </div>
+
+      <Text weight="medium" className="mb-1 mt-3 select-none">Logins & Passkeys</Text>
+      <Text size="bodySmall" color="textSecondary" className="mb-2">
+        View and disable/enable all associated logins for your account. Changes are applied
+        instantly!
+      </Text>
+      <div className="mb-2 flex justify-end gap-1">
+        <Button
+          type="button"
+          variant="text"
+          color="neutral"
+          size="small"
+          onClick={openChangePasswordDialog}
+          icon={<KeyVertical />}
+        >
+          Change password
+        </Button>
+        <Button
+          type="button"
+          variant="text"
+          color="neutral"
+          size="small"
+          onClick={openRegisterPasskeyDialog}
+          icon={<Passkey />}
+        >
+          Register Passkey
+        </Button>
+      </div>
+      <div className="flex w-full flex-col gap-1 mb-2">
+        {data.user.logins.map((l) => (
+          <LoginRow key={l.id} login={l} />
+        ))}
+      </div>
+
+      <ChangePasswordDialog onClose={closeChangePasswordDialog} show={showChangePasswordDialog} />
+      <RegisterPasskeyDialog onClose={closeRegisterPasskeyDialog} show={showRegisterPasskeyDialog} />
     </fieldset>
   )
 }

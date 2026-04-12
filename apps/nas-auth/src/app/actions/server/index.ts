@@ -6,6 +6,7 @@ import addPermissionAction from './add-permission-action'
 import addUserAction from './add-user-action'
 import addUserLoginAction from './add-user-login-action'
 import addUserPermissionAction from './add-user-permission-action'
+import changeUserPasswordAction from './change-user-password-action'
 import editApiResourceAction from './edit-api-resource-action'
 import editApplicationAction from './edit-application-action'
 import editClientAction from './edit-client-action'
@@ -23,6 +24,7 @@ import removePermissionAction from './remove-permission-action'
 import removeUserAction from './remove-user-action'
 import removeUserLoginAction from './remove-user-login-action'
 import removeUserPermissionAction from './remove-user-permission-action'
+import toggleUserLoginAction from './toggle-user-login-action'
 import updateSessionUserAction from './update-session-user-action'
 import uploadUserProfilePictureAction from './upload-user-profile-picture-action'
 
@@ -34,6 +36,7 @@ export const actions = Object.freeze({
   'add-user': addUserAction,
   'add-user-login': addUserLoginAction,
   'add-user-permission': addUserPermissionAction,
+  'change-user-password-action': changeUserPasswordAction,
   'edit-api-resource': editApiResourceAction,
   'edit-application': editApplicationAction,
   'edit-client': editClientAction,
@@ -50,6 +53,7 @@ export const actions = Object.freeze({
   'remove-user': removeUserAction,
   'remove-user-login': removeUserLoginAction,
   'remove-user-permission': removeUserPermissionAction,
+  'toggle-user-login-action': toggleUserLoginAction,
   'update-session-user': updateSessionUserAction,
   'upload-user-profile-picture': uploadUserProfilePictureAction,
 } satisfies Record<string, (request: PageLoaderContext, ...args: never[]) => Promise<FailableResult<unknown>>>)

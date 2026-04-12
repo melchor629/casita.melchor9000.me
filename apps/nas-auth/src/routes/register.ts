@@ -4,6 +4,10 @@ import cancelController from './interactions/cancel.ts'
 import confirmGrantsController from './interactions/confirm-grants.ts'
 import postExternalLoginController from './interactions/post-external-login.ts'
 import userPasswordLoginController from './interactions/user-password-login.ts'
+import finishPasskeyLoginController from './passkeys/finish-login.ts'
+import finishPasskeyRegistrationController from './passkeys/finish-registration.ts'
+import startPasskeyLoginController from './passkeys/start-login.ts'
+import startPasskeyRegistrationController from './passkeys/start-registration.ts'
 import getPermissionsForToken from './permissions.ts'
 
 const registerRoutes = (app: FastifyInstance) => {
@@ -12,6 +16,11 @@ const registerRoutes = (app: FastifyInstance) => {
   app.post('/i/:uid/confirm', confirmGrantsController.options, confirmGrantsController)
   app.get('/i/:uid/cancel', cancelController.options, cancelController)
   app.get('/i/:uid/post-external', postExternalLoginController.options, postExternalLoginController)
+
+  app.post('/pk/register/start', startPasskeyRegistrationController.options, startPasskeyRegistrationController)
+  app.post('/pk/register/finish', finishPasskeyRegistrationController.options, finishPasskeyRegistrationController)
+  app.post('/i/:uid/pk/start', startPasskeyLoginController.options, startPasskeyLoginController)
+  app.post('/i/:uid/pk/finish', finishPasskeyLoginController.options, finishPasskeyLoginController)
 
   app.options('/token/permissions', getPermissionsForToken)
   app.get('/token/permissions', getPermissionsForToken)

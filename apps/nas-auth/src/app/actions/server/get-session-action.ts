@@ -17,6 +17,12 @@ type SessionInfo = Readonly<{
     email?: string
     profileImageUrl?: string
     disabled: boolean
+    logins: Array<{
+      id: string
+      type: 'github' | 'google' | 'local' | 'passkey'
+      name?: string | null
+      disabled: boolean
+    }>
   }
   permissions: Array<{
     key: string
@@ -42,7 +48,7 @@ export const getSession = cache(async function getSession(request: PageLoaderCon
   }
 
   const [user, permissions] = await Promise.all([
-    getUser(session.accountId),
+    getUser(session.accountId, { logins: true }),
     getPermissionsForUser(session.accountId),
   ])
   return {
@@ -56,6 +62,13 @@ export const getSession = cache(async function getSession(request: PageLoaderCon
       email: user!.email || undefined,
       profileImageUrl: user!.profileImageUrl || undefined,
       disabled: user!.disabled,
+      logins: user!.logins?.map((l) => ({
+        id: l.loginId,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        name: l.data?.profile?.username || l.data?.profile?.name,
+        type: l.type as never,
+        disabled: l.disabled,
+      })) || [],
     },
     permissions: permissions.permissions
       .filter((perm) => perm.applicationKey === 'auth')

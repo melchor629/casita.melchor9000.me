@@ -1,5 +1,3 @@
-'use server'
-
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { PageLoaderContext } from '@melchor629/nice-ssr'

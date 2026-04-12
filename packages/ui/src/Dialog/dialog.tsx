@@ -18,6 +18,12 @@ export type DialogProps = Readonly<{
   portal?: boolean | HTMLElement
   closeLabel?: string
   size?: 'extra-large' | 'large' | 'medium' | 'small'
+  slots?: {
+    container?: React.ElementType
+  }
+  slotProps?: {
+    container?: React.ComponentProps<'div'>
+  }
 }>
 
 export default function Dialog({
@@ -32,6 +38,8 @@ export default function Dialog({
   portal,
   show,
   size = 'medium',
+  slotProps = {},
+  slots = {},
   title,
 }: DialogProps) {
   const [element, setElement] = useState<HTMLDivElement | null>(null)
@@ -69,6 +77,7 @@ export default function Dialog({
     }
   }, [show])
 
+  const ContainerElement = slots.container ?? 'div'
   return (
     <Portal portal={portal}>
       <div
@@ -106,13 +115,13 @@ export default function Dialog({
           role="dialog"
           aria-labelledby={`dialog-${id}-title`}
         >
-          <div className="flex flex-col grow min-w-0 min-h-0">
+          <ContainerElement {...slotProps.container} className="flex flex-col grow min-w-0 min-h-0">
             <div className="px-5 pt-4 mb-5 select-none">
               <h4 className="text-h4" id={`dialog-${id}-title`}>{title}</h4>
             </div>
             <div className="px-5 overflow-y-auto shrink">{children}</div>
             <div className="flex justify-end gap-2 h-8 mt-5 mb-3 mx-3">{finalButtons}</div>
-          </div>
+          </ContainerElement>
         </div>
       </div>
     </Portal>

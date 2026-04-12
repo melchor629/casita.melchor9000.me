@@ -65,11 +65,11 @@ export const invokeAction = async <T extends keyof typeof actions>(
 }
 
 export class ValidationError extends Error {
-  readonly fields: FailableValidationFields
+  readonly fields: Record<string, string | undefined>
 
   constructor(fields: FailableValidationFields) {
     super('The request has invalid data')
-    this.fields = fields
+    this.fields = Object.fromEntries(fields.map((e) => [e.name, e.messages.join('. ') + '.'] as const))
   }
 }
 

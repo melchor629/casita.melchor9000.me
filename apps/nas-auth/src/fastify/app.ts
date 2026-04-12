@@ -21,6 +21,7 @@ declare module 'fastify' {
   interface Session {
     login?: Readonly<{ provider: string, interactionId: string }>
     loginResult?: Readonly<{ provider: string, token: import('@fastify/oauth2').Token, profile: object }>
+    passkeyChallenge?: string
   }
 }
 

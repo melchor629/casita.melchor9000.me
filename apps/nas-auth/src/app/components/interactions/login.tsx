@@ -1,8 +1,9 @@
 import { Link } from '@melchor629/nice-ssr'
-import { Alert, Button, Text, TextInput } from '@melchor629/ui'
-import { AccountCircle, ArrowLeftAlt, ArrowRightAlt, Github, Google, KeyVertical } from '@melchor629/ui/icons'
+import { Alert, Button, CircularProgress, Text, TextInput } from '@melchor629/ui'
+import { AccountCircle, ArrowLeftAlt, ArrowRightAlt, Github, Google, KeyVertical, Passkey } from '@melchor629/ui/icons'
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useMemo, useState } from 'react'
+import usePasskeyLogin from '#actions/mutations/passkey-login.ts'
 import InteractionFooter from './interaction-footer'
 import type { Client, ExternalAuths, Interaction } from './types'
 
@@ -15,15 +16,17 @@ type LoginProps = Readonly<{
 const Login = ({ client, externalAuths, interaction }: LoginProps) => {
   const [username, setUsername] = useState(interaction.params.login_hint as string ?? '')
   const [password, setPassword] = useState('')
-  const [isPasswordStep, setIsPasswordStep] = useState(!!username)
+  const [step, setStep] = useState<'initial' | 'password' | 'passkey'>(username ? 'password' : 'initial')
   const postExternalCallback = useMemo(() => new URLSearchParams({
     uid: interaction.uid,
   }).toString(), [interaction.uid])
+  const passkeyLogin = usePasskeyLogin()
 
   const hasGoogleAuth = useMemo(() => externalAuths.includes('google'), [externalAuths])
   const hasGithubAuth = useMemo(() => externalAuths.includes('github'), [externalAuths])
-  const showPasswordStep = useCallback(() => setIsPasswordStep(true), [])
-  const backToMethodsStep = useCallback(() => setIsPasswordStep(false), [])
+  const showPasswordStep = useCallback(() => setStep('password'), [])
+  const backToMethodsStep = useCallback(() => setStep('initial'), [])
+  const signinPasskey = useCallback(() => { setStep('passkey'); passkeyLogin.reset(); passkeyLogin.mutate() }, [passkeyLogin])
 
   return (
     <>
@@ -31,7 +34,7 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
 
       <div className="relative w-full mb-6">
         <AnimatePresence mode="wait" initial={false}>
-          {!isPasswordStep && (
+          {step === 'initial' && (
             <motion.div
               key="login-method"
               initial={{ opacity: 0, translateX: -8 }}
@@ -62,6 +65,14 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
                   </Button>
                 )}
                 <Button
+                  icon={<Passkey />}
+                  color="secondary"
+                  onClick={signinPasskey}
+                  disabled={passkeyLogin.isPending}
+                >
+                  Sign in with passkey
+                </Button>
+                <Button
                   icon={<KeyVertical />}
                   color="secondary"
                   onClick={showPasswordStep}
@@ -80,7 +91,7 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
             </motion.div>
           )}
 
-          {isPasswordStep && (
+          {step === 'password' && (
             <motion.form
               key="password"
               autoComplete="off"
@@ -135,6 +146,37 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
                 </Button>
               </div>
             </motion.form>
+          )}
+
+          {step === 'passkey' && (
+            <motion.div
+              key="passkey"
+              initial={{ opacity: 0, translateX: 8 }}
+              animate={{ opacity: 1, translateX: 0 }}
+              exit={{ opacity: 0, translateX: 8 }}
+            >
+              <div className="text-center mb-4">
+                <Text size="bodyLarge" className="mb-2">Signing in with Passkey</Text>
+                {passkeyLogin.isPending && (
+                  <CircularProgress size="large" />
+                )}
+                {passkeyLogin.error && (
+                  <Alert severity="error" title="Could not sign in" className="text-start">
+                    {passkeyLogin.error.message}
+                  </Alert>
+                )}
+              </div>
+
+              <Button
+                type="button"
+                variant="text"
+                color="neutral"
+                icon={<ArrowLeftAlt />}
+                onClick={backToMethodsStep}
+              >
+                Back
+              </Button>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
