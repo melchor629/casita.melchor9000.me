@@ -27,6 +27,7 @@ const textStyles = makeStyles({
       secondary: 'text-secondary-main',
       warning: 'text-warning-main',
       error: 'text-error-main',
+      success: 'text-success-main',
       inherit: 'text-inherit',
     },
     underline: {

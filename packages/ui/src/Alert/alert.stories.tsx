@@ -16,7 +16,7 @@ const meta = {
   argTypes: {
     severity: {
       control: 'inline-radio',
-      options: ['default', 'error'],
+      options: ['default', 'error', 'warning', 'success'],
     },
   },
 } satisfies Meta<typeof Alert>

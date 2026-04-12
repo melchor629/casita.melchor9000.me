@@ -37,6 +37,10 @@
     var(--color-amber-700),
     var(--color-amber-500)
   );
+  --color-warning-alert: light-dark(
+    var(--color-amber-50),
+    var(--color-amber-950)
+  );
 
   --color-error-main: light-dark(
     var(--color-red-600),
@@ -49,6 +53,27 @@
   --color-error-selected: light-dark(
     var(--color-red-700),
     var(--color-red-500)
+  );
+  --color-error-alert: light-dark(
+    var(--color-red-50),
+    var(--color-red-950)
+  );
+
+  --color-success-main: light-dark(
+    var(--color-green-600),
+    var(--color-green-400)
+  );
+  --color-success-alt: light-dark(
+    var(--color-green-300),
+    var(--color-green-700)
+  );
+  --color-success-selected: light-dark(
+    var(--color-green-700),
+    var(--color-green-500)
+  );
+  --color-success-alert: light-dark(
+    var(--color-green-50),
+    var(--color-green-950)
   );
 
   --color-text-main: light-dark(

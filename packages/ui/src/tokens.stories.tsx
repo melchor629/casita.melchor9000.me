@@ -47,6 +47,7 @@ export const Colors: Story = {
           <ColorRow className="bg-warning-main" />
           <ColorRow className="bg-warning-alt" />
           <ColorRow className="bg-warning-selected" />
+          <ColorRow className="bg-warning-alert" />
         </>
       )}
 
@@ -55,6 +56,16 @@ export const Colors: Story = {
           <ColorRow className="bg-error-main" />
           <ColorRow className="bg-error-alt" />
           <ColorRow className="bg-error-selected" />
+          <ColorRow className="bg-error-alert" />
+        </>
+      )}
+
+      {(color === 'all' || color === 'success') && (
+        <>
+          <ColorRow className="bg-success-main" />
+          <ColorRow className="bg-success-alt" />
+          <ColorRow className="bg-success-selected" />
+          <ColorRow className="bg-success-alert" />
         </>
       )}
 
@@ -81,7 +92,7 @@ export const Colors: Story = {
     color: {
       type: 'string',
       control: 'inline-radio',
-      options: ['all', 'primary', 'secondary', 'warning', 'error', 'text', 'elevated'],
+      options: ['all', 'primary', 'secondary', 'warning', 'error', 'success', 'text', 'elevated'],
     },
   },
 }

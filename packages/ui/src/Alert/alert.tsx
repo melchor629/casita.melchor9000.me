@@ -1,10 +1,10 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react'
-import { Error, Info } from '../icons'
+import { CheckCircle, Error, Info, Warning } from '../icons'
 import { makeStyles, type MakeStylesProps } from '../utils'
 
 const alertStyles = makeStyles({
   slots: {
-    base: 'flex gap-2 px-4 py-2 border rounded-md',
+    base: 'flex gap-2 px-4 py-1.5 border-2 rounded-lg',
     text: 'text-body break-all text-text-secondary',
     title: 'text-h4 font-medium',
     icon: 'text-h3 mt-0.5 -ml-1.5',
@@ -12,10 +12,16 @@ const alertStyles = makeStyles({
   variants: {
     severity: {
       default: {
-        base: 'text-text-main bg-text-contrasted/60 border-text-secondary',
+        base: 'text-text-main bg-text-contrasted border-text-secondary',
+      },
+      warning: {
+        base: 'text-warning-main bg-warning-alert border-warning-main',
       },
       error: {
-        base: 'text-error-selected bg-error-main/15 border-error-selected',
+        base: 'text-error-main bg-error-alert border-error-main',
+      },
+      success: {
+        base: 'text-success-main bg-success-alert border-success-main',
       },
     },
   },
@@ -35,6 +41,8 @@ export default function Alert({ children, severity = 'default', title: titleElem
     <div {...props} role="alert" className={base(props)}>
       {severity === 'default' && <Info className={icon()} />}
       {severity === 'error' && <Error className={icon()} />}
+      {severity === 'warning' && <Warning className={icon()} />}
+      {severity === 'success' && <CheckCircle className={icon()} />}
       <div>
         <h4 className={title()}>{titleElement}</h4>
         <p className={text()}>{children}</p>
