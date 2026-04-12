@@ -1,5 +1,3 @@
-// eslint-disable-next-line import-x/no-extraneous-dependencies
-import '@vitejs/plugin-react/preamble'
 import { StrictMode, type ReactNode } from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import type { PartialPageRenderResult } from './entry/page-render.js'

@@ -6,6 +6,12 @@ export type ButtonGroupProps = Readonly<
   & React.ComponentProps<typeof ButtonGroupContext>['value']
 >
 
+/**
+ * A container component for grouping multiple buttons.
+ *
+ * This component groups a set of buttons, applying shared styling.
+ * Individual buttons can override shared styles.
+ */
 export default function ButtonGroup({ children, className, color, size, variant, ...props }: ButtonGroupProps) {
   return (
     <div

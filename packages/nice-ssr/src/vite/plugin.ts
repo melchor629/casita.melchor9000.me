@@ -60,7 +60,7 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
           throw new Error('Configuration error: build.rollupOptions.output cannot be an array')
         }
         config.build.rolldownOptions.output ??= {}
-        config.build.rolldownOptions.output.entryFileNames = (chunkInfo) => {
+        const entryFileNames = config.build.rolldownOptions.output.entryFileNames = (chunkInfo) => {
           if (env.isSsrBuild && chunkInfo.name === 'server') {
             return '[name].js'
           }
@@ -78,36 +78,62 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
           return `.p/chunks/${chunkInfo.name}.[hash].js`
         }
 
-        if (!env.isSsrBuild) {
-          config.build.outDir = 'dist/client'
-          config.build.manifest = true
-          config.build.rolldownOptions.input = ['virtual:entry-csr']
-          config.build.rolldownOptions.output.chunkFileNames = (chunkInfo) =>
-            `.p/chunks/${chunkInfo.name}.[hash].js`
-          // needed for the csr pages, otherwise the export default is trimmed
-          config.build.rolldownOptions.preserveEntrySignatures = 'exports-only'
+        const csrInputs = ['virtual:entry-csr']
+        const rootLayoutPath = getRootLayoutPath()
+        if (await unsafeExists(rootLayoutPath)) {
+          csrInputs.push(getRelativeSourcePath(rootLayoutPath))
+        }
+        for await (const page of fs.glob(getAppPath('**', 'page.tsx'))) {
+          const lePath = path.relative(getAppPath(), page).replace(/page\.tsx$/, '')
+          csrInputs.push(csrPageModuleId(lePath))
+        }
+        for await (const page of fs.glob(getAppPath('**', 'not-found.tsx'))) {
+          const lePath = path.relative(getAppPath(), page).replace(/not-found\.tsx$/, '')
+          csrInputs.push(csrPageModuleId(lePath) + '/_not_found')
+        }
+        for await (const page of fs.glob(getAppPath('**', 'error.tsx'))) {
+          const lePath = path.relative(getAppPath(), page).replace(/error\.tsx$/, '')
+          csrInputs.push(csrPageModuleId(lePath) + '/_error')
+        }
 
-          const rootLayoutPath = getRootLayoutPath()
-          if (await unsafeExists(rootLayoutPath)) {
-            config.build.rolldownOptions.input.push(getRelativeSourcePath(rootLayoutPath))
-          }
-          for await (const page of fs.glob(getAppPath('**', 'page.tsx'))) {
-            const lePath = path.relative(getAppPath(), page).replace(/page\.tsx$/, '')
-            config.build.rolldownOptions.input.push(csrPageModuleId(lePath))
-          }
-          for await (const page of fs.glob(getAppPath('**', 'not-found.tsx'))) {
-            const lePath = path.relative(getAppPath(), page).replace(/not-found\.tsx$/, '')
-            config.build.rolldownOptions.input.push(csrPageModuleId(lePath) + '/_not_found')
-          }
-          for await (const page of fs.glob(getAppPath('**', 'error.tsx'))) {
-            const lePath = path.relative(getAppPath(), page).replace(/error\.tsx$/, '')
-            config.build.rolldownOptions.input.push(csrPageModuleId(lePath) + '/_error')
-          }
-        } else {
-          config.build.ssr = path.join(import.meta.dirname, '..', 'entry/server.js')
-          config.build.target = 'node24'
-          config.build.outDir = 'dist/server'
-          config.build.rolldownOptions.external = ['../client/.vite/manifest.json']
+        config.environments = {
+          ...config.environments,
+          client: {
+            ...config.environments?.client,
+            build: {
+              outDir: 'dist/client',
+              manifest: true,
+              rolldownOptions: {
+                input: csrInputs,
+                output: {
+                  chunkFileNames: (chunkInfo) =>
+                    `.p/chunks/${chunkInfo.name}.[hash].js`,
+                },
+                // needed for the csr pages, otherwise the export default is trimmed
+                preserveEntrySignatures: 'exports-only',
+              },
+            },
+          },
+          ssr: {
+            ...config.environments?.ssr,
+            build: {
+              ssr: path.join(import.meta.dirname, '..', 'entry/server.js'),
+              target: 'node24',
+              outDir: 'dist/server',
+              rolldownOptions: {
+                external: ['../client/.vite/manifest.json'],
+                output: {
+                  entryFileNames: (chunkInfo) => {
+                    if (chunkInfo.name === 'server') {
+                      return '[name].js'
+                    }
+
+                    return entryFileNames(chunkInfo)
+                  },
+                },
+              },
+            },
+          },
         }
       }
     },

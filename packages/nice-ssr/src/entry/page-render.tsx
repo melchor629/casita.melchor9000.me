@@ -93,7 +93,11 @@ async function getCsrTags(
   const pageCsrModuleId = path.join('virtual:csr', moduleId).replace(/\/$/, '')
   if (import.meta.env.DEV) {
     return [
-      [<script type="module" nonce={scriptNonce} src="/src/app/root-layout.tsx" async />],
+      [
+        <script key="vite" type="module" nonce={scriptNonce} src="/@vite/client" />,
+        <script key="react-refresh" type="module" nonce={scriptNonce} src="/@id/__x00__@vitejs/plugin-react/preamble" />,
+        <script key="root-layout" type="module" nonce={scriptNonce} src="/src/app/root-layout.tsx" />,
+      ],
       `/@id/__x00__${pageCsrModuleId}`,
     ]
   }
@@ -197,6 +201,7 @@ async function renderCompletePage(
     const tree = RootLayout({
       children: [
         <SsrRouterProvider
+          key="router-provider"
           initialValue={{
             basePath: request.nice.basePath,
             params: request.nice.params,
@@ -308,11 +313,12 @@ export default async function renderPage(
   context: RenderPageContext,
   request: SsrRequest,
 ): Promise<Response> {
-  if (request.headers.get('accept')?.includes('application/json+ssr')) {
+  const accept = request.headers.get('accept')
+  if (accept?.includes('application/json+ssr')) {
     return renderPartialPage(module, context, request)
   }
 
-  if (request.headers.get('accept')?.includes('text/html')) {
+  if (accept?.includes('text/html') || accept?.includes('*/*')) {
     return renderCompletePage(module, context, request)
   }
 
@@ -336,6 +342,8 @@ async function renderHead({ metadata: metadataFn }: PageModule, ssrProps: Record
   })
 }
 
+const keyFillTrick = (children: ReadonlyArray<ReactNode>): ReadonlyArray<ReactNode> =>
+  Object.freeze(children.map((e, i) => typeof e === 'object' && e && 'type' in e ? ({ ...e, key: e.key ?? i.toString() } satisfies ReactElement) : e))
 function transformTree(tree: ReactElement<ComponentProps<'html'>, 'html'>, additionalElements: ReactNode[]) {
   if (tree.type !== 'html' || !tree.props.children || typeof tree.props.children !== 'object' || !(Symbol.iterator in tree.props.children)) {
     throw new Error('The root layout must return <html /> tag')
@@ -347,18 +355,17 @@ function transformTree(tree: ReactElement<ComponentProps<'html'>, 'html'>, addit
     .find((el): el is ReactElement<ComponentProps<'head'>, 'head'> => el.type === 'head')
     ?? <head /> as ReactElement<ComponentProps<'head'>>
   const headChildren = Array.from(headTree.props.children as ReactNode[] ?? [])
-  if (import.meta.env.DEV) {
-    headChildren.unshift(<script type="module" src="/@vite/client" />)
-  }
-  headChildren.unshift(<meta charSet="UTF-8" />)
+  headChildren.unshift(<meta key="utf8" charSet="UTF-8" />)
   headChildren.push(...additionalElements)
 
-  const newHead = cloneElement(headTree, { children: headChildren })
+  const newHead = cloneElement(headTree, {
+    children: keyFillTrick(headChildren),
+  })
   return cloneElement(tree, {
-    children: [
+    children: keyFillTrick([
       treeChildren.slice(0, treeChildren.indexOf(headTree)),
       newHead,
       treeChildren.slice(treeChildren.indexOf(headTree) + 1),
-    ],
+    ]),
   })
 }

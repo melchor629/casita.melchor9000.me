@@ -41,6 +41,14 @@ type ButtonTypeMap = {
 
 export type ButtonProps<C extends ElementType = ButtonTypeMap['defaultComponent']> = OverridableComponentProps<ButtonTypeMap, C>
 
+/**
+ * Fancy button that can be styled with {@link ButtonProps.variant} and have different colours
+ * based on {@link ButtonProps.color} or size {@link ButtonProps.size}. The button also allows
+ * rendering an icon which will be placed before the text. If no children is provided, the
+ * button will act as in *Icon Button* changing slightly the layout. Additionally, if the button
+ * triggers an asynchronous operation, {@link ButtonProps.loading} set to `true` will replace
+ * the contents with a {@link CircularProgress} to indicate background work.
+ */
 const Button: OverridableComponent<ButtonTypeMap> = ({
   children,
   className,

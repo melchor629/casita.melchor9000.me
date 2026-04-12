@@ -3,17 +3,7 @@
 import { createBuilder } from 'vite'
 
 console.log('> Reading vite configuration')
-const [csrBuilder, ssrBuilder] = await Promise.all([
-  createBuilder({}),
-  createBuilder({
-    build: {
-      ssr: true,
-    },
-  }, true),
-])
+const builder = await createBuilder({})
 
-console.log('\n> Compiling Client')
-await csrBuilder.buildApp()
-
-console.log('\n> Compiling Server')
-await ssrBuilder.buildApp()
+console.log('> Bulding vite app')
+await builder.buildApp()

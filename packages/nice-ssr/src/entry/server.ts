@@ -82,3 +82,7 @@ export async function renderRoute(
 }
 
 export { isSsrResponse } from '../nice-ssr/response.ts'
+
+if (import.meta.hot) {
+  import.meta.hot.accept()
+}

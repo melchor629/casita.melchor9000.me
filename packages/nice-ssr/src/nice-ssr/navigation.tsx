@@ -467,5 +467,14 @@ export function SsrRouterProvider({ initialValue }: Readonly<{
     use(state.pagePromise)
   }
   const { Page, props } = state
-  return <SsrRouterContext value={{ state: { ...state, state: isTransitioning ? 'navigating' : state.state }, actions }}><Page {...props} /></SsrRouterContext>
+  return (
+    <SsrRouterContext
+      value={{
+        actions,
+        state: { ...state, state: isTransitioning ? 'navigating' : state.state },
+      }}
+    >
+      <Page {...props} />
+    </SsrRouterContext>
+  )
 }
