@@ -23,6 +23,7 @@ export default async function start({
             ...context,
             url: new URL(context.url),
             Page: mod.renderPage,
+            pageModulePath: path,
             props,
           }}
         />

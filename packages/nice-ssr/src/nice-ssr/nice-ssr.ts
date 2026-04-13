@@ -1,4 +1,5 @@
 export { default as cache } from './cache'
+export type { ErrorComponentProps } from './error'
 export {
   Link,
   type LinkProps,

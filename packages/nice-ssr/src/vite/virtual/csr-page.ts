@@ -34,7 +34,11 @@ export default async function generateCsrPage(moduleId: string) {
   const entry = type === 'page'
     ? pageEntry.entry
     : (type === 'not-found' ? pageEntry.notFoundEntry : pageEntry.errorEntry)
-  if (!entry) return ''
+  if (!entry) {
+    if (type === 'not-found') return 'export const renderPage = () => "not found (as developer, please implement the not found page)"'
+    if (type === 'error') return 'export const renderPage = () => "error (as developer, please implement the error component)"'
+    return ''
+  }
 
   const sourcePath = getAppPath(entry)
   const layouts = getLayouts(pageEntry)

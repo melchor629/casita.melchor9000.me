@@ -15,6 +15,7 @@ import {
 } from 'react'
 import { useShallow } from 'zustand/shallow'
 import type { PartialPageRenderResult } from '../entry/page-render'
+import ErrorBoundary from './error'
 
 const ssrTypeSymbol: unique symbol = Symbol('ssr:type')
 
@@ -117,6 +118,7 @@ export type SsrRouterProviderProps = Readonly<{
   params: Record<string, string>
   props: Record<string, unknown>
   Page: (props: Record<string, unknown>) => ReactNode
+  pageModulePath: string
 }>
 
 const SsrRouterContext = createContext<{
@@ -152,8 +154,10 @@ const loadPage = async (store: RouterContextActions, newUrl: URL, justFetch = fa
     },
   })
   const data = await res.json() as PartialPageRenderResult
+  let pageModulePath: string | undefined
   const modules = await Promise.all(data.a.map(async (asset) => {
     if (asset.type === 'page') {
+      pageModulePath = asset.path
       const { renderPage } = await import(/* @vite-ignore */ asset.path) as { renderPage: unknown }
       return renderPage
     }
@@ -196,6 +200,7 @@ const loadPage = async (store: RouterContextActions, newUrl: URL, justFetch = fa
       state: 'inactive',
       props: data.p,
       Page,
+      pageModulePath,
     })
   }, 0)
 }
@@ -409,6 +414,7 @@ export function SsrRouterProvider({ initialValue }: Readonly<{
     basePath: initialValue.basePath,
     blockerFns: [],
     Page: initialValue.Page,
+    pageModulePath: initialValue.pageModulePath,
     params: initialValue.params,
     pathname: initialValue.pathname,
     props: initialValue.props,
@@ -474,7 +480,9 @@ export function SsrRouterProvider({ initialValue }: Readonly<{
         state: { ...state, state: isTransitioning ? 'navigating' : state.state },
       }}
     >
-      <Page {...props} />
+      <ErrorBoundary path={`${state.pageModulePath}/_error`}>
+        <Page {...props} />
+      </ErrorBoundary>
     </SsrRouterContext>
   )
 }
