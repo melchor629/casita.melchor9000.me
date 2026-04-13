@@ -85,6 +85,9 @@ const getRouteHandler = memoize((
   },
 }), (routeMatch) => routeMatch.at(-1)!.pathname)
 
+const countPathSegments = (path: string) =>
+  path.replaceAll(/^\/|\/$/g, '').split('/').filter((s) => !!s).length
+
 const calculateRoutePath = (
   path: string,
   route: PathModule,
@@ -113,6 +116,10 @@ export function get(pagePath: string): RouteHandle | undefined {
   const routePath = calculateRoutePath(pagePath, routeModules.route)
   const routeMatch = routePath.at(-1)
   if (!routeMatch || routeMatch?.type === 'nothing') {
+    return undefined
+  }
+
+  if (countPathSegments(routeMatch.pathname) !== countPathSegments(pagePath)) {
     return undefined
   }
 
