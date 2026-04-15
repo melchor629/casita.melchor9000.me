@@ -26,7 +26,7 @@
   "peerDependencies": {
     "@fastify/otel": "^0.18.0",
     "@opentelemetry/api": "^1.0.0",
-    "fastify": "^5.0.0",
+    "fastify": "^5.8.5",
     "fresh": "^0.5.0",
     "jose": "^6.0.0"
   },
