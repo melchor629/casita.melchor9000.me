@@ -4,13 +4,41 @@ type ErrorBoundaryProps = Readonly<PropsWithChildren<{
   path: string
 }>>
 
-type ErrorBoundaryState = Readonly<{
-  hasError: boolean
-  error: Error | null
-  component: LazyExoticComponent<FC<{ error: Error, reset: () => void }>>
+export type CsrError = Readonly<{
+  /**
+   * The message from the error
+   */
+  message: string
+  /**
+   * Includes the stack trace only in dev
+   */
+  stack?: string
+  /**
+   * An identifier to correlate the error with logs.
+   */
+  digest: string
+  /**
+   * The cause of the error if there is one.
+   */
+  cause?: CsrError | null
 }>
 
-export type ErrorComponentProps = Readonly<{ error: Error, reset: () => void }>
+type ErrorBoundaryState = Readonly<{
+  hasError: boolean
+  error: CsrError | null
+  component: LazyExoticComponent<FC<ErrorComponentProps>>
+}>
+
+export type ErrorComponentProps = Readonly<{
+  /**
+   * The error from the server, stripped of unsecure information.
+   */
+  error: CsrError
+  /**
+   * Removes the error and tries to render the page again.
+   */
+  reset: () => void
+}>
 
 const initialState: ErrorBoundaryState = { hasError: false, error: null, component: null! }
 

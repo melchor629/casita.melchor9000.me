@@ -1,5 +1,7 @@
+import { trace } from '@opentelemetry/api'
 // eslint-disable-next-line import-x/no-unresolved
 import routeModules, { type PathModule, type ResourcePathModule } from 'virtual:ssr/routes'
+import type { CsrError } from '../nice-ssr/error.tsx'
 import { mapToSsrRequest, type Logger } from '../nice-ssr/request.ts'
 import { SsrResponse } from '../nice-ssr/response.ts'
 import renderPage from './page-render.tsx'
@@ -86,7 +88,7 @@ const getRouteHandler = memoize((
 }), (routeMatch) => routeMatch.at(-1)!.pathname)
 
 const countPathSegments = (path: string) =>
-  path.replaceAll(/^\/|\/$/g, '').split('/').filter((s) => !!s).length
+  path.replaceAll(/\/\(\w+\)/g, '').replaceAll(/^\/|\/$/g, '').split('/').filter((s) => !!s).length
 
 const calculateRoutePath = (
   path: string,
@@ -158,6 +160,44 @@ export function getNotFoundPage(path: `/${string}`): RouteHandle {
   ], 404, {})
 }
 
+const mapError = (error: unknown): CsrError => {
+  const digest = trace.getActiveSpan()?.spanContext()?.traceId ?? ''
+  if (error == null) {
+    return {
+      message: 'Unknown error',
+      digest,
+    }
+  }
+
+  if (error instanceof Error) {
+    return {
+      message: error.message,
+      stack: import.meta.env.DEV ? error.stack : undefined,
+      digest,
+      cause: error.cause ? mapError(error.cause) : undefined,
+    }
+  }
+
+  if (typeof error === 'object' && 'message' in error && typeof error.message === 'string') {
+    return {
+      message: error.message,
+      digest,
+    }
+  }
+
+  if (typeof error === 'string') {
+    return {
+      message: error,
+      digest,
+    }
+  }
+
+  return {
+    message: 'Unknown error',
+    digest,
+  }
+}
+
 export function getErrorPage(path: `/${string}`, error: unknown): RouteHandle {
   const routePath = calculateRoutePath(path, routeModules.route)
   const errorRoutePathIndex = routePath
@@ -174,7 +214,7 @@ export function getErrorPage(path: `/${string}`, error: unknown): RouteHandle {
       pathname: `${errorRoutePath?.pathname ?? ''}/_error`,
       type: 'page',
     },
-  ], 500, { error })
+  ], 500, { error: mapError(error) })
 }
 
 if (import.meta.hot) {
