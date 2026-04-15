@@ -1,5 +1,5 @@
-import fs from 'fs'
-import type { ServerResponse } from 'http'
+import fs from 'node:fs'
+import type { ServerResponse } from 'node:http'
 import type { FastifyReply } from 'fastify'
 import { errors, type Adapter, type Configuration, type JWKS } from 'oidc-provider'
 import { cookieKeysOauth, jwksFilePath, publicUrl } from '../config.ts'
@@ -48,7 +48,7 @@ const config: Configuration = {
       client_id: 'nas-auth',
       client_name: 'NAS Auth',
       client_uri: publicUrl,
-      logo_uri: new URL('icon.png', publicUrl).toString(),
+      logo_uri: new URL('/src/app/icon.png', publicUrl).toString(),
       grant_types: ['implicit', 'authorization_code'],
       response_types: ['id_token', 'code'],
       token_endpoint_auth_method: 'none',

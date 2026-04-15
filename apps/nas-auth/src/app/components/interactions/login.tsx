@@ -1,4 +1,3 @@
-import { Link } from '@melchor629/nice-ssr'
 import { Alert, Button, CircularProgress, Text, TextInput } from '@melchor629/ui'
 import { AccountCircle, ArrowLeftAlt, ArrowRightAlt, Github, Google, KeyVertical, Passkey } from '@melchor629/ui/icons'
 import { AnimatePresence, motion } from 'motion/react'
@@ -82,11 +81,9 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
               </div>
 
               <div className="flex flex-col">
-                <Link
-                  to={`/i/${interaction.uid}/cancel`}
-                >
+                <a href={`/i/${interaction.uid}/cancel`}>
                   <Button className="w-full" variant="text" color="neutral">Cancel</Button>
-                </Link>
+                </a>
               </div>
             </motion.div>
           )}
