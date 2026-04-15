@@ -216,6 +216,7 @@ async function renderCompletePage(
                 )}
               </>
             ),
+            pageModulePath: '',
             props: ssrProps,
           }}
         />,
@@ -254,7 +255,7 @@ async function renderCompletePage(
 
 export type PartialPageRenderResult = Readonly<{
   p: Record<string, unknown>
-  c: Omit<SsrRouterProviderProps, 'props' | 'Page'>
+  c: Omit<SsrRouterProviderProps, 'props' | 'Page' | 'pageModulePath'>
   a: Array<{ type: 'page' | 'module' | 'stylesheet', path: string }>
   m?: Metadata
 }>
