@@ -1,5 +1,14 @@
 # nas-persistance
 
+## 2.0.11
+
+### Patch Changes
+
+- 4499354: Upgrade typescript version to v6
+- Updated dependencies [4499354]
+  - @melchor629/fastify-infra@0.2.1
+  - @melchor629/infra@0.1.3
+
 ## 2.0.10
 
 ### Patch Changes

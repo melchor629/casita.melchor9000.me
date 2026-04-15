@@ -1,5 +1,14 @@
 # nas-fs
 
+## 0.12.29
+
+### Patch Changes
+
+- 4499354: Upgrade typescript version to v6
+- Updated dependencies [4499354]
+  - @melchor629/fastify-infra@0.2.1
+  - @melchor629/infra@0.1.3
+
 ## 0.12.28
 
 ### Patch Changes

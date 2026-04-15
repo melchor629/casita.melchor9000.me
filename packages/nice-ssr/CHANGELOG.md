@@ -1,5 +1,15 @@
 # @melchor629/nice-ssr
 
+## 0.5.1
+
+### Patch Changes
+
+- 2fe7d6a: Rewrite plugin config to properly use vite environments
+- bf31a2c: Map Error from server to avoid exposing sensible data.
+- 2a92e63: Improve error handling in CSR
+- 4499354: Upgrade typescript version to v6
+- 315e1c7: Fix 404 pages being matched to parent routes
+
 ## 0.5.0
 
 ### Minor Changes

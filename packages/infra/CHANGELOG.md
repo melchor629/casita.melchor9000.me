@@ -1,5 +1,11 @@
 # @melchor629/infra
 
+## 0.1.3
+
+### Patch Changes
+
+- 4499354: Upgrade typescript version to v6
+
 ## 0.1.2
 
 ### Patch Changes

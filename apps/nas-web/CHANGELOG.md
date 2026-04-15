@@ -1,5 +1,14 @@
 # nas-web
 
+## 0.16.3
+
+### Patch Changes
+
+- 4499354: Upgrade typescript version to v6
+- Updated dependencies [2af7686]
+- Updated dependencies [4499354]
+  - @melchor629/ui@0.0.2
+
 ## 0.16.2
 
 ### Patch Changes

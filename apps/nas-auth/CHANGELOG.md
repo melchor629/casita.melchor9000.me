@@ -1,5 +1,26 @@
 # nas-auth
 
+## 3.3.0
+
+### Minor Changes
+
+- fec00d9: Add support for passkeys registration and login.
+
+### Patch Changes
+
+- 38a7641: Fix cancel login fails because it is called twice
+- 4499354: Upgrade typescript version to v6
+- Updated dependencies [2fe7d6a]
+- Updated dependencies [bf31a2c]
+- Updated dependencies [2a92e63]
+- Updated dependencies [2af7686]
+- Updated dependencies [4499354]
+- Updated dependencies [315e1c7]
+  - @melchor629/nice-ssr@0.5.1
+  - @melchor629/ui@0.0.2
+  - @melchor629/fastify-infra@0.2.1
+  - @melchor629/infra@0.1.3
+
 ## 3.2.0
 
 ### Minor Changes

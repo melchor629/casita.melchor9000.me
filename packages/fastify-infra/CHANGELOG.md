@@ -1,5 +1,11 @@
 # @melchor629/fastify-infra
 
+## 0.2.1
+
+### Patch Changes
+
+- 4499354: Upgrade typescript version to v6
+
 ## 0.2.0
 
 ### Minor Changes
