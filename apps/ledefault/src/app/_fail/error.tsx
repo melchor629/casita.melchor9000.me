@@ -1,5 +1,6 @@
 import type { ErrorComponentProps } from '@melchor629/nice-ssr'
-import { Button, Text } from '@melchor629/ui'
+import Button from '@melchor629/ui/Button'
+import Text from '@melchor629/ui/Text'
 
 export default function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (

@@ -1,8 +1,8 @@
 import { flip, type VirtualElement } from '@floating-ui/react'
 import { useCallback, useLayoutEffect, useState, type SyntheticEvent } from 'react'
 import FadeAndMove from '../FadeAndMove'
+import { Menu, type MenuProps } from '../Menu'
 import Popover, { type PopoverProps } from '../Popover'
-import Menu, { type MenuProps } from './menu'
 
 export type PopoverMenuProps = Readonly<
   & MenuProps

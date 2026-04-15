@@ -1,5 +1,6 @@
 import { flip, offset, type VirtualElement } from '@floating-ui/react'
-import { MenuItemSeparator, PopoverMenu } from '@melchor629/ui'
+import { MenuItemSeparator } from '@melchor629/ui'
+import PopoverMenu from '@melchor629/ui/PopoverMenu'
 import { useMemo, type ReactElement } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'

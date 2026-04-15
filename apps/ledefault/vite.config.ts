@@ -16,6 +16,10 @@ export default defineConfig({
         const [path, fs] = await Promise.all([import('node:path'), import('node:fs/promises')])
         const sourcePath = path.resolve('src')
         const distPath = path.resolve('dist')
+        if (await fs.access(distPath).catch(() => true)) {
+          return
+        }
+
         await Promise.all(
           ['config.ts', 'server.ts', 'instrumentation.ts']
             .map((f) => fs.copyFile(path.join(sourcePath, f), path.join(distPath, f))),

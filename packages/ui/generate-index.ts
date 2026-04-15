@@ -1,7 +1,7 @@
 import { readFile, glob, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-const excluded = ['**/ReactRouterButton', '**/ReactRouterLink', '**/icons'];
+const excluded = ['**/ReactRouterButton', '**/ReactRouterLink', '**/icons', '**/Popover', '**/PopoverMenu'];
 const exportOneRegex = /^export default (\w+)\nexport type { (\w+) } from/m
 const exportMultipleRegex = /^export { default as (\w+)((?:, ?type \w+)*) } from '.+?'$/gm
 

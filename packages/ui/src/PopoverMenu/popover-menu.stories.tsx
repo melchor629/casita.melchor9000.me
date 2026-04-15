@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
+import Menu from '../Menu/menu'
+import MenuItem from '../Menu/menu-item'
 import { Android, Github, Home, Settings } from '../icons'
-import Menu from './menu'
-import MenuItem from './menu-item'
 import PopoverMenu from './popover-menu'
 
 const meta = {

@@ -1,4 +1,5 @@
-import { Button, CircularProgress, PopoverMenu } from '@melchor629/ui'
+import { Button, CircularProgress } from '@melchor629/ui'
+import PopoverMenu from '@melchor629/ui/PopoverMenu'
 import {
   Apps as AppsIcon,
   Home as HomeIcon,
