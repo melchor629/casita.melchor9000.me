@@ -11,12 +11,12 @@ const cancelController: Controller<Route> = async (req, res) => {
     error_description: 'User aborted interaction',
   }
 
-  // TODO tries twice and fails for some reason ...
-  await req.trace(
+  const location = await req.trace(
     'interaction finished',
     {},
-    () => oidc.interactionFinished(req.raw, res.raw, result, { mergeWithLastSubmission: false }).then(() => res.hijack()),
+    () => oidc.interactionResult(req.raw, res.raw, result, { mergeWithLastSubmission: false }),
   )
+  return res.redirect(location).send()
 }
 
 cancelController.options = {}

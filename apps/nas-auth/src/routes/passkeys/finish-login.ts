@@ -5,7 +5,6 @@ import type { Controller, GenericRoute } from '../models.ts'
 
 interface Route extends GenericRoute {
   Body: {
-    username: string
     data: AuthenticationResponseJSON
   }
   Reply: {

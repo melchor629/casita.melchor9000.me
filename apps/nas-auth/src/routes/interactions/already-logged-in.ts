@@ -3,9 +3,10 @@ import type { Controller, GenericRoute } from '../models.ts'
 
 interface Route extends GenericRoute {
   Querystring: { accountId?: string }
-  Reply:
-    | void
-    | { message: string }
+  Reply: {
+    200: void
+    400: { message: string }
+  }
 }
 
 const alreadyLoggedInController: Controller<Route> = async (req, res) => {
@@ -34,6 +35,17 @@ const alreadyLoggedInController: Controller<Route> = async (req, res) => {
   ))
 }
 
-alreadyLoggedInController.options = {}
+alreadyLoggedInController.options = {
+  schema: {
+    querystring: {
+      type: 'object',
+      properties: {
+        accountId: {
+          type: 'string',
+        },
+      },
+    },
+  },
+}
 
 export default alreadyLoggedInController
