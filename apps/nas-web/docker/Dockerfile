@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG BUN=oven/bun:alpine
+ARG BUN=oven/bun:1-alpine
 
 FROM --platform=$BUILDPLATFORM $BUN AS packages
 
