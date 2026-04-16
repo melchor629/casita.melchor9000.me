@@ -17,6 +17,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Use node 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24.x'
+
       - name: Use bun
         uses: oven-sh/setup-bun@v2
         with:
