@@ -17,7 +17,7 @@
   "scripts": {
     "lint": "eslint src .storybook",
     "check": "tsc -p . --noEmit",
-    "build": "node ./generate-index.ts",
+    "build": "bun run ./generate-index.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
