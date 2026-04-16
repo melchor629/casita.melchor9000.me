@@ -29,7 +29,7 @@
         "@melchor629/ui": "*",
         "@opentelemetry/api": "^1.0.0",
         "clsx": "^2.1.1",
-        "fastify": "^5.8.3",
+        "fastify": "^5.8.5",
         "js-yaml": "^4.1.1",
         "markdown-to-jsx": "^9.0.0",
         "nanoid": "^5.0.0",
@@ -83,7 +83,7 @@
         "@tanstack/react-query": "^5.0.0",
         "clsx": "^2.0.0",
         "connect-redis": "^9.0.0",
-        "fastify": "^5.8.3",
+        "fastify": "^5.8.5",
         "fastify-plugin": "^5.0.0",
         "graphql": "^16.2.0",
         "graphql-request": "^7.0.0",
@@ -136,7 +136,7 @@
         "etag": "^1.8.1",
         "execa": "^9.0.0",
         "exifreader": "^4.4.0",
-        "fastify": "^5.8.3",
+        "fastify": "^5.8.5",
         "fastify-plugin": "^5.0.1",
         "fresh": "^0.5.2",
         "fs-extra": "^11.1.0",
@@ -173,7 +173,7 @@
         "@prisma/adapter-pg": "^7.0.0",
         "@prisma/instrumentation": "^7.0.0",
         "dataloader": "^2.0.0",
-        "fastify": "^5.8.3",
+        "fastify": "^5.8.5",
         "graphql": "^16.6.0",
         "graphql-constraint-directive": "^6.0.0",
         "graphql-scalars": "^1.0.0",
@@ -248,7 +248,7 @@
       "peerDependencies": {
         "@fastify/otel": "^0.18.0",
         "@opentelemetry/api": "^1.0.0",
-        "fastify": "^5.0.0",
+        "fastify": "^5.8.5",
         "fresh": "^0.5.0",
         "jose": "^6.0.0",
       },
@@ -292,9 +292,6 @@
     "packages/nice-ssr": {
       "name": "@melchor629/nice-ssr",
       "version": "0.5.1",
-      "bin": {
-        "nice-ssr-build": "./bin/build.js",
-      },
       "dependencies": {
         "@fastify/static": "^9.0.0",
         "astring": "^1.9.0",
@@ -311,7 +308,7 @@
       },
       "peerDependencies": {
         "@opentelemetry/api": "^1.9.0",
-        "fastify": "^5.0.0",
+        "fastify": "^5.8.5",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "vite": "^8.0.5",

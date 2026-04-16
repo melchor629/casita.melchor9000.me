@@ -30,11 +30,11 @@ jobs:
 
       - name: Build
         run: bunx turbo run build --continue=dependencies-successful
-        if: ${{ failure() }}
+        if: ${{ success() || failure() }}
 
       - name: Check linter
         run: bunx turbo run check lint --continue=always
-        if: ${{ failure() }}
+        if: ${{ success() || failure() }}
 
   docker:
     name: Docker image build
