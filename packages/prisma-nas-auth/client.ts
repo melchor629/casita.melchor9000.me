@@ -1,1 +1,1 @@
-export * from './generated/client.ts'
+export * from './dist/client.ts'

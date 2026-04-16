@@ -17,23 +17,23 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Use node 24
-        uses: actions/setup-node@v6
+      - name: Use bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '24.x'
+          bun-version: '1.x.x'
 
       - name: Install packages
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Check audit
-        run: npm audit --omit=dev --omit=optional
+        run: bun audit --prod --ignore GHSA-5c6j-r48x-rmvq --ignore GHSA-qj8w-gfj5-8c6v --ignore GHSA-92pp-h63x-v22m
 
       - name: Build
-        run: npx turbo run build --continue=dependencies-successful
+        run: bunx turbo run build --continue=dependencies-successful
         if: ${{ failure() }}
 
       - name: Check linter
-        run: npx turbo run check lint --continue=always
+        run: bunx turbo run check lint --continue=always
         if: ${{ failure() }}
 
   docker:

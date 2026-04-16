@@ -41,7 +41,7 @@
     }
   },
   "devDependencies": {
-    "@melchor629/tsconfigs": "*",
-    "typescript": "^6.0.0"
+    "fastify": "^5.0.0",
+    "@melchor629/tsconfigs": "*"
   }
 }

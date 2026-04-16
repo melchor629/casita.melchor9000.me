@@ -1,31 +1,29 @@
 # syntax=docker/dockerfile:1
 
-ARG TAG=24-alpine
+ARG BUN=oven/bun:alpine
 
-FROM --platform=$BUILDPLATFORM node:$TAG AS packages
+FROM --platform=$BUILDPLATFORM $BUN AS packages
 
 WORKDIR /app
 
-RUN npm i -g turbo@^2
-
 COPY . .
-RUN npx turbo prune nas-web --docker
+RUN bunx turbo@^2 prune nas-web --docker
 
 
-FROM --platform=$BUILDPLATFORM node:${TAG} AS builder
+FROM --platform=$BUILDPLATFORM $BUN AS builder
 
 WORKDIR /app
 RUN apk add --no-cache jq git
 
 COPY --from=packages /app/out/json/ ./
-RUN npm i
+RUN bun i --frozen-lockfile
 
 COPY --from=packages /app/out/full/ ./
 RUN \
   --mount=type=secret,id=IDENTITY_AUTHORITY,env=VITE_IDENTITY_AUTHORITY \
   --mount=type=secret,id=IDENTITY_CLIENT_ID,env=VITE_IDENTITY_CLIENT_ID \
   --mount=type=secret,id=IDENTITY_CLIENT_SECRET,env=VITE_IDENTITY_CLIENT_SECRET \
-  NODE_ENV=production npm run build
+  NODE_ENV=production bun run build
 
 
 FROM nginx:alpine-slim

@@ -1,4 +1,4 @@
-import type { VirtualElement } from '@floating-ui/core'
+import type { VirtualElement } from '@floating-ui/react'
 import { clsx } from '@melchor629/ui/utils'
 import debounce from 'lodash-es/debounce'
 import React, {

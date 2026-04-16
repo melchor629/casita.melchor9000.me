@@ -1,39 +1,36 @@
 # syntax=docker/dockerfile:1
 
-ARG TAG=24-alpine
+ARG NODE=node:24-alpine
+ARG BUN=oven/bun:alpine
 
-FROM --platform=$BUILDPLATFORM node:$TAG AS packages
+FROM --platform=$BUILDPLATFORM $BUN AS packages
 
 WORKDIR /app
-
-RUN npm i -g turbo@^2
 
 COPY . .
-RUN npx turbo prune ledefault --docker && \
-  mkdir -p /app/out/json/packages/nice-ssr/bin && \
-  cp /app/packages/nice-ssr/bin/*.js /app/out/json/packages/nice-ssr/bin/
+RUN bunx turbo@^2 prune ledefault --docker
 
 
-FROM --platform=$BUILDPLATFORM node:$TAG AS builder
+FROM --platform=$BUILDPLATFORM $BUN AS builder
 
 WORKDIR /app
 
 COPY --from=packages /app/out/json/ ./
-RUN npm i
+RUN bun i --frozen-lockfile
 
 COPY --from=packages /app/out/full/ ./
-RUN npm run build
+RUN bun run build
 
 
-FROM node:$TAG AS installer
+FROM $BUN AS installer
 
 WORKDIR /app
 
 COPY --from=packages /app/out/json/ ./
-RUN npm i --omit=dev
+RUN bun i --production
 
 
-FROM node:$TAG AS final
+FROM $NODE AS final
 
 WORKDIR /app
 

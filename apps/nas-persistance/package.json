@@ -44,7 +44,6 @@
     "@graphql-codegen/cli": "^6.0.0",
     "@melchor629/tsconfigs": "*",
     "@types/pg": "^8.0.0",
-    "pino-pretty": "^13.0.0",
-    "typescript": "^6.0.0"
+    "pino-pretty": "^13.0.0"
   }
 }

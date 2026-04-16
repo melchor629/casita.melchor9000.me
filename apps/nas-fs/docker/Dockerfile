@@ -1,36 +1,35 @@
 # syntax=docker/dockerfile:1
 
-ARG TAG=24-slim
+ARG NODE=node:24-slim
+ARG BUN=oven/bun:alpine
 
-FROM --platform=$BUILDPLATFORM node:$TAG AS packages
+FROM --platform=$BUILDPLATFORM $BUN AS packages
 
 WORKDIR /app
 
-RUN npm i -g turbo@^2
-
 COPY . .
-RUN npx turbo prune nas-fs --docker
+RUN bunx turbo@^2 prune nas-fs --docker
 
 
-FROM --platform=$BUILDPLATFORM node:$TAG AS builder
+FROM --platform=$BUILDPLATFORM $BUN AS builder
 
 WORKDIR /app
 COPY --from=packages /app/out/json/ ./
-RUN npm i --omit=dev
+RUN bun i --production
 
 COPY --from=packages /app/out/full/ ./
 COPY /apps/nas-fs/docker/entrypoint.sh ./
 
 
-FROM node:$TAG AS installer
+FROM $BUN AS installer
 
 WORKDIR /app
 
 COPY --from=packages /app/out/json/ ./
-RUN npm i --omit=dev
+RUN bun i --production
 
 
-FROM node:$TAG AS final
+FROM $NODE AS final
 WORKDIR /app
 
 RUN <<APP
