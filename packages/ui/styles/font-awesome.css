@@ -3,7 +3,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2");
+  src: url("../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2");
 }
 
 @font-face {
@@ -11,7 +11,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2");
+  src: url("../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2");
 }
 
 @font-face {
@@ -19,7 +19,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2");
+  src: url("../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2");
 }
 
 .fa-regular, .fa-solid, .fa-brands {

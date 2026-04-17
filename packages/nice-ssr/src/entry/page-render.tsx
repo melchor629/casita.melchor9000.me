@@ -26,6 +26,7 @@ type ManifestEntry = {
   isDynamicEntry?: boolean
   isEntry?: boolean
   css?: string[]
+  assets?: string[]
 }
 
 type RawManifestEntry = Omit<ManifestEntry, 'imports' | 'dynamicImports'> & {
@@ -84,6 +85,16 @@ const getExtraEntries = (entry: ManifestEntry): ManifestEntry[] => [
   ...(entry.dynamicImports ?? []).flatMap(getExtraEntries),
 ]
 
+const imageTypes = ['.png', '.jpg', '.jpeg', '.jfif', '.webp', '.avif', '.heif', '.heic', '.ico']
+const fontTypes = ['.woff', '.woff2', '.ttf', '.otf']
+const mapExtToPreloadAs = (name: string) => {
+  if (name.endsWith('.js')) return 'script'
+  if (name.endsWith('.css')) return 'style'
+  if (imageTypes.some((ext) => name.endsWith(ext))) return 'image'
+  if (fontTypes.some((ext) => name.endsWith(ext))) return 'font'
+  return 'fetch'
+}
+
 async function getCsrTags(
   moduleId: string,
   basePath: string,
@@ -116,11 +127,23 @@ async function getCsrTags(
     ...allDependencyEntries.flatMap((entry) => entry?.imports ?? []),
     ...allDependencyEntries.flatMap((entry) => entry?.dynamicImports ?? []),
     pageCsrManifestEntry,
+  ].map((entry) => entry.file)))
+  const assets = Array.from(new Set([
+    ...(rootLayoutCsrManifestEntry.assets ?? []),
+    ...(pageCsrManifestEntry.assets ?? []),
   ]))
   return [
     [
       ...css.map((entry) => <link rel="stylesheet" crossOrigin="anonymous" nonce={styleNonce} href={`${basePath}${entry}`} />),
-      ...preloadScripts.map((entry) => <link rel="preload" crossOrigin="anonymous" nonce={scriptNonce} href={`${basePath}${entry.file}`} as="script" />),
+      ...preloadScripts.map((entry) => <link rel="modulepreload" crossOrigin="anonymous" nonce={scriptNonce} href={`${basePath}${entry}`} />),
+      ...assets.map((path) => (
+        <link
+          rel="preload"
+          crossOrigin="anonymous"
+          href={`${basePath}${path}`}
+          as={mapExtToPreloadAs(path)}
+        />
+      )),
     ],
     `${basePath}${pageCsrManifestEntry.file}`,
   ]

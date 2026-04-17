@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node --env-file-if-exists .env ./dist/server.ts",
     "dev": "NODE_ENV=development node --env-file-if-exists=.env src/index.ts",
-    "build": "vite build",
+    "build": "vite build --app",
     "lint": "eslint src",
     "check": "tsc -p . --noEmit",
     "docker": "../../docker_build.sh",
