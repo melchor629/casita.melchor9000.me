@@ -1,5 +1,14 @@
 # ledefault
 
+## 0.3.2
+
+### Patch Changes
+
+- 06405f2: Use bun for running the service in Docker
+- Updated dependencies [6d30181]
+  - @melchor629/nice-ssr@0.5.2
+  - @melchor629/ui@0.0.3
+
 ## 0.3.1
 
 ### Patch Changes

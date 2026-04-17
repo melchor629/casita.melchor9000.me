@@ -1,5 +1,11 @@
 # @melchor629/ui
 
+## 0.0.3
+
+### Patch Changes
+
+- 6d30181: Fix missing font preload and reduce font size
+
 ## 0.0.2
 
 ### Patch Changes

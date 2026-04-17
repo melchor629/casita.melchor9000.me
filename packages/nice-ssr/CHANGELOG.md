@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.5.2
+
+### Patch Changes
+
+- 6d30181: Fix missing font preload and reduce font size
+
 ## 0.5.1
 
 ### Patch Changes
