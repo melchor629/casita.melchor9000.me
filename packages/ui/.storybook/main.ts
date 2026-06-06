@@ -22,6 +22,9 @@ const config: StorybookConfig = {
     getAbsolutePath('@storybook/addon-themes'),
   ],
   framework: getAbsolutePath('@storybook/react-vite'),
+  features: {
+    experimentalReactComponentMeta: true,
+  },
   viteFinal(config) {
     config.plugins = [
       ...(config.plugins ?? []),

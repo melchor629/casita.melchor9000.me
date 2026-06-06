@@ -14,13 +14,14 @@ export const {
     const { queryKey } = getSessionQueryOptions()
     const sessionData = queryClient.getQueryData(queryKey)
     if (sessionData && data) {
-      queryClient.setQueryData(queryKey, {
+      const newSessionData = {
         ...sessionData,
         user: {
           ...sessionData.user,
           ...data,
         },
-      })
+      } satisfies typeof sessionData
+      queryClient.setQueryData(queryKey, newSessionData)
     }
   },
 })

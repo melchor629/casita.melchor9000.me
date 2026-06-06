@@ -20,30 +20,30 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@apollo/server": "^5.4.0",
-    "@as-integrations/fastify": "^3.0.0",
-    "@fastify/otel": "^0.18.0",
-    "@graphql-tools/schema": "^10.0.0",
+    "@apollo/server": "^5.5.1",
+    "@as-integrations/fastify": "^3.1.0",
+    "@fastify/otel": "^0.18.1",
+    "@graphql-tools/schema": "^10.0.33",
     "@melchor629/fastify-infra": "*",
     "@melchor629/infra": "*",
     "@melchor629/prisma-nas-auth": "*",
-    "@opentelemetry/api": "^1.7.0",
-    "@prisma/adapter-pg": "^7.0.0",
-    "@prisma/instrumentation": "^7.0.0",
-    "dataloader": "^2.0.0",
+    "@opentelemetry/api": "^1.9.1",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/instrumentation": "^7.8.0",
+    "dataloader": "^2.2.3",
     "fastify": "^5.8.5",
-    "graphql": "^16.6.0",
+    "graphql": "^16.14.1",
     "graphql-constraint-directive": "^6.0.0",
-    "graphql-tag": "^2.11.0",
-    "graphql-scalars": "^1.0.0",
-    "jose": "^6.0.0"
+    "graphql-tag": "^2.12.6",
+    "graphql-scalars": "^1.25.0",
+    "jose": "^6.2.3"
   },
   "devDependencies": {
-    "@eddeee888/gcg-typescript-resolver-files": "^0.15.0",
-    "@fastify/cors": "^11.0.0",
-    "@graphql-codegen/cli": "^6.0.0",
+    "@eddeee888/gcg-typescript-resolver-files": "^0.16.0",
+    "@fastify/cors": "^11.2.0",
+    "@graphql-codegen/cli": "^6.3.1",
     "@melchor629/tsconfigs": "*",
     "@types/pg": "^8.0.0",
-    "pino-pretty": "^13.0.0"
+    "pino-pretty": "^13.1.3"
   }
 }

@@ -6,7 +6,7 @@ const client = createClient({
   name: 'nas-auth',
   // keyPrefix: redisPrefix,
   disableOfflineQueue: false,
-  RESP: 2,
+  RESP: 3,
   socket: {
     reconnectStrategy: (times) => Math.max(Math.min(Math.exp(times), 20_000), 1_000),
   },
@@ -48,7 +48,7 @@ const client = createClient({
         parser.pushKey(key)
         parser.push(timeWindow.toString(), max.toString(), continueExceeding.toString(), exponentialBackoff.toString())
       },
-      transformReply: (reply: number[]) => [reply[0], reply[1]] as const,
+      transformReply: (reply: number[]) => Object.freeze([reply[0], reply[1]] as const),
     }),
   },
 })

@@ -11,13 +11,14 @@ export const {
     const { queryKey } = getSessionQueryOptions()
     const data = client.getQueryData(queryKey)
     if (data) {
-      client.setQueryData(queryKey, {
+      const newData = {
         ...data,
         user: {
           ...data.user,
           logins: data.user.logins.map((l) => l.id === id && l.type === type ? { ...l, disabled } : l),
         },
-      })
+      } satisfies typeof data
+      client.setQueryData(queryKey, newData)
     }
   },
 })

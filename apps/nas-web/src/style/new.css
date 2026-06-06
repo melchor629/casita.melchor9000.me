@@ -3,4 +3,4 @@
 @import "@melchor629/ui/styles";
 @import "./directory-entries-list.css";
 
-@source "../../../../node_modules/@melchor629/ui";
+@source "../../node_modules/@melchor629/ui";

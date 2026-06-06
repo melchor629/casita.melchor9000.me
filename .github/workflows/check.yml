@@ -30,8 +30,9 @@ jobs:
       - name: Install packages
         run: bun install --frozen-lockfile
 
-      - name: Check audit
-        run: bun audit --prod --ignore GHSA-5c6j-r48x-rmvq --ignore GHSA-qj8w-gfj5-8c6v --ignore GHSA-92pp-h63x-v22m
+      # --prod currently does not work on workspaces :|
+      # - name: Check audit
+      #   run: bun audit --prod --ignore GHSA-5c6j-r48x-rmvq --ignore GHSA-qj8w-gfj5-8c6v --ignore GHSA-92pp-h63x-v22m
 
       - name: Build
         run: bunx turbo run build --continue=dependencies-successful
