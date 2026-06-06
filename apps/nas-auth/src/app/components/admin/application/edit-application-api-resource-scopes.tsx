@@ -1,6 +1,7 @@
 import { Button, Dialog, TextInput } from '@melchor629/ui'
 import type { KeyboardEvent } from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
+import usePropState from '../../../hooks/use-sync-prop-state'
 
 type EditApplicationApiResourceScopesProps = Readonly<{
   close: (scopes?: EditApplicationApiResourceScopesProps['scopes']) => void
@@ -10,6 +11,7 @@ type EditApplicationApiResourceScopesProps = Readonly<{
 
 const EditApplicationApiResourceScopes = ({ close, opened, scopes }: EditApplicationApiResourceScopesProps) => {
   const [state, setState] = useState(scopes)
+  usePropState(scopes, setState)
 
   const newScopeKeyUp = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === ' ' || e.key === 'Enter') {
@@ -31,10 +33,6 @@ const EditApplicationApiResourceScopes = ({ close, opened, scopes }: EditApplica
       ...s.slice(idx + 1),
     ]
   }), [])
-
-  useEffect(() => {
-    setState(scopes)
-  }, [scopes])
 
   return (
     <Dialog

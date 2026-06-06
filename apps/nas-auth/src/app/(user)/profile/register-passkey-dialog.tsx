@@ -25,7 +25,7 @@ export default function RegisterPasskeyDialog({ onClose, show }: Readonly<{ show
           ref: formRef,
           onSubmit: useCallback((e: SubmitEvent<HTMLDivElement>) => {
             e.preventDefault()
-            const formData = new FormData(e.target as HTMLFormElement)
+            const formData = new FormData(e.target)
             registerPasskey.mutate(formData.get('name')! as string, {
               onSuccess: () => onClose(),
             })

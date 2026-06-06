@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 const meta = {
   title: 'Tokens',
   args: {
-    color: undefined! as string,
+    color: undefined!,
   },
   parameters: {
     layout: 'centered',

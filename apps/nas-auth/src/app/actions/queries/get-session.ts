@@ -1,5 +1,7 @@
 import { notFound } from '@melchor629/nice-ssr'
+import type { UseSuspenseQueryResult } from '@tanstack/react-query'
 import { invokeAction, makeQuery } from '../helpers'
+import type { ActionReturnType } from '../server'
 
 export const {
   options: getSessionQueryOptions,
@@ -15,10 +17,10 @@ export const {
 }))
 
 export function useEnsureGetSession() {
-  const { data, ...rest } = useGetSession()
-  if (data == null) {
+  const result = useGetSession()
+  if (result.data == null) {
     notFound()
   }
 
-  return { data, ...rest }
+  return result as UseSuspenseQueryResult<NonNullable<ActionReturnType<'get-session'>>, Error>
 }

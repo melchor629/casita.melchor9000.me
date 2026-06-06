@@ -9,7 +9,6 @@ import type {
 } from 'oidc-provider'
 import {
   useCallback,
-  useEffect,
   useMemo,
   useState,
   type ChangeEvent,
@@ -18,6 +17,7 @@ import {
 import CheckboxList from '#components/ui/checkbox-list.tsx'
 import { useEditClient } from '../../../actions/mutations/edit-client'
 import { useRemoveClient } from '../../../actions/mutations/remove-client'
+import usePropState from '../../../hooks/use-sync-prop-state'
 import EditUrls from './edit-urls'
 
 const grantTypes = ['implicit', 'authorization_code', 'client_credentials'] as const
@@ -85,6 +85,7 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
   const editClientMutation = useEditClient()
   const removeClientMutation = useRemoveClient()
   const [client, setClient] = useState(c)
+  usePropState(c, setClient)
 
   const genericOnChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const key = e.currentTarget.name as Exclude<keyof ClientMetadata, 'client_id'>
@@ -139,10 +140,6 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
 
     removeClientMutation.mutate(client.client_id)
   }, [readOnly, canDelete, removeClientMutation, client.client_id])
-
-  useEffect(() => {
-    setClient(c)
-  }, [c])
 
   return (
     <fieldset className="my-2" disabled={readOnly || editClientMutation.isPending}>

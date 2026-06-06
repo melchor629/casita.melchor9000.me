@@ -1,7 +1,8 @@
 import { Button, Dialog, FormControlLabel, Select, TextInput } from '@melchor629/ui'
 import type { AsymmetricSigningAlgorithm, ResourceServer, TokenFormat } from 'oidc-provider'
 import type { ChangeEvent } from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
+import usePropState from '../../../hooks/use-sync-prop-state'
 
 const accessTokenFormats = Object.freeze(['jwt', 'opaque'] satisfies Array<TokenFormat>)
 const asymmetricSigningAlgorithms = Object.freeze([
@@ -32,6 +33,7 @@ type EditApplicationApiResourceAccessTokenProps = Readonly<{
 
 const EditApplicationApiResourceAccessToken = ({ accessToken, close, opened }: EditApplicationApiResourceAccessTokenProps) => {
   const [state, setState] = useState(accessToken)
+  usePropState(accessToken, setState)
 
   const formatChanged = useCallback((format: TokenFormat | null) => {
     setState((s) => ({
@@ -61,10 +63,6 @@ const EditApplicationApiResourceAccessToken = ({ accessToken, close, opened }: E
       },
     },
   })), [])
-
-  useEffect(() => {
-    setState(accessToken)
-  }, [accessToken])
 
   return (
     <Dialog

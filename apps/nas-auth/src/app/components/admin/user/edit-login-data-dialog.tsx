@@ -1,5 +1,6 @@
 import { Button, Dialog, TextArea } from '@melchor629/ui'
-import { useCallback, useEffect, useState, type ChangeEventHandler } from 'react'
+import { useCallback, useState, type ChangeEventHandler } from 'react'
+import usePropState from '../../../hooks/use-sync-prop-state'
 
 type EditLoginDataDialogProps = Readonly<{
   close: (data?: Record<string, unknown> | null) => void
@@ -7,12 +8,13 @@ type EditLoginDataDialogProps = Readonly<{
   opened: boolean
 }>
 
-const EditLoginDataDialog = ({ close, data, opened }: EditLoginDataDialogProps) => {
-  const [dataAsJson, setDataAsJson] = useState(() => JSON.stringify(data, undefined, 2))
+const mapData = (data: EditLoginDataDialogProps['data']) =>
+  JSON.stringify(data, undefined, 2)
 
-  useEffect(() => {
-    setDataAsJson(JSON.stringify(data, undefined, 2))
-  }, [data])
+const EditLoginDataDialog = ({ close, data, opened }: EditLoginDataDialogProps) => {
+  const [dataAsJson, setDataAsJson] = useState(() => mapData(data))
+
+  usePropState(data, useCallback((v: typeof data) => setDataAsJson(mapData(v)), []))
 
   return (
     <Dialog

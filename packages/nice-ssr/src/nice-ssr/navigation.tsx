@@ -398,7 +398,7 @@ export const Link: FC<LinkProps> = ({ children, onClick, to, ...props }: LinkPro
   return (
     <a
       // eslint-disable-next-line react/jsx-props-no-spreading
-      {...props as object}
+      {...props}
       onClick={improvedClick}
       href={href}
     >
@@ -423,6 +423,7 @@ export function SsrRouterProvider({ initialValue }: Readonly<{
   }))
   const [isTransitioning, startTransition] = useTransition()
   const stateRef = useRef(state)
+  // eslint-disable-next-line react-hooks/refs
   stateRef.current = state
 
   const actions = useMemo((): RouterContextActions => ({

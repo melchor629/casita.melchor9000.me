@@ -34,7 +34,7 @@ export default function ChangePasswordDialog({ onClose, show }: Readonly<{ show:
           ref: formRef,
           onSubmit: useCallback((e: SubmitEvent<HTMLDivElement>) => {
             e.preventDefault()
-            changeUserPassword.mutate(new FormData(e.target as HTMLFormElement), {
+            changeUserPassword.mutate(new FormData(e.target), {
               onSuccess: () => onClose(),
             })
           }, [changeUserPassword, onClose]),

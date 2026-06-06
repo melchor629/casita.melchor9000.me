@@ -374,7 +374,7 @@ function transformTree(tree: ReactElement<ComponentProps<'html'>, 'html'>, addit
   }
 
   const treeChildren = Array.from(tree.props.children)
-  const headTree = treeChildren
+  const headTree: ReactElement<ComponentProps<'head'>> = treeChildren
     .filter((el): el is ReactElement => el != null && typeof el === 'object' && 'type' in el && 'props' in el)
     .find((el): el is ReactElement<ComponentProps<'head'>, 'head'> => el.type === 'head')
     ?? <head /> as ReactElement<ComponentProps<'head'>>

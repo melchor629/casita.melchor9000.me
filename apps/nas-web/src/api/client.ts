@@ -34,7 +34,7 @@ const queryMapToUrlencodeString = (q: QueryMap): URLSearchParams => {
 }
 
 const prepareRequest = (r: RequestOptions | undefined, body?: BodyTypes): RequestInit => {
-  const opts: RequestInit = r || ({} as RequestInit)
+  const opts: RequestInit = r ?? ({})
   opts.method = r ? r.method : 'get'
   if (body !== undefined) {
     if (
