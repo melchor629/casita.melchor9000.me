@@ -3,6 +3,7 @@ import { useCallback, useLayoutEffect, useState, type SyntheticEvent } from 'rea
 import FadeAndMove from '../FadeAndMove'
 import { Menu, type MenuProps } from '../Menu'
 import Popover, { type PopoverProps } from '../Popover'
+import { clsx } from '../utils'
 
 export type PopoverMenuProps = Readonly<
   & MenuProps
@@ -31,6 +32,8 @@ export default function PopoverMenu({
   ...props
 }: PopoverMenuProps) {
   const [pos, setPos] = useState<VirtualElement | null>(null)
+  const isOpen = referenceElement === 'contextMenu' ? pos != null : open
+  const [delayedIsOpen, setDelayedIsOpen] = useState(isOpen)
 
   const onPopoverClose = useCallback<NonNullable<typeof onClose>>((reason) => {
     if (referenceElement === 'contextMenu') {
@@ -67,7 +70,10 @@ export default function PopoverMenu({
     return () => document.body.addEventListener('contextmenu', fn, false)
   }, [referenceElement])
 
-  const isOpen = referenceElement === 'contextMenu' ? pos != null : open
+  useLayoutEffect(() => {
+    requestAnimationFrame(() => setDelayedIsOpen(isOpen))
+  }, [isOpen])
+
   return (
     <Popover
       referenceElement={referenceElement === 'contextMenu' ? pos : referenceElement}
@@ -77,7 +83,7 @@ export default function PopoverMenu({
       middleware={referenceElement === 'contextMenu' ? [flip()] : middleware}
       portal={portal}
       onContextMenu={ignore}
-      className={!isOpen ? 'pointer-events-none' : undefined}
+      className={clsx(delayedIsOpen && 'transition-transform', !isOpen && 'pointer-events-none')}
     >
       <FadeAndMove show={isOpen} unmountWhenHidden={unmountWhenHidden}>
         <Menu {...props} />

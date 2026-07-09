@@ -44,7 +44,7 @@
 
   --color-error-main: light-dark(
     var(--color-red-600),
-    var(--color-red-400)
+    var(--color-red-500)
   );
   --color-error-alt: light-dark(
     var(--color-red-300),

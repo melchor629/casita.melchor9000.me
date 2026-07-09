@@ -17,7 +17,7 @@ const Switch = ({ children, className, ...props }: SwitchProps) => (
       'disabled:opacity-disabled',
       'transition-all',
 
-      'after:inline-block after:w-3 after:h-3 after:mb-px after:translate-x-0.5 after:-translate-y-[4.5px]',
+      'after:inline-block after:w-3 after:h-3 after:mb-px after:translate-x-0.5 after:-translate-y-1',
       'after:rounded-full after:content-[\' \'] after:bg-text-main checked:after:bg-text-main after:shadow-sm',
       'after:transition-transform',
       'hover:after:scale-90',

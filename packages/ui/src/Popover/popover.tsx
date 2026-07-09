@@ -113,12 +113,10 @@ export default function Popover({
   })
 
   useLayoutEffect(() => {
-    document.body.addEventListener('click', onClickOutside, true)
-    window.addEventListener('keydown', onKeyboardPressed, true)
-    return () => {
-      document.body.removeEventListener('click', onClickOutside, true)
-      window.removeEventListener('keydown', onKeyboardPressed, true)
-    }
+    const ctrl = new AbortController()
+    document.body.addEventListener('click', onClickOutside, { capture: true, signal: ctrl.signal })
+    window.addEventListener('keydown', onKeyboardPressed, { capture: true, signal: ctrl.signal })
+    return () => ctrl.abort()
   }, [])
 
   useLayoutEffect(() => {

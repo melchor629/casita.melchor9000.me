@@ -31,13 +31,13 @@ export default function FadeAndMove({
     <div
       {...props}
       className={clsx(
-        'invisible translate-y-4 opacity-0 transition-all',
-        'data-[show=true]:visible data-[show=true]:translate-y-0 data-[show=true]:opacity-100',
+        'visible translate-y-0 opacity-100 scale-100 transition-all duration-200',
+        'aria-hidden:invisible aria-hidden:translate-y-4 aria-hidden:opacity-0 aria-hidden:blur-sm aria-hidden:scale-[97%]',
         (!show && animationFinished) && 'pointer-events-none',
         className,
       )}
       onTransitionEnd={onTransitionEndWrapper}
-      data-show={show}
+      aria-hidden={!show}
     >
       {(show || !unmountWhenHidden || !animationFinished) && children}
     </div>

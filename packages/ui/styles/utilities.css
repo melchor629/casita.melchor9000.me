@@ -19,7 +19,7 @@
 
 @utility body {
   @apply
-    text-text-main bg-elevated-0
+    text-text-main bg-elevated-0 antialiased
     accent-primary-main
     selection:bg-primary-main selection:text-text-contrasted
     transition-colors;

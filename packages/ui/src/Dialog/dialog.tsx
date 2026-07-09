@@ -2,6 +2,7 @@ import React, {
   useCallback, useLayoutEffect, useMemo, useState,
 } from 'react'
 import Button from '../Button'
+import FadeAndMove from '../FadeAndMove'
 import Portal from '../Portal'
 import { clsx } from '../utils'
 
@@ -24,6 +25,7 @@ export type DialogProps = Readonly<{
   slotProps?: {
     container?: React.ComponentProps<'div'>
   }
+  unmountWhenHidden?: boolean
 }>
 
 export default function Dialog({
@@ -41,6 +43,7 @@ export default function Dialog({
   slotProps = {},
   slots = {},
   title,
+  unmountWhenHidden = false,
 }: DialogProps) {
   const [element, setElement] = useState<HTMLDivElement | null>(null)
 
@@ -50,7 +53,7 @@ export default function Dialog({
   }, [onClose])
 
   const finalButtons = useMemo(() => [
-    <Button type="button" color="secondary" variant="text" onClick={onCloseImpl} key="close">
+    <Button type="button" color="neutral" variant="text" onClick={onCloseImpl} key="close">
       {closeLabel || 'Close'}
     </Button>,
     ...(buttons || []),
@@ -80,15 +83,16 @@ export default function Dialog({
   const ContainerElement = slots.container ?? 'div'
   return (
     <Portal portal={portal}>
-      <div
+      <FadeAndMove
         className={clsx(
           'fixed w-dvw h-dvh visible z-40 top-0 left-0',
           'flex justify-center items-center p-4',
-          'translate-y-0 opacity-100 bg-text-contrasted/20 backdrop-blur-xl transition-all duration-250',
-          'aria-hidden:invisible aria-hidden:opacity-0 aria-hidden:translate-y-4',
+          'bg-text-contrasted/20 backdrop-blur-xl duration-250',
+          'aria-hidden:scale-[99%]',
           className,
         )}
         id={`dialog-${id}`}
+        show={show}
         role="presentation"
         aria-hidden={!show ? 'true' : 'false'}
         ref={setElement}
@@ -103,6 +107,7 @@ export default function Dialog({
             onCloseEnd?.()
           }
         }, [show, onCloseEnd])}
+        unmountWhenHidden={unmountWhenHidden}
       >
         <div
           className={clsx(
@@ -116,14 +121,14 @@ export default function Dialog({
           aria-labelledby={`dialog-${id}-title`}
         >
           <ContainerElement {...slotProps.container} className="flex flex-col grow min-w-0 min-h-0">
-            <div className="px-5 pt-4 mb-5 select-none">
+            <div className="px-5 pt-4 mb-4 select-none">
               <h4 className="text-h4" id={`dialog-${id}-title`}>{title}</h4>
             </div>
             <div className="px-5 overflow-y-auto shrink">{children}</div>
             <div className="flex justify-end gap-2 h-8 mt-5 mb-3 mx-3">{finalButtons}</div>
           </ContainerElement>
         </div>
-      </div>
+      </FadeAndMove>
     </Portal>
   )
 }
