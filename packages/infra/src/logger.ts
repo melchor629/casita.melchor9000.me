@@ -52,7 +52,7 @@ const createLogger = (service: string, logLevel: LevelWithSilentOrString = 'info
           contentType: reply.getHeader('content-type'),
           contentLength: parseInt(reply.getHeader('content-length') as string || '-1', 10),
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-          user: (reply.request as any).jwtToken?.payload?.sub,
+          user: (reply.request as any)?.jwtToken?.payload?.sub,
         }
       },
     },
