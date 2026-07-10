@@ -1,5 +1,12 @@
 # @melchor629/ui
 
+## 0.0.4
+
+### Patch Changes
+
+- d613eaf: Improve design of dialog and popovers
+- 9429ecb: update deps
+
 ## 0.0.3
 
 ### Patch Changes

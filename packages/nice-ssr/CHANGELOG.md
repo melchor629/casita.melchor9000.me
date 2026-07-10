@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.5.3
+
+### Patch Changes
+
+- 9429ecb: update deps
+
 ## 0.5.2
 
 ### Patch Changes

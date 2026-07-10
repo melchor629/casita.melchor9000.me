@@ -1,5 +1,16 @@
 # nas-persistance
 
+## 2.0.12
+
+### Patch Changes
+
+- 9429ecb: update deps
+- Updated dependencies [9429ecb]
+- Updated dependencies [536f424]
+  - @melchor629/prisma-nas-auth@0.1.1
+  - @melchor629/fastify-infra@0.2.2
+  - @melchor629/infra@0.1.4
+
 ## 2.0.11
 
 ### Patch Changes

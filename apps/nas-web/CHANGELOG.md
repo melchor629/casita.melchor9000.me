@@ -1,5 +1,15 @@
 # nas-web
 
+## 0.16.4
+
+### Patch Changes
+
+- 68dab40: Improve context menus
+- 9429ecb: update deps
+- Updated dependencies [d613eaf]
+- Updated dependencies [9429ecb]
+  - @melchor629/ui@0.0.4
+
 ## 0.16.3
 
 ### Patch Changes

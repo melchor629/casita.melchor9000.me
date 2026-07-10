@@ -1,5 +1,11 @@
 # @melchor629/fastify-infra
 
+## 0.2.2
+
+### Patch Changes
+
+- 9429ecb: update deps
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # nas-auth
 
+## 3.3.1
+
+### Patch Changes
+
+- 9429ecb: update deps
+- Updated dependencies [d613eaf]
+- Updated dependencies [9429ecb]
+- Updated dependencies [536f424]
+  - @melchor629/ui@0.0.4
+  - @melchor629/fastify-infra@0.2.2
+  - @melchor629/nice-ssr@0.5.3
+  - @melchor629/infra@0.1.4
+
 ## 3.3.0
 
 ### Minor Changes

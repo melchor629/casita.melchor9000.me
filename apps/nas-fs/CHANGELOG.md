@@ -1,5 +1,15 @@
 # nas-fs
 
+## 0.12.30
+
+### Patch Changes
+
+- 9429ecb: update deps
+- Updated dependencies [9429ecb]
+- Updated dependencies [536f424]
+  - @melchor629/fastify-infra@0.2.2
+  - @melchor629/infra@0.1.4
+
 ## 0.12.29
 
 ### Patch Changes
