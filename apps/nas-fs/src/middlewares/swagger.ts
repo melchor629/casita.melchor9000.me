@@ -62,8 +62,8 @@ const swaggerPlugin: FastifyPluginAsync = async (fastify) => {
               flows: {
                 authorizationCode: {
                   type: 'authorizationCode',
-                  'x-scalar-client-id': 'nas-fs',
-                  clientSecret: 'nas-fs',
+                  'x-scalar-secret-client-id': 'nas-fs',
+                  'x-scalar-secret-client-secret': 'nas-fs',
                   scopes: { openid: 'openid', offline_access: 'offline_access' },
                   selectedScopes: ['openid', 'offline_access'],
                   'x-usePkce': 'SHA-256',
