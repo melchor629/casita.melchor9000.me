@@ -8,8 +8,7 @@ import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import * as Path from '@/utils/path'
 import ButtonsBarContainer from './buttons-bar-container'
-import ElementContextMenu from './element-context-menu'
-import SelectionContextMenu from './selection-context-menu'
+import EntriesContextMenu from './entries-context-menu'
 
 interface ButtonsBarProps {
   readonly metadata: DirectoryMetadata | FileMetadata
@@ -24,12 +23,18 @@ const ButtonsBar: FC<ButtonsBarProps> = ({
   module,
   selectedElements,
 }) => {
+  const currentThing = metadata.type === 'dir' && selectedElements.length > 0 ? selectedElements : metadata
   const [optionsButtonElement, setOptionsButtonElement] = useState<HTMLElement | null>(null)
   const [showOptionsMenu, setShowOptionsMenu] = useState(false)
-  const [
-    selectionOptionsButtonElement, setSelectionOptionsButtonElement,
-  ] = useState<HTMLElement | null>(null)
-  const [showSelectionOptionsMenu, setShowSelectionOptionsMenu] = useState(false)
+  const [thing, setThing] = useState(currentThing)
+
+  if (thing !== currentThing) {
+    if (showOptionsMenu) {
+      setShowOptionsMenu(false)
+    } else {
+      setThing(currentThing)
+    }
+  }
 
   const items = useMemo(() => {
     const buttons: Array<React.ReactElement> = []
@@ -71,10 +76,9 @@ const ButtonsBar: FC<ButtonsBarProps> = ({
           color="secondary"
           onClick={(e) => {
             e.stopPropagation()
-            setShowOptionsMenu(false)
-            setShowSelectionOptionsMenu((v) => !v)
+            setShowOptionsMenu((v) => !v)
           }}
-          ref={setSelectionOptionsButtonElement}
+          ref={setOptionsButtonElement}
           disabled={selectedElements.length === 0}
           icon={<MoreVert />}
         >
@@ -90,7 +94,6 @@ const ButtonsBar: FC<ButtonsBarProps> = ({
           onClick={(e) => {
             e.stopPropagation()
             setShowOptionsMenu((v) => !v)
-            setShowSelectionOptionsMenu(false)
           }}
           ref={setOptionsButtonElement}
           icon={<MoreVert />}
@@ -110,43 +113,32 @@ const ButtonsBar: FC<ButtonsBarProps> = ({
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowOptionsMenu(false)
-    setShowSelectionOptionsMenu(false)
   }, [metadata])
 
   useEffect(() => {
     if (selectedElements.length === 0) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setShowSelectionOptionsMenu(false)
+      setShowOptionsMenu(false)
     }
   }, [selectedElements.length])
 
   useEffect(() => {
-    const handler = () => {
-      setShowOptionsMenu(false)
-      setShowSelectionOptionsMenu(false)
-    }
-
-    window.addEventListener('contextmenu', handler, false)
-    return () => window.removeEventListener('contextmenu', handler, false)
+    const ctrl = new AbortController()
+    window.addEventListener('contextmenu', () => setShowOptionsMenu(false), { capture: false, signal: ctrl.signal })
+    return () => ctrl.abort()
   }, [])
 
   return (
     <ButtonsBarContainer disabled={loading} role="group">
       {items.map((i) => <Fragment key={i.key}>{i}</Fragment>)}
 
-      <ElementContextMenu
-        buttonElement={optionsButtonElement}
-        metadata={metadata}
+      <EntriesContextMenu
+        referenceElement={optionsButtonElement}
+        entries={selectedElements.length > 0 ? selectedElements : metadata}
         module={module}
         show={showOptionsMenu}
         shouldClose={useCallback(() => setShowOptionsMenu(false), [])}
-      />
-      <SelectionContextMenu
-        buttonElement={selectionOptionsButtonElement}
-        module={module}
-        selectedElements={selectedElements}
-        show={showSelectionOptionsMenu}
-        shouldClose={useCallback(() => setShowSelectionOptionsMenu(false), [])}
+        onClosed={useCallback(() => setThing(currentThing), [currentThing])}
       />
     </ButtonsBarContainer>
   )

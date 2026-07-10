@@ -15,11 +15,10 @@ import {
 } from 'react-virtuoso'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
-import ElementContextMenu from '@/components/path-view/element-context-menu'
+import EntriesContextMenu from '@/components/path-view/entries-context-menu'
 import usePermission from '@/hooks/use-permission'
 import { useSettings } from '@/hooks/use-settings'
 import * as path from '@/utils/path'
-import SelectionContextMenu from '../../path-view/selection-context-menu'
 import Cell from './cell'
 import Entry, { type EntryData } from './entry'
 import Row from './row'
@@ -92,23 +91,24 @@ const DirectoryEntries = ({
   const { entryViewType } = useSettings()
   const [draggingElement, setDraggingElement] = useState<Metadata | null>(null)
   const [dragOverElement, setDragOverElement] = useState<Metadata | null>(null)
-  const [selectionElement, setSelectionElement] = useState<VirtualElement | null>(null)
-  const [folderElement, setFolderElement] = useState<VirtualElement | null>(null)
+  const [contextMenuElement, setContextMenuElement] = useState<VirtualElement & { type: 'current' | 'selection', show: boolean }>({ show: false } as never)
   const [prevEntries, setPrevEntries] = useState(entries)
   const [prevSelectedElements, setPrevSelectedElements] = useState(selectedElements)
   const permission = usePermission(module)!
+
+  const hideContextMenu = useCallback(() => setContextMenuElement((s) => ({ ...s, show: false })), [])
 
   if (entries !== prevEntries) {
     setPrevEntries(entries)
     setDraggingElement(null)
     setDragOverElement(null)
-    setSelectionElement(null)
+    hideContextMenu()
   }
 
   if (selectedElements !== prevSelectedElements) {
     setPrevSelectedElements(selectedElements)
     if (selectedElements.length === 0) {
-      setSelectionElement(null)
+      setContextMenuElement((s) => (s.type === 'selection' ? { ...s, show: false } : s))
     }
   }
 
@@ -117,11 +117,11 @@ const DirectoryEntries = ({
     if (!hasWritePerm) {
       return
     }
-    setSelectionElement(null)
+    hideContextMenu()
     setDraggingElement(entry)
     e.dataTransfer.dropEffect = 'move'
     e.dataTransfer.setData('text/uri-list', `${window.location.toString()}/${path.basename(entry.path)}`)
-  }, [hasWritePerm])
+  }, [hasWritePerm, hideContextMenu])
 
   const onDragEnd: React.DragEventHandler = useCallback(() => {
     if (!hasWritePerm) {
@@ -168,9 +168,9 @@ const DirectoryEntries = ({
       onClickCbkRef.current.cancel()
       onClickCbkRef.current = null
     }
-    setSelectionElement(null)
+    hideContextMenu()
     onEntryOpen(entry)
-  }, [onClickCbkRef, onEntryOpen])
+  }, [hideContextMenu, onEntryOpen])
 
   const onClick = useCallback(
     (entry: Metadata, isSelected: boolean): React.MouseEventHandler => (e) => {
@@ -206,11 +206,11 @@ const DirectoryEntries = ({
       }
 
       e.stopPropagation()
-      setSelectionElement(null)
+      hideContextMenu()
       cbk()
       onClickCbkRef.current = cbk
     },
-    [onEntryRangeSelect, onEntryDeselected, onEntrySelected, entries, entryViewType],
+    [onEntryRangeSelect, onEntryDeselected, onEntrySelected, entries, entryViewType, hideContextMenu],
   )
 
   const onTap = useCallback((
@@ -246,13 +246,14 @@ const DirectoryEntries = ({
   const onContextMenu = useCallback((entry: Metadata, isSelected: boolean) =>
     (e: React.MouseEvent<HTMLElement>) => {
       e.preventDefault()
-      e.stopPropagation()
       if (!isSelected) {
         onEntrySelected(entry)
       }
 
       const { pageX, pageY } = e
-      setSelectionElement({
+      setContextMenuElement({
+        type: 'selection',
+        show: true,
         getBoundingClientRect: () => ({
           top: pageY,
           left: pageX,
@@ -265,17 +266,18 @@ const DirectoryEntries = ({
           toJSON: () => null,
         }),
       })
-      setFolderElement(null)
     }
   , [onEntrySelected])
 
   const onOtherContextMenu = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target instanceof HTMLElement && e.target.draggable) return
     e.preventDefault()
     onUnselectAll()
 
     const { pageX, pageY } = e
-    setSelectionElement(null)
-    setFolderElement({
+    setContextMenuElement({
+      type: 'current',
+      show: true,
       getBoundingClientRect: () => ({
         top: pageY,
         left: pageX,
@@ -352,21 +354,12 @@ const DirectoryEntries = ({
         />
       )}
 
-      <SelectionContextMenu
-        buttonElement={selectionElement}
+      <EntriesContextMenu
+        referenceElement={typeof contextMenuElement.getBoundingClientRect === 'function' ? contextMenuElement : null}
         module={module}
-        selectedElements={selectedElements}
-        show={!!selectionElement}
-        shouldClose={() => setSelectionElement(null)}
-        placeStart
-      />
-
-      <ElementContextMenu
-        buttonElement={folderElement}
-        module={module}
-        metadata={metadata}
-        show={!!folderElement}
-        shouldClose={() => setFolderElement(null)}
+        entries={contextMenuElement.type === 'current' ? metadata : selectedElements}
+        show={contextMenuElement.show}
+        shouldClose={hideContextMenu}
         placeStart
       />
     </>

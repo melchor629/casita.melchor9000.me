@@ -9,6 +9,10 @@ export type PopoverMenuProps = Readonly<
   & MenuProps
   & Pick<PopoverProps, 'onClose' | 'placement' | 'strategy' | 'middleware' | 'portal'>
   & {
+    /**
+     * This function is called once the menu has been closed.
+     */
+    onClosed?: () => void
     open?: boolean
     referenceElement: PopoverProps['referenceElement'] | 'contextMenu'
     unmountWhenHidden?: boolean
@@ -23,6 +27,7 @@ const ignore = (e: SyntheticEvent) => {
 export default function PopoverMenu({
   middleware,
   onClose,
+  onClosed,
   open,
   placement,
   portal,
@@ -85,7 +90,7 @@ export default function PopoverMenu({
       onContextMenu={ignore}
       className={clsx(delayedIsOpen && 'transition-transform', !isOpen && 'pointer-events-none')}
     >
-      <FadeAndMove show={isOpen} unmountWhenHidden={unmountWhenHidden}>
+      <FadeAndMove show={isOpen} unmountWhenHidden={unmountWhenHidden} onHidden={onClosed}>
         <Menu {...props} />
       </FadeAndMove>
     </Popover>

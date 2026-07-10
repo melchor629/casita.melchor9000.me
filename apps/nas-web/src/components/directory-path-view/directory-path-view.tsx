@@ -142,7 +142,7 @@ export default function DirectoryPathView({
     })
   }, [entries, setSelectedElements])
 
-  const onUnselectAll = useCallback(() => setSelectedElements([]), [setSelectedElements])
+  const onUnselectAll = useCallback(() => setSelectedElements((a) => a.length ? [] : a), [setSelectedElements])
 
   return (
     <>

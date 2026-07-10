@@ -4,12 +4,21 @@ import { clsx } from '../utils'
 export type FadeAndMoveProps = Readonly<ComponentPropsWithRef<'div'> & {
   show?: boolean
   unmountWhenHidden?: boolean
+  onHidden?: () => void
+  onHide?: () => void
+  onShow?: () => void
+  onShowing?: () => void
 }>
 
 export default function FadeAndMove({
   children,
   className,
+  onHidden,
+  onHide,
+  onShow,
+  onShowing,
   onTransitionEnd,
+  onTransitionStart,
   show,
   unmountWhenHidden = false,
   ...props
@@ -19,9 +28,27 @@ export default function FadeAndMove({
   const onTransitionEndWrapper = useCallback((e: TransitionEvent<HTMLDivElement>) => {
     if (e.currentTarget === e.target) {
       setAnimationFinished(true)
+      if (e.propertyName === 'opacity') {
+        if (show) {
+          onShowing?.()
+        } else {
+          onHidden?.()
+        }
+      }
     }
     onTransitionEnd?.(e)
-  }, [onTransitionEnd])
+  }, [onHidden, onShowing, onTransitionEnd, show])
+
+  const onTransitionStartWrapper = useCallback((e: TransitionEvent<HTMLDivElement>) => {
+    if (e.currentTarget === e.target && e.nativeEvent.propertyName === 'opacity') {
+      if (show) {
+        onShow?.()
+      } else {
+        onHidden?.()
+      }
+    }
+    onTransitionStart?.(e)
+  }, [onHidden, onShow, onTransitionStart, show])
 
   if (show && animationFinished) {
     setAnimationFinished(false)
@@ -37,6 +64,7 @@ export default function FadeAndMove({
         className,
       )}
       onTransitionEnd={onTransitionEndWrapper}
+      onTransitionStart={onTransitionStartWrapper}
       aria-hidden={!show}
     >
       {(show || !unmountWhenHidden || !animationFinished) && children}
