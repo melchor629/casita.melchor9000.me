@@ -1,5 +1,11 @@
 # ledefault
 
+## 0.3.4
+
+### Patch Changes
+
+- 7218d7e: Tweaks to Japanese vocabulary result and support for te form in adjectives
+
 ## 0.3.3
 
 ### Patch Changes
