@@ -37,7 +37,7 @@ const getJobController: Controller<typeof schema> = async (req, reply) => {
       name: jobJson.name,
       processedOn: jobJson.processedOn,
       progress: jobJson.progress as number,
-      stackTrace: JSON.parse(jobJson.stacktrace) as unknown[],
+      stackTrace: JSON.parse(jobJson.stacktrace ?? '[]') as unknown[],
       returnValue: JSON.parse(jobJson.returnvalue) as unknown,
       timestamp: jobJson.timestamp,
       state,
