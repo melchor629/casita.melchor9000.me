@@ -54,7 +54,7 @@
     "graphql": "^16.14.2",
     "graphql-request": "^7.4.0",
     "jose": "^6.2.8",
-    "motion": "^12.43.0",
+    "motion": "^13.0.0",
     "nanoid": "^6.0.1",
     "oidc-provider": "^9.11.2",
     "react": "^19.2.8",

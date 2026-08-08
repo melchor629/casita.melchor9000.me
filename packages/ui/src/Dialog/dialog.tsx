@@ -86,7 +86,7 @@ export default function Dialog({
       <FadeAndMove
         className={clsx(
           'fixed w-dvw h-dvh visible z-40 top-0 left-0',
-          'flex justify-center items-center p-4',
+          'flex justify-center items-center p-6',
           'bg-text-contrasted/20 backdrop-blur-xl duration-250',
           'aria-hidden:scale-[99%]',
           className,

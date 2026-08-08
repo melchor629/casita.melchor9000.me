@@ -23,7 +23,10 @@ const settings: WorkerOptions = {
     maxRetriesPerRequest: 3,
   },
   prefix: redisPrefix,
-  telemetry: new BullMQOtel('nas-fs-producer', packageJson.version),
+  telemetry: new BullMQOtel({
+    tracerName: 'nas-fs-producer',
+    version: packageJson.version,
+  }),
 }
 
 const thumbnailQueue = new Queue<ThumbnailJobData>(queueNames.thumbnail, settings)

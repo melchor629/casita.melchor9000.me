@@ -60,7 +60,12 @@ const baseOptions: WorkerOptions = {
     retryStrategy: (times) => Math.max(Math.min(Math.exp(times), 30_000), 1_000),
   },
   prefix: redisPrefix,
-  telemetry: new BullMQOtel('nas-fs-worker', packageJson.version),
+  telemetry: new BullMQOtel({
+    tracerName: 'nas-fs-worker',
+    meterName: 'nas-fs-worker',
+    version: packageJson.version,
+    enableMetrics: true,
+  }),
 }
 
 export default class BaseWorker<

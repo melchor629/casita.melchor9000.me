@@ -14,7 +14,7 @@
     "docker": "../../docker_build.sh"
   },
   "dependencies": {
-    "@fastify/compress": "^9.1.1",
+    "@fastify/compress": "^9.2.0",
     "@fastify/helmet": "^13.1.0",
     "@fastify/static": "^10.1.3",
     "@fastify/otel": "^0.20.1",
