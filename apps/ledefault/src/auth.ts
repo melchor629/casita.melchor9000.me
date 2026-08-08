@@ -16,7 +16,7 @@ export const startLogIn = async (req: SsrRequest): Promise<LogInResults> => {
   headers.set('x-forwarded-method', 'get')
   headers.set('x-forwarded-proto', req.nice.url.protocol.slice(0, -1))
   headers.set('x-forwarded-host', req.nice.url.host)
-  headers.set('x-forwarded-uri', req.nice.pathname.toString())
+  headers.set('x-forwarded-uri', req.nice.pathname)
   try {
     const response = await fetch(loginEndpoint, {
       headers,

@@ -53,9 +53,9 @@ async function loadIntermediateDictionary() {
   )
 }
 
+const fn = (masu: string, mashou: string, negative: string, past: string, te: string) =>
+  Object.freeze({ masu, mashou, negative, past, te })
 const godanTransformations = (() => {
-  const fn = (masu: string, mashou: string, negative: string, past: string, te: string) =>
-    Object.freeze({ masu, mashou, negative, past, te })
   return Object.freeze({
     う: fn('い', 'お', 'わ', 'った', 'って'),
     く: fn('き', 'こ', 'か', 'いた', 'いて'),
@@ -165,6 +165,7 @@ function processVocabEntry(entry: MutDictionaryEntry, level: 'basic' | 'intermed
     entry.forms.present.negative ??= `${root}くない`
     entry.forms.past.positive ??= `${root}かった`
     entry.forms.past.negative ??= `${root}くなかった`
+    entry.forms.te ??= `${root}くて`
   }
 
   entry.chapter ??= Number(chapter)

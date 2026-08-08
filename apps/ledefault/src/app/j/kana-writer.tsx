@@ -30,7 +30,7 @@ function WanaKanaInput({ mode, onLatinChars, ref, toggleMode }: WanaKanaInputPro
 
   useLayoutEffect(() => {
     if (textArea == null) {
-      return () => {}
+      return
     }
 
     if (textArea.hasAttribute('data-wanakana-id')) { wanakana.unbind(textArea) }

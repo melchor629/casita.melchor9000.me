@@ -4,9 +4,9 @@ import { useCallback, useMemo, type ChangeEvent } from 'react'
 type CheckboxListOption = Readonly<{ label: string, value: string }>
 type CheckboxListProps<T extends string | CheckboxListOption> = Readonly<{
   className?: string
-  onChange: (options: T[]) => void
+  onChange: (options: readonly T[]) => void
   options: readonly T[]
-  selected: T[]
+  selected: readonly T[]
 }>
 
 function CheckboxList<T extends string | CheckboxListOption = string>({

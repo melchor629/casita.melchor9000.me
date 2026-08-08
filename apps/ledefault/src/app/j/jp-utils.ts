@@ -225,6 +225,7 @@ export type AdjectiveDictionaryEntry = WordDictionaryEntry<'adjective'> & Readon
       readonly positive: string
       readonly negative: string
     }
+    te: string
   }>
 }>
 

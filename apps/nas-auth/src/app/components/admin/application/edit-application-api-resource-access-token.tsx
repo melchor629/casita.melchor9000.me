@@ -87,14 +87,14 @@ const EditApplicationApiResourceAccessToken = ({ accessToken, close, opened }: E
         onChange={formatChanged}
       />
 
-      {state.format === 'jwt' && (
+      {state.format === 'jwt' && state.jwt?.sign && (
         <>
           <FormControlLabel htmlFor="at-jwt-alg" margin="normal">Sign Algorithm</FormControlLabel>
           <Select
             fullWidth
             id="at-jwt-alg"
             values={asymmetricSigningAlgorithms}
-            value={state.jwt?.sign?.alg as AsymmetricSigningAlgorithm ?? 'unset'}
+            value={state.jwt.sign.alg as AsymmetricSigningAlgorithm ?? 'unset'}
             onChange={jwtSignAlgorithmChanged}
           />
 
@@ -102,7 +102,7 @@ const EditApplicationApiResourceAccessToken = ({ accessToken, close, opened }: E
           <TextInput
             type="text"
             id="at-jwt-kid"
-            value={state.jwt?.sign?.kid ?? ''}
+            value={state.jwt.sign.kid ?? ''}
             onChange={jwtSignKidChanged}
           />
         </>

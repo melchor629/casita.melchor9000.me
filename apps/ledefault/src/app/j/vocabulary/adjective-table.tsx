@@ -10,7 +10,7 @@ const AdjectiveTable = ({ result }: VocabularyComponentProps<AdjectiveDictionary
   <NaisTable>
     <thead>
       <tr>
-        <th className="w-0" />
+        <th className="w-0" aria-label="Empty" />
         <th>Positive</th>
         <th>Negative</th>
       </tr>
@@ -32,6 +32,12 @@ const AdjectiveTable = ({ result }: VocabularyComponentProps<AdjectiveDictionary
         </td>
         <td>
           <JapaneseWithRomaji value={result.forms.past.negative} />
+        </td>
+      </tr>
+      <tr>
+        <th>te</th>
+        <td colSpan={2}>
+          <JapaneseWithRomaji value={result.forms.te} />
         </td>
       </tr>
     </tbody>

@@ -3,7 +3,7 @@
     "@melchor629/tsconfigs/node.json",
   ],
   "compilerOptions": {
-    "rootDir": "./src",
+    "rootDir": ".",
   },
   "include": [
     "src/",

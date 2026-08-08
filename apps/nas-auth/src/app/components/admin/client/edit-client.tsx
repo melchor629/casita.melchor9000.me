@@ -92,11 +92,11 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
     setClient((c) => ({ ...c, [key]: e.currentTarget.value || undefined }))
   }, [])
 
-  const grantTypesChanged = useCallback((newValue: string[]) => {
+  const grantTypesChanged = useCallback((newValue: readonly string[]) => {
     setClient((c) => ({ ...c, grant_types: newValue }))
   }, [])
 
-  const responseTypesChanged = useCallback((newValue: ResponseType[]) => {
+  const responseTypesChanged = useCallback((newValue: readonly ResponseType[]) => {
     setClient((c) => ({ ...c, response_types: newValue }))
   }, [])
 

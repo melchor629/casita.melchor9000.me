@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import Markdown, { type MarkdownToJSX } from 'markdown-to-jsx'
+import type { MarkdownToJSX } from 'markdown-to-jsx'
+import Markdown, { RuleType } from 'markdown-to-jsx/react'
 import { Fragment, useMemo } from 'react'
 import type { VocabularyComponentProps } from '../jp-utils'
 
@@ -32,27 +33,39 @@ const mdOptions: MarkdownToJSX.Options = {
     image: () => null,
     video: () => null,
     Sample: {
-      component: ({ children: lat, jp }: Readonly<{ jp: string, children: string }>) => (
+      component: ({ children: jp, hasSpacing, lat }: Readonly<{ lat: string, children: string, hasSpacing: boolean }>) => (
         <p className="block last-of-group:pb-3">
-          <span>{jp.trim()}</span>
-          {jp.trim().at(-1) !== '。' && <span>{' '}</span>}
+          {jp}
+          {!hasSpacing && <span>&nbsp;&nbsp;</span>}
           <span className="text-text-secondary">{lat}</span>
         </p>
       ),
     },
+  },
+  renderRule(next, node, renderChildren, state) {
+    if (node.type === RuleType.link && node.target?.startsWith('^')) {
+      return (
+        <ruby>
+          {renderChildren(node.children, state)}
+          <rt className="text-[60%]">{node.target.slice(1)}</rt>
+        </ruby>
+      )
+    }
+
+    return next()
   },
 }
 
 // the sequences are for hiragana, katakana, han (kanji and so) and (jp and lat) punctuation signs
 // half-sized katakana and others are not included
 // see https://stackoverflow.com/questions/19899554/unicode-range-for-japanese
-const DetailsSampleRegex = /^([\u3041-\u3096\u30A0-\u30FF\u3400-\u4DB5\u4E00-\u9FCB\uF900-\uFA6A\u3000-\u303F\uFF01-\uFF5E ]+)->(\n?.+)$/gmu
+const DetailsSampleRegex = /^([\u3041-\u3096\u30A0-\u30FF\u3400-\u4DB5\u4E00-\u9FCB\uF900-\uFA6A\u3000-\u303F\uFF01-\uFF5E [\]^()]+)->(\n?.+)$/gmu
 
 const IntermediateDetails = ({ result }: VocabularyComponentProps) => (
   <Markdown options={mdOptions}>
     {useMemo(() => (
       result.details!.replaceAll(DetailsSampleRegex, (_, jp: string, lat: string) => {
-        return `<Sample jp={${jp}}>${lat.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')}</Sample>`
+        return `<Sample lat={${lat.trim()}} hasSpacing={${jp.endsWith('。')}}>${jp.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').trim()}</Sample>`
       })
     ), [result.details])}
   </Markdown>

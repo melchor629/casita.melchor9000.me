@@ -62,8 +62,8 @@ const swaggerPlugin: FastifyPluginAsync = async (fastify) => {
               flows: {
                 authorizationCode: {
                   type: 'authorizationCode',
-                  'x-scalar-secret-client-id': 'nas-fs',
-                  'x-scalar-secret-client-secret': 'nas-fs',
+                  'x-scalar-client-id': 'nas-fs',
+                  clientSecret: 'nas-fs',
                   scopes: { openid: 'openid', offline_access: 'offline_access' },
                   selectedScopes: ['openid', 'offline_access'],
                   'x-usePkce': 'SHA-256',
@@ -75,7 +75,7 @@ const swaggerPlugin: FastifyPluginAsync = async (fastify) => {
       },
       logLevel: 'error',
       routePrefix: '/oas',
-    })
+    } satisfies import('@scalar/fastify-api-reference').FastifyApiReferenceOptions)
   } else {
     fastify.get('/oas/json', (req) => Promise.resolve(req.server.swagger()))
     fastify.get('/oas/yaml', (req, reply) => (

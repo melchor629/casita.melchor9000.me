@@ -10,7 +10,7 @@ const BasicVerbTable = ({ result }: VocabularyComponentProps<BasicVerbDictionary
   <NaisTable>
     <thead>
       <tr>
-        <th className="w-0" />
+        <th className="w-0" aria-label="Empty" />
         <th>Positive</th>
         <th>Negative</th>
       </tr>
