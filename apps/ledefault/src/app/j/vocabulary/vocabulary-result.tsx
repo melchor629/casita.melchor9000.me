@@ -29,17 +29,21 @@ const VocabularyResult = memo(function VocabularyResult({ result }: VocabularyCo
       return
     }
 
+    const { height: currentHeight } = detailsDiv.getBoundingClientRect()
+    detailsDiv.getAnimations()[0]?.cancel()
     if (!detailsOpen) {
+      const duration = Math.max(115, (detailsDiv.scrollHeight - currentHeight) / 5)
       detailsDiv.animate([
-        { height: '0px' },
+        { height: `${currentHeight}px` },
         { height: `${detailsDiv.scrollHeight}px` },
-      ], { duration: 115, fill: 'auto', easing: 'ease-in-out' })
+      ], { duration, fill: 'auto', easing: 'ease-in-out' })
       detailsDiv.style.height = 'auto'
     } else {
+      const duration = Math.max(115, currentHeight / 5)
       detailsDiv.animate([
-        { height: `${detailsDiv.scrollHeight}px` },
+        { height: `${currentHeight}px` },
         { height: '0px' },
-      ], { duration: 115, fill: 'auto', easing: 'ease-in-out' })
+      ], { duration, fill: 'auto', easing: 'ease-in-out' })
       detailsDiv.style.height = '0px'
     }
   }, [detailsOpen])
