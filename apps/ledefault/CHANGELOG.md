@@ -1,5 +1,14 @@
 # ledefault
 
+## 0.3.5
+
+### Patch Changes
+
+- f9cfe30: Implement cache for japanese data and include a loader in UI
+- 5d605d2: Updated icons in dashboard.
+- Updated dependencies [5d605d2]
+  - @melchor629/nice-ssr@0.5.4
+
 ## 0.3.4
 
 ### Patch Changes

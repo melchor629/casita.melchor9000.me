@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.5.4
+
+### Patch Changes
+
+- 5d605d2: Added support for not adding header in response if value is null-ish.
+
 ## 0.5.3
 
 ### Patch Changes
