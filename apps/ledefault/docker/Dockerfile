@@ -18,6 +18,7 @@ COPY --from=packages /app/out/json/ ./
 RUN bun i --frozen-lockfile
 
 COPY --from=packages /app/out/full/ ./
+COPY ./apps/nas-auth/src/app/icon.png ./apps/nas-auth/src/app/icon.png
 RUN bun run build
 
 

@@ -1,5 +1,11 @@
 # ledefault
 
+## 0.3.6
+
+### Patch Changes
+
+- fix build
+
 ## 0.3.5
 
 ### Patch Changes
