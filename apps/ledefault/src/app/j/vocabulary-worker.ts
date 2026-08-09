@@ -38,14 +38,14 @@ async function loadDictionary() {
 
 async function loadBasicDictionary() {
   const path = '/j/dict.basic.json'
-  const res = await fetch(path, { cache: 'no-cache' })
+  const res = await fetch(path)
   const yml = await res.json() as MutDictionaryEntry[][]
   return Object.freeze(yml.flat().map((entry) => processVocabEntry(entry, 'basic')))
 }
 
 async function loadIntermediateDictionary() {
   const path = '/j/dict.intermediate.json'
-  const res = await fetch(path, { cache: 'no-cache' })
+  const res = await fetch(path, { cache: 'default' })
   const yml = await res.json() as Record<string, MutDictionaryEntry[]>
   return Object.freeze(
     Object.entries(yml)

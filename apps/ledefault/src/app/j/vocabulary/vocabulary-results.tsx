@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import CircularProgress from '@melchor629/ui/CircularProgress'
+import { useEffect, useRef, useState } from 'react'
 import { Virtuoso, type Components } from 'react-virtuoso'
 import type { DictionaryEntry } from '../jp-utils'
 import VocabularyResult from './vocabulary-result'
@@ -19,33 +20,34 @@ const virtuosoItemRender = (_: number, result: DictionaryEntry) => <VocabularyRe
  * @param param0 Props.
  */
 export default function VocabularyResults({ filter }: Readonly<{ filter: string }>) {
-  const vocabularyWorker = useMemo(() => {
-    // SSR trick
-    if (typeof Worker !== 'undefined') {
-      return new Worker(
-        new URL('../vocabulary-worker.js', import.meta.url),
-        { type: 'module', name: 'jpn-vocab' },
-      )
-    }
-
-    return null! as Worker
-  }, [])
+  const vocabularyWorkerRef = useRef<Worker>(null)
+  const [loading, setLoading] = useState(true)
   const [results, setResults] = useState<DictionaryEntry[] | null>(null)
 
   useEffect(() => {
     if (filter) {
-      vocabularyWorker.postMessage(filter)
+      setTimeout(() => {
+        vocabularyWorkerRef.current?.postMessage(filter)
+        setLoading(true)
+      })
     }
-  }, [filter, vocabularyWorker])
+  }, [filter])
 
   useEffect(() => {
+    const vocabularyWorker = new Worker(
+      new URL('../vocabulary-worker.js', import.meta.url),
+      { type: 'module', name: 'jpn-vocab' },
+    )
     vocabularyWorker.addEventListener('message', (ev) => {
       setResults(ev.data as DictionaryEntry[])
+      setLoading(false)
     }, false)
+    vocabularyWorkerRef.current = vocabularyWorker
     return () => {
+      vocabularyWorkerRef.current = null
       vocabularyWorker.terminate()
     }
-  }, [vocabularyWorker])
+  }, [])
 
   const vocabDaTextClass = 'select-none text-center grow h-full'
   if (!filter) {
@@ -62,20 +64,19 @@ export default function VocabularyResults({ filter }: Readonly<{ filter: string 
     )
   }
 
-  if (results == null) {
-    return <div className={vocabDaTextClass}>loading ...</div>
-  }
-
-  if (!results.length) {
+  if (results != null && !results.length) {
     return <div className={vocabDaTextClass}>no results found</div>
   }
 
   return (
-    <Virtuoso
-      data={results}
-      itemContent={virtuosoItemRender}
-      increaseViewportBy={200}
-      components={virtuosoComponents}
-    />
+    <>
+      <div className="fixed top-20"><CircularProgress show={loading} /></div>
+      <Virtuoso
+        data={results ?? []}
+        itemContent={virtuosoItemRender}
+        increaseViewportBy={200}
+        components={virtuosoComponents}
+      />
+    </>
   )
 }
