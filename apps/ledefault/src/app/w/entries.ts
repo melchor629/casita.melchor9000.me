@@ -38,7 +38,7 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
   },
   {
     id: 'nas-auth',
-    icon: 'https://auth.melchor9000.me/icon.png',
+    icon: 'nasAuth',
     name: 'NAS Auth',
     url: 'https://auth.melchor9000.me',
   },
@@ -71,6 +71,7 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
   },
   {
     id: 'ddns',
+    icon: 'https://ddns.melchor9000.me/static/favicon.svg',
     name: 'DDNS',
     url: 'https://ddns.melchor9000.me',
   },
@@ -83,27 +84,25 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
   },
   {
     id: 'nicotine',
-    icon: 'https://nicotine.melchor9000.me/favicon.ico',
+    icon: 'nicotine',
     name: 'Nicotine',
     url: 'https://nicotine.melchor9000.me',
   },
   {
     id: 'esphome',
-    icon: 'https://esphome.melchor9000.me/static/images/favicon.ico',
+    icon: 'https://esphome.melchor9000.me/assets/logo/esphome-favicon.svg',
     name: 'esphome',
     url: 'https://esphome.melchor9000.me',
     limitedTo: [...melchorSubs],
   },
   {
     id: 'netdata-pi',
-    icon: 'https://netdata.melchor9000.me/pi/v2/favicon.ico',
     name: 'Netdata (pi)',
     url: 'https://netdata.melchor9000.me/pi/',
     label: 'pi',
   },
   {
     id: 'netdata-po',
-    icon: 'https://netdata.melchor9000.me/pi/v2/favicon.ico',
     name: 'Netdata (po)',
     url: 'https://netdata.melchor9000.me/po/',
     label: 'po',
@@ -154,7 +153,6 @@ const entries: ReadonlyArray<Entry | 'space'> = Object.freeze([
     name: 'seerr',
     url: 'https://seerr.melchor9000.me/',
     icon: 'https://seerr.melchor9000.me/android-chrome-192x192.png',
-    limitedTo: [...melchorSubs],
   },
   {
     id: 'bubbleupnp',

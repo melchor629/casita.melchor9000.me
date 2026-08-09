@@ -41,6 +41,14 @@ export type SsrResponseBuilder = Readonly<{
   header(name: string, value: string | string[]): SsrResponseBuilder
 
   /**
+   * Sets the value of the header if the value is not `null` or `undefined`.
+   * Previous values will be removed if there is a value.
+   * @param name Header name.
+   * @param value Header value or values.
+   */
+  header(name: string, value: string | null | undefined): SsrResponseBuilder
+
+  /**
    * Creates the response with text as body. The string will be encoded
    * using `utf-8`.
    * @param text The text to return in the body.
@@ -99,7 +107,7 @@ export class SsrResponse extends Response {
       header(name, value) {
         if (typeof value === 'string') {
           headers.set(name, value)
-        } else {
+        } else if (Array.isArray(value)) {
           headers.delete(name)
           value.forEach((value) => headers.append(name, value))
         }
