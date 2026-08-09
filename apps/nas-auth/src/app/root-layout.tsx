@@ -1,3 +1,4 @@
+import { RenderHead, RenderScripts } from '@melchor629/nice-ssr'
 import type { PropsWithChildren } from 'react'
 import favicon from './favicon.ico'
 import icon from './icon.png'
@@ -7,6 +8,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
       <head>
+        <RenderHead />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#111826" />
         <meta name="description" content="Authentication and login services." />
@@ -21,6 +23,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
         <div id="app">
           {children}
         </div>
+        <RenderScripts />
       </body>
     </html>
   )

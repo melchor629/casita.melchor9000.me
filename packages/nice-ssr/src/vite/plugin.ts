@@ -4,6 +4,7 @@ import type { Plugin } from 'vite'
 import { transformPage } from './transform-csr.ts'
 import { csrPageModuleId, getAppPath, getRelativeSourcePath, getRootLayoutPath, ssrRoutesModuleId } from './utils.ts'
 import generateCsrPage from './virtual/csr-page.ts'
+import generateCsrRootLayout from './virtual/csr-root-layout.ts'
 import generateSsrRoutes from './virtual/ssr-routes.ts'
 
 type NiceSsrOptions = Readonly<{
@@ -25,8 +26,10 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
       if (source === ssrRoutesModuleId || source === 'virtual:entry-csr') {
         return `\0${source}`
       }
-      if (importer === '\0virtual:entry-csr' && source.startsWith('./')) {
-        return path.resolve(import.meta.dirname, '..', source)
+      if (importer === '\0virtual:entry-csr') {
+        if (source.startsWith('./')) {
+          return path.resolve(import.meta.dirname, '..', source)
+        }
       }
     },
 
@@ -38,7 +41,7 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
         return generateSsrRoutes()
       }
       if (id === '\0virtual:entry-csr') {
-        return await fs.readFile(path.resolve(import.meta.dirname, '..', 'csr-entry.js'), 'utf-8')
+        return generateCsrRootLayout()
       }
     },
 

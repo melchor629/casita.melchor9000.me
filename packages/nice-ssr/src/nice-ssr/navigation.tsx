@@ -1,11 +1,11 @@
 import {
   createContext,
+  StrictMode,
   use,
   useCallback,
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
   useTransition,
   type ComponentPropsWithRef,
@@ -13,9 +13,12 @@ import {
   type MouseEventHandler,
   type ReactNode,
 } from 'react'
+import { preinit, preload, preloadModule, type PreloadAs } from 'react-dom'
+import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import type { PartialPageRenderResult } from '../entry/page-render'
 import ErrorBoundary from './error'
+import type { Metadata } from './page'
 
 const ssrTypeSymbol: unique symbol = Symbol('ssr:type')
 
@@ -93,10 +96,8 @@ type Blocker = Readonly<{
 type BlockerFn = (newUrl: URL, result: Promise<'proceed' | 'block'>) => Promise<'proceed' | 'block'>
 
 type RouterContextState = Readonly<SsrRouterProviderProps & {
-  url: URL
   state: 'inactive' | 'navigating'
   blockerFns: ReadonlyArray<BlockerFn>
-  pagePromise?: Promise<void>
 }>
 
 type RouterContextActions = Readonly<{
@@ -111,27 +112,45 @@ type RouterContextActions = Readonly<{
   loadPage(newUrl: URL, justFetch?: boolean): Promise<void>
 }>
 
+export type SsrRouteAsset = Readonly<{
+  type: 'style' | 'module' | 'modulepreload' | 'pagemodule'
+  path: string
+} | {
+  type: 'preload'
+  path: string
+  as: PreloadAs
+}>
+
 export type SsrRouterProviderProps = Readonly<{
   url: URL
   basePath: string
   pathname: string
   params: Record<string, string>
-  props: Record<string, unknown>
-  Page: (props: Record<string, unknown>) => ReactNode
   pageModulePath: string
+  server?: {
+    assets: SsrRouteAsset[]
+    nonce: { style?: string, script?: string }
+  }
+  client?: {
+    root: import('react').RefObject<import('react-dom/client').Root>
+  }
+  metadata: Metadata
+  RootLayout: FC<{ children: ReactNode }> | undefined | null
 }>
 
 const SsrRouterContext = createContext<{
-  state: RouterContextState
+  store: ReturnType<ReturnType<typeof createStore<RouterContextState>>>
+  isTransitioning: boolean
   actions: RouterContextActions
 }>(null!)
 SsrRouterContext.displayName = 'SsrRouterContext'
 
-const useRouterStore = () => useContext(SsrRouterContext)
+const useRouterContext = () => useContext(SsrRouterContext)
 
-function useRouterContext<S>(fn: (state: RouterContextState) => S) {
-  const store = useRouterStore()
-  return useShallow(fn)(store.state)
+function useRouterContextState<S>(fn: (state: RouterContextState) => S) {
+  const store = useRouterContext()
+  const state = useStore(store.store, useShallow(fn))
+  return state
 }
 
 const getHref = (currentUrl: URL, pathname?: string, searchParams?: URLSearchParams) => {
@@ -154,55 +173,33 @@ const loadPage = async (store: RouterContextActions, newUrl: URL, justFetch = fa
     },
   })
   const data = await res.json() as PartialPageRenderResult
-  let pageModulePath: string | undefined
-  const modules = await Promise.all(data.a.map(async (asset) => {
-    if (asset.type === 'page') {
-      pageModulePath = asset.path
-      const { renderPage } = await import(/* @vite-ignore */ asset.path) as { renderPage: unknown }
-      return renderPage
-    }
-    if (justFetch) {
-      return Promise.resolve()
-    }
-    if (asset.type === 'module') {
-      return import(/* @vite-ignore */ asset.path) as Promise<unknown>
-    }
-    const stylesheet = document.createElement('link')
-    stylesheet.rel = 'stylesheet'
-    stylesheet.crossOrigin = 'anonymous'
-    stylesheet.href = asset.path
-    document.head.appendChild(stylesheet)
-    return new Promise<void>((resolve) => stylesheet.addEventListener('load', () => resolve(), false))
-  }))
-  const Page = modules.filter((module) => typeof module === 'function').at(0) as ((props: Record<string, unknown>) => ReactNode) | undefined
-  setTimeout(() => {
-    if (data.m?.title) {
-      document.title = data.m.title
-    }
-    if (data.m?.description) {
-      const descr = document.head.querySelector<HTMLMetaElement>('meta[name=description]')
-      if (descr) {
-        descr.content = data.m.description
-      } else {
-        const descr = document.createElement('meta')
-        descr.content = data.m.description
-        descr.name = 'description'
-        document.head.append(descr)
-      }
-    } else {
-      const descr = document.head.querySelector<HTMLMetaElement>('meta[name=description]')
-      descr?.remove()
-    }
-
-    store.setState({
-      ...data.c,
-      url: new URL(data.c.url),
-      state: 'inactive',
-      props: data.p,
-      Page,
-      pageModulePath,
-    })
-  }, 0)
+  const { renderPage } = data.a ? await import(/* @vite-ignore */ data.a) as { renderPage: FC } : { renderPage: null }
+  if (!renderPage) return
+  const Page = renderPage
+  const { blockerFns: _, state: _1, ...routerState } = store.getState()
+  if (justFetch) {
+    routerState.client?.root.current.render((
+      <StrictMode>
+        <SsrRouterProvider initialValue={routerState}>
+          <Page {...data.p} />
+        </SsrRouterProvider>
+      </StrictMode>
+    ))
+  } else {
+    routerState.client?.root.current.render((
+      <StrictMode>
+        <SsrRouterProvider
+          initialValue={{
+            ...routerState,
+            ...data.c,
+            url: new URL(data.c.url),
+          }}
+        >
+          <Page {...data.p} />
+        </SsrRouterProvider>
+      </StrictMode>
+    ))
+  }
 }
 
 const trySmoothNavigation = async (actions: RouterContextActions, newUrl: URL) => {
@@ -236,7 +233,7 @@ const trySmoothNavigation = async (actions: RouterContextActions, newUrl: URL) =
  * @returns The blocker interface.
  */
 export const useBlocker = (shouldBlock: boolean | ((opts: { current: URL, next: URL }) => boolean)): Blocker => {
-  const { actions } = useRouterStore()
+  const { actions } = useRouterContext()
   const [blockerState, setBlockerState] = useState<Blocker>({ state: 'unblocked' })
 
   useEffect(() => {
@@ -289,7 +286,7 @@ export const useBlocker = (shouldBlock: boolean | ((opts: { current: URL, next: 
  * @returns The resolved href.
  */
 export const useHref = (path: string | { pathname?: string, searchParams?: URLSearchParams }): string => {
-  const url = useRouterContext(useCallback((state) => state.url, []))
+  const url = useRouterContextState(useCallback((state) => state.url, []))
   return useMemo(
     () =>
       typeof path === 'string'
@@ -304,7 +301,7 @@ export const useHref = (path: string | { pathname?: string, searchParams?: URLSe
  * search parameters nor hash.
  * @returns The pathname of the current page.
  */
-export const usePathname = (): string => useRouterContext(useCallback((state) => state.pathname, []))
+export const usePathname = (): string => useRouterContextState(useCallback((state) => state.pathname, []))
 
 /**
  * Gets the search parameters parsed as {@link URLSearchParams} instance.
@@ -313,7 +310,7 @@ export const usePathname = (): string => useRouterContext(useCallback((state) =>
  * @returns The search parameters of the current page.
  */
 export const useSearchParams = (): URLSearchParams =>
-  useRouterContext(useCallback((state) => state.url.searchParams, []))
+  useRouterContextState(useCallback((state) => state.url.searchParams, []))
 
 /**
  * Gets the route parameters for the given page based on the template
@@ -321,14 +318,14 @@ export const useSearchParams = (): URLSearchParams =>
  * @returns The route parameters.
  */
 export const useParams = <T extends Record<string, string>>(): T =>
-  useRouterContext(useCallback((state) => state.params as T, []))
+  useRouterContextState(useCallback((state) => state.params as T, []))
 
 /**
  * Gets a function that navigates the page to the new path.
  * @returns A function to navigate in the app.
  */
 export const useNavigate = (): (path: string | { pathname?: string, searchParams?: URLSearchParams }, mode?: 'replace' | 'push') => void => {
-  const { actions } = useRouterStore()
+  const { actions } = useRouterContext()
   return useMemo(() => (path, mode = 'push') => {
     const { url } = actions.getState()
     const { origin } = url
@@ -363,15 +360,19 @@ export const useNavigate = (): (path: string | { pathname?: string, searchParams
  * the system is loading the next page.
  * @returns The current navigation status.
  */
-export const useNavigationStatus = (): RouterContextState['state'] =>
-  useRouterContext(useCallback((state) => state.state, []))
+export const useNavigationStatus = (): RouterContextState['state'] => {
+  const status = useRouterContextState(useCallback((state) => state.state, []))
+  const { isTransitioning } = useRouterContext()
+  return isTransitioning ? 'navigating' : status
+}
 
 /**
  * Gets a function to force reload loader data when requested.
  * @returns A function to call when a data revalidation is needed.
  */
 export const useRevalidator = (): () => Promise<void> => {
-  const { actions, state: { state, url } } = useRouterStore()
+  const { actions } = useRouterContext()
+  const { state, url } = useRouterContextState(useCallback((s) => ({ state: s.state, url: s.url }), []))
   return useCallback(() => {
     if (state === 'inactive') return actions.loadPage(url, true)
     return Promise.reject(new Error('Cannot revalidate while loding another page or already revalidating'))
@@ -407,51 +408,105 @@ export const Link: FC<LinkProps> = ({ children, onClick, to, ...props }: LinkPro
   )
 }
 
-export function SsrRouterProvider({ initialValue }: Readonly<{
-  readonly initialValue: SsrRouterProviderProps
+export const RenderHead = () => {
+  const server = useRouterContextState(useCallback((e) => e.server, []))
+  const metadata = useRouterContextState(useCallback((e) => e.metadata, []))
+
+  if (server) {
+    const { assets, nonce } = server
+    assets.forEach((asset) => {
+      if (asset.type === 'modulepreload') {
+        preloadModule(asset.path, { as: 'script', nonce: nonce.script, crossOrigin: 'anonymous' })
+      }
+
+      if (asset.type === 'preload') {
+        preload(asset.path, { as: asset.as, crossOrigin: 'anonymous' })
+      }
+
+      if (asset.type === 'style') {
+        preinit(asset.path, { as: 'style', crossOrigin: 'anonymous', nonce: nonce.style })
+      }
+    })
+  }
+
+  return (
+    <>
+      <meta key="utf8" charSet="UTF-8" />
+
+      {metadata.title && <title>{metadata.title}</title>}
+      {metadata.description && <meta name="description" content={metadata.description} />}
+      {metadata.baseHref && <base href={metadata.baseHref} />}
+    </>
+  )
+}
+
+export const RenderScripts = () => {
+  return null
+}
+
+const DefaultRootLayout = ({ children }: { readonly children: ReactNode }) => (
+  <html lang="en">
+    <head><RenderHead /></head>
+    <body id="app">
+      {children}
+      <RenderScripts />
+    </body>
+  </html>
+)
+
+export function SsrRouterProvider({ children, initialValue }: Readonly<{
+  children: ReactNode
+  initialValue: SsrRouterProviderProps
 }>) {
-  const [state, setState] = useState<RouterContextState>(() => ({
+  const store = useMemo(() => createStore<RouterContextState>()(() => ({
     basePath: initialValue.basePath,
     blockerFns: [],
-    Page: initialValue.Page,
     pageModulePath: initialValue.pageModulePath,
     params: initialValue.params,
     pathname: initialValue.pathname,
-    props: initialValue.props,
     state: 'inactive',
     url: initialValue.url,
-  }))
+    server: initialValue.server,
+    client: initialValue.client,
+    metadata: initialValue.metadata,
+    RootLayout: initialValue.RootLayout,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  })), [])
+  const [loadPagePromise, setLoadPagePromise] = useState<Promise<void> | null>(null)
   const [isTransitioning, startTransition] = useTransition()
-  const stateRef = useRef(state)
-  // eslint-disable-next-line react-hooks/refs
-  stateRef.current = state
 
   const actions = useMemo((): RouterContextActions => ({
-    getState: () => stateRef.current,
-    setState: (vfn) => setState((v) => {
+    getState: () => store.getState(),
+    setState: (vfn) => store.setState((v) => {
       const result = typeof vfn === 'function' ? vfn(v) : vfn
-      return { ...v, ...result }
+      return { ...result }
     }),
-    appendBlockerFn: (fn) => setState((v) => ({ ...v, blockerFns: [...v.blockerFns, fn] })),
-    removeAllBlockerFns: () => setState((v) => ({ ...v, blockerFns: [] })),
-    removeBlockerFn: (fn) => setState((v) => {
+    appendBlockerFn: (fn) => store.setState((v) => ({ blockerFns: [...v.blockerFns, fn] })),
+    removeAllBlockerFns: () => store.setState({ blockerFns: [] }),
+    removeBlockerFn: (fn) => store.setState((v) => {
       const idx = v.blockerFns.indexOf(fn)
       return idx >= 0
         ? {
-            ...v,
             blockerFns: v.blockerFns.toSpliced(idx, 1),
           }
-        : v
+        : {}
     }),
     changeUrl(newUrl) {
-      startTransition(() => setState((v) => ({ ...v, url: newUrl })))
+      startTransition(() => store.setState({ url: newUrl }))
     },
     loadPage(newUrl, justFetch = false) {
       const pagePromise = loadPage(this, newUrl, justFetch)
-      startTransition(() => setState((v) => ({ ...v, state: 'navigating', pagePromise })))
+      startTransition(() => {
+        store.setState({ state: 'navigating' })
+        setLoadPagePromise(pagePromise)
+      })
       return pagePromise
     },
-  }), [])
+  }), [store])
+
+  useEffect(() => {
+    store.setState({ ...initialValue, state: 'inactive' })
+  }, [initialValue, store])
 
   useEffect(() => {
     if (import.meta.env.SSR) {
@@ -459,10 +514,20 @@ export function SsrRouterProvider({ initialValue }: Readonly<{
     }
 
     const abort = new AbortController()
-    window.addEventListener('popstate', () => {
-      const newUrl = new URL(location.href)
-      trySmoothNavigation(actions, newUrl)
-        .catch(() => window.location.reload())
+    navigation.addEventListener('navigate', (e) => {
+      if (!e.canIntercept || e.navigationType !== 'traverse' || e.downloadRequest) return
+
+      const newUrl = new URL(e.destination.url, location.origin)
+      e.intercept({
+        async handler() {
+          await trySmoothNavigation(actions, newUrl)
+            .then((result) => {
+              if (result === 'proceed') e.scroll()
+              else e.preventDefault()
+            })
+            .catch(() => window.location.reload())
+        },
+      })
     }, {
       passive: false,
       signal: abort.signal,
@@ -470,20 +535,25 @@ export function SsrRouterProvider({ initialValue }: Readonly<{
     return () => abort.abort()
   }, [actions])
 
-  if (state.pagePromise) {
-    use(state.pagePromise)
+  if (loadPagePromise) {
+    use(loadPagePromise)
   }
-  const { Page, props } = state
+
+  const RootLayout = initialValue.RootLayout ?? DefaultRootLayout
+  const pageModulePath = useStore(store, useCallback((s) => s.pageModulePath, []))
   return (
     <SsrRouterContext
       value={{
         actions,
-        state: { ...state, state: isTransitioning ? 'navigating' : state.state },
+        store,
+        isTransitioning,
       }}
     >
-      <ErrorBoundary path={`${state.pageModulePath}/_error`}>
-        <Page {...props} />
-      </ErrorBoundary>
+      <RootLayout>
+        <ErrorBoundary path={`${pageModulePath}/_error`}>
+          {children}
+        </ErrorBoundary>
+      </RootLayout>
     </SsrRouterContext>
   )
 }

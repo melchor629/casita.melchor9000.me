@@ -14,6 +14,8 @@ export {
   useRevalidator,
   isSsrError,
   useSearchParams,
+  RenderHead,
+  RenderScripts,
 } from './navigation'
 export type {
   Metadata,

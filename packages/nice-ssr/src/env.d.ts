@@ -38,3 +38,10 @@ declare module 'virtual:ssr/routes' {
   const modules: RootPathModule
   export default modules
 }
+
+declare module 'virtual:csr:root-layout' {
+  import type { FC, ReactNode } from 'react'
+
+  const RootLayout: FC<{ children: ReactNode }> | null
+  export default RootLayout
+}

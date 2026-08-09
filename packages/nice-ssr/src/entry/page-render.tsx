@@ -1,11 +1,10 @@
-/* eslint-disable react/jsx-key */
 import path from 'node:path'
-import { type ReactNode, type ReactElement, cloneElement, type ComponentProps } from 'react'
+import type { PreloadAs } from 'react-dom'
 import { renderToReadableStream } from 'react-dom/server'
 // eslint-disable-next-line import-x/no-unresolved
 import routeModules from 'virtual:ssr/routes'
-import { SsrRouterProvider, type SsrRouterProviderProps } from '../nice-ssr/navigation'
-import type { Metadata, PageHelperModule, PageLoaderContext, PageModule } from '../nice-ssr/page'
+import { SsrRouterProvider, type SsrRouteAsset, type SsrRouterProviderProps } from '../nice-ssr/navigation'
+import type { PageHelperModule, PageLoaderContext, PageModule } from '../nice-ssr/page'
 import type { SsrRequest } from '../nice-ssr/request'
 import { SsrResponse } from '../nice-ssr/response'
 import { startSpan } from './tracer'
@@ -85,9 +84,21 @@ const getExtraEntries = (entry: ManifestEntry): ManifestEntry[] => [
   ...(entry.dynamicImports ?? []).flatMap(getExtraEntries),
 ]
 
+const getAllAssets = (entry: ManifestEntry): string[] => [
+  ...(entry.assets ?? []),
+  ...(entry.imports?.map((n) => getAllAssets(n)) ?? []),
+  ...(entry.dynamicImports?.map((n) => getAllAssets(n)) ?? []),
+].flat()
+
+const getAllStyles = (entry: ManifestEntry): string[] => [
+  ...(entry.css ?? []),
+  ...(entry.imports?.map((n) => getAllStyles(n)) ?? []),
+  ...(entry.dynamicImports?.map((n) => getAllStyles(n)) ?? []),
+].flat()
+
 const imageTypes = ['.png', '.jpg', '.jpeg', '.jfif', '.webp', '.avif', '.heif', '.heic', '.ico']
 const fontTypes = ['.woff', '.woff2', '.ttf', '.otf']
-const mapExtToPreloadAs = (name: string) => {
+const mapExtToPreloadAs = (name: string): PreloadAs => {
   if (name.endsWith('.js')) return 'script'
   if (name.endsWith('.css')) return 'style'
   if (imageTypes.some((ext) => name.endsWith(ext))) return 'image'
@@ -95,21 +106,16 @@ const mapExtToPreloadAs = (name: string) => {
   return 'fetch'
 }
 
-async function getCsrTags(
+async function getCsrAssets(
   moduleId: string,
   basePath: string,
-  scriptNonce?: string,
-  styleNonce?: string,
-): Promise<[ReactNode[], string]> {
+): Promise<SsrRouteAsset[]> {
   const pageCsrModuleId = path.join('virtual:csr', moduleId).replace(/\/$/, '')
   if (import.meta.env.DEV) {
     return [
-      [
-        <script key="vite" type="module" nonce={scriptNonce} src="/@vite/client" />,
-        <script key="react-refresh" type="module" nonce={scriptNonce} src="/@id/__x00__@vitejs/plugin-react/preamble" />,
-        <script key="root-layout" type="module" nonce={scriptNonce} src="/src/app/root-layout.tsx" />,
-      ],
-      `/@id/__x00__${pageCsrModuleId}`,
+      { type: 'module', path: '/@vite/client' },
+      { type: 'module', path: '/@id/__x00__@vitejs/plugin-react/preamble' },
+      { type: 'pagemodule', path: `/@id/__x00__${pageCsrModuleId}` },
     ]
   }
 
@@ -120,8 +126,8 @@ async function getCsrTags(
   const rootLayoutCsrManifestEntry = getEntryForModuleId(manifest, 'src/app/root-layout.tsx')
   const allDependencyEntries = getExtraEntries(pageCsrManifestEntry)
   const css = Array.from(new Set([
-    ...(rootLayoutCsrManifestEntry?.css ?? []),
-    ...allDependencyEntries.flatMap((entry) => entry.css ?? []),
+    ...getAllStyles(rootLayoutCsrManifestEntry),
+    ...getAllStyles(pageCsrManifestEntry),
   ]))
   const preloadScripts = Array.from(new Set([
     ...allDependencyEntries.flatMap((entry) => entry?.imports ?? []),
@@ -129,46 +135,19 @@ async function getCsrTags(
     pageCsrManifestEntry,
   ].map((entry) => entry.file)))
   const assets = Array.from(new Set([
-    ...(rootLayoutCsrManifestEntry.assets ?? []),
-    ...(pageCsrManifestEntry.assets ?? []),
+    ...getAllAssets(rootLayoutCsrManifestEntry),
+    ...getAllAssets(pageCsrManifestEntry),
   ]))
   return [
-    [
-      ...css.map((entry) => <link rel="stylesheet" crossOrigin="anonymous" nonce={styleNonce} href={`${basePath}${entry}`} />),
-      ...preloadScripts.map((entry) => <link rel="modulepreload" crossOrigin="anonymous" nonce={scriptNonce} href={`${basePath}${entry}`} />),
-      ...assets.map((path) => (
-        <link
-          rel="preload"
-          crossOrigin="anonymous"
-          href={`${basePath}${path}`}
-          as={mapExtToPreloadAs(path)}
-        />
-      )),
-    ],
-    `${basePath}${pageCsrManifestEntry.file}`,
+    ...css.map((entry): SsrRouteAsset => ({ type: 'style', path: `${basePath}${entry}` })),
+    ...preloadScripts.map((entry): SsrRouteAsset => ({ type: 'modulepreload', path: `${basePath}${entry}` })),
+    ...assets.map((path): SsrRouteAsset => ({
+      type: 'preload',
+      path: `${basePath}${path}`,
+      as: mapExtToPreloadAs(path),
+    })),
+    { type: 'pagemodule', path: `${basePath}${pageCsrManifestEntry.file}` },
   ]
-}
-
-async function getCsrAssets(
-  moduleId: string,
-  basePath: string,
-): Promise<Array<{ type: 'page' | 'module' | 'stylesheet', path: string }>> {
-  const pageCsrModuleId = path.join('virtual:csr', moduleId).replace(/\/$/, '')
-  if (import.meta.env.DEV) {
-    return [
-      { type: 'page', path: `/@id/__x00__${pageCsrModuleId}` },
-    ]
-  }
-
-  // @ts-expect-error this is an external file after build
-  // eslint-disable-next-line import-x/no-unresolved
-  const { default: manifest } = await import('../client/.vite/manifest.json', { with: { type: 'json' } }) as { default: Record<string, RawManifestEntry> }
-  const pageCsrManifestEntry = getEntryForModuleId(manifest, pageCsrModuleId)
-  const allDependencyEntries = getExtraEntries(pageCsrManifestEntry)
-  const css = allDependencyEntries
-    .flatMap((entry) => entry.css ?? [])
-    .map((path) => ({ type: 'stylesheet' as const, path }))
-  return [...css, { type: 'page', path: `${basePath}${pageCsrManifestEntry.file}` }]
 }
 
 async function getEntryCsr(basePath: string) {
@@ -182,13 +161,6 @@ async function getEntryCsr(basePath: string) {
   const entry = getEntryForModuleId(manifest, 'virtual:entry-csr')
   return basePath + entry.file
 }
-
-const DefaultRootLayout = ({ children }: { readonly children: ReactNode[] }) => (
-  <html lang="en">
-    <head />
-    <body id="app">{children}</body>
-  </html>
-)
 
 async function renderCompletePage(
   module: PageModule,
@@ -204,64 +176,64 @@ async function renderCompletePage(
   request.nice.log.debug('Building head')
   const scriptNonce = request.headers.get('x-script-nonce') || undefined
   const styleNonce = request.headers.get('x-style-nonce') || undefined
-  const [[moreHeads, pageScriptPath], pageMetadataHead, entryScriptPath] = await Promise.all([
-    getCsrTags(
+  const [assets, pageMetadataHead, entryScriptPath] = await Promise.all([
+    getCsrAssets(
       request.nice.originalPathname,
       request.nice.basePath,
-      scriptNonce,
-      styleNonce,
     ),
-    renderHead(module, ssrProps),
+    generateMetadata(module, ssrProps),
     getEntryCsr(request.nice.basePath),
   ])
 
   request.nice.log.debug('Building body')
   const tree = await startSpan('render page', async () => {
     const RootLayout = (await routeModules.rootLayout?.())?.default
-      ?? DefaultRootLayout
     const { default: Page } = module
     const layoutComponents = await Promise.all(pageContext.layouts.map(async (m) => (await m()).default))
-    const tree = RootLayout({
-      children: [
-        <SsrRouterProvider
-          key="router-provider"
-          initialValue={{
-            basePath: request.nice.basePath,
-            params: request.nice.params,
-            pathname: request.nice.pathname,
-            url: request.nice.url,
-            Page: (props: Record<string, unknown>) => (
-              <>
-                {layoutComponents.reduceRight(
-                  // eslint-disable-next-line react/no-unstable-nested-components
-                  (p, Layout) => <Layout>{p}</Layout>,
-                  <Page {...props} />,
-                )}
-              </>
-            ),
-            pageModulePath: '',
-            props: ssrProps,
-          }}
-        />,
-      ],
-    }) as ReactElement<ComponentProps<'html'>, 'html'>
-    return transformTree(tree, [...pageMetadataHead, ...moreHeads])
+    const tree = (
+      <SsrRouterProvider
+        key="router-provider"
+        initialValue={{
+          basePath: request.nice.basePath,
+          params: request.nice.params,
+          pathname: request.nice.pathname,
+          url: request.nice.url,
+          pageModulePath: '',
+          server: {
+            assets,
+            nonce: { script: scriptNonce, style: styleNonce },
+          },
+          metadata: pageMetadataHead,
+          RootLayout,
+        }}
+      >
+        <>
+          {layoutComponents.reduceRight(
+            (p, Layout) => <Layout>{p}</Layout>,
+            <Page {...ssrProps} />,
+          )}
+        </>
+      </SsrRouterProvider>
+    )
+    return tree
   })
 
   request.nice.log.debug('Rendering HTML')
   const serializableContext: PartialPageRenderResult = {
-    a: [{ type: 'page', path: pageScriptPath }],
+    a: assets.find((e) => e.type === 'pagemodule')?.path,
     c: {
       basePath: request.nice.basePath,
       params: request.nice.params,
       pathname: request.nice.pathname,
       url: request.nice.url,
+      metadata: pageMetadataHead,
     },
     p: ssrProps,
   }
   const stream = await renderToReadableStream(tree, {
     nonce: scriptNonce,
     signal: request.signal,
+    bootstrapModules: assets.filter((a) => a.type === 'module').map((a) => a.path),
     bootstrapScriptContent: `
       const c=${serializeForHtml(serializableContext)};
       import(${serializeForHtml(entryScriptPath)}).then(({ default: start }) => start(c));
@@ -277,10 +249,9 @@ async function renderCompletePage(
 }
 
 export type PartialPageRenderResult = Readonly<{
+  a: string | undefined
   p: Record<string, unknown>
-  c: Omit<SsrRouterProviderProps, 'props' | 'Page' | 'pageModulePath'>
-  a: Array<{ type: 'page' | 'module' | 'stylesheet', path: string }>
-  m?: Metadata
+  c: Omit<SsrRouterProviderProps, 'props' | 'Page' | 'pageModulePath' | 'RootLayout'>
 }>
 
 async function renderPartialPage(
@@ -294,30 +265,32 @@ async function renderPartialPage(
     ...pageContext.props,
   }
 
-  request.nice.log.debug('Serializing data')
-  const context = {
-    basePath: request.nice.basePath,
-    params: request.nice.params,
-    pathname: request.nice.pathname,
-    url: request.nice.url,
-  } satisfies PartialPageRenderResult['c']
-
   request.nice.log.debug('Building head')
   const [assets, metadata] = await Promise.all([
     getCsrAssets(
       request.nice.originalPathname,
       request.nice.basePath,
     ),
-    typeof module.metadata === 'function'
-      ? module.metadata(ssrProps)
-      : Promise.resolve(module.metadata),
+    generateMetadata(module, ssrProps),
   ])
 
+  const context = {
+    basePath: request.nice.basePath,
+    params: request.nice.params,
+    pathname: request.nice.pathname,
+    url: request.nice.url,
+    metadata,
+    server: {
+      assets,
+      nonce: {},
+    },
+  } satisfies PartialPageRenderResult['c']
+
+  request.nice.log.debug('Generting response')
   return SsrResponse.json({
     p: ssrProps,
     c: context,
-    a: assets,
-    m: metadata,
+    a: assets.find((a) => a.type === 'pagemodule')?.path,
   } satisfies PartialPageRenderResult)
 }
 
@@ -349,47 +322,9 @@ export default async function renderPage(
   return renderInvalidPage(request)
 }
 
-async function renderHead({ metadata: metadataFn }: PageModule, ssrProps: Record<string, unknown>) {
+async function generateMetadata({ metadata: metadataFn }: PageModule, ssrProps: Record<string, unknown>) {
   return startSpan('prepare metadata', async () => {
-    const headEntries: ReactNode[] = []
     const metadata = typeof metadataFn === 'function' ? await metadataFn(ssrProps) : metadataFn
-    if (metadata?.title) {
-      headEntries.push(<title>{metadata.title}</title>)
-    }
-    if (metadata?.description) {
-      headEntries.push(<meta name="description" content={metadata.description} />)
-    }
-    if (metadata?.baseHref) {
-      headEntries.push(<base href={metadata.baseHref} />)
-    }
-    return headEntries
-  })
-}
-
-const keyFillTrick = (children: ReadonlyArray<ReactNode>): ReadonlyArray<ReactNode> =>
-  Object.freeze(children.map((e, i) => typeof e === 'object' && e && 'type' in e ? ({ ...e, key: e.key ?? i.toString() } satisfies ReactElement) : e))
-function transformTree(tree: ReactElement<ComponentProps<'html'>, 'html'>, additionalElements: ReactNode[]) {
-  if (tree.type !== 'html' || !tree.props.children || typeof tree.props.children !== 'object' || !(Symbol.iterator in tree.props.children)) {
-    throw new Error('The root layout must return <html /> tag')
-  }
-
-  const treeChildren = Array.from(tree.props.children)
-  const headTree: ReactElement<ComponentProps<'head'>> = treeChildren
-    .filter((el): el is ReactElement => el != null && typeof el === 'object' && 'type' in el && 'props' in el)
-    .find((el): el is ReactElement<ComponentProps<'head'>, 'head'> => el.type === 'head')
-    ?? <head /> as ReactElement<ComponentProps<'head'>>
-  const headChildren = Array.from(headTree.props.children as ReactNode[] ?? [])
-  headChildren.unshift(<meta key="utf8" charSet="UTF-8" />)
-  headChildren.push(...additionalElements)
-
-  const newHead = cloneElement(headTree, {
-    children: keyFillTrick(headChildren),
-  })
-  return cloneElement(tree, {
-    children: keyFillTrick([
-      treeChildren.slice(0, treeChildren.indexOf(headTree)),
-      newHead,
-      treeChildren.slice(treeChildren.indexOf(headTree) + 1),
-    ]),
+    return metadata ?? {}
   })
 }
