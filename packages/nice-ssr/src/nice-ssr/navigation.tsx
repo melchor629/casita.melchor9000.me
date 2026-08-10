@@ -1,6 +1,5 @@
 import {
   createContext,
-  StrictMode,
   use,
   useCallback,
   useContext,
@@ -17,8 +16,8 @@ import { preinit, preload, preloadModule, type PreloadAs } from 'react-dom'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import type { PartialPageRenderResult } from '../entry/page-render'
-import ErrorBoundary from './error'
 import type { Metadata } from './page'
+import RootLayout from './root-layout'
 
 const ssrTypeSymbol: unique symbol = Symbol('ssr:type')
 
@@ -126,13 +125,9 @@ export type SsrRouterProviderProps = Readonly<{
   basePath: string
   pathname: string
   params: Record<string, string>
-  pageModulePath: string
   server?: {
     assets: SsrRouteAsset[]
     nonce: { style?: string, script?: string }
-  }
-  client?: {
-    root: import('react').RefObject<import('react-dom/client').Root>
   }
   metadata: Metadata
 }>
@@ -146,7 +141,7 @@ SsrRouterContext.displayName = 'SsrRouterContext'
 
 const useRouterContext = () => useContext(SsrRouterContext)
 
-function useRouterContextState<S>(fn: (state: RouterContextState) => S) {
+export function useRouterContextState<S>(fn: (state: RouterContextState) => S) {
   const store = useRouterContext()
   const state = useStore(store.store, useShallow(fn))
   return state
@@ -172,33 +167,12 @@ const loadPage = async (store: RouterContextActions, newUrl: URL, justFetch = fa
     },
   })
   const data = await res.json() as PartialPageRenderResult
-  const { renderPage } = data.a ? await import(/* @vite-ignore */ data.a) as { renderPage: FC } : { renderPage: null }
-  if (!renderPage) return
-  const Page = renderPage
-  const { blockerFns: _, state: _1, ...routerState } = store.getState()
-  if (justFetch) {
-    routerState.client?.root.current.render((
-      <StrictMode>
-        <SsrRouterProvider initialValue={routerState}>
-          <Page {...data.p} />
-        </SsrRouterProvider>
-      </StrictMode>
-    ))
-  } else {
-    routerState.client?.root.current.render((
-      <StrictMode>
-        <SsrRouterProvider
-          initialValue={{
-            ...routerState,
-            ...data.c,
-            url: new URL(data.c.url),
-          }}
-        >
-          <Page {...data.p} />
-        </SsrRouterProvider>
-      </StrictMode>
-    ))
+  const { renderPage } = await import(/* @vite-ignore */ data.a!) as { renderPage: (props: Record<string, unknown>) => ReactNode }
+  if (!justFetch) {
+    store.setState({ ...data.c, url: new URL(data.c.url) })
   }
+
+  return renderPage(data.p)
 }
 
 const trySmoothNavigation = async (actions: RouterContextActions, newUrl: URL) => {
@@ -443,41 +417,22 @@ export const RenderScripts = () => {
   return null
 }
 
-const rootLayoutMaybe: Record<string, { default: typeof DefaultRootLayout }> = import.meta.glob(
-  '/src/app/root-layout.{t,j}sx',
-  { eager: true, base: '/src/app' },
-)
-const DefaultRootLayout = ({ children }: { readonly children: ReactNode }) => (
-  <html lang="en">
-    <head><RenderHead /></head>
-    <body id="app">
-      {children}
-      <RenderScripts />
-    </body>
-  </html>
-)
-const RootLayout: typeof DefaultRootLayout = rootLayoutMaybe['./root-layout.jsx']?.default
-  ?? rootLayoutMaybe['./root-layout.tsx']?.default
-  ?? DefaultRootLayout
-
-export function SsrRouterProvider({ children, initialValue }: Readonly<{
-  children: ReactNode
+export function SsrRouterProvider({ initialPage, initialValue }: Readonly<{
+  initialPage: ReactNode
   initialValue: SsrRouterProviderProps
 }>) {
   const store = useMemo(() => createStore<RouterContextState>()(() => ({
     basePath: initialValue.basePath,
     blockerFns: [],
-    pageModulePath: initialValue.pageModulePath,
     params: initialValue.params,
     pathname: initialValue.pathname,
     state: 'inactive',
     url: initialValue.url,
     server: initialValue.server,
-    client: initialValue.client,
     metadata: initialValue.metadata,
     // eslint-disable-next-line react-hooks/exhaustive-deps
   })), [])
-  const [loadPagePromise, setLoadPagePromise] = useState<Promise<void> | null>(null)
+  const [loadPagePromise, setLoadPagePromise] = useState<Promise<ReactNode> | null>(null)
   const [isTransitioning, startTransition] = useTransition()
 
   const actions = useMemo((): RouterContextActions => ({
@@ -499,19 +454,15 @@ export function SsrRouterProvider({ children, initialValue }: Readonly<{
     changeUrl(newUrl) {
       startTransition(() => store.setState({ url: newUrl }))
     },
-    loadPage(newUrl, justFetch = false) {
+    async loadPage(newUrl, justFetch = false) {
       const pagePromise = loadPage(this, newUrl, justFetch)
       startTransition(() => {
         store.setState({ state: 'navigating' })
         setLoadPagePromise(pagePromise)
       })
-      return pagePromise
+      await pagePromise.finally(() => store.setState({ state: 'inactive' }))
     },
   }), [store])
-
-  useEffect(() => {
-    store.setState({ ...initialValue, state: 'inactive' })
-  }, [initialValue, store])
 
   useEffect(() => {
     if (import.meta.env.SSR) {
@@ -540,11 +491,7 @@ export function SsrRouterProvider({ children, initialValue }: Readonly<{
     return () => abort.abort()
   }, [actions])
 
-  if (loadPagePromise) {
-    use(loadPagePromise)
-  }
-
-  const pageModulePath = useStore(store, useCallback((s) => s.pageModulePath, []))
+  const pageElement = loadPagePromise ? use(loadPagePromise) : initialPage
   return (
     <SsrRouterContext
       value={{
@@ -554,9 +501,7 @@ export function SsrRouterProvider({ children, initialValue }: Readonly<{
       }}
     >
       <RootLayout>
-        <ErrorBoundary path={`${pageModulePath}/_error`}>
-          {children}
-        </ErrorBoundary>
+        {pageElement}
       </RootLayout>
     </SsrRouterContext>
   )

@@ -188,21 +188,17 @@ async function renderCompletePage(
           params: request.nice.params,
           pathname: request.nice.pathname,
           url: request.nice.url,
-          pageModulePath: '',
           server: {
             assets,
             nonce: { script: scriptNonce, style: styleNonce },
           },
           metadata: pageMetadataHead,
         }}
-      >
-        <>
-          {layoutComponents.reduceRight(
-            (p, Layout) => <Layout>{p}</Layout>,
-            <Page {...ssrProps} />,
-          )}
-        </>
-      </SsrRouterProvider>
+        initialPage={layoutComponents.reduceRight(
+          (p, Layout) => <Layout>{p}</Layout>,
+          <Page {...ssrProps} />,
+        )}
+      />
     )
     return tree
   })

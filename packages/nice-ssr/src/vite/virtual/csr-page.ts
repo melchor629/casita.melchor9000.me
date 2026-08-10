@@ -13,6 +13,16 @@ const getLayouts = (pageEntry: Entry) => {
   return layouts
 }
 
+const getErrorComponent = (pageEntry: Entry) => {
+  let entry: Entry | null = pageEntry
+  while (entry != null) {
+    if (entry.errorEntry) {
+      return getAppPath(entry.errorEntry)
+    }
+    entry = entry.parent
+  }
+}
+
 const getResolvedPageEntry = async (moduleId: string): Promise<[PageEntry | undefined, 'page' | 'not-found' | 'error']> => {
   if (moduleId.endsWith('/_not_found')) {
     const entry = await getPageEntry(`/${moduleId.slice(0, -11)}`)
@@ -42,12 +52,15 @@ export default async function generateCsrPage(moduleId: string) {
 
   const sourcePath = getAppPath(entry)
   const layouts = getLayouts(pageEntry)
+  const error = getErrorComponent(pageEntry)
   const pageRender = layouts
-    .reduceRight((p, _, i) => `jsx(Layout${i}, { children: ${p} })`, 'jsx(Page, props)')
+    .reduceRight((p, _, i) => `jsx(Layout${i}, { children: ${p} })`, 'jsx(ErrorBoundary, { children: jsx(Page, props), path: Error })')
   return `
 import { jsx } from 'react/jsx-runtime';
 import Page from ${JSON.stringify(sourcePath)}
 ${layouts.map((p, i) => `import Layout${i} from ${JSON.stringify(p)}`).join('\n')}
+import ErrorBoundary from '@error'
+${error ? `import Error from ${JSON.stringify(error)}` : 'const Error = () => "error (as developer, please implement the error component)"'}
 
 export const renderPage = (props) => ${pageRender}
 renderPage.displayName = \`\${Page.displayName || Page.name}Layout\`

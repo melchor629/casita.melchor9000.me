@@ -1,7 +1,8 @@
-import { Component, lazy, Suspense, type FC, type LazyExoticComponent, type MouseEvent, type PropsWithChildren } from 'react'
+import { Component, Suspense, type FC, type MouseEvent, type PropsWithChildren } from 'react'
 
 type ErrorBoundaryProps = Readonly<PropsWithChildren<{
-  path: string
+  path: FC<ErrorComponentProps>
+  error?: CsrError | null
 }>>
 
 export type CsrError = Readonly<{
@@ -26,7 +27,7 @@ export type CsrError = Readonly<{
 type ErrorBoundaryState = Readonly<{
   hasError: boolean
   error: CsrError | null
-  component: LazyExoticComponent<FC<ErrorComponentProps>>
+  component: FC<ErrorComponentProps>
 }>
 
 export type ErrorComponentProps = Readonly<{
@@ -42,13 +43,15 @@ export type ErrorComponentProps = Readonly<{
 
 const initialState: ErrorBoundaryState = { hasError: false, error: null, component: null! }
 
-const createErrorComponent = (path: string) =>
-  lazy(() => import(/* @vite-ignore */ path).then(mod => ({ default: (mod as { renderPage: FC<ErrorComponentProps> }).renderPage })))
-
 export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
-    this.state = { ...initialState, component: createErrorComponent(props.path) }
+    this.state = {
+      ...initialState,
+      component: props.path,
+      hasError: props.error != null,
+      error: props.error ?? null,
+    }
   }
 
   static getDerivedStateFromError(error: Error) {
@@ -57,7 +60,9 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
 
   componentDidUpdate(prevProps: ErrorBoundaryProps): void {
     if (prevProps.path !== this.props.path) {
-      this.setState({ component: createErrorComponent(this.props.path) })
+      this.setState({
+        component: this.props.path,
+      })
     }
   }
 

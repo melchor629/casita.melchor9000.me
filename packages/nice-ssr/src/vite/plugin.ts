@@ -29,6 +29,11 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
           return path.resolve(path.join(path.dirname(csrEntryFilePath), source))
         }
       }
+      if (importer?.startsWith(`\0${csrPageModuleId('')}`)) {
+        if (source === '@error') {
+          return path.resolve(path.join(import.meta.dirname, '..', 'nice-ssr', 'error.js'))
+        }
+      }
     },
 
     async load(id) {
