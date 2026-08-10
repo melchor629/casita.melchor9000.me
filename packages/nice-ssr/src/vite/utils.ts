@@ -18,5 +18,9 @@ export const getRootLayoutPath = (): string => getAppPath('root-layout.tsx')
 export const getMiddlewarePath = (): string => getAppPath('middleware.ts')
 
 export const ssrRoutesModuleId = 'virtual:ssr/routes'
+export const csrEntryModuleId = 'virtual:entry-csr'
 export const csrPageModuleId = (pagePath: string): string =>
   path.join('virtual:csr', pagePath).replace(/\/$/, '')
+
+export const ssrRoutesFilePath = path.join(import.meta.dirname, 'virtual', 'ssr-routes.js')
+export const csrEntryFilePath = path.join(import.meta.dirname, 'virtual', 'csr-entry.js')

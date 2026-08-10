@@ -1,8 +1,7 @@
 import { createRef, StrictMode, type ReactNode, type RefObject } from 'react'
 import { hydrateRoot } from 'react-dom/client'
-import RootLayout from 'virtual:csr:root-layout'
-import type { PartialPageRenderResult } from './entry/page-render.js'
-import { SsrRouterProvider } from './nice-ssr/navigation.js'
+import type { PartialPageRenderResult } from '../../entry/page-render.js'
+import { SsrRouterProvider } from '../../nice-ssr/navigation.js'
 
 export default async function start({
   a: pageModulePath,
@@ -23,7 +22,6 @@ export default async function start({
             ...context,
             url: new URL(context.url),
             pageModulePath,
-            RootLayout,
             client: {
               root: rootRef as RefObject<ReturnType<typeof hydrateRoot>>,
             },

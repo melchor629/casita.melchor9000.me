@@ -6,7 +6,6 @@ declare module 'virtual:ssr/routes' {
   type Lazy<T> = () => Promise<T>
   export type RootPathModule = {
     middleware?: Lazy<{ readonly default: RouteHandler }>
-    rootLayout?: Lazy<PageModule>
     route: PathModule
   }
   type BasePathModule = {

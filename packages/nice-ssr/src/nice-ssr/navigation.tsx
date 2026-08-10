@@ -135,7 +135,6 @@ export type SsrRouterProviderProps = Readonly<{
     root: import('react').RefObject<import('react-dom/client').Root>
   }
   metadata: Metadata
-  RootLayout: FC<{ children: ReactNode }> | undefined | null
 }>
 
 const SsrRouterContext = createContext<{
@@ -444,6 +443,10 @@ export const RenderScripts = () => {
   return null
 }
 
+const rootLayoutMaybe: Record<string, { default: typeof DefaultRootLayout }> = import.meta.glob(
+  '/src/app/root-layout.{t,j}sx',
+  { eager: true, base: '/src/app' },
+)
 const DefaultRootLayout = ({ children }: { readonly children: ReactNode }) => (
   <html lang="en">
     <head><RenderHead /></head>
@@ -453,6 +456,9 @@ const DefaultRootLayout = ({ children }: { readonly children: ReactNode }) => (
     </body>
   </html>
 )
+const RootLayout: typeof DefaultRootLayout = rootLayoutMaybe['./root-layout.jsx']?.default
+  ?? rootLayoutMaybe['./root-layout.tsx']?.default
+  ?? DefaultRootLayout
 
 export function SsrRouterProvider({ children, initialValue }: Readonly<{
   children: ReactNode
@@ -469,7 +475,6 @@ export function SsrRouterProvider({ children, initialValue }: Readonly<{
     server: initialValue.server,
     client: initialValue.client,
     metadata: initialValue.metadata,
-    RootLayout: initialValue.RootLayout,
     // eslint-disable-next-line react-hooks/exhaustive-deps
   })), [])
   const [loadPagePromise, setLoadPagePromise] = useState<Promise<void> | null>(null)
@@ -539,7 +544,6 @@ export function SsrRouterProvider({ children, initialValue }: Readonly<{
     use(loadPagePromise)
   }
 
-  const RootLayout = initialValue.RootLayout ?? DefaultRootLayout
   const pageModulePath = useStore(store, useCallback((s) => s.pageModulePath, []))
   return (
     <SsrRouterContext

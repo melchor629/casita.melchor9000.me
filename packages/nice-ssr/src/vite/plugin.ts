@@ -2,10 +2,8 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Plugin } from 'vite'
 import { transformPage } from './transform-csr.ts'
-import { csrPageModuleId, getAppPath, getRelativeSourcePath, getRootLayoutPath, ssrRoutesModuleId } from './utils.ts'
+import { csrEntryFilePath, csrEntryModuleId, csrPageModuleId, getAppPath, getRelativeSourcePath, getRootLayoutPath, ssrRoutesFilePath, ssrRoutesModuleId } from './utils.ts'
 import generateCsrPage from './virtual/csr-page.ts'
-import generateCsrRootLayout from './virtual/csr-root-layout.ts'
-import generateSsrRoutes from './virtual/ssr-routes.ts'
 
 type NiceSsrOptions = Readonly<{
   devTools?: Readonly<{
@@ -23,12 +21,12 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
       if (source.startsWith(csrPageModuleId('')) && !source.endsWith('/')) {
         return `\0${source}`
       }
-      if (source === ssrRoutesModuleId || source === 'virtual:entry-csr') {
+      if (source === ssrRoutesModuleId || source === csrEntryModuleId) {
         return `\0${source}`
       }
-      if (importer === '\0virtual:entry-csr') {
-        if (source.startsWith('./')) {
-          return path.resolve(import.meta.dirname, '..', source)
+      if (importer === `\0${csrEntryModuleId}`) {
+        if (source.startsWith('./') || source.startsWith('../')) {
+          return path.resolve(path.join(path.dirname(csrEntryFilePath), source))
         }
       }
     },
@@ -38,11 +36,27 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
         return generateCsrPage(id.slice(13))
       }
       if (id === `\0${ssrRoutesModuleId}`) {
-        return generateSsrRoutes()
+        this.addWatchFile(ssrRoutesFilePath)
+        return fs.readFile(ssrRoutesFilePath, 'utf-8')
       }
-      if (id === '\0virtual:entry-csr') {
-        return generateCsrRootLayout()
+      if (id === `\0${csrEntryModuleId}`) {
+        this.addWatchFile(csrEntryFilePath)
+        return fs.readFile(csrEntryFilePath, 'utf-8')
       }
+    },
+
+    handleHotUpdate({ file, modules, server }) {
+      if (file.endsWith(ssrRoutesFilePath)) {
+        const virtualModule = server.moduleGraph.getModuleById(`\0${ssrRoutesModuleId}`)!
+        return [...modules, virtualModule]
+      }
+
+      if (file.endsWith(csrEntryFilePath)) {
+        const virtualModule = server.moduleGraph.getModuleById(`\0${csrEntryModuleId}`)!
+        return [...modules, virtualModule]
+      }
+
+      return modules
     },
 
     async config(config, env) {

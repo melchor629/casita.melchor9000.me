@@ -1,8 +1,6 @@
 import path from 'node:path'
 import type { PreloadAs } from 'react-dom'
 import { renderToReadableStream } from 'react-dom/server'
-// eslint-disable-next-line import-x/no-unresolved
-import routeModules from 'virtual:ssr/routes'
 import { SsrRouterProvider, type SsrRouteAsset, type SsrRouterProviderProps } from '../nice-ssr/navigation'
 import type { PageHelperModule, PageLoaderContext, PageModule } from '../nice-ssr/page'
 import type { SsrRequest } from '../nice-ssr/request'
@@ -123,21 +121,14 @@ async function getCsrAssets(
   // eslint-disable-next-line import-x/no-unresolved
   const { default: manifest } = await import('../client/.vite/manifest.json', { with: { type: 'json' } }) as { default: Record<string, RawManifestEntry> }
   const pageCsrManifestEntry = getEntryForModuleId(manifest, pageCsrModuleId)
-  const rootLayoutCsrManifestEntry = getEntryForModuleId(manifest, 'src/app/root-layout.tsx')
   const allDependencyEntries = getExtraEntries(pageCsrManifestEntry)
-  const css = Array.from(new Set([
-    ...getAllStyles(rootLayoutCsrManifestEntry),
-    ...getAllStyles(pageCsrManifestEntry),
-  ]))
+  const css = Array.from(new Set(getAllStyles(pageCsrManifestEntry)))
   const preloadScripts = Array.from(new Set([
     ...allDependencyEntries.flatMap((entry) => entry?.imports ?? []),
     ...allDependencyEntries.flatMap((entry) => entry?.dynamicImports ?? []),
     pageCsrManifestEntry,
   ].map((entry) => entry.file)))
-  const assets = Array.from(new Set([
-    ...getAllAssets(rootLayoutCsrManifestEntry),
-    ...getAllAssets(pageCsrManifestEntry),
-  ]))
+  const assets = Array.from(new Set(getAllAssets(pageCsrManifestEntry)))
   return [
     ...css.map((entry): SsrRouteAsset => ({ type: 'style', path: `${basePath}${entry}` })),
     ...preloadScripts.map((entry): SsrRouteAsset => ({ type: 'modulepreload', path: `${basePath}${entry}` })),
@@ -187,7 +178,6 @@ async function renderCompletePage(
 
   request.nice.log.debug('Building body')
   const tree = await startSpan('render page', async () => {
-    const RootLayout = (await routeModules.rootLayout?.())?.default
     const { default: Page } = module
     const layoutComponents = await Promise.all(pageContext.layouts.map(async (m) => (await m()).default))
     const tree = (
@@ -204,7 +194,6 @@ async function renderCompletePage(
             nonce: { script: scriptNonce, style: styleNonce },
           },
           metadata: pageMetadataHead,
-          RootLayout,
         }}
       >
         <>
