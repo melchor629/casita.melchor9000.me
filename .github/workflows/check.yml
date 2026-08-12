@@ -52,7 +52,6 @@ jobs:
           - ledefault
           - nas-auth
           - nas-fs
-          - nas-persistance
           - nas-web
 
     steps:
