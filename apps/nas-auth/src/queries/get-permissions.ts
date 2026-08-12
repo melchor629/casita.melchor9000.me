@@ -1,26 +1,32 @@
-import type { GetPermissionsQuery } from './client/graphql.ts'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase, { asc, eq } from '@melchor629/orm-nas-auth'
+import { application, permission } from '@melchor629/orm-nas-auth/schema'
 
-const getPermissionsQuery = graphql(`
-  query getPermissions {
-    permissions {
-      id
-      name
-      displayName
-      application {
-        key
-        name
-      }
-    }
+export type GetPermissions = Array<{
+  id: number
+  name: string
+  displayName?: string | null | undefined
+  application: {
+    key: string;
+    name: string;
   }
-`)
-
-export type GetPermissions = GetPermissionsQuery['permissions']
+}>
 
 const getPermissions = async (): Promise<GetPermissions> => {
-  const { data: { permissions } } = await execute(getPermissionsQuery)
+  const results = await nasAuthDatabase
+    .select({
+      id: permission.id,
+      name: permission.name,
+      displayName: permission.displayName,
+      application: {
+        key: application.key,
+        name: application.name,
+      },
+    })
+    .from(permission)
+    .innerJoin(application, eq(permission.applicationId, application.id))
+    .orderBy(asc(application.key), asc(permission.name))
 
-  return permissions
+  return results
 }
 
 export default getPermissions

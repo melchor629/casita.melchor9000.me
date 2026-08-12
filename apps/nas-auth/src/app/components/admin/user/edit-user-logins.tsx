@@ -36,7 +36,7 @@ const EditUserLogins = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {logins!.map((login) => (
+            {logins.map((login) => (
               <EditUserLoginRow
                 key={login.id}
                 canDelete={canDelete}

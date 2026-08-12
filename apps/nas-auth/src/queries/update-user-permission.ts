@@ -1,33 +1,19 @@
-import type { EditUserPermissionInput } from './client/graphql.ts'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase, { eq } from '@melchor629/orm-nas-auth'
+import { userPermission } from '@melchor629/orm-nas-auth/schema'
 
-const updateUserPermissionMutation = graphql(`
-  mutation updateUserPermission($id: Int!, $userPermission: EditUserPermissionInput!) {
-    updateUserPermission(id: $id, data: $userPermission) {
-      id
-      write
-      delete
-      permission {
-        id
-        name
-        application {
-          name
-        }
-      }
-    }
-  }
-`)
+type EditUserPermissionInput = {
+  delete: boolean
+  write: boolean
+}
 
-const updateUserPermission = async (id: number, userPermission: EditUserPermissionInput) => {
-  const { data: { updateUserPermission: updatedUserPermission } } = await execute(
-    updateUserPermissionMutation,
-    {
-      id,
-      userPermission,
-    },
-  )
-
-  return updatedUserPermission
+const updateUserPermission = async (id: number, values: EditUserPermissionInput) => {
+  await nasAuthDatabase
+    .update(userPermission)
+    .set({
+      delete: values.delete,
+      write: values.write,
+    })
+    .where(eq(userPermission.id, id))
 }
 
 export default updateUserPermission

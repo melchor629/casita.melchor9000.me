@@ -1,19 +1,22 @@
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase from '@melchor629/orm-nas-auth'
 
-const getApiResourcesQuery = graphql(`
-  query apiResources {
-    apiResources {
-      key
-      name
-      audience
-    }
-  }
-`)
+type GetApiResources = {
+  key: string
+  name: string
+  audience: string
+}
 
-const getApiResources = async () => {
-  const { data: { apiResources } } = await execute(getApiResourcesQuery)
+const getApiResources = async (): Promise<GetApiResources[]> => {
+  const results = await nasAuthDatabase.query.apiResource.findMany({
+    columns: {
+      key: true,
+      name: true,
+      audience: true,
+    },
+    orderBy: { key: 'asc' },
+  })
 
-  return apiResources
+  return results
 }
 
 export default getApiResources

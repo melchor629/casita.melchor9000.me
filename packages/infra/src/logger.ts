@@ -21,14 +21,14 @@ const mixin = () => {
   return {}
 }
 
-const createLogger = (service: string, logLevel: LevelWithSilentOrString = 'info') =>
+const createLogger = (service: string, logLevel?: LevelWithSilentOrString) =>
   pino({
     base: {
       pid: process.pid,
       hostname: os.hostname,
       service,
     },
-    level: logLevel,
+    level: logLevel ?? process.env.LOG_LEVEL ?? 'info',
     mixin,
     formatters: {
       level: (label) => ({ level: label }),

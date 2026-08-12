@@ -100,7 +100,7 @@ const config: Configuration = {
   findAccount: (_ctx, id) => ({
     accountId: id,
     async claims() {
-      const user = await getUser(id)
+      const user = await getUser(id, {})
 
       if (user == null) {
         return { sub: id }

@@ -7,7 +7,7 @@ import User from './user'
 
 type Params = Readonly<{ id: string }>
 type UserPageProps = Readonly<{
-  user: NonNullable<Awaited<ReturnType<typeof getUser>>>
+  user: NonNullable<Awaited<ReturnType<typeof getUser<{ userPermissions: true, logins: true, permissions: true }>>>>
   permissions: Awaited<ReturnType<typeof getPermissions>>
   session: ActionReturnType<'get-session'>
 }>

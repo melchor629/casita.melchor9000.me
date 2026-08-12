@@ -18,7 +18,7 @@ const startPasskeyRegistrationController: Controller<Route> = async (req, res) =
     return res.status(401).send()
   }
 
-  const user = await getUser(session.accountId)
+  const user = await getUser(session.accountId, { logins: true })
   const options = await generateRegistrationOptions({
     rpName: 'NAS Auth',
     rpID: new URL(oidc.issuer).hostname,

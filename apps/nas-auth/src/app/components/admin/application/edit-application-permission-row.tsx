@@ -49,7 +49,7 @@ const EditApplicationPermissionRow = ({
       id: permission.id,
       appId: applicationId,
       name,
-      displayName: displayName || null,
+      displayName: displayName || undefined,
     }, { onSuccess: () => { setEditMode(false); revalidate().catch(() => {}) } })
   }, [readOnly, editPermissionMutation, permission.id, applicationId, name, displayName, revalidate])
 

@@ -1,4 +1,5 @@
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase, { asc, eq } from '@melchor629/orm-nas-auth'
+import { application, permission, user, userPermission } from '@melchor629/orm-nas-auth/schema'
 
 type PermissionsForUserPermission = Readonly<{
   name: string
@@ -18,47 +19,34 @@ export type PermissionsForUser = Readonly<{
   applications: Readonly<Record<string, PermissionsForUserApplication>>
 }>
 
-const GetPermissionsForUserQuery = graphql(`
-  query getPermissionsForUser($userName: String!) {
-    user(userName: $userName) {
-      permissions {
-        write
-        delete
-        permission {
-          name
-          displayName
-          application {
-            key
-            name
-          }
-        }
-      }
-    }
-  }
-`)
-
 const getPermissionsForUser = async (userName: string): Promise<PermissionsForUser> => {
-  const { data: { user } } = await execute(
-    GetPermissionsForUserQuery,
-    { userName },
-  )
-
-  if (user == null) {
-    return { permissions: [], applications: {} }
-  }
+  const result = await nasAuthDatabase
+    .select({
+      name: permission.name,
+      displayName: permission.displayName,
+      applicationKey: application.key,
+      applicationName: application.name,
+      write: userPermission.write,
+      delete: userPermission.delete,
+    })
+    .from(user)
+    .innerJoin(userPermission, eq(user.id, userPermission.userId))
+    .innerJoin(permission, eq(permission.id, userPermission.permissionId))
+    .innerJoin(application, eq(application.id, permission.applicationId))
+    .where(eq(user.userName, userName))
+    .orderBy(asc(application.key), asc(permission.name))
 
   return {
-    permissions: user.permissions.map((perm) => ({
-      name: perm.permission.name,
-      displayName: perm.permission.displayName,
-      applicationKey: perm.permission.application.key,
-      write: perm.write,
-      delete: perm.delete,
+    permissions: result.map((row) => ({
+      name: row.name,
+      displayName: row.displayName,
+      applicationKey: row.applicationKey,
+      write: row.write,
+      delete: row.delete,
     })),
     applications: Object.fromEntries(
-      user.permissions
-        .map((perm) => perm.permission.application)
-        .map((app) => [app.key, { key: app.key, name: app.name }] as const),
+      result
+        .map((row) => [row.applicationKey, { key: row.applicationKey, name: row.applicationName }] as const),
     ),
   }
 }

@@ -1,21 +1,22 @@
-import type { UpdateLoginInput } from './client/graphql.ts'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase, { eq } from '@melchor629/orm-nas-auth'
+import { login } from '@melchor629/orm-nas-auth/schema'
 
-const updateLoginMutation = graphql(`
-  mutation updateLogin($loginId: Int!, $data: UpdateLoginInput!) {
-    updateLogin(data: $data, id: $loginId) {
-      id
-    }
-  }
-`)
+type UpdateLoginInput = {
+  data?: Record<string, unknown>
+  disabled?: boolean
+}
 
 const updateLogin = async (loginId: number, data: UpdateLoginInput) => {
-  const { data: { updateLogin: login } } = await execute(
-    updateLoginMutation,
-    { loginId, data },
-  )
+  const [updatedLogin] = await nasAuthDatabase
+    .update(login)
+    .set({
+      data: data.data,
+      disabled: data.disabled,
+    })
+    .where(eq(login.id, loginId))
+    .returning()
 
-  return login
+  return updatedLogin
 }
 
 export default updateLogin

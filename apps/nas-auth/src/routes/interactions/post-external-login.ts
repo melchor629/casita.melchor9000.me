@@ -5,7 +5,7 @@ import {
   // createUser,
   findLoginInfoForExternalAuth,
   getUser,
-  updateLoginData,
+  updateLogin,
   updateUser,
 } from '../../queries/index.ts'
 import type { Controller, GenericRoute } from '../models.ts'
@@ -57,14 +57,13 @@ const postExternalLoginController: Controller<Route> = async (req, res) => {
   }
 
   if (login) {
-    await updateLoginData(login.id, { profile, token })
-
     if (login.disabled) {
       await failInteraction(`You cannot log in using '${provider}'!`)
       return
     }
 
-    user ??= await getUser({ id: login.user.id })
+    await updateLogin(login.id, { data: { profile, token } })
+    user ??= await getUser({ id: login.user.id }, {})
   } else if (user) {
     await createLoginAndUpdateUser({
       id: user.id,

@@ -1,29 +1,20 @@
-import type { ClientMetadata } from 'oidc-provider'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase from '@melchor629/orm-nas-auth'
+import clientMapper from './mappers/client.ts'
 
-const GetClientQuery = graphql(`
-  query getClient($id: String!) {
-    client(id: $id) {
-      clientId
-      clientName
-      fields
-    }
-  }
-`)
+export type GetClient = ReturnType<typeof clientMapper.toClient>
 
-const getClient = async (id: string): Promise<ClientMetadata | null> => {
-  const { data: { client: response } } = await execute(
-    GetClientQuery,
-    { id },
-  )
+const getClient = async (id: string): Promise<GetClient | null> => {
+  const response = await nasAuthDatabase.query.client.findFirst({
+    columns: {
+      clientId: true,
+      clientName: true,
+      fields: true,
+    },
+    where: { clientId: id },
+  })
 
   if (response) {
-    const { clientId, clientName } = response
-    return {
-      ...(response.fields as Omit<ClientMetadata, 'client_id' | 'client_name'>),
-      client_id: clientId,
-      client_name: clientName,
-    }
+    return clientMapper.toClient(response)
   }
 
   return null

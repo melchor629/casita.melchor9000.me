@@ -9,10 +9,9 @@ type EditUserLoginData = Readonly<{
   data?: Record<string, unknown> | null
   disabled: boolean
   loginId: number
-  userId: number
 }>
 
-async function editUserLoginAction(context: PageLoaderContext, { loginId, userId, ...data }: EditUserLoginData) {
+async function editUserLoginAction(context: PageLoaderContext, { loginId, ...data }: EditUserLoginData) {
   const sessionResult = await ensureSession(context, 'user', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult
@@ -20,7 +19,7 @@ async function editUserLoginAction(context: PageLoaderContext, { loginId, userId
 
   const login = await updateLogin(loginId, {
     ...data,
-    data: data.data ?? null,
+    data: data.data ?? undefined,
   })
   // revalidatePath(`/admin/users/${userId}`)
   return ok(login)

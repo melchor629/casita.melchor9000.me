@@ -31,6 +31,14 @@ type SessionInfo = Readonly<{
   }>
 }>
 
+const extractNameFromLoginData = (data: unknown) => {
+  if (!data || typeof data !== 'object') return undefined
+  if (!('profile' in data) || typeof data.profile !== 'object' || !data.profile) return undefined
+  if ('username' in data.profile && typeof data.profile.username === 'string') return data.profile.username
+  if ('name' in data.profile && typeof data.profile.name === 'string') return data.profile.name
+  return undefined
+}
+
 export const getSession = cache(async function getSession(request: PageLoaderContext): Promise<SessionInfo | null> {
   const h = request.headers
   const req = {
@@ -64,8 +72,7 @@ export const getSession = cache(async function getSession(request: PageLoaderCon
       disabled: user!.disabled,
       logins: user!.logins?.map((l) => ({
         id: l.loginId,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        name: l.data?.profile?.username || l.data?.profile?.name,
+        name: extractNameFromLoginData(l.data),
         type: l.type as never,
         disabled: l.disabled,
       })) || [],

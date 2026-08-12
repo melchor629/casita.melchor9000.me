@@ -1,21 +1,20 @@
-import type { GetApplicationsQuery } from './client/graphql.ts'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase from '@melchor629/orm-nas-auth'
 
-const getApplicationsQuery = graphql(`
-  query getApplications {
-    applications {
-      key
-      name
-    }
-  }
-`)
+export type GetApplications = Array<{
+  key: string
+  name: string
+}>
 
-export type GetApplications = GetApplicationsQuery['applications']
+const getApplications = async (): Promise<GetApplications> => {
+  const results = await nasAuthDatabase.query.application.findMany({
+    columns: {
+      key: true,
+      name: true,
+    },
+    orderBy: { key: 'asc' },
+  })
 
-const getApplications = async () => {
-  const { data: { applications } } = await execute(getApplicationsQuery)
-
-  return applications
+  return results
 }
 
 export default getApplications

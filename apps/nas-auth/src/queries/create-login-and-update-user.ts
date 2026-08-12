@@ -1,47 +1,32 @@
-import type { UpdateUserInput } from './client/graphql'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase, { eq } from '@melchor629/orm-nas-auth'
+import { login, user } from '@melchor629/orm-nas-auth/schema'
 
-const CreateLoginAndUpdateUserMutation = graphql(`
-  mutation createLoginAndUpdateUser(
-    $data: JSONObject,
-    $loginId: String!,
-    $provider: String!,
-    $user: UpdateUserInput!,
-    $userId: Int!,
-  ) {
-    addLogin(data: { data: $data, loginId: $loginId, type: $provider, userId: $userId }) {
-      id
-    }
-
-    updateUser(data: $user, id: $userId) {
-      id
-    }
-  }
-`)
+type UpdateUserInput = {
+  id: number
+} & Partial<typeof user.$inferInsert>
 
 const createLoginAndUpdateUser = async (
-  user: UpdateUserInput & { id: number },
+  userValues: UpdateUserInput,
   provider: string,
   loginId: string,
   data: Record<string, unknown>,
 ) => {
-  const { data: { addLogin, updateUser } } = await execute(
-    CreateLoginAndUpdateUserMutation,
-    {
+  await nasAuthDatabase
+    .update(user)
+    .set(userValues)
+    .where(eq(user.id, userValues.id))
+
+  const [{ loginid }] = await nasAuthDatabase
+    .insert(login)
+    .values({
       data,
       loginId,
-      provider,
-      user: {
-        displayName: user.displayName,
-        email: user.email,
-        givenName: user.givenName,
-        familyName: user.familyName,
-        profileImageUrl: user.profileImageUrl,
-      },
-      userId: user.id,
-    },
-  )
-  return { loginId: addLogin.id, userId: updateUser.id }
+      type: provider,
+      userId: userValues.id,
+    })
+    .returning({ loginid: login.id })
+
+  return { loginId: loginid, userId: userValues.id }
 }
 
 export default createLoginAndUpdateUser

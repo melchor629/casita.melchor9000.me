@@ -11,8 +11,7 @@
     "build": "vite build --app",
     "lint": "eslint src",
     "check": "tsc -p . --noEmit",
-    "docker": "../../docker_build.sh",
-    "gql": "graphql-codegen-esm --config ./src/queries/client/config.ts"
+    "docker": "../../docker_build.sh"
   },
   "author": "melchor9000",
   "license": "ISC",
@@ -40,6 +39,7 @@
     "@fortawesome/react-fontawesome": "^3.5.0",
     "@melchor629/fastify-infra": "*",
     "@melchor629/infra": "*",
+    "@melchor629/orm-nas-auth": "*",
     "@melchor629/ui": "*",
     "@melchor629/nice-ssr": "*",
     "@simplewebauthn/browser": "^13.3.0",
@@ -63,9 +63,6 @@
     "sharp": "^0.35.3"
   },
   "devDependencies": {
-    "@0no-co/graphqlsp": "^1.17.3",
-    "@graphql-codegen/cli": "^7.2.0",
-    "@graphql-typed-document-node/core": "^3.2.0",
     "@melchor629/tsconfigs": "*",
     "@vitejs/plugin-react": "^6.0.5",
     "@tailwindcss/vite": "^4.3.3",

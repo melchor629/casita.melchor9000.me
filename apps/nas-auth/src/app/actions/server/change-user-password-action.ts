@@ -26,7 +26,7 @@ async function changeUserPasswordAction(context: PageLoaderContext, form: FormDa
   let loginid: number | undefined
   if (typeof currentPassword === 'string') {
     const loginId = await mkpasswd(user.userName, currentPassword)
-    const login = user.logins?.find((v) => v.type === 'local' && v.loginId === loginId)
+    const login = user.logins.find((v) => v.type === 'local' && v.loginId === loginId)
     if (!login) {
       validations.push({ name: 'currentPassword', messages: ['The password is incorrect'] })
     } else {

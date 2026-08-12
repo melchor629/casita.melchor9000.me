@@ -1,4 +1,5 @@
 import createLogger from '@melchor629/infra/logger'
+import runNasAuthMigrations from '@melchor629/orm-nas-auth/migrations'
 import { RedisStore } from 'connect-redis'
 import Fastify from 'fastify'
 import { nanoid } from 'nanoid'
@@ -6,7 +7,6 @@ import {
   cookieKeysDefault,
   isDebug,
   logLevel,
-  nasPersistanceUrl,
   publicUrl,
   redisPrefix,
   sessionSignKey,
@@ -26,6 +26,10 @@ declare module 'fastify' {
 }
 
 const createApp = async () => {
+  if (!isDebug) {
+    await runNasAuthMigrations()
+  }
+
   const app = Fastify({
     loggerInstance: createLogger('nas-auth', logLevel),
     pluginTimeout: 1 * 60 * 1000, // next can take a lot of time...
@@ -77,10 +81,27 @@ const createApp = async () => {
 
   await app.register(import('@melchor629/fastify-infra/abort'))
   await app.register(import('@melchor629/fastify-infra/health'), {
-    checks: async (add) => {
+    checks: async (add, mkcheck) => {
       const health = await import('@melchor629/fastify-infra/health')
       add('redis', health.redisHealthCheck, { client: () => client })
-      add('nas-persistance', health.externalHealthCheck, { url: new URL(nasPersistanceUrl) }, 'degraded')
+      add('orm', mkcheck<Record<string, never>>('orm', async () => {
+        try {
+          const { default: db, sql } = await import('@melchor629/orm-nas-auth')
+          const result = await db.execute(sql`select 1 from "auth"."application" limit 1`)
+          return {
+            status: 'healthy',
+            data: {
+              result: result.rows,
+            },
+          }
+        } catch (e) {
+          return {
+            status: 'unhealthy',
+            reason: `Cannot connect to psql: ${(e as Error).message}`,
+            data: {},
+          }
+        }
+      }), {}, 'degraded')
     },
     shouldIncludeDetails: () => true,
   })

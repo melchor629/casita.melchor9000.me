@@ -35,7 +35,7 @@ const finishPasskeyRegistrationController: Controller<Route> = async (req, res) 
   })
 
   if (verification.verified) {
-    const user = await getUser(session.accountId)
+    const user = await getUser(session.accountId, {})
     if (!user) {
       return res.status(401).send()
     }

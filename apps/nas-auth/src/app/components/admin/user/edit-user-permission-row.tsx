@@ -152,8 +152,8 @@ const EditUserPermissionRow = ({
 
   return (
     <TableRow>
-      <TableCell>{applications[permission.permission!.application.key]}</TableCell>
-      <TableCell>{permission.permission!.name}</TableCell>
+      <TableCell>{applications[permission.permission.application.key]}</TableCell>
+      <TableCell>{permission.permission.name}</TableCell>
       <TableCell>{permission.write ? 'Yes' : 'No'}</TableCell>
       <TableCell>{permission.delete ? 'Yes' : 'No'}</TableCell>
       <TableCell noWrap>

@@ -1,5 +1,3 @@
-'use server'
-
 import type { PageLoaderContext } from '@melchor629/nice-ssr'
 import { updateUser } from '#queries/index.ts'
 import { ensureSession } from './get-session-action'
@@ -9,10 +7,10 @@ type UpdateUserData = Readonly<{
   id: number
   userName: string
   displayName: string
-  givenName: string | null | undefined
-  familyName: string | null | undefined
-  profileImageUrl: string | null | undefined
-  email: string | null | undefined
+  givenName: string | undefined
+  familyName: string | undefined
+  profileImageUrl: string | undefined
+  email: string | undefined
   disabled: boolean
 }>
 

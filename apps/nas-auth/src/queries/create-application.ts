@@ -1,25 +1,19 @@
-import type { CreateApplicationInput } from './client/graphql.ts'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase from '@melchor629/orm-nas-auth'
+import { application } from '@melchor629/orm-nas-auth/schema'
 
-const createApplicationMutation = graphql(`
-  mutation addApplication($data: CreateApplicationInput!) {
-    addApplication(data: $data) {
-      key
-      name
-    }
-  }
-`)
+export type CreateApplicationInput = {
+  key: string
+  name: string
+}
 
-const createApplication = async (application: CreateApplicationInput) => {
-  const { data: { addApplication: newApplication } } = await execute(
-    createApplicationMutation,
-    {
-      data: {
-        key: application.key,
-        name: application.name,
-      },
-    },
-  )
+const createApplication = async (values: CreateApplicationInput) => {
+  const [newApplication] = await nasAuthDatabase
+    .insert(application)
+    .values({
+      key: values.key,
+      name: values.name,
+    })
+    .returning()
 
   return newApplication
 }

@@ -35,7 +35,7 @@ const userPasswordLoginController: Controller<Route> = async (req, res) => {
   await req.trace('interaction finished', {}, () => oidc.interactionFinished(
     req.raw,
     res.raw,
-    { login: { accountId: login.user.userName } },
+    { login: { accountId: login.userName } },
     { mergeWithLastSubmission: false },
   ))
 }

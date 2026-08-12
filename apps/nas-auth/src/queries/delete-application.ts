@@ -1,18 +1,12 @@
-import { execute, graphql } from './gql.ts'
-
-const deleteApplicationMutation = graphql(`
-  mutation deleteApplication($key: String!) {
-    deleteApplication(key: $key)
-  }
-`)
+import nasAuthDatabase, { eq } from '@melchor629/orm-nas-auth'
+import { application } from '@melchor629/orm-nas-auth/schema'
 
 const deleteApplication = async (key: string) => {
-  const { data: { deleteApplication: deleted } } = await execute(
-    deleteApplicationMutation,
-    { key },
-  )
+  const result = await nasAuthDatabase
+    .delete(application)
+    .where(eq(application.key, key))
 
-  return deleted
+  return (result.rowCount ?? 0) > 0
 }
 
 export default deleteApplication

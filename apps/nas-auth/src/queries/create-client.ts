@@ -1,35 +1,20 @@
-import type { CreateClientInput } from './client/graphql.ts'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase from '@melchor629/orm-nas-auth'
+import { client } from '@melchor629/orm-nas-auth/schema'
+import clientMapper from './mappers/client.ts'
 
-const createClientMutation = graphql(`
-  mutation addClient($data: CreateClientInput!) {
-    addClient(data: $data) {
-      clientId
-      clientName
-      fields
-    }
-  }
-`)
-
-type CreateClientOptions = Pick<CreateClientInput, 'clientId' | 'clientName'> & Record<string, unknown>
+type CreateClientOptions = typeof clientMapper.$dto
 
 const createClient = async ({ clientId, clientName, ...fields }: CreateClientOptions) => {
-  const { data: { addClient: newClient } } = await execute(
-    createClientMutation,
-    {
-      data: {
-        clientId,
-        clientName,
-        fields,
-      },
-    },
-  )
+  const [newClient] = await nasAuthDatabase
+    .insert(client)
+    .values({
+      clientId,
+      clientName,
+      fields,
+    })
+    .returning()
 
-  return {
-    ...(newClient.fields as Record<string, unknown>),
-    clientId: newClient.clientId,
-    clientName: newClient.clientName,
-  }
+  return clientMapper.fromTable(newClient)
 }
 
 export default createClient

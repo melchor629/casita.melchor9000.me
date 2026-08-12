@@ -64,9 +64,8 @@ const EditUserLoginRow = ({
       disabled: isDisabled,
       data: loginData,
       loginId: login.id,
-      userId,
     }, { onSuccess: () => setEditMode(false) })
-  }, [readOnly, editUserLoginMutation, isDisabled, loginData, login.id, userId])
+  }, [readOnly, editUserLoginMutation, isDisabled, loginData, login.id])
 
   const remove = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -152,7 +151,7 @@ const EditUserLoginRow = ({
         )}
       </TableCell>
 
-      <LoginDataDialog data={login.data as unknown} opened={opened} setOpened={setOpened} />
+      <LoginDataDialog data={login.data} opened={opened} setOpened={setOpened} />
     </TableRow>
   )
 }

@@ -1,87 +1,82 @@
-import type { GetUserByIdQuery, GetUserByUserNameQuery } from './client/graphql'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase from '@melchor629/orm-nas-auth'
 
-const getUserByUserNameQuery = graphql(`
-  query getUserByUserName($userName: String!) {
-    user(userName: $userName) {
-      id
-      userName
-      displayName
-      givenName
-      familyName
-      email
-      profileImageUrl
-      disabled
-      permissions {
-        id
-        write
-        delete
-        permission { id, name, application { key } }
+type GetUserRelationKeys = 'logins' | 'permissions' | 'userPermissions'
+type GetUserRelations = Partial<Record<GetUserRelationKeys, boolean>>
+type GetUserQueryLogins = Array<{
+  id: number;
+  data: unknown;
+  type: string;
+  loginId: string;
+  disabled: boolean;
+  userId: number;
+}>
+
+type ApplyRelation<Value, Condition extends boolean | undefined> =
+  Condition extends true
+    ? Value
+    : Condition extends boolean
+      ? Value | undefined
+      : never
+
+export type GetUserQuery<Relations extends GetUserRelations = Record<GetUserRelationKeys, true>> = Readonly<{
+  id: number;
+  disabled: boolean;
+  userName: string;
+  displayName: string;
+  email: string | null;
+  familyName: string | null;
+  givenName: string | null;
+  profileImageUrl: string | null;
+  logins: ApplyRelation<GetUserQueryLogins, Relations['logins']>
+  permissions: ApplyRelation<{
+    id: number;
+    userId: number;
+    write: boolean;
+    delete: boolean;
+    permissionId: number;
+    permission: ApplyRelation<{
+      id: number;
+      name: string;
+      displayName?: string | null;
+      application: {
+        key: string
+        name: string
       }
-      logins { id, type, loginId, data, disabled }
-    }
-  }
-`)
+    }, Relations['permissions']>
+  }[], Relations['userPermissions']>
+}>
 
-const getUserByIdQuery = graphql(`
-  query getUserById($id: Int!) {
-    user(id: $id) {
-      id
-      userName
-      displayName
-      givenName
-      familyName
-      email
-      profileImageUrl
-      disabled
-      permissions {
-        id
-        write
-        delete
-        permission { id, name, application { key } }
-      }
-      logins { id, type, loginId, data, disabled }
-    }
-  }
-`)
-
-type User = NonNullable<(GetUserByIdQuery | GetUserByUserNameQuery)['user']>
-export type GetUserQuery = Omit<User, 'permissions' | 'logins'> & {
-  permissions?: Array<Omit<User['permissions'][0], 'permission'> & { permission?: User['permissions'][0]['permission'] }>
-  logins?: User['logins']
-}
-
-const getUser = async (
+const getUser = async <TRel extends GetUserRelations>(
   arg: string | { userName: string } | { id: number },
-  { logins, permissions, userPermissions }: { logins?: boolean, permissions?: boolean, userPermissions?: boolean } = {},
-) => {
-  let response: { data: { user?: GetUserQuery | undefined | null } }
-  if (typeof arg === 'string' || 'userName' in arg) {
-    response = await execute(
-      getUserByUserNameQuery,
-      typeof arg === 'string' ? { userName: arg } : arg,
-    )
-  } else {
-    response = await execute(
-      getUserByIdQuery,
-      arg,
-    )
-  }
-
-  if (response.data.user == null) {
+  { logins, permissions, userPermissions }: TRel,
+): Promise<GetUserQuery<TRel> | null> => {
+  const result = await nasAuthDatabase.query.user.findFirst({
+    with: {
+      logins: !!logins,
+      userPermissions: userPermissions
+        ? {
+            with: {
+              permission: permissions
+                ? {
+                    with: { application: { columns: { key: true, name: true } } },
+                    columns: { id: true, name: true, displayName: true },
+                  }
+                : false,
+            },
+          }
+        : false,
+    },
+    where: typeof arg === 'string' ? { userName: arg } : arg,
+  })
+  if (!result) {
     return null
   }
 
-  const { data: { user } } = response
-  if (!logins) {
-    delete user.logins
+  const user: GetUserQuery<TRel> = {
+    ...result,
+    logins: result.logins as GetUserQuery<TRel>['logins'],
+    permissions: result.userPermissions as GetUserQuery<TRel>['permissions'],
   }
-  if (!userPermissions) {
-    delete user.permissions
-  } else if (!permissions) {
-    user.permissions?.forEach((perm) => delete perm.permission)
-  }
-
   return user
 }
 

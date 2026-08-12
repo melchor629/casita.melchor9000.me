@@ -39,7 +39,7 @@ const EditUserPermissions = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {permissions!.map((permission) => (
+            {permissions.map((permission) => (
               <EditUserPermissionRow
                 key={permission.id}
                 allPermissions={allPermissions}

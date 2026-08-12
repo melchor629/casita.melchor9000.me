@@ -1,0 +1,29 @@
+{
+  "name": "@melchor629/orm-nas-auth",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc -p . --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
+  },
+  "exports": {
+    ".": "./drizzle/client.ts",
+    "./migrations": "./drizzle/migrations.ts",
+    "./schema": "./drizzle/schema.ts"
+  },
+  "dependencies": {
+    "@melchor629/infra": "*",
+    "drizzle-orm": "^1.0.0-rc.4",
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "@melchor629/tsconfigs": "*",
+    "@types/pg": "^8.21.0",
+    "@types/node": "^24.13.2",
+    "drizzle-kit": "^1.0.0-rc.4",
+    "dotenv": "^17.4.2"
+  }
+}

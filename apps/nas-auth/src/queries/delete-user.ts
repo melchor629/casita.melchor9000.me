@@ -1,18 +1,12 @@
-import { execute, graphql } from './gql.ts'
-
-const deleteUserMutation = graphql(`
-  mutation deleteUser($userId: Int!) {
-    deleteUser(id: $userId)
-  }
-`)
+import nasAuthDatabase, { eq } from '@melchor629/orm-nas-auth'
+import { user } from '@melchor629/orm-nas-auth/schema'
 
 const deleteUser = async (userId: number) => {
-  const { data: { deleteUser: deleted } } = await execute(
-    deleteUserMutation,
-    { userId },
-  )
+  const result = await nasAuthDatabase
+    .delete(user)
+    .where(eq(user.id, userId))
 
-  return deleted
+  return (result.rowCount ?? 0) > 0
 }
 
 export default deleteUser

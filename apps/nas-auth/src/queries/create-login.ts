@@ -1,19 +1,11 @@
-import type { CreateLoginInput } from './client/graphql.ts'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase from '@melchor629/orm-nas-auth'
+import { login } from '@melchor629/orm-nas-auth/schema'
 
-const createLoginMutation = graphql(`
-  mutation createLogin($login: CreateLoginInput!) {
-    addLogin(data: $login) {
-      id
-    }
-  }
-`)
-
-const createLogin = async (login: CreateLoginInput) => {
-  const { data: { addLogin: newLogin } } = await execute(
-    createLoginMutation,
-    { login },
-  )
+const createLogin = async (values: typeof login.$inferInsert) => {
+  const [newLogin] = await nasAuthDatabase
+    .insert(login)
+    .values(values)
+    .returning()
 
   return newLogin
 }

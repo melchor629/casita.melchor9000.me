@@ -1,30 +1,18 @@
-import type { CreateUserPermissionInput } from './client/graphql.ts'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase from '@melchor629/orm-nas-auth'
+import { userPermission } from '@melchor629/orm-nas-auth/schema'
 
-const createUserPermissionMutation = graphql(`
-  mutation createUserPermission($userPermission: CreateUserPermissionInput!) {
-    addUserPermission(data: $userPermission) {
-      id
-      write
-      delete
-      permission {
-        id
-        name
-        application {
-          key
-        }
-      }
-    }
-  }
-`)
+type CreateUserPermissionInput = {
+  delete: boolean
+  permissionId: number
+  userId: number
+  write: boolean
+}
 
-const createUserPermission = async (userPermission: CreateUserPermissionInput) => {
-  const { data: { addUserPermission: newUserPermission } } = await execute(
-    createUserPermissionMutation,
-    {
-      userPermission,
-    },
-  )
+const createUserPermission = async (values: CreateUserPermissionInput) => {
+  const [newUserPermission] = await nasAuthDatabase
+    .insert(userPermission)
+    .values(values)
+    .returning()
 
   return newUserPermission
 }

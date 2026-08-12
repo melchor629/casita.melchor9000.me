@@ -77,7 +77,6 @@ const EditApplicationApiResourceRow = ({
     }
 
     editApiResourceMutation.mutate({
-      appId,
       key: apiResource.key,
       name,
       audience,
@@ -87,7 +86,7 @@ const EditApplicationApiResourceRow = ({
       scopes,
     }, { onSuccess: () => { setEditMode(false); void revalidate() } })
   }, [
-    readOnly, appId, apiResource.key, editApiResourceMutation, revalidate,
+    readOnly, apiResource.key, editApiResourceMutation, revalidate,
     name, audience, accessToken, accessTokenTTL, scopes,
   ])
 

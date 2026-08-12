@@ -1,38 +1,20 @@
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase, { eq } from '@melchor629/orm-nas-auth'
+import { client } from '@melchor629/orm-nas-auth/schema'
+import clientMapper from './mappers/client.ts'
 
-const updateClientMutation = graphql(`
-  mutation updateClient($id: String!, $data: UpdateClientInput!) {
-    updateClient(id: $id, data: $data) {
-      clientId
-      clientName
-      fields
-    }
-  }
-`)
-
-type UpdateClientOptions = { clientName: string } & Record<string, unknown>
+type UpdateClientOptions = { clientName?: string } & Record<string, unknown>
 
 const updateClient = async (id: string, { clientName, ...fields }: UpdateClientOptions) => {
-  const { data: { updateClient: updatedClient } } = await execute(
-    updateClientMutation,
-    {
-      id,
-      data: {
-        clientName,
-        fields,
-      },
-    },
-  )
+  const [updatedClient] = await nasAuthDatabase
+    .update(client)
+    .set({
+      clientName,
+      fields,
+    })
+    .where(eq(client.clientId, id))
+    .returning()
 
-  if (updatedClient == null) {
-    return null
-  }
-
-  return {
-    ...(updatedClient.fields as Record<string, unknown>),
-    clientId: updatedClient.clientId,
-    clientName: updatedClient.clientName,
-  }
+  return clientMapper.fromTable(updatedClient)
 }
 
 export default updateClient

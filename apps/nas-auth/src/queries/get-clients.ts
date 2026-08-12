@@ -1,21 +1,20 @@
-import type { GetClientsQuery } from './client/graphql.ts'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase from '@melchor629/orm-nas-auth'
 
-const getClientsQuery = graphql(`
-  query getClients {
-    clients {
-      clientId
-      clientName
-    }
-  }
-`)
+export type GetClients = Array<{
+  clientId: string
+  clientName: string
+}>
 
-export type GetClients = GetClientsQuery['clients']
+const getClients = async (): Promise<GetClients> => {
+  const results = await nasAuthDatabase.query.client.findMany({
+    columns: {
+      clientId: true,
+      clientName: true,
+    },
+    orderBy: { clientId: 'asc' },
+  })
 
-const getClients = async () => {
-  const { data: { clients } } = await execute(getClientsQuery)
-
-  return clients
+  return results
 }
 
 export default getClients

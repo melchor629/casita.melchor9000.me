@@ -1,22 +1,20 @@
-import type { UpdateApplicationInput } from './client/graphql.ts'
-import { execute, graphql } from './gql.ts'
+import nasAuthDatabase, { eq } from '@melchor629/orm-nas-auth'
+import { application } from '@melchor629/orm-nas-auth/schema'
 
-const updateApplicationMutation = graphql(`
-  mutation updateApplication($key: String!, $data: UpdateApplicationInput!) {
-    updateApplication(key: $key, data: $data) {
-      key
-      name
-    }
-  }
-`)
+type UpdateApplicationInput = {
+  name?: string
+}
 
 const updateApplication = async (key: string, data: UpdateApplicationInput) => {
-  const { data: { updateApplication: application } } = await execute(
-    updateApplicationMutation,
-    { key, data },
-  )
+  const updatedApplication = nasAuthDatabase
+    .update(application)
+    .set({
+      name: data.name,
+    })
+    .where(eq(application.key, key))
+    .returning()
 
-  return application
+  return updatedApplication
 }
 
 export default updateApplication

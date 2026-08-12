@@ -6,7 +6,10 @@ import type { HealthCheck, HealthCheckEntry, HealthCheckResponse, HealthCheckSta
 type HealthCheckPluginOptions = Readonly<{
   shouldIncludeDetails?: (request: FastifyRequest) => Promise<boolean> | boolean
   path?: `/${string}`
-  checks: (add: <T>(key: string, fn: HealthCheck<T>, params: T, maxWorst?: HealthCheckStatus) => void) => Promise<void> | void
+  checks: (
+    add: <T>(key: string, fn: HealthCheck<T>, params: T, maxWorst?: HealthCheckStatus) => void,
+    mkcheck: <T>(type: string, fn: Omit<HealthCheck<T>, 'type'>) => HealthCheck<T>,
+  ) => Promise<void> | void
   config?: FastifyContextConfig
 }>
 
@@ -54,6 +57,9 @@ const responseSchema = {
   },
 }
 
+const mkcheck = <T>(type: string, fn: Omit<HealthCheck<T>, 'type'>): HealthCheck<T> =>
+  Object.assign(fn, { type }) as unknown as HealthCheck<T>
+
 const healthCheckPlugin = fastifyPlugin(async (fastify, options: HealthCheckPluginOptions): Promise<void> => {
   const checks: HealthCheckEntry[] = []
   await options.checks((key, fn, params, maxWords) => {
@@ -63,7 +69,7 @@ const healthCheckPlugin = fastifyPlugin(async (fastify, options: HealthCheckPlug
       fn: fn as HealthCheck<unknown>,
       failureAs: maxWords,
     })
-  })
+  }, mkcheck)
 
   fastify.get<{ Body: never, Reply: HealthCheckResponse }>(
     options.path ?? '/health',

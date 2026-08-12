@@ -9,7 +9,7 @@ type EditPermissionData = Readonly<{
   id: number
   appId: string
   name?: string
-  displayName?: string | null
+  displayName?: string
 }>
 
 async function editPermissionAction(context: PageLoaderContext, { id, ...data }: EditPermissionData) {
