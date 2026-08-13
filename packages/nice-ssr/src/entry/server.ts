@@ -56,7 +56,7 @@ async function renderRouteInternal(
         log.debug('Received not found from code')
         return renderRoute(request, { log, basePathname, processError, error: 'not-found', signal, props })
       } else if (type === 'redirect') {
-        return SsrResponse.redirect(e.message)
+        return SsrResponse.new().redirect(e.message as never)
       }
     }
 
