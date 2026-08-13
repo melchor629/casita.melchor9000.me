@@ -1,4 +1,4 @@
-import { getPageEntry, type Entry, type PageEntry } from '../route-tree.ts'
+import { getAnyEntry, getPageEntry, type Entry, type PageEntry } from '../route-tree.ts'
 import { getAppPath } from '../utils.ts'
 
 const getLayouts = (pageEntry: Entry) => {
@@ -23,14 +23,14 @@ const getErrorComponent = (pageEntry: Entry) => {
   }
 }
 
-const getResolvedPageEntry = async (moduleId: string): Promise<[PageEntry | undefined, 'page' | 'not-found' | 'error']> => {
+const getResolvedPageEntry = async (moduleId: string): Promise<[PageEntry | undefined, 'page'] | [Entry | undefined, 'not-found' | 'error']> => {
   if (moduleId.endsWith('/_not_found')) {
-    const entry = await getPageEntry(`/${moduleId.slice(0, -11)}`)
+    const entry = await getAnyEntry(`/${moduleId.slice(0, -11)}`)
     return [entry, 'not-found']
   }
 
   if (moduleId.endsWith('/_error')) {
-    const entry = await getPageEntry(`/${moduleId.slice(0, -7)}`)
+    const entry = await getAnyEntry(`/${moduleId.slice(0, -7)}`)
     return [entry, 'error']
   }
 

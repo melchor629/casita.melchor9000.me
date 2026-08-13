@@ -109,3 +109,16 @@ export async function getPageEntry(path: string): Promise<PageEntry | undefined>
   }
   return entry
 }
+
+export async function getAnyEntry(path: string): Promise<Entry | undefined> {
+  // Not optimized at all :|
+  const routeTree = await getRouteTree()
+  let entry: Entry | undefined = { children: [routeTree.route] } as Entry
+  while (entry != null) {
+    if (entry.path === path) {
+      return entry
+    }
+    entry = entry.children.find((e) => path.startsWith(e.path))
+  }
+  return entry
+}
