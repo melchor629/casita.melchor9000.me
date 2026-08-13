@@ -1,6 +1,6 @@
 import { useNavigate } from '@melchor629/nice-ssr'
 import { TableCell, TableRow } from '@melchor629/ui'
-import type { GetUsers } from '#queries/get-users.ts'
+import type { GetUsers } from '#queries/user/get-users.ts'
 import { useResolvedProfilePic } from '../../../hooks'
 
 const UserRow = ({ user }: { readonly user: GetUsers[0] }) => {
@@ -9,12 +9,11 @@ const UserRow = ({ user }: { readonly user: GetUsers[0] }) => {
 
   return (
     <TableRow
-      key={user.id}
+      key={user.userName}
       className="cursor-pointer"
       role="button"
-      onClick={() => navigate(`/admin/users/${user.id}`)}
+      onClick={() => navigate(`/admin/users/${user.userName}`)}
     >
-      <TableCell>{user.id}</TableCell>
       <TableCell>
         {resolvedProfilePicUrl && (
           <img

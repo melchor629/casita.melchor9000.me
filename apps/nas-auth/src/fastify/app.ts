@@ -20,7 +20,11 @@ import registerRoutes from '../routes/register.ts'
 declare module 'fastify' {
   interface Session {
     login?: Readonly<{ provider: string, interactionId: string }>
-    loginResult?: Readonly<{ provider: string, token: import('@fastify/oauth2').Token, profile: object }>
+    loginResult?: Readonly<{
+      provider: 'github' | 'google'
+      token: import('@fastify/oauth2').Token
+      profile: object
+    }>
     passkeyChallenge?: string
   }
 }

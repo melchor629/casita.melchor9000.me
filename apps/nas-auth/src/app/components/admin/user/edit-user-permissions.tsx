@@ -1,23 +1,26 @@
 import { Button, Table, TableBody, TableContainer, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
 import { Add } from '@melchor629/ui/icons'
 import { useState } from 'react'
-import type { GetPermissions } from '../../../../queries/get-permissions'
-import type { GetUserQuery } from '../../../../queries/get-user'
+import type { GetApplications } from '#queries/application/get-applications.ts'
+import type { GetPermissions } from '#queries/permission/get-permissions.ts'
+import type { GetUserQuery } from '#queries/user/get-user.ts'
 import AddUserPermissionDialog from './add-user-permission-dialog'
 import EditUserPermissionRow from './edit-user-permission-row'
 
 type EditUserPermissionsProps = Readonly<{
   canDelete: boolean
   permissions: GetPermissions
+  applications: GetApplications
   readOnly: boolean
   user: GetUserQuery
 }>
 
 const EditUserPermissions = ({
+  applications: allApplications,
   canDelete,
   permissions: allPermissions,
   readOnly,
-  user: { id, permissions },
+  user: { permissions, userName },
 }: EditUserPermissionsProps) => {
   const [opened, setOpened] = useState(false)
 
@@ -41,12 +44,13 @@ const EditUserPermissions = ({
           <TableBody>
             {permissions.map((permission) => (
               <EditUserPermissionRow
-                key={permission.id}
+                allApplications={allApplications}
+                key={`${permission.applicationKey}:${permission.permissionName}`}
                 allPermissions={allPermissions}
                 canDelete={canDelete}
                 permission={permission}
                 readOnly={readOnly}
-                userId={id}
+                userName={userName}
               />
             ))}
           </TableBody>
@@ -55,10 +59,11 @@ const EditUserPermissions = ({
 
       {!readOnly && (
         <AddUserPermissionDialog
+          allApplications={allApplications}
           allPermissions={allPermissions}
           opened={opened}
           setOpened={setOpened}
-          userId={id}
+          userName={userName}
         />
       )}
     </div>

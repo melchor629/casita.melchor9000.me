@@ -4,7 +4,6 @@ import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 
 type UpdateUserData = Readonly<{
-  id: number
   userName: string
   displayName: string
   givenName: string | undefined
@@ -14,13 +13,13 @@ type UpdateUserData = Readonly<{
   disabled: boolean
 }>
 
-async function editUserAction(context: PageLoaderContext, { id, ...data }: UpdateUserData) {
+async function editUserAction(context: PageLoaderContext, { userName, ...data }: UpdateUserData) {
   const sessionResult = await ensureSession(context, 'user', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult
   }
 
-  const user = await updateUser(id, data)
+  const user = await updateUser(userName, data)
   // revalidatePath('/admin/users')
   // revalidatePath(`/admin/users/${id}`)
   return ok(user)

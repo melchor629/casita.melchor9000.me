@@ -6,8 +6,9 @@ import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 
 type AddUserPermissionData = Readonly<{
-  userId: number
-  permissionId: number
+  userName: string
+  permissionName: string
+  applicationKey: string
   write: boolean
   delete: boolean
 }>

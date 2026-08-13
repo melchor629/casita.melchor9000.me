@@ -5,13 +5,13 @@ import { deleteUser } from '#queries/index.ts'
 import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 
-async function removeUserAction(context: PageLoaderContext, id: number) {
+async function removeUserAction(context: PageLoaderContext, userName: string) {
   const sessionResult = await ensureSession(context, 'user', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult
   }
 
-  const deleted = await deleteUser(id)
+  const deleted = await deleteUser({ userName })
   // revalidatePath('/admin/users')
   // revalidatePath(`/admin/users/${id}`)
   if (deleted) {

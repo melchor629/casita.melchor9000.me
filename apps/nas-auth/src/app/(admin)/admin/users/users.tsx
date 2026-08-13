@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
 import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
 import { AddUserDialog } from '#components/admin/user/index.ts'
-import type { GetUsers } from '#queries/get-users.ts'
+import type { GetUsers } from '#queries/user/get-users.ts'
 import UserRow from './user-row'
 
 const breadcrumbSections = [{ part: 'users', name: 'Users' }]
@@ -24,7 +24,6 @@ const Users = ({ users }: { readonly users: GetUsers }) => {
       <Table className="mt-2 mb-6" hover full>
         <TableHead>
           <TableRow>
-            <TableHeadCell shrink>ID</TableHeadCell>
             <TableHeadCell>Pic</TableHeadCell>
             <TableHeadCell>User Name</TableHeadCell>
             <TableHeadCell>Display Name</TableHeadCell>
@@ -33,7 +32,7 @@ const Users = ({ users }: { readonly users: GetUsers }) => {
         <TableBody>
           {users.map((user) => (
             <UserRow
-              key={user.id}
+              key={user.userName}
               user={user}
             />
           ))}

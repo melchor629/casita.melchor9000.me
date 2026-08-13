@@ -7,7 +7,7 @@ import {
   EditApplicationApiResources,
   EditApplicationPermissions,
 } from '#components/admin/application/index.ts'
-import type { GetApplication } from '#queries/get-application.ts'
+import type { GetApplication } from '#queries/application/get-application.ts'
 
 type ApplicationProps = Readonly<{
   application: GetApplication

@@ -1,5 +1,3 @@
-'use server'
-
 import type { PageLoaderContext } from '@melchor629/nice-ssr'
 import { createUser } from '#queries/index.ts'
 import { ensureSession } from './get-session-action'
@@ -17,7 +15,13 @@ async function addUserAction(context: PageLoaderContext, data: AddUserData) {
     return sessionResult
   }
 
-  const user = await createUser(data)
+  const user = await createUser({
+    ...data,
+    email: null,
+    familyName: null,
+    givenName: null,
+    profileImageUrl: null,
+  })
   // revalidatePath('/admin/users')
   return ok(user)
 }

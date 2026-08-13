@@ -1,8 +1,8 @@
 import { notFound, type PageLoaderContext } from '@melchor629/nice-ssr'
 import { usePrefillGetSession } from '#actions/queries/get-session.ts'
 import { runActionForLoader, type ActionReturnType } from '#actions/server/index.ts'
-import getApiResources from '#queries/get-api-resources.ts'
-import getClient from '#queries/get-client.ts'
+import getApiResources from '#queries/api-resource/get-api-resources.ts'
+import getClient from '#queries/client/get-client.ts'
 import Client from './client'
 
 type Params = { id: string }

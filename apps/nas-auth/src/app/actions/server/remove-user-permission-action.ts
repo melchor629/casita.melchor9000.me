@@ -6,17 +6,18 @@ import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 
 type RemoveUserPermissionData = Readonly<{
-  id: number
-  userId: number
+  userName: string
+  permissionName: string
+  applicationKey: string
 }>
 
-async function removeUserPermissionAction(context: PageLoaderContext, { id }: RemoveUserPermissionData) {
+async function removeUserPermissionAction(context: PageLoaderContext, { applicationKey, permissionName, userName }: RemoveUserPermissionData) {
   const sessionResult = await ensureSession(context, 'user', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult
   }
 
-  const deleted = await deleteUserPermission(id)
+  const deleted = await deleteUserPermission(permissionName, applicationKey, userName)
   // revalidatePath(`/admin/users/${userId}`)
   return ok(deleted)
 }

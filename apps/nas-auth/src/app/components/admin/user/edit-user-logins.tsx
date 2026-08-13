@@ -1,7 +1,7 @@
 import { Button, Table, TableBody, TableContainer, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
 import { Add } from '@melchor629/ui/icons'
 import { useState } from 'react'
-import type { GetUserQuery } from '../../../../queries/get-user'
+import type { GetUserQuery } from '../../../../queries/user/get-user'
 import AddUserLoginDialog from './add-user-login-dialog'
 import EditUserLoginRow from './edit-user-login-row'
 
@@ -14,7 +14,7 @@ type EditUserLoginsProps = Readonly<{
 const EditUserLogins = ({
   canDelete,
   readOnly,
-  user: { id, logins, userName },
+  user: { logins, userName },
 }: EditUserLoginsProps) => {
   const [opened, setOpened] = useState(false)
 
@@ -38,18 +38,17 @@ const EditUserLogins = ({
           <TableBody>
             {logins.map((login) => (
               <EditUserLoginRow
-                key={login.id}
+                key={`${login.type}:${login.loginId}`}
                 canDelete={canDelete}
                 login={login}
                 readOnly={readOnly}
-                userId={id}
               />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      {!readOnly && <AddUserLoginDialog opened={opened} setOpened={setOpened} userId={id} userName={userName} />}
+      {!readOnly && <AddUserLoginDialog opened={opened} setOpened={setOpened} userName={userName} />}
     </div>
   )
 }

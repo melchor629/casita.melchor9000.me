@@ -36,9 +36,8 @@ const updateSessionUserAction = async function updateSessionUserAction(request: 
     )
   }
 
-  const updatedUser = await updateUser(session.user.id, fieldsToUpdate)
+  const updatedUser = await updateUser(session.accountId, fieldsToUpdate)
   return ok({
-    id: updatedUser.id,
     userName: updatedUser.userName,
     displayName: updatedUser.displayName,
     givenName: updatedUser.givenName || undefined,

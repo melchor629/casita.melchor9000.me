@@ -106,7 +106,7 @@ const Oauth2Plugin = fastifyPlugin(async (app) => {
     }
 
     req.session.set('login', undefined)
-    req.session.set('loginResult', { provider: login.provider, profile, token })
+    req.session.set('loginResult', { provider: login.provider as ProviderType, profile, token })
     await req.session.save()
     await reply.redirect(`/i/${login.interactionId}/post-external`)
   })

@@ -1,3 +1,4 @@
+import { useRevalidator } from '@melchor629/nice-ssr'
 import { Button, Checkbox, InputLabel, Select, TableCell, TableRow } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import {
@@ -8,43 +9,48 @@ import {
 } from 'react'
 import { useEditUserPermission } from '#actions/mutations/edit-user-permission.ts'
 import { useRemoveUserPermission } from '#actions/mutations/remove-user-permission.ts'
-import type { GetPermissions } from '#queries/get-permissions.ts'
-import type { GetUserQuery } from '#queries/get-user.ts'
+import type { GetApplications } from '#queries/application/get-applications.ts'
+import type { GetPermissions } from '#queries/permission/get-permissions.ts'
+import type { GetUserQuery } from '#queries/user/get-user.ts'
 
-const permissionKeySelector = (p: Permission) => p.id.toString()
-const permissionLabelSelector = (p: Permission) => p.name
+const permissionKeySelector = (p: Permission) => `${p.applicationKey}:${p.name}`
+const permissionLabelSelector = (p: Permission) => `[${p.applicationKey}] ${p.displayName ?? p.name}`
 
 type UserPermission = NonNullable<GetUserQuery['permissions']>[0]
-type Permission = NonNullable<UserPermission['permission']>
+type Permission = GetPermissions[0]
 type EditUserPermissionRowProps = Readonly<{
+  allApplications: GetApplications
   allPermissions: GetPermissions
   canDelete: boolean
   permission: UserPermission
   readOnly: boolean
-  userId: number
+  userName: string
 }>
 
 const EditUserPermissionRow = ({
+  allApplications,
   allPermissions,
   canDelete,
   permission,
   readOnly,
-  userId,
+  userName,
 }: EditUserPermissionRowProps) => {
+  const revalidator = useRevalidator()
   const editUserPermissionMutation = useEditUserPermission()
   const removeUserPermissionMutation = useRemoveUserPermission()
   const [editMode, setEditMode] = useState(false)
-  const [applicationKey, setApplicationKey] = useState(permission.permission?.application?.key || '')
-  const [permissionObj, setPermissionObj] = useState<Permission | null | undefined>(permission.permission || null)
+  const [applicationKey, setApplicationKey] = useState(permission.applicationKey)
+  const [permissionObj, setPermissionObj] = useState<Permission | null | undefined>(
+    () => allPermissions.find((p) => p.applicationKey === applicationKey && p.name === permission.permissionName),
+  )
   const [hasWrite, setHasWrite] = useState(permission.write)
   const [hasDelete, setHasDelete] = useState(permission.delete)
-  const applications = useMemo(() => Object.fromEntries(
-    allPermissions
-      .map((perm) => perm.application)
-      .map((app) => [app.key, app.name]),
-  ), [allPermissions])
+  const applications = useMemo(() => (
+    allApplications
+      .map((app) => [app.key, app.name] as const)
+  ), [allApplications])
   const permissionsForApplication = useMemo(
-    () => allPermissions.filter((perm) => perm.application.key === applicationKey),
+    () => allPermissions.filter((perm) => perm.applicationKey === applicationKey),
     [allPermissions, applicationKey],
   )
 
@@ -58,7 +64,7 @@ const EditUserPermissionRow = ({
     setEditMode(true)
   }, [])
 
-  const applicationIdChanged = useCallback((app: [string, string] | null) => setApplicationKey(app ? app[0] : ''), [])
+  const applicationIdChanged = useCallback((app: readonly [string, string] | null) => setApplicationKey(app ? app[0] : ''), [])
   const hasWriteChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => setHasWrite(e.currentTarget.checked), [])
   const hasDeleteChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => setHasDelete(e.currentTarget.checked), [])
 
@@ -69,13 +75,13 @@ const EditUserPermissionRow = ({
     }
 
     editUserPermissionMutation.mutate({
-      permissionId: permissionObj.name,
+      permissionName: permissionObj.name,
+      applicationKey: permissionObj.applicationKey,
       write: hasWrite,
       delete: hasDelete,
-      id: permission.id,
-      userId,
-    }, { onSuccess: () => setEditMode(false) })
-  }, [readOnly, editUserPermissionMutation, permissionObj, hasWrite, hasDelete, permission.id, userId])
+      userName,
+    }, { onSuccess: () => { setEditMode(false); void revalidator() } })
+  }, [readOnly, editUserPermissionMutation, permissionObj, revalidator, hasWrite, hasDelete, userName])
 
   const remove = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -83,25 +89,29 @@ const EditUserPermissionRow = ({
       return
     }
 
-    removeUserPermissionMutation.mutate({ id: permission.id, userId })
-  }, [readOnly, canDelete, removeUserPermissionMutation, permission.id, userId])
+    removeUserPermissionMutation.mutate({
+      permissionName: permission.permissionName,
+      applicationKey: permission.applicationKey,
+      userName,
+    }, { onSuccess: () => void revalidator() })
+  }, [readOnly, canDelete, removeUserPermissionMutation, permission.permissionName, permission.applicationKey, userName, revalidator])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setApplicationKey(permission.permission?.application?.key || '')
-    setPermissionObj(permission.permission || null)
+    setApplicationKey(permission.applicationKey)
+    setPermissionObj(allPermissions.find((p) => p.applicationKey === permission.applicationKey && p.name === permission.permissionName))
     setHasWrite(permission.write)
     setHasDelete(permission.delete)
-  }, [permission])
+  }, [allPermissions, permission])
 
   if (editMode) {
     return (
       <TableRow>
         <TableCell>
           <Select
-            value={[applicationKey, '']}
+            value={[applicationKey, ''] as const}
             onChange={applicationIdChanged}
-            values={Object.entries(applications)}
+            values={applications}
             keySelector={([k]) => k}
             labelSelector={([, v]) => v}
           />
@@ -116,12 +126,12 @@ const EditUserPermissionRow = ({
           />
         </TableCell>
         <TableCell className="select-none">
-          <InputLabel input={<Checkbox id={`${permission.id}-write`} checked={hasWrite} onChange={hasWriteChanged} />}>
+          <InputLabel input={<Checkbox id={`${permission.applicationKey}-${permission.permissionName}-write`} checked={hasWrite} onChange={hasWriteChanged} />}>
             {hasWrite ? 'Yes' : 'No'}
           </InputLabel>
         </TableCell>
         <TableCell className="select-none">
-          <InputLabel input={<Checkbox id={`${permission.id}-delete`} checked={hasDelete} onChange={hasDeleteChanged} />}>
+          <InputLabel input={<Checkbox id={`${permission.applicationKey}-${permission.permissionName}-delete`} checked={hasDelete} onChange={hasDeleteChanged} />}>
             {hasDelete ? 'Yes' : 'No'}
           </InputLabel>
         </TableCell>
@@ -152,8 +162,8 @@ const EditUserPermissionRow = ({
 
   return (
     <TableRow>
-      <TableCell>{applications[permission.permission.application.key]}</TableCell>
-      <TableCell>{permission.permission.name}</TableCell>
+      <TableCell>{allApplications.find((a) => a.key === permission.applicationKey)?.name}</TableCell>
+      <TableCell>{permission.permissionName}</TableCell>
       <TableCell>{permission.write ? 'Yes' : 'No'}</TableCell>
       <TableCell>{permission.delete ? 'Yes' : 'No'}</TableCell>
       <TableCell noWrap>

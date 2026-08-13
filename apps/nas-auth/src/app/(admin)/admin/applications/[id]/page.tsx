@@ -1,7 +1,7 @@
 import { notFound, type PageLoaderContext } from '@melchor629/nice-ssr'
 import { usePrefillGetSession } from '#actions/queries/get-session.ts'
 import { runActionForLoader, type ActionReturnType } from '#actions/server/index.ts'
-import getApplication from '#queries/get-application.ts'
+import getApplication from '#queries/application/get-application.ts'
 import Application from './application'
 
 type ApplicationPageParams = { id: string }

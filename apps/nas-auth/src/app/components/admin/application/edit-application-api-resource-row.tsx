@@ -4,7 +4,7 @@ import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { useEditApiResource } from '#actions/mutations/edit-api-resource.ts'
 import { useRemoveApiResource } from '#actions/mutations/remove-api-resource.ts'
-import type { GetApplication } from '#queries/get-application.ts'
+import type { GetApplication } from '#queries/application/get-application.ts'
 import EditApplicationApiResourceAccessToken from './edit-application-api-resource-access-token'
 import EditApplicationApiResourceScopes from './edit-application-api-resource-scopes'
 

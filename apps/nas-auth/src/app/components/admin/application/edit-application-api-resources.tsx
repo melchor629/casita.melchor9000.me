@@ -1,7 +1,7 @@
 import { Button, Table, TableBody, TableContainer, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
 import { Add } from '@melchor629/ui/icons'
 import { useState } from 'react'
-import type { GetApplication } from '../../../../queries/get-application'
+import type { GetApplication } from '../../../../queries/application/get-application'
 import AddApplicationApiResourceDialog from './add-application-api-resource-dialog'
 import EditApplicationApiResourceRow from './edit-application-api-resource-row'
 

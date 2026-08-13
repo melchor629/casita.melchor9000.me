@@ -1,4 +1,5 @@
-import { SsrResponse, type SsrRequest } from '@melchor629/nice-ssr'
+import { isSsrError, SsrResponse, type SsrRequest } from '@melchor629/nice-ssr'
+import { redirect } from './server/helpers.ts'
 import { runAction } from './server/index.ts'
 
 export async function POST(req: SsrRequest) {
@@ -29,6 +30,16 @@ export async function POST(req: SsrRequest) {
     return SsrResponse.new().status(400).empty()
   }
 
-  log.debug({ action, inputFormat }, 'Invoking action')
-  return SsrResponse.json(await runAction(action as never, req, ...args))
+  try {
+    log.debug({ action, inputFormat }, 'Invoking action')
+    return SsrResponse.json(await runAction(action as never, req, ...args))
+  } catch (e) {
+    if (isSsrError(e)) {
+      if (e.message) {
+        return SsrResponse.json(redirect(e.message))
+      }
+    }
+
+    throw e
+  }
 }

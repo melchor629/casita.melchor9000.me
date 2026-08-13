@@ -1,5 +1,5 @@
 import { verifyAuthenticationResponse, type AuthenticationResponseJSON, type WebAuthnCredential } from '@simplewebauthn/server'
-import findLoginInfoForPasskey from '#queries/find-login-info-for-passkey.ts'
+import findLoginInfoForPasskey from '#queries/login/find-login-info-for-passkey.ts'
 import oidc from '../../oidc/oidc.ts'
 import type { Controller, GenericRoute } from '../models.ts'
 
@@ -32,6 +32,10 @@ const finishPasskeyLoginController: Controller<Route> = async (req, res) => {
   const login = await findLoginInfoForPasskey(req.body.data.id)
   if (!login || login.disabled) {
     return res.status(400).send({ message: 'No passkey found' })
+  }
+
+  if (login.user.disabled) {
+    return res.status(400).send({ message: 'User is disabled! Please contact the administrator.' })
   }
 
   const credential = (login.data as { credential: WebAuthnCredential }).credential

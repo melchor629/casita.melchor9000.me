@@ -1,5 +1,5 @@
 import type { PageLoaderContext } from '@melchor629/nice-ssr'
-import updateApiResource, { type UpdateApiResource } from '#queries/update-api-resource.ts'
+import updateApiResource, { type UpdateApiResource } from '#queries/api-resource/update-api-resource.ts'
 import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 

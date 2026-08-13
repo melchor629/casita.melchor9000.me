@@ -1,35 +1,36 @@
+import { useRevalidator } from '@melchor629/nice-ssr'
 import { Button, Checkbox, Dialog, FormControlLabel, InputLabel, Select } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useMemo, useState } from 'react'
 import { useAddUserPermission } from '#actions/mutations/add-user-permission.ts'
-import type { GetPermissions } from '#queries/get-permissions.ts'
+import type { GetApplications } from '#queries/application/get-applications.ts'
+import type { GetPermissions } from '#queries/permission/get-permissions.ts'
 
 type AddUserPermissionDialogProps = Readonly<{
+  allApplications: GetApplications
   allPermissions: GetPermissions
   opened: boolean
   setOpened: (v: boolean) => void
-  userId: number
+  userName: string
 }>
 
 const AddUserPermissionDialog = ({
+  allApplications,
   allPermissions,
   opened,
   setOpened,
-  userId,
+  userName,
 }: AddUserPermissionDialogProps) => {
+  const revalidator = useRevalidator()
   const addUserPermissionMutation = useAddUserPermission()
   const [applicationId, setApplicationId] = useState('')
   const [permission, setPermission] = useState<GetPermissions[0] | null>(null)
   const [hasWrite, setHasWrite] = useState(false)
   const [hasDelete, setHasDelete] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const applications = useMemo(() => Object.entries(Object.fromEntries(
-    allPermissions
-      .map((perm) => perm.application)
-      .map((app) => [app.key, app.name]),
-  )), [allPermissions])
+  const applications = useMemo(() => Object.freeze(allApplications.map((a) => [a.key, a.name] as const)), [allApplications])
   const permissionsForApplication = useMemo(
-    () => allPermissions.filter((perm) => perm.application.key === applicationId),
+    () => allPermissions.filter((perm) => perm.applicationKey === applicationId),
     [allPermissions, applicationId],
   )
 
@@ -58,14 +59,18 @@ const AddUserPermissionDialog = ({
 
     setError(null)
     addUserPermissionMutation.mutate({
-      userId,
-      permissionId: permission.id,
+      userName,
+      permissionName: permission.name,
+      applicationKey: permission.applicationKey,
       write: hasWrite,
       delete: hasDelete,
     }, {
-      onSuccess: () => setOpened(false),
+      onSuccess: () => {
+        setOpened(false)
+        void revalidator()
+      },
     })
-  }, [setOpened, addUserPermissionMutation, userId, applicationId, permission, hasWrite, hasDelete])
+  }, [applicationId, permission, addUserPermissionMutation, userName, hasWrite, hasDelete, setOpened, revalidator])
 
   return (
     <Dialog
@@ -85,12 +90,12 @@ const AddUserPermissionDialog = ({
         &nbsp;
         <Select
           id="application-id"
-          value={[applicationId, '']}
-          onChange={useCallback((app: [string, string] | null) => setApplicationId(app ? app[0] : ''), [])}
+          value={[applicationId, ''] as const}
+          onChange={useCallback((app: readonly [string, string] | null) => setApplicationId(app ? app[0] : ''), [])}
           values={applications}
-          keySelector={useCallback(([k]: [string, string]) => k, [])}
-          labelSelector={useCallback(([, v]: [string, string]) => v, [])}
-          emptyValue={['', 'Select One']}
+          keySelector={useCallback(([k]: readonly [string, string]) => k, [])}
+          labelSelector={useCallback(([, v]: readonly [string, string]) => v, [])}
+          emptyValue={['', 'Select One'] as const}
         />
       </div>
 
@@ -102,9 +107,9 @@ const AddUserPermissionDialog = ({
           value={permission}
           onChange={setPermission}
           values={permissionsForApplication}
-          keySelector={useCallback((p: GetPermissions[0]) => p.id.toString(), [])}
-          labelSelector={useCallback((p: GetPermissions[0]) => p.name, [])}
-          emptyValue={{ id: -1, name: 'Select One' } as GetPermissions[0]}
+          keySelector={useCallback((p: GetPermissions[0]) => p.name, [])}
+          labelSelector={useCallback((p: GetPermissions[0]) => p.displayName ?? p.name, [])}
+          emptyValue={{ name: '', applicationKey: '', displayName: 'Select One' }}
         />
       </div>
 

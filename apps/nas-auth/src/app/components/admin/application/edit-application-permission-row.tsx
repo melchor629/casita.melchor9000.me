@@ -4,7 +4,7 @@ import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { useEditPermission } from '#actions/mutations/edit-permission.ts'
 import { useRemovePermission } from '#actions/mutations/remove-permission.ts'
-import type { GetApplication } from '#queries/get-application.ts'
+import type { GetApplication } from '#queries/application/get-application.ts'
 
 type EditApplicationPermissionRowProps = Readonly<{
   applicationId: string
@@ -23,7 +23,6 @@ const EditApplicationPermissionRow = ({
   const removePermissionMutation = useRemovePermission()
   const revalidate = useRevalidator()
   const [editMode, setEditMode] = useState(false)
-  const [name, setName] = useState(permission.name)
   const [displayName, setDisplayName] = useState(permission.displayName || '')
 
   const cancelEditMode = useCallback((e: MouseEvent<HTMLButtonElement>) => {
@@ -36,7 +35,6 @@ const EditApplicationPermissionRow = ({
     setEditMode(true)
   }, [])
 
-  const nameChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => setName(e.currentTarget.value), [])
   const displayNameChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => setDisplayName(e.currentTarget.value), [])
 
   const save = useCallback((e: MouseEvent<HTMLButtonElement>) => {
@@ -46,12 +44,11 @@ const EditApplicationPermissionRow = ({
     }
 
     editPermissionMutation.mutate({
-      id: permission.id,
-      appId: applicationId,
-      name,
+      appKey: applicationId,
+      name: permission.name,
       displayName: displayName || undefined,
     }, { onSuccess: () => { setEditMode(false); revalidate().catch(() => {}) } })
-  }, [readOnly, editPermissionMutation, permission.id, applicationId, name, displayName, revalidate])
+  }, [readOnly, editPermissionMutation, permission.name, applicationId, displayName, revalidate])
 
   const remove = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -60,23 +57,21 @@ const EditApplicationPermissionRow = ({
     }
 
     removePermissionMutation.mutate({
-      id: permission.id,
-      appId: applicationId,
+      appKey: applicationId,
+      name: permission.name,
     }, { onSuccess: () => void revalidate() })
-  }, [readOnly, canDelete, removePermissionMutation, permission.id, applicationId, revalidate])
+  }, [readOnly, canDelete, removePermissionMutation, permission.name, applicationId, revalidate])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setName(permission.name)
     setDisplayName(permission.displayName || '')
   }, [permission])
 
   if (editMode) {
     return (
       <TableRow>
-        <TableCell>{permission.id}</TableCell>
         <TableCell>
-          <TextInput type="text" size="small" className="mb-0" value={name} onChange={nameChanged} />
+          <TextInput type="text" size="small" className="mb-0" value={permission.name} readOnly />
         </TableCell>
         <TableCell>
           <TextInput type="text" size="small" className="mb-0" value={displayName} onChange={displayNameChanged} />
@@ -108,7 +103,6 @@ const EditApplicationPermissionRow = ({
 
   return (
     <TableRow>
-      <TableCell>{permission.id}</TableCell>
       <TableCell>{permission.name}</TableCell>
       <TableCell>{permission.displayName}</TableCell>
       <TableCell noWrap>

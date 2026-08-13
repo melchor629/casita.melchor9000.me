@@ -1,7 +1,7 @@
 import { notFound, type PageLoaderContext } from '@melchor629/nice-ssr'
 import { usePrefillGetSession } from '#actions/queries/get-session.ts'
 import { runActionForLoader, type ActionReturnType } from '#actions/server/index.ts'
-import getApplications from '#queries/get-applications.ts'
+import getApplications from '#queries/application/get-applications.ts'
 import Applications from './applications'
 
 type ApplicationsPageProps = Readonly<{

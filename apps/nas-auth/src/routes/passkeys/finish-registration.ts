@@ -1,6 +1,6 @@
 import { verifyRegistrationResponse, type RegistrationResponseJSON } from '@simplewebauthn/server'
-import createLogin from '#queries/create-login.ts'
-import getUser from '#queries/get-user.ts'
+import createLogin from '#queries/login/create-login.ts'
+import getUser from '#queries/user/get-user.ts'
 import oidc from '../../oidc/oidc.ts'
 import type { Controller, GenericRoute } from '../models.ts'
 
@@ -35,7 +35,7 @@ const finishPasskeyRegistrationController: Controller<Route> = async (req, res) 
   })
 
   if (verification.verified) {
-    const user = await getUser(session.accountId, {})
+    const user = await getUser({ userName: session.accountId }, {})
     if (!user) {
       return res.status(401).send()
     }
@@ -43,7 +43,8 @@ const finishPasskeyRegistrationController: Controller<Route> = async (req, res) 
     await createLogin({
       loginId: verification.registrationInfo.credential.id,
       type: 'passkey',
-      userId: user.id,
+      userName: user.userName,
+      disabled: false,
       data: {
         profile: { name: req.body.name },
         ...verification.registrationInfo,

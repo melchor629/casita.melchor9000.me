@@ -58,6 +58,11 @@ export const invokeAction = async <T extends keyof typeof actions>(
     throw new ForbiddenError(result[1])
   }
 
+  if (result[0] === 'r') {
+    globalThis.navigation.navigate(result[1])
+    throw new Error('redirecting')
+  }
+
   throw Object.assign(
     new Error(result[1].message, { cause: result[1].cause }),
     { name: result[1].name },

@@ -23,6 +23,7 @@ async function addApiResourceAction(context: PageLoaderContext, { appId, ...data
     applicationKey: appId,
     accessTokenFormat: 'jwt',
     scopes: [],
+    accessTokenTTL: 3600,
   })
   // revalidatePath(`/admin/applications/${appId}`)
   return ok(apiResource)

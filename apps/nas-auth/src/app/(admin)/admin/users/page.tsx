@@ -1,7 +1,7 @@
 import { notFound, type PageLoaderContext } from '@melchor629/nice-ssr'
 import { usePrefillGetSession } from '#actions/queries/get-session.ts'
 import { runActionForLoader, type ActionReturnType } from '#actions/server/index.ts'
-import getUsers from '#queries/get-users.ts'
+import getUsers from '#queries/user/get-users.ts'
 import Users from './users'
 
 type UsersPageProps = Readonly<{

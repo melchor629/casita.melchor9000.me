@@ -1,7 +1,7 @@
 import { createRemoteJWKSet, jwtVerify } from 'jose'
 import { publicUrl } from '../config.ts'
 import oidc from '../oidc/oidc.ts'
-import getPermissionsForUser, { type PermissionsForUser } from '../queries/get-permissions-for-user.ts'
+import getPermissionsForUser, { type PermissionsForUser } from '../queries/user/get-permissions-for-user.ts'
 import type { Controller, GenericRoute } from './models.ts'
 
 interface Route extends GenericRoute {

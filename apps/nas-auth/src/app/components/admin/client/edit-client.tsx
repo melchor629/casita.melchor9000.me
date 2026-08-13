@@ -89,7 +89,8 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
 
   const genericOnChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const key = e.currentTarget.name as Exclude<keyof ClientMetadata, 'client_id'>
-    setClient((c) => ({ ...c, [key]: e.currentTarget.value || undefined }))
+    const value = e.currentTarget.value || undefined
+    setClient((c) => ({ ...c, [key]: value }))
   }, [])
 
   const grantTypesChanged = useCallback((newValue: readonly string[]) => {
@@ -113,7 +114,8 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
   }, [])
 
   const setPkceDisabledChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setClient((c) => ({ ...c, [setPkceOptionalProp]: e.currentTarget.checked }))
+    const checked = e.currentTarget.checked
+    setClient((c) => ({ ...c, [setPkceOptionalProp]: checked }))
   }, [])
 
   const save = useCallback((e: MouseEvent<HTMLButtonElement>) => {

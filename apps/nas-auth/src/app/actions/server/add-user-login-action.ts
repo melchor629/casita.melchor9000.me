@@ -1,17 +1,10 @@
-'use server'
-
 import type { PageLoaderContext } from '@melchor629/nice-ssr'
 import { createLogin } from '#queries/index.ts'
+import type { CreateLoginInput } from '#queries/login/create-login.ts'
 import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 
-type AddUserLoginData = Readonly<{
-  data?: Record<string, unknown> | null
-  disabled: boolean
-  loginId: string
-  type: string
-  userId: number
-}>
+type AddUserLoginData = Readonly<CreateLoginInput>
 
 async function addUserLoginAction(context: PageLoaderContext, data: AddUserLoginData) {
   const sessionResult = await ensureSession(context, 'user', 'write')
@@ -21,7 +14,7 @@ async function addUserLoginAction(context: PageLoaderContext, data: AddUserLogin
 
   const login = await createLogin({
     ...data,
-    data: JSON.stringify(data.data ?? null),
+    data: data.data ?? null,
   })
   // revalidatePath(`/admin/users/${data.userId}`)
   return ok(login)

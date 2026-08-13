@@ -3,8 +3,8 @@ import type { ServerResponse } from 'node:http'
 import type { FastifyReply } from 'fastify'
 import { errors, type Adapter, type Configuration, type JWKS } from 'oidc-provider'
 import { cookieKeysOauth, jwksFilePath, publicUrl } from '../config.ts'
-import getApiResource from '../queries/get-api-resource.ts'
-import getUser from '../queries/get-user.ts'
+import getApiResource from '../queries/api-resource/get-api-resource.ts'
+import getUser from '../queries/user/get-user.ts'
 import GraphQLClientAdapter from './graphql-client-adapter.ts'
 import RedisAdapter from './redis-adapter.ts'
 
@@ -100,7 +100,7 @@ const config: Configuration = {
   findAccount: (_ctx, id) => ({
     accountId: id,
     async claims() {
-      const user = await getUser(id, {})
+      const user = await getUser({ userName: id }, {})
 
       if (user == null) {
         return { sub: id }

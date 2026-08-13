@@ -1,9 +1,10 @@
+import { useRevalidator } from '@melchor629/nice-ssr'
 import { Button, Checkbox, InputLabel, TableCell, TableRow } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { useEditUserLogin } from '#actions/mutations/edit-user-login.ts'
 import { useRemoveUserLogin } from '#actions/mutations/remove-user-login.ts'
-import type { GetUserQuery } from '#queries/get-user.ts'
+import type { GetUserQuery } from '#queries/user/get-user.ts'
 import EditLoginDataDialog from './edit-login-data-dialog'
 import LoginDataDialog from './login-data-dialog'
 
@@ -11,15 +12,14 @@ type EditUserLoginRowProps = Readonly<{
   canDelete: boolean
   login: NonNullable<GetUserQuery['logins']>[0]
   readOnly: boolean
-  userId: number
 }>
 
 const EditUserLoginRow = ({
   canDelete,
   login,
   readOnly,
-  userId,
 }: EditUserLoginRowProps) => {
+  const revalidator = useRevalidator()
   const editUserLoginMutation = useEditUserLogin()
   const removeUserLoginMutation = useRemoveUserLogin()
   const [editMode, setEditMode] = useState(false)
@@ -63,9 +63,10 @@ const EditUserLoginRow = ({
     editUserLoginMutation.mutate({
       disabled: isDisabled,
       data: loginData,
-      loginId: login.id,
-    }, { onSuccess: () => setEditMode(false) })
-  }, [readOnly, editUserLoginMutation, isDisabled, loginData, login.id])
+      loginId: login.loginId,
+      type: login.type,
+    }, { onSuccess: () => { setEditMode(false); void revalidator() } })
+  }, [readOnly, editUserLoginMutation, isDisabled, loginData, login.loginId, login.type, revalidator])
 
   const remove = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -74,10 +75,10 @@ const EditUserLoginRow = ({
     }
 
     removeUserLoginMutation.mutate({
-      loginId: login.id,
-      userId,
-    })
-  }, [readOnly, canDelete, removeUserLoginMutation, login.id, userId])
+      loginId: login.loginId,
+      type: login.type,
+    }, { onSuccess: () => void revalidator() })
+  }, [readOnly, canDelete, removeUserLoginMutation, login.loginId, login.type, revalidator])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -95,7 +96,7 @@ const EditUserLoginRow = ({
         </TableCell>
         <TableCell className="select-none">
           <InputLabel
-            input={<Checkbox id={`${login.id}-disabled`} checked={isDisabled} onChange={isDisabledChanged} />}
+            input={<Checkbox id={`${login.loginId}-disabled`} checked={isDisabled} onChange={isDisabledChanged} />}
           >
             {isDisabled ? 'Yes' : 'No'}
           </InputLabel>

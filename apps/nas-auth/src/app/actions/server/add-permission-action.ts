@@ -6,12 +6,12 @@ import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 
 type AddPermissionData = Readonly<{
-  appId: string
+  appKey: string
   name: string
-  displayName?: string | null
+  displayName: string | null
 }>
 
-async function addPermissionAction(context: PageLoaderContext, { appId, ...data }: AddPermissionData) {
+async function addPermissionAction(context: PageLoaderContext, { appKey, ...data }: AddPermissionData) {
   const sessionResult = await ensureSession(context, 'application', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult
@@ -19,7 +19,7 @@ async function addPermissionAction(context: PageLoaderContext, { appId, ...data 
 
   const perm = await createPermission({
     ...data,
-    applicationKey: appId,
+    applicationKey: appKey,
   })
   // revalidatePath(`/admin/applications/${appId}`)
   return ok(perm)

@@ -1,5 +1,5 @@
 import { generateRegistrationOptions } from '@simplewebauthn/server'
-import getUser from '#queries/get-user.ts'
+import getUser from '#queries/user/get-user.ts'
 import oidc from '../../oidc/oidc.ts'
 import type { Controller, GenericRoute } from '../models.ts'
 
@@ -18,7 +18,7 @@ const startPasskeyRegistrationController: Controller<Route> = async (req, res) =
     return res.status(401).send()
   }
 
-  const user = await getUser(session.accountId, { logins: true })
+  const user = await getUser({ userName: session.accountId }, { logins: true })
   const options = await generateRegistrationOptions({
     rpName: 'NAS Auth',
     rpID: new URL(oidc.issuer).hostname,

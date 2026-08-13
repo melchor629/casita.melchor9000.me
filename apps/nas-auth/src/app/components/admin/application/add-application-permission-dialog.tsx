@@ -38,7 +38,7 @@ const AddApplicationPermissionDialog = ({ applicationId, opened, setOpened }: Ad
 
     setError(null)
     addPermissionMutation.mutate({
-      appId: applicationId,
+      appKey: applicationId,
       name,
       displayName: displayName || null,
     }, { onSuccess: () => { setOpened(false); void revalidate() } })

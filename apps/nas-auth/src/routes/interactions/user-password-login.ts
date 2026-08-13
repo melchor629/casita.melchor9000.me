@@ -1,5 +1,5 @@
 import oidc from '../../oidc/oidc.ts'
-import findLoginInfoForUsernameAndPassword from '../../queries/find-login-info-for-username-and-password.ts'
+import findLoginInfoForUsernameAndPassword from '../../queries/login/find-login-info-for-username-and-password.ts'
 import type { Controller, GenericRoute } from '../models.ts'
 
 interface Route extends GenericRoute {

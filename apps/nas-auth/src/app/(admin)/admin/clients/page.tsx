@@ -1,7 +1,7 @@
 import { notFound, type PageLoaderContext } from '@melchor629/nice-ssr'
 import { usePrefillGetSession } from '#actions/queries/get-session.ts'
 import { runActionForLoader, type ActionReturnType } from '#actions/server/index.ts'
-import getClients from '#queries/get-clients.ts'
+import getClients from '#queries/client/get-clients.ts'
 import Clients from './clients'
 
 type ClientsPageProps = Readonly<{

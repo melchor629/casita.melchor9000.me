@@ -1,7 +1,7 @@
 import type { PageLoaderContext } from '@melchor629/nice-ssr'
-import createLogin from '#queries/create-login.ts'
-import deleteLogin from '#queries/delete-login.ts'
-import getUser from '#queries/get-user.ts'
+import createLogin from '#queries/login/create-login.ts'
+import deleteLogin from '#queries/login/delete-login.ts'
+import getUser from '#queries/user/get-user.ts'
 import { getSession } from './get-session-action'
 import { ok, invalid, type FailableValidationFields } from './helpers.ts'
 
@@ -17,20 +17,18 @@ async function changeUserPasswordAction(context: PageLoaderContext, form: FormDa
     return invalid([])
   }
 
-  const user = (await getUser(session.accountId, { logins: true }))!
+  const user = (await getUser({ userName: session.accountId }, { logins: true }))!
   const currentPassword = form.get('currentPassword')
   const newPassword1 = form.get('newPassword1')
   const newPassword2 = form.get('newPassword2')
 
   const validations: FailableValidationFields[0][] = []
-  let loginid: number | undefined
+  let login
   if (typeof currentPassword === 'string') {
     const loginId = await mkpasswd(user.userName, currentPassword)
-    const login = user.logins.find((v) => v.type === 'local' && v.loginId === loginId)
+    login = user.logins.find((v) => v.type === 'local' && v.loginId === loginId)
     if (!login) {
       validations.push({ name: 'currentPassword', messages: ['The password is incorrect'] })
-    } else {
-      loginid = login.id
     }
   }
 
@@ -54,15 +52,16 @@ async function changeUserPasswordAction(context: PageLoaderContext, form: FormDa
     return invalid(validations)
   }
 
-  if (loginid) {
-    await deleteLogin(loginid)
+  if (login) {
+    await deleteLogin(login.type, login.loginId)
   }
 
   await createLogin({
     loginId: await mkpasswd(user.userName, newPassword1 as string),
     type: 'local',
-    userId: user.id,
+    userName: user.userName,
     disabled: false,
+    data: null,
   })
   return ok(true)
 }

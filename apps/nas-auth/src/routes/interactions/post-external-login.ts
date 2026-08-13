@@ -1,9 +1,8 @@
 import oidc from '../../oidc/oidc.ts'
 import {
-  // createLogin,
-  createLoginAndUpdateUser,
-  // createUser,
+  createLogin,
   findLoginInfoForExternalAuth,
+  findUser,
   getUser,
   updateLogin,
   updateUser,
@@ -43,81 +42,62 @@ const postExternalLoginController: Controller<Route> = async (req, res) => {
     || profile.name?.toLowerCase().split(' ').join('_')
     || profile.sub
 
-  let { login, user } = await findLoginInfoForExternalAuth(
-    provider,
-    profile.sub ?? profile.login,
-    displayName,
-    userName,
-    profile.email,
-  )
+  const loginId = profile.sub ?? profile.login
+  let login = await findLoginInfoForExternalAuth(provider, loginId)
+  let user
 
-  if (user?.disabled) {
-    await failInteraction('Your user is disabled!')
+  if (login) {
+    user = await getUser(login, {})
+  } else {
+    user = await findUser({ displayName, userName, email: profile.email })
+  }
+
+  if (user == null || user?.disabled) {
+    req.log.warn({
+      loginResult,
+      status: user?.disabled ? 'disabled' : 'not-registered',
+      loginId,
+    }, 'The user cannot log in')
+    await failInteraction('Your user is disabled! Contact to the administrator.')
     return
   }
 
-  if (login) {
-    if (login.disabled) {
-      await failInteraction(`You cannot log in using '${provider}'!`)
-      return
-    }
-
-    await updateLogin(login.id, { data: { profile, token } })
-    user ??= await getUser({ id: login.user.id }, {})
-  } else if (user) {
-    await createLoginAndUpdateUser({
-      id: user.id,
-      displayName,
-      email: profile.email,
-      givenName: user.givenName ?? profile.given_name,
-      familyName: user.familyName ?? profile.family_name,
-      profileImageUrl: user.profileImageUrl ?? profile.picture,
-    }, provider, profile.sub ?? profile.name, { profile, token })
-  } else {
-    /*
-    const newUser = await createUser({
-      userName,
-      displayName,
-      email,
-      givenName: profile.given_name,
-      familyName: profile.family_name,
-      profilePictureUrl: profile.picture,
-    })
-
-    const newLogin = await createLogin({
-      userId: newUser.id,
-      data: profile,
-      loginId: profile.sub,
+  if (!login) {
+    login = await createLogin({
+      data: { profile, token },
+      disabled: false,
+      loginId,
       type: provider,
+      userName: user.userName,
     })
-
-    user = newUser
-    login = newLogin
-    */
-
-    req.log.warn({ loginResult }, 'User not present in system')
-    await failInteraction(
-      `The user ${userName} is not registered in the system. You cannot log in! Contact the administrator...`,
-    )
+  } else if (login.disabled) {
+    req.log.warn({
+      loginResult,
+      status: 'login-disabled',
+      loginId,
+    }, 'The user cannot log in')
+    await failInteraction(`The provider '${provider}' is disabled for you! Please contact the administrator.`)
     return
+  } else {
+    login = await updateLogin(login.type, login.loginId, { data: { profile, token } })
   }
 
   const propertiesToUpdateInUser: ['givenName' | 'familyName' | 'profileImageUrl' | 'displayName', string][] = []
-  if (!user!.givenName && profile.given_name) {
+  if (!user.givenName && profile.given_name) {
     propertiesToUpdateInUser.push(['givenName', profile.given_name])
   }
-  if (!user!.familyName && profile.family_name) {
+  if (!user.familyName && profile.family_name) {
     propertiesToUpdateInUser.push(['familyName', profile.family_name])
   }
-  if (!user!.profileImageUrl && profile.picture) {
+  if (!user.profileImageUrl && profile.picture) {
     propertiesToUpdateInUser.push(['profileImageUrl', profile.picture])
   }
-  if (!user!.displayName && profile.name) {
+  if (!user.displayName && profile.name) {
     propertiesToUpdateInUser.push(['displayName', profile.name])
   }
 
   if (propertiesToUpdateInUser.length) {
-    await updateUser(user!.id, Object.fromEntries(propertiesToUpdateInUser))
+    await updateUser(user.userName, Object.fromEntries(propertiesToUpdateInUser))
   }
 
   req.session.set('loginResult', undefined)
@@ -125,7 +105,7 @@ const postExternalLoginController: Controller<Route> = async (req, res) => {
   await req.trace('interaction finished', {}, () => oidc.interactionFinished(
     req.raw,
     res.raw,
-    { login: { accountId: (login?.user || user)!.userName } },
+    { login: { accountId: user.userName } },
     { mergeWithLastSubmission: false },
   ))
 }

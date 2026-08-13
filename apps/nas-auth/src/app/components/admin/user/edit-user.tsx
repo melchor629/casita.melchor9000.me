@@ -3,7 +3,7 @@ import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { useEditUser } from '#actions/mutations/edit-user.ts'
 import { useRemoveUser } from '#actions/mutations/remove-user.ts'
-import type { GetUserQuery } from '#queries/get-user.ts'
+import type { GetUserQuery } from '#queries/user/get-user.ts'
 
 type EditUserProps = Readonly<{
   canDelete: boolean
@@ -14,7 +14,6 @@ type EditUserProps = Readonly<{
 const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
   const updateUserMutation = useEditUser()
   const removeUserMutation = useRemoveUser()
-  const [userName, setUserName] = useState(user.userName || '')
   const [displayName, setDisplayName] = useState(user.displayName || '')
   const [givenName, setGivenName] = useState(user.givenName || '')
   const [familyName, setFamilyName] = useState(user.familyName || '')
@@ -30,8 +29,7 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
     }
 
     updateUserMutation.mutate({
-      id: user.id,
-      userName,
+      userName: user.userName,
       displayName,
       givenName,
       familyName,
@@ -40,9 +38,9 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
       disabled,
     })
   }, [
-    user.id, readOnly,
+    user.userName, readOnly,
     updateUserMutation,
-    userName, displayName, givenName, familyName, profileImageUrl, email, disabled,
+    displayName, givenName, familyName, profileImageUrl, email, disabled,
   ])
 
   const remove = useCallback((e: MouseEvent<HTMLElement>) => {
@@ -52,12 +50,11 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
       return
     }
 
-    removeUserMutation.mutate(user.id)
-  }, [readOnly, canDelete, user.id, removeUserMutation])
+    removeUserMutation.mutate(user.userName)
+  }, [readOnly, canDelete, user.userName, removeUserMutation])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setUserName(user.userName)
     setDisplayName(user.displayName || '')
     setGivenName(user.givenName || '')
     setFamilyName(user.familyName || '')
@@ -72,9 +69,8 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
       <TextInput
         type="text"
         id="user-name"
-        value={userName}
-        readOnly={readOnly}
-        onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setUserName(e.currentTarget.value), [])}
+        value={user.userName}
+        readOnly
       />
 
       <FormControlLabel htmlFor="display-name" margin="normal">Display Name</FormControlLabel>

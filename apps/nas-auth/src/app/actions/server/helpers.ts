@@ -14,6 +14,7 @@ export type FailableResult<TResult> = Readonly<
   | readonly [kind: 'e', e: FailableError]
   | readonly [kind: 'v', f: FailableValidationFields]
   | readonly [kind: 'f', m: string]
+  | readonly [kind: 'r', p: string]
 >
 
 const mapError = (error: Error): FailableError => ({
@@ -40,4 +41,9 @@ export const error = <T = never>(error: Error): FailableResult<T> => Object.free
 export const forbidden = <T = never>(message: string): FailableResult<T> => Object.freeze([
   'f',
   message,
+])
+
+export const redirect = <T = never>(path: string): FailableResult<T> => Object.freeze([
+  'r',
+  path,
 ])

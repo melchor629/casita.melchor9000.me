@@ -1,3 +1,4 @@
+import { useRevalidator } from '@melchor629/nice-ssr'
 import { Button, Checkbox, Dialog, FormControlLabel, InputLabel, TextInput } from '@melchor629/ui'
 import type { ChangeEvent, MouseEvent } from 'react'
 import { useCallback, useState } from 'react'
@@ -16,11 +17,11 @@ const getLoginId = async (userName: string, password: string) => {
 type AddUserLoginDialogProps = Readonly<{
   opened: boolean
   setOpened: (v: boolean) => void
-  userId: number
   userName: string
 }>
 
-const AddUserLoginDialog = ({ opened, setOpened, userId, userName }: AddUserLoginDialogProps) => {
+const AddUserLoginDialog = ({ opened, setOpened, userName }: AddUserLoginDialogProps) => {
+  const revalidator = useRevalidator()
   const addUserLoginMutation = useAddUserLogin()
   const [password1, setPassword1] = useState('')
   const [password2, setPassword2] = useState('')
@@ -57,16 +58,16 @@ const AddUserLoginDialog = ({ opened, setOpened, userId, userName }: AddUserLogi
     getLoginId(userName, password1)
       .then((loginId) => {
         return addUserLoginMutation.mutateAsync({
-          userId,
           type: 'local',
           data: null,
           disabled,
           loginId,
-        })
+          userName,
+        }, { onSuccess: () => void revalidator() })
       })
       .then(() => setOpened(false))
       .catch(() => {})
-  }, [setOpened, addUserLoginMutation, userId, userName, disabled, password1, password2])
+  }, [password1, password2, userName, addUserLoginMutation, disabled, revalidator, setOpened])
 
   return (
     <Dialog

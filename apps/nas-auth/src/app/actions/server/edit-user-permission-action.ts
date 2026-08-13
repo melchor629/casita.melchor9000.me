@@ -6,20 +6,20 @@ import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 
 type AddUserPermissionData = Readonly<{
-  userId: number
-  id: number
-  permissionId: string
+  userName: string
+  permissionName: string
+  applicationKey: string
   write: boolean
   delete: boolean
 }>
 
-async function editUserPermissionAction(context: PageLoaderContext, { id, userId, ...data }: AddUserPermissionData) {
+async function editUserPermissionAction(context: PageLoaderContext, { applicationKey, permissionName, userName, ...data }: AddUserPermissionData) {
   const sessionResult = await ensureSession(context, 'user', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult
   }
 
-  const userPermission = await updateUserPermission(id, data)
+  const userPermission = await updateUserPermission(applicationKey, permissionName, userName, data)
   // revalidatePath(`/admin/users/${userId}`)
   return ok(userPermission)
 }

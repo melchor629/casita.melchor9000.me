@@ -9,7 +9,6 @@ import { forbidden, ok, type FailableResult } from './helpers.ts'
 type SessionInfo = Readonly<{
   accountId: string
   user: {
-    id: number
     userName: string
     displayName: string
     givenName?: string
@@ -56,13 +55,12 @@ export const getSession = cache(async function getSession(request: PageLoaderCon
   }
 
   const [user, permissions] = await Promise.all([
-    getUser(session.accountId, { logins: true }),
+    getUser({ userName: session.accountId }, { logins: true }),
     getPermissionsForUser(session.accountId),
   ])
   return {
     accountId: session.accountId,
     user: {
-      id: user!.id,
       userName: user!.userName,
       displayName: user!.displayName,
       givenName: user!.givenName || undefined,

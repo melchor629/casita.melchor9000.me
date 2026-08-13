@@ -1,7 +1,7 @@
 import { Button, Table, TableBody, TableContainer, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
 import { Add } from '@melchor629/ui/icons'
 import { useState } from 'react'
-import type { GetApplication } from '../../../../queries/get-application'
+import type { GetApplication } from '../../../../queries/application/get-application'
 import AddApplicationPermissionDialog from './add-application-permission-dialog'
 import EditApplicationPermissionRow from './edit-application-permission-row'
 
@@ -28,7 +28,6 @@ const EditApplicationPermissions = ({
         <Table hover full>
           <TableHead>
             <TableRow>
-              <TableHeadCell>ID</TableHeadCell>
               <TableHeadCell>Name</TableHeadCell>
               <TableHeadCell>Display Name</TableHeadCell>
               <TableHeadCell shrink>Actions</TableHeadCell>
@@ -37,7 +36,7 @@ const EditApplicationPermissions = ({
           <TableBody>
             {permissions.map((permission) => (
               <EditApplicationPermissionRow
-                key={permission.id}
+                key={permission.name}
                 applicationId={applicationId}
                 canDelete={canDelete}
                 permission={permission}

@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
 import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
 import { AddClientDialog } from '#components/admin/client/index.ts'
-import type { GetClients } from '#queries/get-clients.ts'
+import type { GetClients } from '#queries/client/get-clients.ts'
 
 const breadcrumbSections = [{ name: 'Clients', part: 'clients' }]
 

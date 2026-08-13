@@ -14,3 +14,4 @@ const nasAuthDatabase = drizzle(process.env.DATABASE_URL!, {
 
 export default nasAuthDatabase
 export * from 'drizzle-orm'
+export type { SelectedFieldsFlat as PgSelectedFieldsFlat } from 'drizzle-orm/pg-core'

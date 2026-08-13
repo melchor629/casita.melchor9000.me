@@ -46,7 +46,7 @@ const AddUserDialog = ({ opened, setOpened }: AddUserDialogProps) => {
     }, {
       onSuccess(newUser) {
         if (newUser) {
-          navigate(`/admin/users/${newUser.id}`)
+          navigate(`/admin/users/${newUser.userName}`)
         } else {
           setError('Could not create user')
         }
