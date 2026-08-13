@@ -82,6 +82,10 @@ const makeMatcher = (pathname: `/${string}`) => {
   return new RegExp(src, 'u')
 }
 
+const pathModuleHasParameter = (m: PathModule) =>
+  /\[[\w-]+\]/.exec(m.pathname.split('/').at(-1) ?? '')
+const comparePathModules = (a: PathModule, b: PathModule) =>
+  comparePathLength(a.pathname, b.pathname) + (pathModuleHasParameter(a) ? 10_000 : 0) - (pathModuleHasParameter(b) ? 10_000 : 0)
 function makeRoutesTree(pathname: `/${string}`, node: ModuleTreeNode): RootPathModule | PathModule {
   let module: PathModule = {
     type: 'nothing',
@@ -91,7 +95,8 @@ function makeRoutesTree(pathname: `/${string}`, node: ModuleTreeNode): RootPathM
     notFound: getNodeModule(node, 'not-found')?.module as PathModule['notFound'],
     error: getNodeModule(node, 'error')?.module as PathModule['error'],
     children: getFolderNodes(node)
-      .map(([key, node]) => makeRoutesTree(joinPath(pathname, key), node) as PathModule),
+      .map(([key, node]) => makeRoutesTree(joinPath(pathname, key), node) as PathModule)
+      .toSorted(comparePathModules),
   }
 
   const pageModule = getNodeModule(node, 'page')
