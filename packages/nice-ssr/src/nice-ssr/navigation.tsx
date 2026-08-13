@@ -317,11 +317,7 @@ export const useNavigate = (): (path: string | { pathname?: string, searchParams
     trySmoothNavigation(actions, newUrl)
       .then((result) => {
         if (result === 'proceed') {
-          if (mode === 'push') {
-            history.pushState({}, '', newUrl)
-          } else if (mode === 'replace') {
-            history.replaceState({}, '', newUrl)
-          }
+          navigation.navigate(newUrl, { info: ssrTypeSymbol, history: mode })
         }
       })
       .catch(() => {})
@@ -471,7 +467,10 @@ export function SsrRouterProvider({ initialPage, initialValue }: Readonly<{
 
     const abort = new AbortController()
     navigation.addEventListener('navigate', (e) => {
-      if (!e.canIntercept || e.navigationType !== 'traverse' || e.downloadRequest) return
+      if (!e.canIntercept || e.navigationType === 'reload' || e.downloadRequest) return
+      if (e.navigationType !== 'traverse' && e.info === ssrTypeSymbol) {
+        return e.intercept()
+      }
 
       const newUrl = new URL(e.destination.url, location.origin)
       e.intercept({
