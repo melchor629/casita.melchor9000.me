@@ -25,6 +25,6 @@
     "bunlock-dedupe": "^1.8.2",
     "eslint": "^9.39.4",
     "typescript": "^6.0.3",
-    "turbo": "^2.10.9"
+    "turbo": "^2.10.10"
   }
 }

@@ -81,6 +81,7 @@ export async function renderRoute(
   )
 }
 
+export { get, getAll } from './route-handler.tsx'
 export { isSsrResponse } from '../nice-ssr/response.ts'
 
 if (import.meta.hot) {
