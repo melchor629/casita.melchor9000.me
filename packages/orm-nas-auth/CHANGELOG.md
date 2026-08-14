@@ -1,5 +1,11 @@
 # @melchor629/orm-nas-auth
 
+## 0.1.3
+
+### Patch Changes
+
+- Fix migrations path.
+
 ## 0.1.2
 
 ### Patch Changes

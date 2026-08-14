@@ -1,5 +1,13 @@
 # nas-auth
 
+## 3.3.3
+
+### Patch Changes
+
+- Fix migrations path.
+- Updated dependencies
+  - @melchor629/orm-nas-auth@0.1.3
+
 ## 3.3.2
 
 ### Patch Changes

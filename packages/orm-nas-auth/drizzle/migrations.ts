@@ -8,7 +8,7 @@ const migrationLogger = createLogger('orm-nas-auth:migrations')
 export default async function runNasAuthMigrations() {
   const db = drizzle(process.env.DATABASE_URL!, {
     logger: {
-      logQuery: (query, params) => migrationLogger.info({ query, params }, 'Running query')
+      logQuery: (query, params) => migrationLogger.debug({ query, params }, 'Running query')
     },
   })
 
@@ -16,7 +16,7 @@ export default async function runNasAuthMigrations() {
 
   try {
     await migrate(db, {
-      migrationsFolder: `${import.meta.dirname}/migrations`,
+      migrationsFolder: import.meta.dirname,
       migrationsSchema: 'auth',
       migrationsTable: '__drizzle_migrations',
     })
