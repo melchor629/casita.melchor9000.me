@@ -1,5 +1,11 @@
 # @melchor629/fastify-infra
 
+## 0.2.3
+
+### Patch Changes
+
+- 4f63633: Update ioredis and @fastify/redis packages.
+
 ## 0.2.2
 
 ### Patch Changes

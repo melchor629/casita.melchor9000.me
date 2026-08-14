@@ -1,5 +1,19 @@
 # @melchor629/nice-ssr
 
+## 0.6.0
+
+### Minor Changes
+
+- e2505f5: Improve navigation and rendering
+- e2505f5: Rework client-side page loading to improve UX and reduce duplicated code.
+
+### Patch Changes
+
+- 1cb4430: Wrong route priority where dynamic routes may take priority over static
+- 549405e: Not found or error pages not rendered properly in client if the pages are in a group folder.
+- a11d7a0: Wrong redirect code in route rendering
+- 7ab1ac1: Handle dev navigations (ignoring framework navigations)
+
 ## 0.5.4
 
 ### Patch Changes

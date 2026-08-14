@@ -1,5 +1,25 @@
 # ledefault
 
+## 0.4.0
+
+### Minor Changes
+
+- de3135c: Rework error boundaries to improve UX.
+
+### Patch Changes
+
+- e2505f5: Improve navigation and rendering
+- e2505f5: Rework client-side page loading to improve UX and reduce duplicated code.
+- Updated dependencies [4f63633]
+- Updated dependencies [e2505f5]
+- Updated dependencies [1cb4430]
+- Updated dependencies [e2505f5]
+- Updated dependencies [549405e]
+- Updated dependencies [a11d7a0]
+- Updated dependencies [7ab1ac1]
+  - @melchor629/fastify-infra@0.2.3
+  - @melchor629/nice-ssr@0.6.0
+
 ## 0.3.6
 
 ### Patch Changes

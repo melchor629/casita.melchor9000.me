@@ -1,5 +1,13 @@
 # nas-fs
 
+## 0.12.31
+
+### Patch Changes
+
+- 4f63633: Update ioredis and @fastify/redis packages.
+- Updated dependencies [4f63633]
+  - @melchor629/fastify-infra@0.2.3
+
 ## 0.12.30
 
 ### Patch Changes
