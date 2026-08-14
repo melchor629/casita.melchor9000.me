@@ -14,5 +14,4 @@ export default defineConfig({
     schema: 'auth',
   },
   verbose: true,
-  strict: true,
 })
