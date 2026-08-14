@@ -16,14 +16,14 @@
   },
   "dependencies": {
     "@melchor629/infra": "*",
-    "drizzle-orm": "^1.0.0-rc.4",
+    "drizzle-orm": "^1.0.0-rc.5-ab785fc",
     "pg": "^8.23.0"
   },
   "devDependencies": {
     "@melchor629/tsconfigs": "*",
     "@types/pg": "^8.21.0",
     "@types/node": "^24.13.2",
-    "drizzle-kit": "^1.0.0-rc.4",
+    "drizzle-kit": "^1.0.0-rc.5-ab785fc",
     "dotenv": "^17.4.2"
   }
 }

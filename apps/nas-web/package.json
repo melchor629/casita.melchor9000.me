@@ -13,7 +13,7 @@
     "@tanstack/react-query-devtools": "^5.101.4",
     "@tanstack/react-query-persist-client": "^5.101.4",
     "clsx": "^2.1.1",
-    "highlight.js": "^11.11.1",
+    "highlight.js": "^11.12.0",
     "lodash-es": "^4.18.1",
     "nanoid": "^6.0.1",
     "oidc-client-ts": "^3.5.0",
@@ -23,7 +23,7 @@
     "react-router": "^8.3.0",
     "react-virtuoso": "^4.18.11",
     "tailwind-variants": "^3.3.1",
-    "zustand": "^5.0.14"
+    "zustand": "^5.0.15"
   },
   "scripts": {
     "dev": ". ./env.sh && vite",

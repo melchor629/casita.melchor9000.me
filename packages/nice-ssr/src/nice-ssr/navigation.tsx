@@ -112,7 +112,7 @@ type RouterContextActions = Readonly<{
 }>
 
 export type SsrRouteAsset = Readonly<{
-  type: 'style' | 'module' | 'modulepreload' | 'pagemodule'
+  type: 'style' | 'module' | 'modulepreload'
   path: string
 } | {
   type: 'preload'
@@ -129,10 +129,17 @@ export type SsrRouterProviderProps = Readonly<{
     assets: SsrRouteAsset[]
     nonce: { style?: string, script?: string }
   }
+  client?: {
+    renderPage: (
+      path: string,
+      type: 'page' | 'error' | 'not-found',
+      props: Record<string, unknown>,
+    ) => Promise<ReactNode>
+  }
   metadata: Metadata
 }>
 
-const SsrRouterContext = createContext<{
+export const SsrRouterContext = createContext<{
   store: ReturnType<ReturnType<typeof createStore<RouterContextState>>>
   isTransitioning: boolean
   actions: RouterContextActions
@@ -156,7 +163,8 @@ const getHref = (currentUrl: URL, pathname?: string, searchParams?: URLSearchPar
 }
 
 const loadPage = async (store: RouterContextActions, newUrl: URL, justFetch = false) => {
-  if (import.meta.env.SSR) {
+  const { renderPage } = store.getState().client ?? {}
+  if (!renderPage) {
     throw new Error('This API is client-only')
   }
 
@@ -167,12 +175,11 @@ const loadPage = async (store: RouterContextActions, newUrl: URL, justFetch = fa
     },
   })
   const data = await res.json() as PartialPageRenderResult
-  const { renderPage } = await import(/* @vite-ignore */ data.a!) as { renderPage: (props: Record<string, unknown>) => ReactNode }
   if (!justFetch) {
     store.setState({ ...data.c, url: new URL(data.c.url) })
   }
 
-  return renderPage(data.p)
+  return renderPage(data.c.pathname, data.t, data.p)
 }
 
 const trySmoothNavigation = async (actions: RouterContextActions, newUrl: URL) => {
@@ -426,6 +433,7 @@ export function SsrRouterProvider({ initialPage, initialValue }: Readonly<{
     url: initialValue.url,
     server: initialValue.server,
     metadata: initialValue.metadata,
+    client: initialValue.client,
     // eslint-disable-next-line react-hooks/exhaustive-deps
   })), [])
   const [loadPagePromise, setLoadPagePromise] = useState<Promise<ReactNode> | null>(null)

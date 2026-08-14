@@ -34,6 +34,9 @@ declare module 'virtual:ssr/routes' {
     | ResourcePathModule
     | NothingPageModule
 
-  const modules: RootPathModule
-  export default modules
+  export const modules: RootPathModule
+  export function getModulePath(path: string, mode?: 'exact' | 'nearest'): ReadonlyArray<PathModule>
+  export function getRouteModulePath(path: string, type: 'page'): readonly [...PathModule[], PagePathModule] | null
+  export function getRouteModulePath(path: string, type: 'error' | 'not-found'): readonly [...PathModule[], PagePathModule]
+  export function getRouteModulePath(path: string, type: 'route'): readonly [...PathModule[], RoutePathModule] | null
 }

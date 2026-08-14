@@ -23,22 +23,6 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "nas-persistance",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "cwd": "${workspaceFolder}/apps/nas-persistance",
-      "program": "${workspaceFolder}/apps/nas-persistance/src/index.ts",
-      "runtimeArgs": [],
-      "env": {
-        "NODE_ENV": "development",
-      },
-      "envFile": "${workspaceFolder}/apps/nas-persistance/.env",
-      "outputCapture": "std",
-    },
-    {
-      "type": "node",
-      "request": "launch",
       "name": "nas-fs api",
       "skipFiles": [
         "<node_internals>/**"

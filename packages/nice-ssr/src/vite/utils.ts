@@ -14,9 +14,6 @@ export const getAppPath = (...parts: string[]): string =>
 export const getRelativeSourcePath = (absolutePath: string): string =>
   path.relative(cwd(), absolutePath)
 
-export const getRootLayoutPath = (): string => getAppPath('root-layout.tsx')
-export const getMiddlewarePath = (): string => getAppPath('middleware.ts')
-
 export const ssrRoutesModuleId = 'virtual:ssr/routes'
 export const csrEntryModuleId = 'virtual:entry-csr'
 export const csrPageModuleId = (pagePath: string): string =>

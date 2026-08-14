@@ -2,8 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Plugin } from 'vite'
 import { transformPage } from './transform-csr.ts'
-import { csrEntryFilePath, csrEntryModuleId, csrPageModuleId, getAppPath, getRelativeSourcePath, getRootLayoutPath, ssrRoutesFilePath, ssrRoutesModuleId } from './utils.ts'
-import generateCsrPage from './virtual/csr-page.ts'
+import { csrEntryFilePath, csrEntryModuleId, getAppPath, ssrRoutesFilePath, ssrRoutesModuleId } from './utils.ts'
 
 type NiceSsrOptions = Readonly<{
   devTools?: Readonly<{
@@ -12,15 +11,10 @@ type NiceSsrOptions = Readonly<{
   }>
 }>
 
-const unsafeExists = (path: string) =>
-  fs.access(path).then(() => true).catch(() => false)
 const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
   return {
     name: 'nice-ssr-plugin',
     resolveId(source, importer) {
-      if (source.startsWith(csrPageModuleId('')) && !source.endsWith('/')) {
-        return `\0${source}`
-      }
       if (source === ssrRoutesModuleId || source === csrEntryModuleId) {
         return `\0${source}`
       }
@@ -29,17 +23,9 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
           return path.resolve(path.join(path.dirname(csrEntryFilePath), source))
         }
       }
-      if (importer?.startsWith(`\0${csrPageModuleId('')}`)) {
-        if (source === '@error') {
-          return path.resolve(path.join(import.meta.dirname, '..', 'nice-ssr', 'error.js'))
-        }
-      }
     },
 
     async load(id) {
-      if (id.startsWith(`\0${csrPageModuleId('')}`)) {
-        return generateCsrPage(id.slice(13))
-      }
       if (id === `\0${ssrRoutesModuleId}`) {
         this.addWatchFile(ssrRoutesFilePath)
         return fs.readFile(ssrRoutesFilePath, 'utf-8')
@@ -64,7 +50,7 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
       return modules
     },
 
-    async config(config, env) {
+    config(config, env) {
       if (!this.meta.rolldownVersion) {
         throw new Error('This plugin only supports vite 8 or higher with rolldown')
       }
@@ -82,40 +68,41 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
           throw new Error('Configuration error: build.rollupOptions.output cannot be an array')
         }
         config.build.rolldownOptions.output ??= {}
-        const entryFileNames = config.build.rolldownOptions.output.entryFileNames = (chunkInfo) => {
-          if (env.isSsrBuild && chunkInfo.name === 'server') {
+        config.build.rolldownOptions.output.entryFileNames = (chunkInfo) => {
+          if (chunkInfo.name === 'server') {
             return '[name].js'
           }
 
-          if (chunkInfo.facadeModuleId) {
-            if (chunkInfo.facadeModuleId.startsWith(`\0${csrPageModuleId('')}`)) {
-              const pageName = chunkInfo.facadeModuleId
-                .slice(csrPageModuleId('').length + 2)
-                .replaceAll(/[[\]/]/g, '_')
-                .replaceAll(/_+/g, '_')
-                .replace(/_$/, '') || 'rp'
-              return `.p/pages/${pageName}.[hash].js`
-            }
+          if (chunkInfo.facadeModuleId === `\0${csrEntryModuleId}`) {
+            return '.p/client.js'
           }
+
           return `.p/chunks/${chunkInfo.name}.[hash].js`
         }
+        config.build.rolldownOptions.output.chunkFileNames = (chunkInfo) => {
+          if (chunkInfo.facadeModuleId) {
+            const filePath = path.relative(getAppPath(), path.resolve(chunkInfo.facadeModuleId))
+            if (!filePath.startsWith('..')) {
+              if (filePath === 'middleware.ts') return '.p/middleware.js'
+              if (filePath === 'root-layout.tsx') return '.p/pages/root-layout.js'
+              const type = filePath.endsWith('error.tsx')
+                ? 'error'
+                : filePath.endsWith('not-found.tsx')
+                  ? 'not-found'
+                  : filePath.endsWith('page.tsx')
+                    ? 'page'
+                    : filePath.endsWith('route.ts')
+                      ? 'route'
+                      : '_'
+              const pageName = path.dirname(filePath)
+                .replaceAll(/[[\]/]/g, '_')
+                .replaceAll(/_+/g, '_')
+                .replace(/_$/, '') || 'root-page'
+              return `.p/pages/${pageName}.${type}.[hash].js`
+            }
+          }
 
-        const csrInputs = ['virtual:entry-csr']
-        const rootLayoutPath = getRootLayoutPath()
-        if (await unsafeExists(rootLayoutPath)) {
-          csrInputs.push(getRelativeSourcePath(rootLayoutPath))
-        }
-        for await (const page of fs.glob(getAppPath('**', 'page.tsx'))) {
-          const lePath = path.relative(getAppPath(), page).replace(/page\.tsx$/, '')
-          csrInputs.push(csrPageModuleId(lePath))
-        }
-        for await (const page of fs.glob(getAppPath('**', 'not-found.tsx'))) {
-          const lePath = path.relative(getAppPath(), page).replace(/not-found\.tsx$/, '')
-          csrInputs.push(csrPageModuleId(lePath) + '/_not_found')
-        }
-        for await (const page of fs.glob(getAppPath('**', 'error.tsx'))) {
-          const lePath = path.relative(getAppPath(), page).replace(/error\.tsx$/, '')
-          csrInputs.push(csrPageModuleId(lePath) + '/_error')
+          return `.p/chunks/${chunkInfo.name}.[hash].js`
         }
 
         config.environments = {
@@ -126,11 +113,7 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
               outDir: 'dist/client',
               manifest: true,
               rolldownOptions: {
-                input: csrInputs,
-                output: {
-                  chunkFileNames: (chunkInfo) =>
-                    `.p/chunks/${chunkInfo.name}.[hash].js`,
-                },
+                input: ['virtual:entry-csr'],
                 // needed for the csr pages, otherwise the export default is trimmed
                 preserveEntrySignatures: 'exports-only',
               },
@@ -144,15 +127,6 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
               outDir: 'dist/server',
               rolldownOptions: {
                 external: ['../client/.vite/manifest.json'],
-                output: {
-                  entryFileNames: (chunkInfo) => {
-                    if (chunkInfo.name === 'server') {
-                      return '[name].js'
-                    }
-
-                    return entryFileNames(chunkInfo)
-                  },
-                },
               },
             },
           },

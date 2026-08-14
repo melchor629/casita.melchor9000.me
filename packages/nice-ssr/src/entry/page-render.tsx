@@ -79,19 +79,19 @@ function getEntryForModuleId(manifest: Record<string, RawManifestEntry>, moduleI
 const getExtraEntries = (entry: ManifestEntry): ManifestEntry[] => [
   entry,
   ...(entry.imports ?? []).flatMap(getExtraEntries),
-  ...(entry.dynamicImports ?? []).flatMap(getExtraEntries),
+  // ...(entry.dynamicImports ?? []).flatMap(getExtraEntries),
 ]
 
 const getAllAssets = (entry: ManifestEntry): string[] => [
   ...(entry.assets ?? []),
   ...(entry.imports?.map((n) => getAllAssets(n)) ?? []),
-  ...(entry.dynamicImports?.map((n) => getAllAssets(n)) ?? []),
+  // ...(entry.dynamicImports?.map((n) => getAllAssets(n)) ?? []),
 ].flat()
 
 const getAllStyles = (entry: ManifestEntry): string[] => [
   ...(entry.css ?? []),
   ...(entry.imports?.map((n) => getAllStyles(n)) ?? []),
-  ...(entry.dynamicImports?.map((n) => getAllStyles(n)) ?? []),
+  // ...(entry.dynamicImports?.map((n) => getAllStyles(n)) ?? []),
 ].flat()
 
 const imageTypes = ['.png', '.jpg', '.jpeg', '.jfif', '.webp', '.avif', '.heif', '.heic', '.ico']
@@ -107,28 +107,36 @@ const mapExtToPreloadAs = (name: string): PreloadAs => {
 async function getCsrAssets(
   moduleId: string,
   basePath: string,
+  pageType: 'page' | 'not-found' | 'error',
 ): Promise<SsrRouteAsset[]> {
-  const pageCsrModuleId = path.join('virtual:csr', moduleId).replace(/\/$/, '')
+  const pageCsrModuleId = path.join('src', 'app', moduleId, `${pageType}.tsx`)
   if (import.meta.env.DEV) {
     return [
       { type: 'module', path: '/@vite/client' },
       { type: 'module', path: '/@id/__x00__@vitejs/plugin-react/preamble' },
-      { type: 'pagemodule', path: `/@id/__x00__${pageCsrModuleId}` },
+      { type: 'modulepreload', path: '/@id/__x00__virtual:entry-csr' },
+      { type: 'modulepreload', path: `/${pageCsrModuleId}` },
     ]
   }
 
   // @ts-expect-error this is an external file after build
   // eslint-disable-next-line import-x/no-unresolved
   const { default: manifest } = await import('../client/.vite/manifest.json', { with: { type: 'json' } }) as { default: Record<string, RawManifestEntry> }
+  const entryCsrManifestEntry = getEntryForModuleId(manifest, 'virtual:entry-csr')
   const pageCsrManifestEntry = getEntryForModuleId(manifest, pageCsrModuleId)
   const allDependencyEntries = getExtraEntries(pageCsrManifestEntry)
   const css = Array.from(new Set(getAllStyles(pageCsrManifestEntry)))
   const preloadScripts = Array.from(new Set([
+    entryCsrManifestEntry,
+    pageCsrManifestEntry,
+    ...getExtraEntries(entryCsrManifestEntry).flatMap((entry) => entry?.imports ?? []),
     ...allDependencyEntries.flatMap((entry) => entry?.imports ?? []),
     ...allDependencyEntries.flatMap((entry) => entry?.dynamicImports ?? []),
-    pageCsrManifestEntry,
   ].map((entry) => entry.file)))
-  const assets = Array.from(new Set(getAllAssets(pageCsrManifestEntry)))
+  const assets = Array.from(new Set([
+    ...getAllAssets(entryCsrManifestEntry),
+    ...getAllAssets(pageCsrManifestEntry),
+  ]))
   return [
     ...css.map((entry): SsrRouteAsset => ({ type: 'style', path: `${basePath}${entry}` })),
     ...preloadScripts.map((entry): SsrRouteAsset => ({ type: 'modulepreload', path: `${basePath}${entry}` })),
@@ -137,7 +145,7 @@ async function getCsrAssets(
       path: `${basePath}${path}`,
       as: mapExtToPreloadAs(path),
     })),
-    { type: 'pagemodule', path: `${basePath}${pageCsrManifestEntry.file}` },
+    { type: 'modulepreload', path: `${basePath}${pageCsrManifestEntry.file}` },
   ]
 }
 
@@ -171,6 +179,7 @@ async function renderCompletePage(
     getCsrAssets(
       request.nice.originalPathname,
       request.nice.basePath,
+      pageContext.type,
     ),
     generateMetadata(module, ssrProps),
     getEntryCsr(request.nice.basePath),
@@ -205,7 +214,6 @@ async function renderCompletePage(
 
   request.nice.log.debug('Rendering HTML')
   const serializableContext: PartialPageRenderResult = {
-    a: assets.find((e) => e.type === 'pagemodule')?.path,
     c: {
       basePath: request.nice.basePath,
       params: request.nice.params,
@@ -214,6 +222,7 @@ async function renderCompletePage(
       metadata: pageMetadataHead,
     },
     p: ssrProps,
+    t: pageContext.type,
   }
   const stream = await renderToReadableStream(tree, {
     nonce: scriptNonce,
@@ -234,9 +243,9 @@ async function renderCompletePage(
 }
 
 export type PartialPageRenderResult = Readonly<{
-  a: string | undefined
   p: Record<string, unknown>
   c: Omit<SsrRouterProviderProps, 'props' | 'Page' | 'pageModulePath' | 'RootLayout'>
+  t: 'not-found' | 'error' | 'page'
 }>
 
 async function renderPartialPage(
@@ -255,6 +264,7 @@ async function renderPartialPage(
     getCsrAssets(
       request.nice.originalPathname,
       request.nice.basePath,
+      pageContext.type,
     ),
     generateMetadata(module, ssrProps),
   ])
@@ -275,7 +285,7 @@ async function renderPartialPage(
   return SsrResponse.json({
     p: ssrProps,
     c: context,
-    a: assets.find((a) => a.type === 'pagemodule')?.path,
+    t: pageContext.type,
   } satisfies PartialPageRenderResult)
 }
 
@@ -285,6 +295,7 @@ function renderInvalidPage(request: SsrRequest) {
 }
 
 type RenderPageContext = {
+  type: 'page' | 'not-found' | 'error'
   layouts: Array<() => Promise<PageHelperModule>>
   status?: number
   props?: Record<string, unknown>

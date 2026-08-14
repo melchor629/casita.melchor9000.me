@@ -1,13 +1,20 @@
 import type { PagePathModule, PathModule, RootPathModule, RoutePathModule } from 'virtual:ssr/routes'
 
-const modules = import.meta.glob([
-  '/src/app/middleware.{t,j}s',
-  '/src/app/**/page.{t,j}sx',
-  '/src/app/**/route.{t,j}s',
-  '/src/app/**/layout.{t,j}sx',
-  '/src/app/**/not-found.{t,j}sx',
-  '/src/app/**/error.{t,j}sx',
-], { base: '/src/app' })
+const glob = import.meta.env.SSR
+  ? import.meta.glob([
+    '/src/app/middleware.{t,j}s',
+    '/src/app/**/page.{t,j}sx',
+    '/src/app/**/route.{t,j}s',
+    '/src/app/**/layout.{t,j}sx',
+    '/src/app/**/not-found.{t,j}sx',
+    '/src/app/**/error.{t,j}sx',
+  ], { base: '/src/app' })
+  : import.meta.glob([
+    '/src/app/**/page.{t,j}sx',
+    '/src/app/**/layout.{t,j}sx',
+    '/src/app/**/not-found.{t,j}sx',
+    '/src/app/**/error.{t,j}sx',
+  ], { base: '/src/app' })
 
 const countSubstring = (string: string, pattern: string) => {
   let count = 0
@@ -61,8 +68,8 @@ type ModuleTreeFolderNode = { type: 'folder', node: ModuleTreeNode }
 type ModuleTreeNode = Record<string, ModuleTreeModuleNode | ModuleTreeFolderNode>
 function makeTree() {
   const tree: ModuleTreeNode = {}
-  for (const path of Object.keys(modules).toSorted(comparePathLength)) {
-    addNode(tree, path, modules[path])
+  for (const path of Object.keys(glob).toSorted(comparePathLength)) {
+    addNode(tree, path, glob[path])
   }
   return tree
 }
@@ -85,8 +92,11 @@ const makeMatcher = (pathname: `/${string}`) => {
 const pathModuleHasParameter = (m: PathModule) =>
   /\[[\w-]+\]/.exec(m.pathname.split('/').at(-1) ?? '')
 const comparePathModules = (a: PathModule, b: PathModule) =>
-  comparePathLength(a.pathname, b.pathname) + (pathModuleHasParameter(a) ? 10_000 : 0) - (pathModuleHasParameter(b) ? 10_000 : 0)
-function makeRoutesTree(pathname: `/${string}`, node: ModuleTreeNode): RootPathModule | PathModule {
+  comparePathLength(b.pathname, a.pathname) + (pathModuleHasParameter(a) ? 10_000 : 0) - (pathModuleHasParameter(b) ? 10_000 : 0)
+
+function makeRoutesTree(pathname: '/'): RootPathModule
+function makeRoutesTree(pathname: `/${string}`, node: ModuleTreeNode): PathModule
+function makeRoutesTree(pathname: `/${string}`, node: ModuleTreeNode = makeTree()): RootPathModule | PathModule {
   let module: PathModule = {
     type: 'nothing',
     pathname,
@@ -95,7 +105,7 @@ function makeRoutesTree(pathname: `/${string}`, node: ModuleTreeNode): RootPathM
     notFound: getNodeModule(node, 'not-found')?.module as PathModule['notFound'],
     error: getNodeModule(node, 'error')?.module as PathModule['error'],
     children: getFolderNodes(node)
-      .map(([key, node]) => makeRoutesTree(joinPath(pathname, key), node) as PathModule)
+      .map(([key, node]) => makeRoutesTree(joinPath(pathname, key), node))
       .toSorted(comparePathModules),
   }
 
@@ -130,6 +140,113 @@ function makeRoutesTree(pathname: `/${string}`, node: ModuleTreeNode): RootPathM
   return module
 }
 
-const routes = makeRoutesTree('/', makeTree())
+export const modules = makeRoutesTree('/')
 
-export default routes
+const countPathSegments = (path: string) =>
+  path.replaceAll(/\/\(\w+\)/g, '').replaceAll(/^\/|\/$/g, '').split('/').filter((s) => !!s).length
+
+const calculateRoutePath = (
+  path: string,
+  route: PathModule,
+): PathModule[] => {
+  const match = route.matcher.exec(path)
+  if (match == null) {
+    return []
+  }
+
+  return [
+    route,
+    ...(
+      Iterator.from(route.children)
+        .map((r) => calculateRoutePath(path, r))
+        .filter((rh) => rh.length > 0)
+        .filter((rh) => rh.at(-1)!.type !== 'nothing')
+        .toArray()
+        .toSorted((a, b) => b.at(-1)!.matcher.exec(path)![0].length - a.at(-1)!.matcher.exec(path)![0].length)
+        .at(0) ?? []
+    ),
+  ]
+}
+
+export function getModulePath(path: string, mode: 'exact' | 'nearest' = 'exact'): ReadonlyArray<PathModule> {
+  path ||= '/'
+  const routePath = calculateRoutePath(path, modules.route)
+  const routeMatch = routePath.at(-1)
+  if (!routeMatch) {
+    return []
+  }
+
+  if (mode === 'exact' && countPathSegments(routeMatch.pathname) !== countPathSegments(path)) {
+    return []
+  }
+
+  return routePath
+}
+
+const defaultErrorPathModule: NonNullable<PagePathModule['error']> = () => Promise.resolve({
+  default: ({ error }) => `Page has error: ${error.message}.\n\nThis is a default error page, please add a error handler.`,
+})
+
+const defaultNotFoundPathModule: NonNullable<PagePathModule['notFound']> = () => Promise.resolve({
+  default: () => 'Not found...\n\nThis is a default error page, please add a error handler.',
+})
+
+export function getRouteModulePath(path: string, type: 'page'): readonly [...PathModule[], PagePathModule] | null
+export function getRouteModulePath(path: string, type: 'error' | 'not-found'): readonly [...PathModule[], PagePathModule]
+export function getRouteModulePath(path: string, type: 'route'): readonly [...PathModule[], RoutePathModule] | null
+export function getRouteModulePath(
+  path: string,
+  type: 'page' | 'route' | 'error' | 'not-found',
+): readonly [...PathModule[], PagePathModule] | readonly [...PathModule[], RoutePathModule] | null {
+  if (type === 'page' || type === 'route') {
+    const modulePath = getModulePath(path, 'exact')
+    const module = modulePath.at(-1)
+    if (module?.type === 'page') {
+      return Object.freeze([...modulePath.slice(0, -1), module] as const)
+    }
+    if (module?.type === 'route') {
+      return Object.freeze([...modulePath.slice(0, -1), module] as const)
+    }
+    return null
+  }
+
+  if (type === 'error') {
+    const modulePath = getModulePath(path, 'nearest')
+    const errorRoutePathIndex = modulePath
+      .findLastIndex((r) => r.error != null)
+    const errorRoutePath = errorRoutePathIndex !== -1 ? modulePath[errorRoutePathIndex] : null
+    return Object.freeze([
+      ...modulePath.slice(0, errorRoutePathIndex),
+      {
+        children: [],
+        layout: errorRoutePath?.layout,
+        entry: (errorRoutePath?.error as never)
+          ?? defaultErrorPathModule,
+        matcher: /^$/,
+        pathname: errorRoutePath?.pathname ?? '/',
+        type: 'page',
+      } satisfies PagePathModule,
+    ])
+  }
+
+  if (type === 'not-found') {
+    const modulePath = getModulePath(path, 'nearest')
+    const notFoundRoutePathIndex = modulePath
+      .findLastIndex((r) => r.notFound != null)
+    const notFoundRoutePath = notFoundRoutePathIndex !== -1 ? modulePath[notFoundRoutePathIndex] : null
+    return Object.freeze([
+      ...modulePath.slice(0, notFoundRoutePathIndex),
+      {
+        children: [],
+        layout: notFoundRoutePath?.layout,
+        entry: (notFoundRoutePath?.notFound as never)
+          ?? defaultNotFoundPathModule,
+        matcher: /^$/,
+        pathname: notFoundRoutePath?.pathname ?? '/',
+        type: 'page',
+      } satisfies PagePathModule,
+    ])
+  }
+
+  return null
+}

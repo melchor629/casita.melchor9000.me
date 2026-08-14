@@ -1,7 +1,8 @@
-import { Component, Suspense, type FC, type MouseEvent, type PropsWithChildren } from 'react'
+import { Component, type Context, type FC, type PropsWithChildren } from 'react'
+import { SsrRouterContext } from './navigation'
 
 type ErrorBoundaryProps = Readonly<PropsWithChildren<{
-  path: FC<ErrorComponentProps>
+  component: FC<ErrorComponentProps>
   error?: CsrError | null
 }>>
 
@@ -44,11 +45,15 @@ export type ErrorComponentProps = Readonly<{
 const initialState: ErrorBoundaryState = { hasError: false, error: null, component: null! }
 
 export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  static contextType = SsrRouterContext
+
+  declare context: typeof SsrRouterContext extends Context<infer F> ? F : never
+
   constructor(props: ErrorBoundaryProps) {
     super(props)
     this.state = {
       ...initialState,
-      component: props.path,
+      component: props.component,
       hasError: props.error != null,
       error: props.error ?? null,
     }
@@ -59,9 +64,9 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
   }
 
   componentDidUpdate(prevProps: ErrorBoundaryProps): void {
-    if (prevProps.path !== this.props.path) {
+    if (prevProps.component !== this.props.component) {
       this.setState({
-        component: this.props.path,
+        component: this.props.component,
       })
     }
   }
@@ -70,22 +75,24 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
     if (this.state.hasError) {
       const Component = this.state.component
       return (
-        <Suspense>
-          <Component error={this.state.error!} reset={this.#resetErrorBoundary} />
-        </Suspense>
+        <Component error={this.state.error!} reset={this.#resetErrorBoundary} />
       )
     }
 
     return this.props.children
   }
 
-  handleResetButton = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    this.#resetErrorBoundary()
-  }
-
   #resetErrorBoundary = () => {
     const { error } = this.state
+
+    if (this.props.error && this.props.error === this.state.error) {
+      // this is an error page, reload page is better
+      const { state, url } = this.context.store.getState()
+      if (state === 'inactive') {
+        this.context.actions.loadPage(url, true)
+          .catch(() => {})
+      }
+    }
 
     if (error != null) {
       this.setState({ ...initialState, component: this.state.component })
