@@ -80,6 +80,10 @@ const createApp = async () => {
 
   await app.register(import('./rate-limit.ts'))
 
+  if (!isDebug) {
+    await app.register(import('@fastify/compress'))
+  }
+
   // @fastify/oauth2 for external auth
   await app.register(import('./oauth2.ts'))
 
