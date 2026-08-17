@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.6.2
+
+### Patch Changes
+
+- Ignore HTML Elements from navigation interception if not using framework Link.
+
 ## 0.6.1
 
 ### Patch Changes

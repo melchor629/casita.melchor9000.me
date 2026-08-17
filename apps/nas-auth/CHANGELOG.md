@@ -1,5 +1,13 @@
 # nas-auth
 
+## 3.3.5
+
+### Patch Changes
+
+- Ignore HTML Elements from navigation interception if not using framework Link.
+- Updated dependencies
+  - @melchor629/nice-ssr@0.6.2
+
 ## 3.3.4
 
 ### Patch Changes
