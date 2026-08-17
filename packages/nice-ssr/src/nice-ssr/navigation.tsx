@@ -475,7 +475,7 @@ export function SsrRouterProvider({ initialPage, initialValue }: Readonly<{
 
     const abort = new AbortController()
     navigation.addEventListener('navigate', (e) => {
-      if (!e.canIntercept || e.navigationType === 'reload' || e.downloadRequest) return
+      if (!e.canIntercept || e.navigationType === 'reload' || e.downloadRequest || e.formData) return
       if (e.navigationType !== 'traverse' && e.info === ssrTypeSymbol) {
         return e.intercept()
       }

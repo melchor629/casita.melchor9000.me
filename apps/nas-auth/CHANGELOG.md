@@ -1,5 +1,14 @@
 # nas-auth
 
+## 3.3.4
+
+### Patch Changes
+
+- ce145d2: Add compression middleware
+- Fix issue with posts being forwarded as gets due to navigation interception.
+- Updated dependencies
+  - @melchor629/nice-ssr@0.6.1
+
 ## 3.3.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.6.1
+
+### Patch Changes
+
+- Fix issue with posts being forwarded as gets due to navigation interception.
+
 ## 0.6.0
 
 ### Minor Changes
