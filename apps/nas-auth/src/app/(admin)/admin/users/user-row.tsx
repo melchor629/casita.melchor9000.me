@@ -5,7 +5,7 @@ import { useResolvedProfilePic } from '../../../hooks'
 
 const UserRow = ({ user }: { readonly user: GetUsers[0] }) => {
   const navigate = useNavigate()
-  const resolvedProfilePicUrl = useResolvedProfilePic(user.profileImageUrl, user.userName)
+  const resolvedProfilePicUrl = useResolvedProfilePic({ user: user.userName })
 
   return (
     <TableRow

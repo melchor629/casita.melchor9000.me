@@ -26,7 +26,7 @@ const Profile = ({ role, user }: ProfileProps) => {
     return `/oidc/session/end?${params}`
   }, [publicUrl])
 
-  const resolvedProfilePicUrl = useResolvedProfilePic(user.profileImageUrl)
+  const resolvedProfilePicUrl = useResolvedProfilePic({ user: user.userName })
 
   return (
     <>

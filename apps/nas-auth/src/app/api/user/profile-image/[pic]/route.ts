@@ -4,7 +4,7 @@ import path from 'node:path'
 import { Readable } from 'node:stream'
 import { SsrResponse } from '@melchor629/nice-ssr'
 import { profileImagesPath } from '../../../../../config.ts'
-import { getPermissions, withSession } from '../../../helper'
+import { withSession } from '../../../helper'
 
 const mimeType: Record<string, `image/${string}` | undefined> = {
   jpeg: 'image/jpeg',
@@ -16,20 +16,14 @@ const mimeType: Record<string, `image/${string}` | undefined> = {
 
 export const GET = withSession<{ pic: string }>(async (request, { session: { accountId } }) => {
   const { pic } = request.nice.params
-  const otherUser = request.nice.url.searchParams.get('user') || null
-  if (otherUser) {
-    const perms = await getPermissions(accountId)
-    if (!perms.get('user')) {
-      return new Response(null, {
-        status: 403,
-      })
-    }
-  }
-
-  const userProfilePath = path.join(profileImagesPath, otherUser ?? accountId!)
+  const userProfilePath = path.join(profileImagesPath, accountId!)
   const imagePath = path.join(userProfilePath, pic)
   const id = path.extname(pic.slice(0, -path.extname(pic).length)).slice(1)
   const etag = `W/"${id}"`
+
+  if (path.relative(userProfilePath, imagePath) !== pic) {
+    return SsrResponse.new().status('bad-request').empty()
+  }
 
   try {
     if (request.headers.has('if-none-match')) {

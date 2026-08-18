@@ -93,7 +93,7 @@ const config: Configuration = {
   claims: {
     openid: ['sub'],
     email: ['email', 'email_verified'],
-    profile: ['family_name', 'given_name', 'name'],
+    profile: ['family_name', 'given_name', 'name', 'picture'],
   },
 
   // function to find accounts with their claims
@@ -113,6 +113,9 @@ const config: Configuration = {
         name: user.displayName || `${user.givenName} ${user.familyName}`,
         family_name: user.familyName,
         given_name: user.givenName,
+        picture: user.profileImageUrl
+          ? new URL(`/api/user/${user.userName}/profile-image`, _ctx.URL.origin).toString()
+          : undefined,
       }
     },
   }),

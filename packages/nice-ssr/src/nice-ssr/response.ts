@@ -70,6 +70,12 @@ export type SsrResponseBuilder = Readonly<{
   stream(stream: ReadableStream | Blob): SsrResponse
 
   /**
+   * Creates the response using the provided raw buffer or string as body to send.
+   * @param data Data to send.
+   */
+  raw(data: ArrayBuffer | ArrayBufferView<ArrayBuffer> | string): SsrResponse
+
+  /**
    * Creates a response without body.
    */
   empty(): SsrResponse
@@ -129,6 +135,13 @@ export class SsrResponse extends Response {
           headers.set('content-type', 'application/octet-stream')
         }
         return new SsrResponse(stream, { ...init, headers, status })
+      },
+
+      raw(data) {
+        if (!headers.has('content-type')) {
+          headers.set('content-type', 'application/octet-stream')
+        }
+        return new SsrResponse(data, { ...init, headers, status })
       },
 
       empty() {

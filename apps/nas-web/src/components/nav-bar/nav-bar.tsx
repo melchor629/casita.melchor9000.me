@@ -112,7 +112,8 @@ const NavBar = memo(() => {
             onKeyDown={openAuth2}
             tabIndex={0}
           >
-            <span role="img" aria-label="Saluting hand">👋</span>
+            {!tokenInfo.picture && <span role="img" aria-label="Saluting hand">👋</span>}
+            {tokenInfo.picture && <img alt="User profile" src={tokenInfo.picture} className="inline-block size-4 rounded-full" />}
             <span>
               &nbsp;&nbsp;
               {tokenInfo.displayName || tokenInfo.userName}

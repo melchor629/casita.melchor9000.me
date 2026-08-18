@@ -42,7 +42,7 @@ const Profile = () => {
     return ''
   }, [profileImageUrl])
 
-  const realProfileImageUrl = useResolvedProfilePic(profileImageUrl)
+  const realProfileImageUrl = useResolvedProfilePic({ profileImageUrl })
 
   const save = useCallback(() => {
     if (!data) {

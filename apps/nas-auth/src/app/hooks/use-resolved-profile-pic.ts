@@ -3,14 +3,26 @@ import { useMemo } from 'react'
 const nasAuthImageUrl = 'nas-auth://'
 const nasAuthImageEndpoint = '/api/user/profile-image'
 
-const useResolvedProfilePic = (profileImageUrl?: string | null, user?: string) => (
+type Options = {
+  profileImageUrl: string | null
+  user?: undefined
+} | {
+  profileImageUrl?: undefined
+  user: string
+}
+
+const useResolvedProfilePic = ({ profileImageUrl, user }: Options) => (
   useMemo(() => {
-    if (!profileImageUrl) {
+    if (!profileImageUrl && !user) {
       return null
     }
 
+    if (!profileImageUrl) {
+      return `/api/user/${user}/profile-image`
+    }
+
     if (profileImageUrl.startsWith(nasAuthImageUrl)) {
-      return `${nasAuthImageEndpoint}/${profileImageUrl.slice(nasAuthImageUrl.length)}${user ? `?user=${user}` : ''}`
+      return `${nasAuthImageEndpoint}/${profileImageUrl.slice(nasAuthImageUrl.length)}`
     }
 
     return profileImageUrl

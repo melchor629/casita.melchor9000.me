@@ -20,6 +20,7 @@ if (import.meta.env.DEV) {
 interface TokenInfo {
   userName: string
   displayName: string
+  picture?: string
   permissions: TokenPermission[]
   applications: Record<string, TokenApplication>
 }
@@ -43,6 +44,7 @@ export function TokenInfoProvider({ children }: PropsWithChildren) {
     return {
       userName: profile.sub,
       displayName: profile.name!,
+      picture: profile.picture,
       ...permissions,
     }
   }, [profile, permissions])

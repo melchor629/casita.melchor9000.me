@@ -28,7 +28,7 @@ const getRecentlyAddedController: Controller<typeof schema> = async (req, reply)
     mediaRepository.getRecentlyAdded(req.appTenant!),
     mediaRepository.getType(req.appTenant!),
   ])
-  reply.send({
+  await reply.send({
     items,
     libraryType,
   })
