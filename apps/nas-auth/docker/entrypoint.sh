@@ -10,12 +10,12 @@ if [ "$@" = "nas-auth" ]; then
       echo "Using default JKWS Key Types (\$JWKS_KEY_TYPES='$JWKS_KEY_TYPES')"
     fi
 
-    node src/generate-keys.js $JWKS_KEY_TYPES
+    bun src/generate-keys.js $JWKS_KEY_TYPES
   fi
 
-  exec node src/index.ts
+  exec bun src/index.ts
 elif [ "$@" = "nas-auth-generate-keys" ]; then
-  exec node src/generate-keys.js "$@"
+  exec bun src/generate-keys.js "$@"
 fi
 
 exec "$@"

@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1
 
-ARG NODE=node:24-alpine
 ARG BUN=oven/bun:1-alpine
 
 FROM --platform=$BUILDPLATFORM $BUN AS packages
@@ -30,7 +29,7 @@ COPY --from=packages /app/out/json/ ./
 RUN bun i --production
 
 
-FROM $NODE AS final
+FROM $BUN AS final
 
 WORKDIR /app
 
@@ -47,7 +46,7 @@ COPY --from=builder /app/packages/infra/src/ ./packages/infra/src/
 COPY --from=builder /app/packages/orm-nas-auth/drizzle/ ./packages/orm-nas-auth/drizzle/
 
 ENV NODE_ENV=production
-USER node:node
+USER bun:bun
 
 WORKDIR /app/apps/nas-auth
 CMD ["nas-auth"]
