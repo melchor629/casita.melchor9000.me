@@ -1,5 +1,14 @@
 # nas-auth
 
+## 3.3.6
+
+### Patch Changes
+
+- e41e5e1: Add profile pictures.
+- ad68d14: update deps (+ bun 1.4.0)
+- Updated dependencies [e41e5e1]
+  - @melchor629/nice-ssr@0.6.3
+
 ## 3.3.5
 
 ### Patch Changes

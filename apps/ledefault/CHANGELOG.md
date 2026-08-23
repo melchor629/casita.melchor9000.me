@@ -1,5 +1,13 @@
 # ledefault
 
+## 0.4.1
+
+### Patch Changes
+
+- ad68d14: update deps (+ bun 1.4.0)
+- Updated dependencies [e41e5e1]
+  - @melchor629/nice-ssr@0.6.3
+
 ## 0.4.0
 
 ### Minor Changes

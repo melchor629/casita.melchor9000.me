@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.6.3
+
+### Patch Changes
+
+- e41e5e1: Add profile pictures.
+
 ## 0.6.2
 
 ### Patch Changes

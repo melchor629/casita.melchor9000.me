@@ -1,5 +1,11 @@
 # nas-fs
 
+## 0.12.32
+
+### Patch Changes
+
+- ad68d14: update deps (+ bun 1.4.0)
+
 ## 0.12.31
 
 ### Patch Changes

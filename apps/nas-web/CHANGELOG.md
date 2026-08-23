@@ -1,5 +1,12 @@
 # nas-web
 
+## 0.16.5
+
+### Patch Changes
+
+- e41e5e1: Add profile pictures.
+- ad68d14: update deps (+ bun 1.4.0)
+
 ## 0.16.4
 
 ### Patch Changes
