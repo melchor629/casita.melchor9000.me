@@ -20,7 +20,7 @@ import RegisterPasskeyDialog from './register-passkey-dialog'
 
 const nasAuthImageUrl = 'nas-auth://'
 
-const Profile = () => {
+const Profile = ({ changePasswordMode }: { readonly changePasswordMode: boolean }) => {
   const { data } = useGetSession()
   const { data: pictures } = useGetUserProfilePictures()
   const updateSessionUser = useUpdateSessionUser()
@@ -30,7 +30,7 @@ const Profile = () => {
   const [givenName, setGivenName] = useState(data!.user?.givenName ?? '')
   const [familyName, setFamilyName] = useState(data!.user?.familyName ?? '')
   const [profileImageUrl, setProfileImageUrl] = useState(data!.user?.profileImageUrl ?? '')
-  const [showChangePasswordDialog, setShowChangePasswordDialog] = useState(false)
+  const [showChangePasswordDialog, setShowChangePasswordDialog] = useState(changePasswordMode)
   const [showRegisterPasskeyDialog, setShowRegisterPasskeyDialog] = useState(false)
   const inputFileRef = useRef<HTMLInputElement | null>(null)
 

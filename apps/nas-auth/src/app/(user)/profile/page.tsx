@@ -5,6 +5,7 @@ import { runActionForLoader, type ActionReturnType } from '#actions/server/index
 import Profile from './profile'
 
 type LoaderData = Readonly<{
+  chpwd: boolean
   session: ActionReturnType<'get-session'>
   pictures: ActionReturnType<'get-user-profile-pictures'>
 }>
@@ -14,6 +15,7 @@ export const loader: PageLoader<LoaderData> = async (context) => {
   return {
     session,
     pictures: session ? await runActionForLoader('get-user-profile-pictures', context) : [],
+    chpwd: context.nice.url.searchParams.get('chpwd') != null,
   }
 }
 
@@ -21,7 +23,7 @@ export const metadata = {
   title: 'Edit Profile',
 }
 
-const EditProfilePage = ({ pictures, session }: LoaderData) => {
+const EditProfilePage = ({ chpwd, pictures, session }: LoaderData) => {
   usePrefillGetSession(session)
   usePrefillGetUserProfilePictures(pictures)
 
@@ -29,7 +31,7 @@ const EditProfilePage = ({ pictures, session }: LoaderData) => {
     return notFound()
   }
 
-  return <Profile />
+  return <Profile changePasswordMode={chpwd} />
 }
 
 export default EditProfilePage

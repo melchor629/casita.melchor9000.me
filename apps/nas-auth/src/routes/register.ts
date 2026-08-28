@@ -35,6 +35,9 @@ const registerRoutes = (app: FastifyInstance) => {
       res.redirect(`/oidc/${route}`, 301)
     })
   }
+
+  // https://web.dev/articles/change-password-url
+  app.get('/.well-known/change-password', (_, res) => res.redirect('/profile?chpwd'))
 }
 
 export default registerRoutes
