@@ -80,7 +80,6 @@ const config: Configuration = {
       interaction: 'auth_i',
       resume: 'auth_ir',
       session: 'auth_sess',
-      state: 'auth_st',
     },
   },
 

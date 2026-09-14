@@ -121,9 +121,9 @@ export const makeQuery = <
   fetch: (queryClient: QueryClient, ...params: TParams) => Promise<TData>,
   prefetch: (queryClient: QueryClient, ...params: TParams) => Promise<void>,
 }> => ({
-    fetch: (queryClient, ...params) => queryClient.fetchQuery(fn(...params)),
+    fetch: (queryClient, ...params) => queryClient.query(fn(...params)),
     options: (...params) => fn(...params) as unknown as QueryOptions<DataTag<TQueryKey, TData, TError>, TData, TError>,
-    prefetch: (queryClient, ...params) => queryClient.prefetchQuery(fn(...params)),
+    prefetch: (queryClient, ...params) => queryClient.query(fn(...params)).then(() => {}),
     useHook: (...params) => useSuspenseQuery(fn(...params)),
     usePrefillHook: (initial, ...params) =>
       useSuspenseQuery({ ...fn(...params), initialData: initial, initialDataUpdatedAt: useMemo(() => Date.now(), []) }),

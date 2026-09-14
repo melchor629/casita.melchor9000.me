@@ -16,19 +16,19 @@
     "check": "tsc -p . --noEmit"
   },
   "dependencies": {
-    "@opentelemetry/core": "^2.10.0",
-    "@opentelemetry/instrumentation": "^0.221.0",
-    "@opentelemetry/sdk-trace-node": "^2.10.0",
-    "@opentelemetry/sdk-metrics": "^2.10.0",
-    "@opentelemetry/context-async-hooks": "^2.10.0",
-    "@opentelemetry/instrumentation-fs": "^0.40.0",
-    "@opentelemetry/instrumentation-undici": "^0.31.0",
-    "@opentelemetry/instrumentation-runtime-node": "^0.34.0",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.221.0",
-    "@opentelemetry/exporter-metrics-otlp-http": "^0.221.0",
+    "@opentelemetry/core": "^2.11.0",
+    "@opentelemetry/instrumentation": "^0.222.0",
+    "@opentelemetry/sdk-trace-node": "^2.11.0",
+    "@opentelemetry/sdk-metrics": "^2.11.0",
+    "@opentelemetry/context-async-hooks": "^2.11.0",
+    "@opentelemetry/instrumentation-fs": "^0.41.0",
+    "@opentelemetry/instrumentation-undici": "^0.32.0",
+    "@opentelemetry/instrumentation-runtime-node": "^0.35.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.222.0",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.222.0",
     "@opentelemetry/semantic-conventions": "^1.43.0",
-    "@opentelemetry/resources": "^2.10.0",
-    "@opentelemetry/resource-detector-container": "^0.8.12",
+    "@opentelemetry/resources": "^2.11.0",
+    "@opentelemetry/resource-detector-container": "^0.8.13",
     "pino": "^10.3.1"
   },
   "peerDependencies": {
@@ -41,7 +41,7 @@
     }
   },
   "devDependencies": {
-    "fastify": "^5.12.1",
+    "fastify": "^5.12.4",
     "@melchor629/tsconfigs": "*"
   }
 }
