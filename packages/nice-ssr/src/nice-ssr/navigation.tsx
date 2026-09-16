@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
   useTransition,
+  ViewTransition,
   type ComponentPropsWithRef,
   type FC,
   type MouseEventHandler,
@@ -107,8 +108,8 @@ type RouterContextActions = Readonly<{
   removeBlockerFn: (fn: BlockerFn) => void
   removeAllBlockerFns: () => void
 
-  changeUrl(newUrl: URL): void
-  loadPage(newUrl: URL, justFetch?: boolean): Promise<void>
+  changeUrl(newUrl: URL, viewTransition: NavigateOptions['viewTransition']): void
+  loadPage(newUrl: URL, justFetch?: boolean, viewTransition?: NavigateOptions['viewTransition']): Promise<void>
 }>
 
 export type SsrRouteAsset = Readonly<{
@@ -182,7 +183,7 @@ const loadPage = async (store: RouterContextActions, newUrl: URL, justFetch = fa
   return renderPage(data.c.pathname, data.t, data.p)
 }
 
-const trySmoothNavigation = async (actions: RouterContextActions, newUrl: URL) => {
+const trySmoothNavigation = async (actions: RouterContextActions, newUrl: URL, viewTransition: NavigateOptions['viewTransition']) => {
   if (newUrl.pathname !== actions.getState().pathname) {
     try {
       const { promise: blockerResult, resolve } = Promise.withResolvers<'block' | 'proceed'>()
@@ -193,13 +194,13 @@ const trySmoothNavigation = async (actions: RouterContextActions, newUrl: URL) =
         return 'block'
       }
       resolve('proceed')
-      await actions.loadPage(newUrl)
+      await actions.loadPage(newUrl, undefined, viewTransition)
     } catch {
       location.assign(newUrl)
       return 'block'
     }
   } else {
-    actions.changeUrl(newUrl)
+    actions.changeUrl(newUrl, viewTransition)
   }
   return 'proceed'
 }
@@ -300,13 +301,23 @@ export const useSearchParams = (): URLSearchParams =>
 export const useParams = <T extends Record<string, string>>(): T =>
   useRouterContextState(useCallback((state) => state.params as T, []))
 
+export type NavigateOptions = {
+  mode?: 'replace' | 'push'
+  viewTransition?: boolean | string
+}
+
+export type NavigateFn = (
+  path: string | { pathname?: string, searchParams?: URLSearchParams },
+  options?: NavigateOptions,
+) => void
+
 /**
  * Gets a function that navigates the page to the new path.
  * @returns A function to navigate in the app.
  */
-export const useNavigate = (): (path: string | { pathname?: string, searchParams?: URLSearchParams }, mode?: 'replace' | 'push') => void => {
+export const useNavigate = (): NavigateFn => {
   const { actions } = useRouterContext()
-  return useMemo(() => (path, mode = 'push') => {
+  return useMemo<NavigateFn>(() => (path, { mode = 'push', viewTransition = false } = {}) => {
     const { url } = actions.getState()
     const { origin } = url
     if (typeof path === 'string') {
@@ -321,7 +332,7 @@ export const useNavigate = (): (path: string | { pathname?: string, searchParams
     if (import.meta.env.SSR) {
       redirect(newUrl.toString())
     }
-    trySmoothNavigation(actions, newUrl)
+    trySmoothNavigation(actions, newUrl, viewTransition)
       .then((result) => {
         if (result === 'proceed') {
           navigation.navigate(newUrl, { info: ssrTypeSymbol, history: mode })
@@ -359,18 +370,21 @@ export type LinkProps = Readonly<Omit<ComponentPropsWithRef<'a'>, 'href'> & {
   /**
    * The path to navigate to. Only absolute paths are supported.
    */
-  to: string | { pathname?: string, searchParams?: URLSearchParams, mode?: 'push' | 'replace' }
-}>
+  to: string | {
+    pathname?: string
+    searchParams?: URLSearchParams
+  }
+} & NavigateOptions>
 
-export const Link: FC<LinkProps> = ({ children, onClick, to, ...props }: LinkProps) => {
+export const Link: FC<LinkProps> = ({ children, mode = 'push', onClick, to, viewTransition = false, ...props }: LinkProps) => {
   const navigate = useNavigate()
   const href = useHref(to)
 
   const improvedClick = useCallback<MouseEventHandler<HTMLAnchorElement>>((e) => {
     e.preventDefault()
-    navigate(to, typeof to === 'object' ? to.mode : 'push')
+    navigate(to, { mode, viewTransition })
     onClick?.(e)
-  }, [to, onClick, navigate])
+  }, [navigate, to, mode, viewTransition, onClick])
 
   return (
     <a
@@ -437,6 +451,7 @@ export function SsrRouterProvider({ initialPage, initialValue }: Readonly<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   })), [])
   const [loadPagePromise, setLoadPagePromise] = useState<Promise<ReactNode> | null>(null)
+  const [viewTransition, setViewTransition] = useState<NonNullable<NavigateOptions['viewTransition']>>('none')
   const [isTransitioning, startTransition] = useTransition()
 
   const actions = useMemo((): RouterContextActions => ({
@@ -455,11 +470,13 @@ export function SsrRouterProvider({ initialPage, initialValue }: Readonly<{
           }
         : {}
     }),
-    changeUrl(newUrl) {
+    changeUrl(newUrl, viewTransition) {
+      if (viewTransition != null) setViewTransition(viewTransition)
       startTransition(() => store.setState({ url: newUrl }))
     },
-    async loadPage(newUrl, justFetch = false) {
+    async loadPage(newUrl, justFetch = false, viewTransition) {
       const pagePromise = loadPage(this, newUrl, justFetch)
+      if (viewTransition != null) setViewTransition(viewTransition)
       startTransition(() => {
         store.setState({ state: 'navigating' })
         setLoadPagePromise(pagePromise)
@@ -483,7 +500,7 @@ export function SsrRouterProvider({ initialPage, initialValue }: Readonly<{
       const newUrl = new URL(e.destination.url, location.origin)
       e.intercept({
         async handler() {
-          await trySmoothNavigation(actions, newUrl)
+          await trySmoothNavigation(actions, newUrl, e.navigationType === 'traverse' ? undefined : false)
             .then((result) => {
               if (result === 'proceed') e.scroll()
               else e.preventDefault()
@@ -508,7 +525,9 @@ export function SsrRouterProvider({ initialPage, initialValue }: Readonly<{
       }}
     >
       <RootLayout>
-        {pageElement}
+        <ViewTransition default={viewTransition === true ? 'auto' : (viewTransition || 'none')}>
+          {pageElement}
+        </ViewTransition>
       </RootLayout>
     </SsrRouterContext>
   )

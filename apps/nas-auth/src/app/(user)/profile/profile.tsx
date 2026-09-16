@@ -7,6 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
+  ViewTransition,
 } from 'react'
 import { useUpdateSessionUser } from '#actions/mutations/update-session-user.ts'
 import { useUploadUserProfilePicture } from '#actions/mutations/upload-user-profile-picture.ts'
@@ -168,11 +169,13 @@ const Profile = ({ changePasswordMode }: { readonly changePasswordMode: boolean 
         {realProfileImageUrl
           ? (
             <p className="flex justify-center mb-2">
-              <img
-                src={realProfileImageUrl}
-                alt="profile"
-                className="w-36 h-36 rounded-full"
-              />
+              <ViewTransition name="user:profile">
+                <img
+                  src={realProfileImageUrl}
+                  alt="profile"
+                  className="w-36 h-36 rounded-full"
+                />
+              </ViewTransition>
             </p>
             )
           : (
@@ -216,7 +219,7 @@ const Profile = ({ changePasswordMode }: { readonly changePasswordMode: boolean 
 
       <div className="mt-6 mb-8 flex justify-between">
         <Button type="button" onClick={save} loading={updateSessionUser.isPending}>Save</Button>
-        <Link to="/">
+        <Link to="/" viewTransition>
           <Button variant="text" color="neutral">Cancel</Button>
         </Link>
       </div>

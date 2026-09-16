@@ -7,9 +7,9 @@ const Footer = () => (
   <div className="max-w-sm mx-auto text-text-secondary text-center select-none mb-4">
     nas-auth v
     {`${version} · `}
-    <Link to="/privacy">Privacy</Link>
+    <Link to="/privacy" viewTransition>Privacy</Link>
     {' · '}
-    <Link to="/">Home</Link>
+    <Link to="/" viewTransition>Home</Link>
   </div>
 )
 

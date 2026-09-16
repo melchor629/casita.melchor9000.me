@@ -1,7 +1,7 @@
 import { Link } from '@melchor629/nice-ssr'
 import { Button, Text } from '@melchor629/ui'
 import { Logout, PersonEdit, Settings } from '@melchor629/ui/icons'
-import { useMemo } from 'react'
+import { useMemo, ViewTransition } from 'react'
 import { usePublicUrl, useResolvedProfilePic } from '../../hooks'
 
 type ProfileProps = Readonly<{
@@ -38,11 +38,13 @@ const Profile = ({ role, user }: ProfileProps) => {
 
       {resolvedProfilePicUrl && (
         <p className="flex justify-center mb-2">
-          <img
-            src={resolvedProfilePicUrl}
-            alt={`${user.userName} profile`}
-            className="w-20 h-20 rounded-full"
-          />
+          <ViewTransition name="user:profile">
+            <img
+              src={resolvedProfilePicUrl}
+              alt={`${user.userName} profile`}
+              className="w-20 h-20 rounded-full"
+            />
+          </ViewTransition>
         </p>
       )}
       <p className="text-center">
@@ -55,7 +57,7 @@ const Profile = ({ role, user }: ProfileProps) => {
       </p>
 
       <div className="mt-6 flex justify-center flex-wrap gap-1.5">
-        <Link to="/profile">
+        <Link to="/profile" viewTransition>
           <Button icon={<PersonEdit />}>Edit profile</Button>
         </Link>
         {role === 'admin' && (
