@@ -1,4 +1,4 @@
-import { generateAuthenticationOptions } from '@simplewebauthn/server'
+import { generateAuthenticationOptions, type PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/server'
 import oidc from '../../oidc/oidc.ts'
 import type { Controller, GenericRoute } from '../models.ts'
 

@@ -1,5 +1,11 @@
 # nas-web
 
+## 0.16.6
+
+### Patch Changes
+
+- 2488907: Update deps
+
 ## 0.16.5
 
 ### Patch Changes

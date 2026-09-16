@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.6.4
+
+### Patch Changes
+
+- 78554c2: Add support for View Transitions
+
 ## 0.6.3
 
 ### Patch Changes

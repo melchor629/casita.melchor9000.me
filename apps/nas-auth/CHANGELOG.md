@@ -1,5 +1,16 @@
 # nas-auth
 
+## 3.3.7
+
+### Patch Changes
+
+- ba6b820: Support change password well-known path.
+- 2488907: Update deps
+- 78554c2: Add support for new algorithms for passkeys.
+- 78554c2: Add some view transitions between user pages.
+- Updated dependencies [78554c2]
+  - @melchor629/nice-ssr@0.6.4
+
 ## 3.3.6
 
 ### Patch Changes

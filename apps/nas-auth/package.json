@@ -1,7 +1,7 @@
 {
   "name": "nas-auth",
   "private": true,
-  "version": "3.3.6",
+  "version": "3.3.7",
   "description": "OIDC and Authorization server",
   "main": "src/index.ts",
   "type": "module",

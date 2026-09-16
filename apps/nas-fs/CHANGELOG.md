@@ -1,5 +1,11 @@
 # nas-fs
 
+## 0.12.33
+
+### Patch Changes
+
+- 2488907: Update deps
+
 ## 0.12.32
 
 ### Patch Changes

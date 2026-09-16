@@ -1,5 +1,13 @@
 # ledefault
 
+## 0.4.2
+
+### Patch Changes
+
+- 2488907: Update deps
+- Updated dependencies [78554c2]
+  - @melchor629/nice-ssr@0.6.4
+
 ## 0.4.1
 
 ### Patch Changes
