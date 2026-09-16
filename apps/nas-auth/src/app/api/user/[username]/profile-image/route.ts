@@ -94,18 +94,31 @@ export const GET = async (request: SsrRequest<{ username: string }>) => {
         .stream(Readable.toWeb(stream) as unknown as ReadableStream)
     }
 
-    const headers = new Headers(request.headers)
-    headers.delete('origin')
-    headers.delete('referer')
+    const headers = new Headers([
+      ['accept', request.headers.get('accept') ?? 'image/*'],
+      ['if-none-match', request.headers.get('if-none-match')],
+      ['if-none-since', request.headers.get('if-modified-since')],
+    ].filter((p): p is [string, string] => !!p[1]))
     const response = await fetch(user.profileImageUrl, {
       headers,
+      signal: request.signal,
     })
 
     if (!response.ok && response.status !== 304) {
+      request.nice.log.warn({ status: response.status }, 'Upstream responded with not ok status')
       return new Response(null, { status: 404 })
     }
 
-    return response
+    const res = SsrResponse.new()
+      .header('content-type', response.headers.get('content-type'))
+      .header('etag', response.headers.get('etag'))
+      .header('last-modified', response.headers.get('last-modified'))
+      .header('cache-control', response.headers.get('cache-control') ?? 'public max-age=86400')
+      .header('expires', response.headers.get('expires') ?? new Date(Date.now() + 86400).toUTCString())
+      .header('age', response.headers.get('age'))
+      .status(response.status)
+    if (response.body) return res.stream(response.body)
+    return res.empty()
   } catch (err) {
     request.nice.log.warn({ err }, 'Could not retrieve user profile image')
     return new Response(null, { status: 500 })

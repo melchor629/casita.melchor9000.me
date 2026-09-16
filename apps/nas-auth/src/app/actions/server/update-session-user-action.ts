@@ -33,7 +33,7 @@ const updateSessionUserAction = async function updateSessionUserAction(request: 
     fieldsToUpdate.profileImageUrl = new URL(
       user.profileImageUrl,
       user.origin,
-    )
+    ).toString()
   }
 
   const updatedUser = await updateUser(session.accountId, fieldsToUpdate)

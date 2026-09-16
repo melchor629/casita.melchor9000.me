@@ -1,5 +1,11 @@
 # nas-auth
 
+## 3.3.9
+
+### Patch Changes
+
+- Fix filling URL manually when editing user is stored surrounded by ""
+
 ## 3.3.8
 
 ### Patch Changes
