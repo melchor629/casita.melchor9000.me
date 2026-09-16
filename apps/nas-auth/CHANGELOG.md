@@ -1,5 +1,11 @@
 # nas-auth
 
+## 3.3.8
+
+### Patch Changes
+
+- Fix external images for user profiles not being loaded properly
+
 ## 3.3.7
 
 ### Patch Changes

@@ -47,7 +47,7 @@ export const GET = async (request: SsrRequest<{ username: string }>) => {
           <?xml version="1.0" encoding="UTF-8" standalone="no"?>
           <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
             <rect x="0" y="0" width="256" height="256" fill="#ff8904" />
-            <text x="128" y="128" font-size="100" fill="#000" text-anchor="middle" alignment-baseline="central">${`${user.givenName?.slice(0, 1) ?? ''}${user.familyName?.slice(0, 1)}`.trim() || user.userName.slice(0, 2)}</text>
+            <text x="128" y="128" font-size="100" fill="#000" text-anchor="middle" alignment-baseline="central">${`${user.givenName?.slice(0, 1) ?? ''}${user.familyName?.slice(0, 1) ?? ''}`.trim() || user.userName.slice(0, 2)}</text>
           </svg>
         `.trim(), 'utf-8'))
     }
@@ -101,7 +101,7 @@ export const GET = async (request: SsrRequest<{ username: string }>) => {
       headers,
     })
 
-    if (!response.ok || response.status !== 304) {
+    if (!response.ok && response.status !== 304) {
       return new Response(null, { status: 404 })
     }
 
