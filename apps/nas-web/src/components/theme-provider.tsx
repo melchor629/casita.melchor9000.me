@@ -16,7 +16,9 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
   }, [preferDarkColorScheme, currentTheme])
 
   useLayoutEffect(() => {
-    document.documentElement.setAttribute('data-theme', aspect)
+    document.startViewTransition(() => {
+      document.documentElement.setAttribute('data-theme', aspect)
+    })
   }, [aspect])
 
   return children

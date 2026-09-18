@@ -1,19 +1,16 @@
-import { useLayoutEffect, useMemo, useState } from 'react'
+import { useSyncExternalStore, useMemo, useCallback } from 'react'
 
 const useMatchMediaQuery = (query: string) => {
-  const [, forceRender] = useState(0)
   const mediaQueryList = useMemo(() => window.matchMedia(query), [query])
 
-  useLayoutEffect(() => {
-    const handler = () => forceRender((r) => r + 1)
-
-    mediaQueryList.addEventListener('change', handler, false)
-    return () => {
-      mediaQueryList.removeEventListener('change', handler, false)
-    }
+  const subscribe = useCallback((callback: () => void) => {
+    mediaQueryList.addEventListener('change', callback)
+    return () => mediaQueryList.removeEventListener('change', callback)
   }, [mediaQueryList])
 
-  return mediaQueryList.matches
+  const getSnapshot = useCallback(() => mediaQueryList.matches, [mediaQueryList])
+
+  return useSyncExternalStore(subscribe, getSnapshot)
 }
 
 export default useMatchMediaQuery

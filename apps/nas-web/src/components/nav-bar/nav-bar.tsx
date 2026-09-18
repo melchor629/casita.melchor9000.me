@@ -106,14 +106,14 @@ const NavBar = memo(() => {
         </div>
         <div className="flex gap-2 items-center">
           <div
-            className="hidden md:inline text-center text-muted select-none cursor-pointer mr-2"
+            className="hidden md:inline-flex text-center text-muted select-none cursor-pointer mr-2"
             role="button"
             onClick={openAuth}
             onKeyDown={openAuth2}
             tabIndex={0}
           >
             {!tokenInfo.picture && <span role="img" aria-label="Saluting hand">👋</span>}
-            {tokenInfo.picture && <img alt="User profile" src={tokenInfo.picture} className="inline-block size-4 rounded-full" />}
+            {tokenInfo.picture && <img alt="User profile" src={tokenInfo.picture} className="inline-block size-6 rounded-full" />}
             <span>
               &nbsp;&nbsp;
               {tokenInfo.displayName || tokenInfo.userName}
