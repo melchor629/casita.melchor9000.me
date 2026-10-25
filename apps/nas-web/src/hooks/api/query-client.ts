@@ -20,6 +20,8 @@ const queryClient = new QueryClient({
 export const getApiClient = () =>
   queryClient.getQueryData<ApiClient>(['api-client'])!
 
+const noop = () => {}
+
 type QueryOptions<
   TQueryKey extends QueryKey = QueryKey,
   TData = unknown,
@@ -39,9 +41,9 @@ export const makeQuery = <
   fetch: (...params: TParams) => Promise<TData>,
   prefetch: (...params: TParams) => Promise<void>,
 }> => ({
-    fetch: (...params) => queryClient.fetchQuery(fn(...params)),
+    fetch: (...params) => queryClient.query(fn(...params)),
     options: (...params) => fn(...params) as QueryOptions<DataTag<TQueryKey, TData, TError>, TData, TError>,
-    prefetch: (...params) => queryClient.prefetchQuery(fn(...params)),
+    prefetch: (...params) => queryClient.query(fn(...params)).then(noop).catch(noop),
     useHook: (...params) => useSuspenseQuery(useMemo(() => fn(...params), [params])),
   })
 

@@ -173,10 +173,11 @@ type Mutable<T> = (
       : T
 )
 
-export type EntryRef = Readonly<
-  | { type: 'basic' | 'intermediate', chapter: number, word?: string }
-  | { type: 'url', url: string | URL, name: string }
->
+type DictEntryRef = Readonly<{ type: 'basic' | 'intermediate', chapter: number, word?: string }>
+type UrlEntryRef = Readonly<{ type: 'url', url: string | URL, name: string }>
+export type EntryRef =
+  | DictEntryRef
+  | UrlEntryRef
 
 export type BaseDictionaryEntry<TType extends string = string> = Readonly<{
   type: TType
@@ -192,8 +193,8 @@ export type WordDictionaryEntry<TType extends string = string> = BaseDictionaryE
   pronuntiation?: string
 }>
 
-export type NounDictionaryEntry = WordDictionaryEntry<'noun'>
-export type MarkerDictionaryEntry = BaseDictionaryEntry<'marker'>
+export type NounDictionaryEntry = WordDictionaryEntry<'noun' | 'interjection' | 'adverb'>
+export type MarkerDictionaryEntry = BaseDictionaryEntry<'marker' | 'particle'>
 export type PhraseDictionaryEntry = BaseDictionaryEntry<'phrase'>
 export type InterrogativeDictionaryEntry = WordDictionaryEntry<'interrogative'>
 export type NaAdjectiveDictionaryEntry = WordDictionaryEntry<'na-adj'>
@@ -230,7 +231,7 @@ export type AdjectiveDictionaryEntry = WordDictionaryEntry<'adjective'> & Readon
 }>
 
 export type DemonstrativeDictionaryEntry = WordDictionaryEntry<'demonstrative'> & Readonly<{
-  actsAs: 'noun' | 'adjective'
+  actsAs: 'noun' | 'adjective' | 'adverb'
   forms: Readonly<{
     k: readonly [jp: string, sp: string]
     s: readonly [jp: string, sp: string]
@@ -254,6 +255,7 @@ export type InformalVerbDictionaryEntry = WordDictionaryEntry<'ichidan-verb' | '
     wantTo: string
     formal: Omit<BasicVerbDictionaryEntry['forms'], 'te' | 'tai'>
   }>
+  mode?: 'transitive' | 'intransitive'
 }>
 
 export type KanjiEntry = BaseDictionaryEntry<'kanji'> & Readonly<{
@@ -277,3 +279,23 @@ export type DictionaryEntry =
 export type MutDictionaryEntry = Mutable<DictionaryEntry>
 
 export type VocabularyComponentProps<T extends DictionaryEntry = DictionaryEntry> = { readonly result: T }
+
+type Yamlify<T extends Record<string, unknown>> = Omit<T, 'level' | 'chapter' | 'forms'> & (
+  T extends { forms: infer F }
+    ? { forms?: Partial<F extends { formal: Record<string, unknown> } ? Omit<F, 'formal'> & { formal: string | F['formal'] } : F> }
+    : Record<string, never>
+)
+export type IntermediateDictionaryEntry =
+  | Yamlify<NounDictionaryEntry>
+  | Yamlify<MarkerDictionaryEntry>
+  | Yamlify<PhraseDictionaryEntry>
+  | Yamlify<InterrogativeDictionaryEntry>
+  | Yamlify<NaAdjectiveDictionaryEntry>
+  | Yamlify<NoAdjectiveDictionaryEntry>
+  | Yamlify<BasicVerbDictionaryEntry>
+  | Yamlify<AdjectiveDictionaryEntry>
+  | Yamlify<DemonstrativeDictionaryEntry>
+  | Yamlify<InformalVerbDictionaryEntry>
+  | Yamlify<KanjiEntry>
+
+export type IntermediateDictionary = Record<`${number}`, IntermediateDictionaryEntry[]>

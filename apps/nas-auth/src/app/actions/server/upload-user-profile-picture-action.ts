@@ -2,7 +2,6 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { PageLoaderContext } from '@melchor629/nice-ssr'
 import { nanoid } from 'nanoid'
-// eslint-disable-next-line import-x/no-named-as-default
 import sharp from 'sharp'
 import { profileImagesPath } from '../../../config.ts'
 import { getSession } from './get-session-action'

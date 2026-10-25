@@ -21,14 +21,14 @@
     "check": "tsc -p . --noEmit"
   },
   "dependencies": {
-    "fastify-plugin": "^6.0.0"
+    "fastify-plugin": "^6.0.1"
   },
   "peerDependencies": {
-    "@fastify/otel": "^0.21.0",
+    "@fastify/otel": "^0.21.3",
     "@opentelemetry/api": "^1.0.0",
-    "fastify": "^5.12.5",
+    "fastify": "^5.12.7",
     "fresh": "^0.5.0",
-    "jose": "^6.2.12"
+    "jose": "^6.2.13"
   },
   "peerDependenciesMeta": {
     "@fastify/otel": {
@@ -45,6 +45,6 @@
     "@melchor629/tsconfigs": "*",
     "@types/fresh": "^0.5.0",
     "ioredis": "^6.0.0",
-    "redis": "^6.2.1"
+    "redis": "^6.3.0"
   }
 }
