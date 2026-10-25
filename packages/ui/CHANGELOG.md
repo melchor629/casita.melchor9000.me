@@ -1,5 +1,11 @@
 # @melchor629/ui
 
+## 0.0.5
+
+### Patch Changes
+
+- 2fdf989: Update deps
+
 ## 0.0.4
 
 ### Patch Changes

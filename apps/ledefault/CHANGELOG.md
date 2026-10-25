@@ -1,5 +1,16 @@
 # ledefault
 
+## 0.4.3
+
+### Patch Changes
+
+- 2fdf989: Update deps
+- Updated dependencies [2fdf989]
+  - @melchor629/fastify-infra@0.2.4
+  - @melchor629/infra@0.1.5
+  - @melchor629/nice-ssr@0.6.5
+  - @melchor629/ui@0.0.5
+
 ## 0.4.2
 
 ### Patch Changes

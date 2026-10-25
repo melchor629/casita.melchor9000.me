@@ -1,5 +1,11 @@
 # @melchor629/infra
 
+## 0.1.5
+
+### Patch Changes
+
+- 2fdf989: Update deps
+
 ## 0.1.4
 
 ### Patch Changes

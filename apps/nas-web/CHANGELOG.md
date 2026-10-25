@@ -1,5 +1,16 @@
 # nas-web
 
+## 0.16.7
+
+### Patch Changes
+
+- 0b8476f: Rework hook to use better suited react apis.
+- 2fdf989: Update deps
+- 0b8476f: Fix profile icon displacement
+- 0b8476f: Add transition when changing theme.
+- Updated dependencies [2fdf989]
+  - @melchor629/ui@0.0.5
+
 ## 0.16.6
 
 ### Patch Changes

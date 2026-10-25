@@ -1,5 +1,11 @@
 # @melchor629/fastify-infra
 
+## 0.2.4
+
+### Patch Changes
+
+- 2fdf989: Update deps
+
 ## 0.2.3
 
 ### Patch Changes

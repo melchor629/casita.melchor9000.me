@@ -1,5 +1,17 @@
 # nas-auth
 
+## 3.3.10
+
+### Patch Changes
+
+- 2fdf989: Update deps
+- Updated dependencies [2fdf989]
+  - @melchor629/fastify-infra@0.2.4
+  - @melchor629/infra@0.1.5
+  - @melchor629/nice-ssr@0.6.5
+  - @melchor629/orm-nas-auth@0.1.4
+  - @melchor629/ui@0.0.5
+
 ## 3.3.9
 
 ### Patch Changes

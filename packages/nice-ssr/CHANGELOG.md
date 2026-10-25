@@ -1,5 +1,11 @@
 # @melchor629/nice-ssr
 
+## 0.6.5
+
+### Patch Changes
+
+- 2fdf989: Update deps
+
 ## 0.6.4
 
 ### Patch Changes
