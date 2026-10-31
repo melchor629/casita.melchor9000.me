@@ -58,7 +58,7 @@ const createLogger = (service: string, logLevel?: LevelWithSilentOrString) =>
     },
     transport: process.env.NODE_ENV !== 'production'
       ? {
-          target: 'pino-pretty',
+          target: import.meta.resolve('pino-pretty'),
           options: {
             colorize: true,
             ignore: 'pid,hostname',

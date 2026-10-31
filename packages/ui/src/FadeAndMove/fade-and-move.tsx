@@ -58,7 +58,7 @@ export default function FadeAndMove({
     <div
       {...props}
       className={clsx(
-        'visible translate-y-0 opacity-100 scale-100 transition-all duration-200',
+        'visible translate-y-0 opacity-100 scale-100 transition-all duration-300 aria-hidden:duration-150',
         'aria-hidden:invisible aria-hidden:translate-y-4 aria-hidden:opacity-0 aria-hidden:blur-sm aria-hidden:scale-[97%]',
         (!show && animationFinished) && 'pointer-events-none',
         className,

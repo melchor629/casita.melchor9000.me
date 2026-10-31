@@ -3,7 +3,7 @@ import type { Session } from 'fastify'
 import { fastifyPlugin } from 'fastify-plugin'
 import { nanoid } from 'nanoid'
 import type { RedisClientType } from 'redis'
-import { redisPrefix, sessionSignKey } from '../config'
+import { redisPrefix, sessionSignKey } from '../config.ts'
 import client from '../redis.ts'
 
 class RedisStore implements SessionStore {
