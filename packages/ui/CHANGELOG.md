@@ -1,5 +1,11 @@
 # @melchor629/ui
 
+## 0.0.6
+
+### Patch Changes
+
+- 6ffb45b: fixes and updates
+
 ## 0.0.5
 
 ### Patch Changes

@@ -15,7 +15,7 @@
     },
     "apps/ledefault": {
       "name": "ledefault",
-      "version": "0.4.3",
+      "version": "0.4.4",
       "dependencies": {
         "@fastify/compress": "^9.3.0",
         "@fastify/helmet": "^13.2.0",
@@ -54,7 +54,7 @@
     },
     "apps/nas-auth": {
       "name": "nas-auth",
-      "version": "3.3.10",
+      "version": "3.3.11",
       "bin": {
         "nas-auth": "./src/index.ts",
         "nas-auth-generate-jwks": "./src/generate-keys.js",
@@ -221,7 +221,7 @@
     },
     "packages/infra": {
       "name": "@melchor629/infra",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "dependencies": {
         "@opentelemetry/context-async-hooks": "^2.11.0",
         "@opentelemetry/core": "^2.11.0",
@@ -299,7 +299,7 @@
     },
     "packages/ui": {
       "name": "@melchor629/ui",
-      "version": "0.0.5",
+      "version": "0.0.6",
       "dependencies": {
         "@fontsource-variable/material-symbols-outlined": "^5.3.9",
         "@fortawesome/fontawesome-free": "^7.3.1",

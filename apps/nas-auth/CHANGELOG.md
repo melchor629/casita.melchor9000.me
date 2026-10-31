@@ -1,5 +1,14 @@
 # nas-auth
 
+## 3.3.11
+
+### Patch Changes
+
+- 6ffb45b: fixes and updates
+- Updated dependencies [6ffb45b]
+  - @melchor629/infra@0.1.6
+  - @melchor629/ui@0.0.6
+
 ## 3.3.10
 
 ### Patch Changes

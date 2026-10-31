@@ -1,5 +1,11 @@
 # @melchor629/infra
 
+## 0.1.6
+
+### Patch Changes
+
+- 6ffb45b: fixes and updates
+
 ## 0.1.5
 
 ### Patch Changes
