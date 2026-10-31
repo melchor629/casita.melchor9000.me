@@ -70,7 +70,7 @@ const storageController: Controller<typeof schema> = async (req, reply) => {
     reply.header('Content-Type', 'application/x-tar')
     reply.header('Content-Disposition', `attachment; filename="${Path.basename(fullPath)}.tar"`)
 
-    tar.on('error', (e) => {
+    tar.on('error', (e: Error) => {
       logger.error(e, 'Error archiving/compressing folder', { path, op: 'download' })
       if (!reply.raw.headersSent) {
         reply.header('Content-Type', 'text/html')

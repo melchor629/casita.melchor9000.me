@@ -1,6 +1,5 @@
 import createLogger from '@melchor629/infra/logger'
 import runNasAuthMigrations from '@melchor629/orm-nas-auth/migrations'
-import { RedisStore } from 'connect-redis'
 import Fastify from 'fastify'
 import { nanoid } from 'nanoid'
 import {
@@ -8,8 +7,6 @@ import {
   isDebug,
   logLevel,
   publicUrl,
-  redisPrefix,
-  sessionSignKey,
 } from '../config.ts'
 import { fastifyInstrumentation } from '../instrumentation.ts'
 import client from '../redis.ts'
@@ -66,17 +63,7 @@ const createApp = async () => {
   })
 
   // session in cookies, stored in redis
-  await app.register(import('@fastify/session'), {
-    secret: sessionSignKey,
-    cookieName: 'auth_session',
-    cookie: { maxAge: 864e3 },
-    idGenerator: () => nanoid(),
-    store: new RedisStore({
-      client,
-      prefix: `${redisPrefix}:session:`,
-      ttl: 864e3,
-    }),
-  })
+  await app.register(import('./session.ts'))
 
   await app.register(import('./rate-limit.ts'))
 

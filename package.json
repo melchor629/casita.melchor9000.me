@@ -20,7 +20,7 @@
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
     "@melchor629/eslint-config": "^0.4.1",
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.6",
     "eslint": "^9.39.4",
     "typescript": "^6.0.3",
     "turbo": "^2.11.10"

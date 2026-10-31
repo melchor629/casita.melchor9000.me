@@ -1,9 +1,10 @@
+import type { Stats } from 'node:fs'
 import { readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { SsrResponse, type SsrRequest } from '@melchor629/nice-ssr'
 import { staticDirPath } from '@/config'
 
-const isFresh = (fileStat: Awaited<ReturnType<typeof stat>>, req: SsrRequest) => {
+const isFresh = (fileStat: Stats, req: SsrRequest) => {
   const ifModifiedSinceRaw = req.headers.get('if-modified-since')
   const mtimeWithoutMillis = fileStat.mtime.getTime() - fileStat.mtime.getMilliseconds()
   if (ifModifiedSinceRaw) {

@@ -22,7 +22,7 @@
   "devDependencies": {
     "@melchor629/tsconfigs": "*",
     "@types/pg": "^8.23.1",
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.6",
     "drizzle-kit": "^1.0.0-rc.5-ab785fc",
     "dotenv": "^18.0.9"
   }

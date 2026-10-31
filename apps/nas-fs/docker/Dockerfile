@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG NODE=node:24-slim
+ARG NODE=node:26-slim
 ARG BUN=oven/bun:1-alpine
 
 FROM --platform=$BUILDPLATFORM $BUN AS packages

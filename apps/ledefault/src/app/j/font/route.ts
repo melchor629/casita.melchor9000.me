@@ -4,10 +4,10 @@ export async function GET(req: Request) {
   })
   fontReq.headers.set('origin', 'https://furifont.antfu.me')
 
-  const fontRes = await fetch(fontReq);
+  const fontRes = await fetch(fontReq)
   if (fontRes.ok || fontRes.status === 304) {
     return fontRes
   }
 
-  return new Response(null, { status: 404 });
+  return new Response(null, { status: 404 })
 }

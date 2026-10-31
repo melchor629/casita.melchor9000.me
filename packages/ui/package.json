@@ -25,13 +25,13 @@
     "@fontsource-variable/material-symbols-outlined": "^5.3.9",
     "@fortawesome/fontawesome-free": "^7.3.1",
     "clsx": "^2.1.1",
-    "tailwind-variants": "^3.3.1"
+    "tailwind-variants": "^4.0.1"
   },
   "peerDependencies": {
     "@floating-ui/react": "^0.27.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "react-router": "^8.5.0"
+    "react-router": "^8.5.1"
   },
   "peerDependenciesMeta": {
     "@floating-ui/react": {
@@ -43,21 +43,21 @@
   },
   "devDependencies": {
     "@melchor629/tsconfigs": "*",
-    "@storybook/addon-a11y": "^10.6.3",
-    "@storybook/addon-docs": "^10.6.3",
-    "@storybook/addon-themes": "^10.6.3",
-    "@storybook/addon-vitest": "^10.6.3",
-    "@storybook/react-vite": "^10.6.3",
+    "@storybook/addon-a11y": "^10.6.5",
+    "@storybook/addon-docs": "^10.6.5",
+    "@storybook/addon-themes": "^10.6.5",
+    "@storybook/addon-vitest": "^10.6.5",
+    "@storybook/react-vite": "^10.6.5",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react-dom": "^19.3.0",
     "@types/react": "^19.3.0",
-    "@vitest/browser-playwright": "^4.1.12",
-    "@vitest/coverage-v8": "^4.1.12",
-    "eslint-plugin-storybook": "^10.6.3",
+    "@vitest/browser-playwright": "^5.0.5",
+    "@vitest/coverage-v8": "^5.0.5",
+    "eslint-plugin-storybook": "^10.6.5",
     "playwright": "^1.64.1",
-    "storybook": "^10.6.3",
+    "storybook": "^10.6.5",
     "tailwindcss": "^4.3.3",
     "vite": "^8.3.5",
-    "vitest": "^4.1.12"
+    "vitest": "^5.0.5"
   }
 }

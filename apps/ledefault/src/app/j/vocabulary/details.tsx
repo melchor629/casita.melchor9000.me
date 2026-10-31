@@ -22,7 +22,7 @@ const BasicDetails = ({ result }: VocabularyComponentProps) => (
   </span>
 )
 
-export const JP_UNICODE_RANGE = /[\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}]+/ug
+export const JP_UNICODE_RANGE = /[\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}]+/gu
 const mdOptions: MarkdownToJSX.Options = {
   disableAutoLink: true,
   wrapper: 'div',
@@ -45,19 +45,24 @@ const mdOptions: MarkdownToJSX.Options = {
   },
   renderRule(next, node, renderChildren, state) {
     if (node.type === RuleType.text && !state.inAnchor) {
-      const matches = node.text.matchAll(JP_UNICODE_RANGE).toArray();
-      if (matches.length === 0) return node.text;
-      return <>{matches
-        .flatMap((match, i) => {
-          const prevMatch = matches[i - 1];
-          const startIndex = prevMatch ? prevMatch.index + prevMatch[0].length : 0;
-          return [
-            node.text.slice(startIndex, match.index),
-            <span className="jp-furi" key={match[0]+i}>{match[0]}</span>,
-          ];
-        })
-        .concat(node.text.slice(matches.at(-1)!.index + matches.at(-1)![0].length))
-        .filter((t) => !!t)}</>
+      const matches = node.text.matchAll(JP_UNICODE_RANGE).toArray()
+      if (matches.length === 0) return node.text
+      return (
+        <>
+          {matches
+            .flatMap((match, i) => {
+              const prevMatch = matches[i - 1]
+              const startIndex = prevMatch ? prevMatch.index + prevMatch[0].length : 0
+              return [
+                node.text.slice(startIndex, match.index),
+                // eslint-disable-next-line react/no-array-index-key
+                <span className="jp-furi" key={match[0] + i}>{match[0]}</span>,
+              ]
+            })
+            .concat(node.text.slice(matches.at(-1)!.index + matches.at(-1)![0].length))
+            .filter((t) => !!t)}
+        </>
+      )
     }
 
     if (node.type === RuleType.link && node.target?.startsWith('^')) {
