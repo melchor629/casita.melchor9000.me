@@ -36,8 +36,11 @@ const InformalVerbTable = ({ result }: VocabularyComponentProps<InformalVerbDict
       </tr>
       <tr>
         <th>te</th>
-        <td colSpan={2}>
-          <JapaneseWithRomaji value={result.forms.te} />
+        <td>
+          <JapaneseWithRomaji value={result.forms.te.positive} />
+        </td>
+        <td>
+          <JapaneseWithRomaji value={result.forms.te.negative} />
         </td>
       </tr>
       <tr>

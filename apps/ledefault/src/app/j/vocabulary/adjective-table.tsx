@@ -40,6 +40,12 @@ const AdjectiveTable = ({ result }: VocabularyComponentProps<AdjectiveDictionary
           <JapaneseWithRomaji value={result.forms.te} />
         </td>
       </tr>
+      <tr>
+        <th>garu</th>
+        <td colSpan={2}>
+          <JapaneseWithRomaji value={result.forms.garu} />
+        </td>
+      </tr>
     </tbody>
   </NaisTable>
 )

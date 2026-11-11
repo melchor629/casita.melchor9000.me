@@ -99,8 +99,10 @@ function processVocabEntry(entry: MutDictionaryEntry, level: 'basic' | 'intermed
     entry.forms.past.positive ??= `${root}た`
     entry.forms.past.negative ??= `${root}なかった`
     entry.forms.letsDo ??= `${root}よう`
-    entry.forms.te ??= `${root}て`
-    entry.forms.wantTo ??= `${root}たい`
+    entry.forms.te ??= {} as never
+    entry.forms.te.positive ??= `${root}て`
+    entry.forms.te.negative ??= `${entry.forms.present.negative}で`
+    entry.forms.wantTo ??= `${entry.forms.present.negative}たい`
     entry.forms.formal = {
       present: {
         positive: `${root}ます`,
@@ -126,7 +128,9 @@ function processVocabEntry(entry: MutDictionaryEntry, level: 'basic' | 'intermed
     entry.forms.past.positive ??= `${root}${past}`
     entry.forms.past.negative ??= `${root}${negative}なかった`
     entry.forms.letsDo ??= `${root}${mashou}う`
-    entry.forms.te ??= `${root}${te}`
+    entry.forms.te ??= {} as never
+    entry.forms.te.positive ??= `${root}${te}`
+    entry.forms.te.negative ??= `${entry.forms.present.negative}で`
     entry.forms.wantTo ??= `${root}${masu}たい`
     entry.forms.formal = {
       present: {
@@ -166,6 +170,7 @@ function processVocabEntry(entry: MutDictionaryEntry, level: 'basic' | 'intermed
     entry.forms.past.positive ??= `${root}かった`
     entry.forms.past.negative ??= `${root}くなかった`
     entry.forms.te ??= `${root}くて`
+    entry.forms.garu ??= `${root}がる`
   }
 
   entry.chapter ??= Number(chapter)

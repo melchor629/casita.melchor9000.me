@@ -227,6 +227,7 @@ export type AdjectiveDictionaryEntry = WordDictionaryEntry<'adjective'> & Readon
       readonly negative: string
     }
     te: string
+    garu: string
   }>
 }>
 
@@ -250,7 +251,10 @@ export type InformalVerbDictionaryEntry = WordDictionaryEntry<'ichidan-verb' | '
       readonly positive: string
       readonly negative: string
     }
-    te: string
+    te: {
+      readonly positive: string
+      readonly negative: string
+    }
     letsDo: string
     wantTo: string
     formal: Omit<BasicVerbDictionaryEntry['forms'], 'te' | 'tai'>
