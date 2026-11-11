@@ -23,6 +23,6 @@
     "@melchor629/tsconfigs": "*",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^1.0.0-rc.5-ab785fc",
-    "dotenv": "^18.0.9"
+    "dotenv": "^18.0.10"
   }
 }
