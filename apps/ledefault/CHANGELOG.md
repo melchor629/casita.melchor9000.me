@@ -1,5 +1,19 @@
 # ledefault
 
+## 0.4.5
+
+### Patch Changes
+
+- 31ff0f2: Add new verb and adjective forms
+- 24a785d: Update deps
+- 0252372: Upgrade dependencies changing otel to v3
+- Updated dependencies [24a785d]
+- Updated dependencies [0252372]
+  - @melchor629/fastify-infra@0.2.5
+  - @melchor629/infra@0.1.7
+  - @melchor629/nice-ssr@0.6.6
+  - @melchor629/ui@0.0.7
+
 ## 0.4.4
 
 ### Patch Changes

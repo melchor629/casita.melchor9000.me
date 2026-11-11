@@ -1,5 +1,14 @@
 # @melchor629/orm-nas-auth
 
+## 0.1.5
+
+### Patch Changes
+
+- 24a785d: Update deps
+- Updated dependencies [24a785d]
+- Updated dependencies [0252372]
+  - @melchor629/infra@0.1.7
+
 ## 0.1.4
 
 ### Patch Changes

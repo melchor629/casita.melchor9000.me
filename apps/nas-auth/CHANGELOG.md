@@ -1,5 +1,19 @@
 # nas-auth
 
+## 3.3.12
+
+### Patch Changes
+
+- 24a785d: Update deps
+- 0252372: Upgrade dependencies changing otel to v3
+- Updated dependencies [24a785d]
+- Updated dependencies [0252372]
+  - @melchor629/fastify-infra@0.2.5
+  - @melchor629/infra@0.1.7
+  - @melchor629/nice-ssr@0.6.6
+  - @melchor629/orm-nas-auth@0.1.5
+  - @melchor629/ui@0.0.7
+
 ## 3.3.11
 
 ### Patch Changes

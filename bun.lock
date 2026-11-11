@@ -15,7 +15,7 @@
     },
     "apps/ledefault": {
       "name": "ledefault",
-      "version": "0.4.4",
+      "version": "0.4.5",
       "dependencies": {
         "@fastify/compress": "^9.3.0",
         "@fastify/helmet": "^13.2.0",
@@ -54,7 +54,7 @@
     },
     "apps/nas-auth": {
       "name": "nas-auth",
-      "version": "3.3.11",
+      "version": "3.3.12",
       "bin": {
         "nas-auth": "./src/index.ts",
         "nas-auth-generate-jwks": "./src/generate-keys.js",
@@ -112,7 +112,7 @@
     },
     "apps/nas-fs": {
       "name": "nas-fs",
-      "version": "0.12.34",
+      "version": "0.12.35",
       "dependencies": {
         "@fastify/multipart": "^10.1.8",
         "@fastify/otel": "^1.0.1",
@@ -156,7 +156,7 @@
     },
     "apps/nas-web": {
       "name": "nas-web",
-      "version": "0.16.7",
+      "version": "0.16.8",
       "dependencies": {
         "@dr.pogodin/react-helmet": "^3.3.2",
         "@floating-ui/react": "^0.27.20",
@@ -196,7 +196,7 @@
     },
     "packages/fastify-infra": {
       "name": "@melchor629/fastify-infra",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "dependencies": {
         "fastify-plugin": "^6.0.1",
       },
@@ -221,7 +221,7 @@
     },
     "packages/infra": {
       "name": "@melchor629/infra",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "dependencies": {
         "@opentelemetry/context-async-hooks": "^2.12.1",
         "@opentelemetry/core": "^2.12.1",
@@ -252,7 +252,7 @@
     },
     "packages/nice-ssr": {
       "name": "@melchor629/nice-ssr",
-      "version": "0.6.5",
+      "version": "0.6.6",
       "dependencies": {
         "@fastify/static": "^10.1.10",
         "astring": "^1.9.0",
@@ -280,7 +280,7 @@
     },
     "packages/orm-nas-auth": {
       "name": "@melchor629/orm-nas-auth",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "dependencies": {
         "@melchor629/infra": "*",
         "drizzle-orm": "^1.0.0-rc.5-ab785fc",
@@ -299,7 +299,7 @@
     },
     "packages/ui": {
       "name": "@melchor629/ui",
-      "version": "0.0.6",
+      "version": "0.0.7",
       "dependencies": {
         "@fontsource-variable/material-symbols-outlined": "^5.3.9",
         "@fortawesome/fontawesome-free": "^7.3.1",

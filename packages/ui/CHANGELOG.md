@@ -1,5 +1,12 @@
 # @melchor629/ui
 
+## 0.0.7
+
+### Patch Changes
+
+- 24a785d: Update deps
+- 0252372: Upgrade dependencies changing otel to v3
+
 ## 0.0.6
 
 ### Patch Changes

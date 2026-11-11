@@ -1,5 +1,15 @@
 # nas-web
 
+## 0.16.8
+
+### Patch Changes
+
+- 24a785d: Update deps
+- 0252372: Upgrade dependencies changing otel to v3
+- Updated dependencies [24a785d]
+- Updated dependencies [0252372]
+  - @melchor629/ui@0.0.7
+
 ## 0.16.7
 
 ### Patch Changes

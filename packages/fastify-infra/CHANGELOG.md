@@ -1,5 +1,12 @@
 # @melchor629/fastify-infra
 
+## 0.2.5
+
+### Patch Changes
+
+- 24a785d: Update deps
+- 0252372: Upgrade dependencies changing otel to v3
+
 ## 0.2.4
 
 ### Patch Changes

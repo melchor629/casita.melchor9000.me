@@ -1,5 +1,16 @@
 # nas-fs
 
+## 0.12.35
+
+### Patch Changes
+
+- 24a785d: Update deps
+- 0252372: Upgrade dependencies changing otel to v3
+- Updated dependencies [24a785d]
+- Updated dependencies [0252372]
+  - @melchor629/fastify-infra@0.2.5
+  - @melchor629/infra@0.1.7
+
 ## 0.12.34
 
 ### Patch Changes
