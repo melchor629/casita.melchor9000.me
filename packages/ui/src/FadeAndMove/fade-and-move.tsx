@@ -1,73 +1,25 @@
-import { useCallback, useState, type TransitionEvent, type ComponentPropsWithRef } from 'react'
+import type { ComponentPropsWithRef } from 'react'
+import Transition, { type TransitionImplementationBaseProps } from '../Transition'
 import { clsx } from '../utils'
 
-export type FadeAndMoveProps = Readonly<ComponentPropsWithRef<'div'> & {
-  show?: boolean
-  unmountWhenHidden?: boolean
-  onHidden?: () => void
-  onHide?: () => void
-  onShow?: () => void
-  onShowing?: () => void
-}>
+export type FadeAndMoveProps = Readonly<ComponentPropsWithRef<'div'> & TransitionImplementationBaseProps>
 
 export default function FadeAndMove({
   children,
   className,
-  onHidden,
-  onHide,
-  onShow,
-  onShowing,
-  onTransitionEnd,
-  onTransitionStart,
-  show,
-  unmountWhenHidden = false,
   ...props
 }: FadeAndMoveProps) {
-  const [animationFinished, setAnimationFinished] = useState(true)
-
-  const onTransitionEndWrapper = useCallback((e: TransitionEvent<HTMLDivElement>) => {
-    if (e.currentTarget === e.target) {
-      setAnimationFinished(true)
-      if (e.propertyName === 'opacity') {
-        if (show) {
-          onShowing?.()
-        } else {
-          onHidden?.()
-        }
-      }
-    }
-    onTransitionEnd?.(e)
-  }, [onHidden, onShowing, onTransitionEnd, show])
-
-  const onTransitionStartWrapper = useCallback((e: TransitionEvent<HTMLDivElement>) => {
-    if (e.currentTarget === e.target && e.nativeEvent.propertyName === 'opacity') {
-      if (show) {
-        onShow?.()
-      } else {
-        onHidden?.()
-      }
-    }
-    onTransitionStart?.(e)
-  }, [onHidden, onShow, onTransitionStart, show])
-
-  if (show && animationFinished) {
-    setAnimationFinished(false)
-  }
-
   return (
-    <div
+    <Transition
       {...props}
       className={clsx(
-        'visible translate-y-0 opacity-100 scale-100 transition-all duration-300 aria-hidden:duration-150',
-        'aria-hidden:invisible aria-hidden:translate-y-4 aria-hidden:opacity-0 aria-hidden:blur-sm aria-hidden:scale-[97%]',
-        (!show && animationFinished) && 'pointer-events-none',
+        'translate-y-0 opacity-100 scale-100',
+        'aria-hidden:translate-y-4 aria-hidden:opacity-0 aria-hidden:blur-sm aria-hidden:scale-[97%]',
         className,
       )}
-      onTransitionEnd={onTransitionEndWrapper}
-      onTransitionStart={onTransitionStartWrapper}
-      aria-hidden={!show}
+      transitionPropertyName="opacity"
     >
-      {(show || !unmountWhenHidden || !animationFinished) && children}
-    </div>
+      {children}
+    </Transition>
   )
 }

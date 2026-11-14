@@ -4,6 +4,7 @@ import React, {
 import Button from '../Button'
 import FadeAndMove from '../FadeAndMove'
 import Portal from '../Portal'
+import Text from '../Text'
 import { clsx } from '../utils'
 
 export type DialogProps = Readonly<{
@@ -13,7 +14,7 @@ export type DialogProps = Readonly<{
   className?: string
   children?: React.ReactNode
   buttons?: React.ReactNode[]
-  onClose: () => void
+  onClose: (reason: 'button' | 'escape' | 'backdrop') => void
   onCloseStart?: () => void
   onCloseEnd?: () => void
   portal?: boolean | HTMLElement
@@ -49,7 +50,7 @@ export default function Dialog({
 
   const onCloseImpl: React.MouseEventHandler<HTMLButtonElement> = useCallback((e) => {
     e.preventDefault()
-    onClose?.()
+    onClose('button')
   }, [onClose])
 
   const finalButtons = useMemo(() => [
@@ -59,12 +60,18 @@ export default function Dialog({
     ...(buttons || []),
   ], [buttons, onCloseImpl, closeLabel])
 
+  const onBackdropClick = useCallback((e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose('backdrop')
+    }
+  }, [onClose])
+
   useLayoutEffect(() => {
     const abort = new AbortController()
     if (element) {
       window.addEventListener('keyup', (ev) => {
         if (ev.key === 'Escape') {
-          onClose()
+          onClose('escape')
         }
       }, { signal: abort.signal, passive: true })
     }
@@ -94,20 +101,12 @@ export default function Dialog({
         id={`dialog-${id}`}
         show={show}
         role="presentation"
-        aria-hidden={!show ? 'true' : 'false'}
         ref={setElement}
-        onClick={useCallback((e: React.MouseEvent) => e.target === e.currentTarget && onClose(), [onClose])}
-        onTransitionStart={useCallback((e: React.SyntheticEvent) => {
-          if (e.currentTarget === e.target && !show) {
-            onCloseStart?.()
-          }
-        }, [show, onCloseStart])}
-        onTransitionEnd={useCallback((e: React.SyntheticEvent) => {
-          if (e.currentTarget === e.target && !show) {
-            onCloseEnd?.()
-          }
-        }, [show, onCloseEnd])}
+        onClick={onBackdropClick}
+        onHide={onCloseStart}
+        onHidden={onCloseEnd}
         unmountWhenHidden={unmountWhenHidden}
+        data-testid="dialog:backdrop"
       >
         <div
           className={clsx(
@@ -122,7 +121,7 @@ export default function Dialog({
         >
           <ContainerElement {...slotProps.container} className="flex flex-col grow min-w-0 min-h-0">
             <div className="px-5 pt-4 mb-4 select-none">
-              <h4 className="text-h4" id={`dialog-${id}-title`}>{title}</h4>
+              <Text size="h4" id={`dialog-${id}-title`}>{title}</Text>
             </div>
             <div className="px-5 overflow-y-auto shrink">{children}</div>
             <div className="flex justify-end gap-2 h-8 mt-5 mb-3 mx-3">{finalButtons}</div>
