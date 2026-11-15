@@ -1,6 +1,7 @@
+import Collapse from '@melchor629/ui/Collapse'
 import { ArrowUpward } from '@melchor629/ui/icons'
 import { clsx } from 'clsx'
-import { memo, useCallback, useRef, useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 import type { VocabularyComponentProps } from '../jp-utils'
 import AdjectiveTable from './adjective-table'
 import BasicVerbTable from './basic-verb-table'
@@ -19,34 +20,11 @@ const typesWithDetails = Object.freeze(['verb', 'demonstrative', 'adjective', 'i
  */
 const VocabularyResult = memo(function VocabularyResult({ result }: VocabularyComponentProps) {
   const [detailsOpen, setDetailsOpen] = useState(false)
-  const detailsDivRef = useRef<HTMLDivElement>(null)
   const hasDetails = result.details || typesWithDetails.includes(result.type) || result.refs != null
 
   const detailsButtonClick = useCallback(() => {
     setDetailsOpen((v) => !v)
-    const { current: detailsDiv } = detailsDivRef
-    if (!detailsDiv) {
-      return
-    }
-
-    const { height: currentHeight } = detailsDiv.getBoundingClientRect()
-    detailsDiv.getAnimations()[0]?.cancel()
-    if (!detailsOpen) {
-      const duration = Math.max(115, (detailsDiv.scrollHeight - currentHeight) / 5)
-      detailsDiv.animate([
-        { height: `${currentHeight}px` },
-        { height: `${detailsDiv.scrollHeight}px` },
-      ], { duration, fill: 'auto', easing: 'ease-in-out' })
-      detailsDiv.style.height = 'auto'
-    } else {
-      const duration = Math.max(115, currentHeight / 5)
-      detailsDiv.animate([
-        { height: `${currentHeight}px` },
-        { height: '0px' },
-      ], { duration, fill: 'auto', easing: 'ease-in-out' })
-      detailsDiv.style.height = '0px'
-    }
-  }, [detailsOpen])
+  }, [])
 
   return (
     <div
@@ -93,7 +71,9 @@ const VocabularyResult = memo(function VocabularyResult({ result }: VocabularyCo
         <div className="grow">
           <JapaneseWithRomaji
             value={result.value}
-            otherValue={'pronuntiation' in result ? result.pronuntiation : (result.type === 'kanji' ? `${result.onyomi}・${result.kunyomi}` : undefined)}
+            otherValue={'pronuntiation' in result && result.pronuntiation
+              ? result.pronuntiation
+              : (result.type === 'kanji' ? `${result.onyomi}・${result.kunyomi}` : undefined)}
           />
           <div className="uppercase text-xs opacity-75 select-none">
             {result.type}
@@ -107,7 +87,7 @@ const VocabularyResult = memo(function VocabularyResult({ result }: VocabularyCo
           {result.meaning}
         </div>
         {hasDetails && (
-          <div className="h-0 -mt-1 min-w-full overflow-hidden" ref={detailsDivRef}>
+          <Collapse className="-mt-1 min-w-full duration-500 aria-hidden:duration-500" show={detailsOpen}>
             <div className="py-1">
               {result.type === 'verb' && <BasicVerbTable result={result} />}
               {result.type === 'ichidan-verb' && <InformalVerbTable result={result} />}
@@ -119,7 +99,7 @@ const VocabularyResult = memo(function VocabularyResult({ result }: VocabularyCo
               {result.details && <Details result={result} />}
               {result.refs && <RefLinkStack result={result} />}
             </div>
-          </div>
+          </Collapse>
         )}
       </div>
     </div>

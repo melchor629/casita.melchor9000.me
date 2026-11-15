@@ -20,10 +20,11 @@ const RefLink = ({ refLink: ref }: { readonly refLink: EntryRef }) => {
   }, [ref])
   const vocabRefClasses = clsx(
     'px-2 py-1',
+    'text-text-secondary text-sm',
     'rounded-sm',
     'cursor-pointer',
     'transition-colors',
-    'hover:bg-text-main/15',
+    'hover:text-text-main hover:bg-text-main/15',
   )
   if (ref.type === 'basic') {
     return (
