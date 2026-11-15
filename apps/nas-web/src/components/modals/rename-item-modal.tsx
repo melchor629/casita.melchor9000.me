@@ -55,7 +55,7 @@ export default function RenameItemModal({
       id="rename-item"
       size="extra-large"
       title="Rename item"
-      onClose={onClose}
+      onClose={useCallback(() => onClose(), [onClose])}
       show={show}
       buttons={closeButton}
       closeLabel="Cancel"

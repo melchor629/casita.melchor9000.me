@@ -50,7 +50,7 @@ export default function DeleteItemModal({
       id="delete-item"
       size="large"
       title={title}
-      onClose={close}
+      onClose={useCallback(() => close(), [close])}
       show={show}
       buttons={[closeButton]}
       closeLabel="Cancel"
