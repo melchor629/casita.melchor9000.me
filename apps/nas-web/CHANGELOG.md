@@ -1,5 +1,11 @@
 # nas-web
 
+## 0.16.9
+
+### Patch Changes
+
+- UI updates
+
 ## 0.16.8
 
 ### Patch Changes

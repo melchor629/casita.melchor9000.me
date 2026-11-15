@@ -15,7 +15,7 @@
     },
     "apps/ledefault": {
       "name": "ledefault",
-      "version": "0.4.5",
+      "version": "0.4.6",
       "dependencies": {
         "@fastify/compress": "^9.3.0",
         "@fastify/helmet": "^13.2.0",
@@ -156,7 +156,7 @@
     },
     "apps/nas-web": {
       "name": "nas-web",
-      "version": "0.16.8",
+      "version": "0.16.9",
       "dependencies": {
         "@dr.pogodin/react-helmet": "^3.3.2",
         "@floating-ui/react": "^0.27.20",
