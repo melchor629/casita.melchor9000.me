@@ -22,7 +22,7 @@ const EditLoginDataDialog = ({ close, data, opened }: EditLoginDataDialogProps) 
       portal
       size="extra-large"
       show={opened}
-      onClose={close}
+      onClose={useCallback(() => close(), [close])}
       title="Login Data"
       buttons={[
         <Button key="save" onClick={useCallback(() => close(JSON.parse(dataAsJson || 'null') as Record<string, unknown> | null), [close, dataAsJson])}>

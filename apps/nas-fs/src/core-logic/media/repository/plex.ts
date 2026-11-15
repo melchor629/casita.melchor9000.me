@@ -80,7 +80,7 @@ const mapItem = (library: plex.Library, item: plex.LibraryContents['Metadata'][0
       summary: item.summary,
       thumbnail,
       title: item.title,
-      year: item.year,
+      year: item.year || 0,
     }
   }
 
@@ -94,7 +94,7 @@ const mapItem = (library: plex.Library, item: plex.LibraryContents['Metadata'][0
       summary: item.summary,
       thumbnail,
       title: item.title,
-      year: item.year,
+      year: item.year || 0,
     }
   }
 
@@ -107,7 +107,7 @@ const mapItem = (library: plex.Library, item: plex.LibraryContents['Metadata'][0
       summary: item.summary,
       thumbnail,
       title: item.title,
-      year: item.year,
+      year: item.year || 0,
     }
   }
 
