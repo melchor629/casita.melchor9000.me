@@ -1,5 +1,13 @@
 # @melchor629/ui
 
+## 0.0.8
+
+### Patch Changes
+
+- 34b0e16: Tweaks to components in japanese and hls
+- 34b0e16: Add PlayCircle icon
+- ea48d03: Add new transitions and tweak certain components to use the new components.
+
 ## 0.0.7
 
 ### Patch Changes
