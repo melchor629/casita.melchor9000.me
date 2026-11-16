@@ -3,64 +3,65 @@ import { clsx, type OverridableComponent, type OverridableComponentProps } from 
 
 type TransitionOverridableTypeMap = {
   props: {
-    show?: boolean
-    className: string
+    show?: boolean;
+    className: string;
     /**
      * CSS property name to track for during the transition.
      */
-    transitionPropertyName: string
+    transitionPropertyName: string;
     /**
      * Keeps the contents interactive when hidden. Useful for situation where
      * hidden does not completely hides the contents. When set, the value of
      * `unmountWhenHidden` will be ignored.
      */
-    keepInteractiveWhenHidden?: boolean
-    unmountWhenHidden?: boolean
-    onHidden?: () => void
-    onHide?: () => void
-    onShow?: () => void
-    onShowing?: () => void
-  }
-  defaultComponent: 'div'
+    keepInteractiveWhenHidden?: boolean;
+    unmountWhenHidden?: boolean;
+    onHidden?: () => void;
+    onHide?: () => void;
+    onShow?: () => void;
+    onShowing?: () => void;
+  };
+  defaultComponent: 'div';
 }
 
 export type TransitionImplementationBaseProps = {
   /**
    * Shows or hides the contents.
    */
-  show?: boolean
-  className?: string
+  show?: boolean;
+  className?: string;
   /**
    * When set, the contents will be unmounted from the tree if the element
    * is hidden and transition has been finished.
    */
-  unmountWhenHidden?: boolean
+  unmountWhenHidden?: boolean;
   /**
    * Callback called when the hide animation is finished, which means the
    * content is completely hidden. If `unmountWhenHidden` is set,
    * the contents will still be present until react re-renders the component.
    */
-  onHidden?: () => void
+  onHidden?: () => void;
   /**
    * Callback called when the hide animation starts. The contents are completely
    * hidden and the animation has just started.
    */
-  onHide?: () => void
+  onHide?: () => void;
   /**
    * Callback called when the show animation starts. The contents are hidden and
    * the animation has started. If `unmountWhenHidden` is set, the contents have
    * just been mounted.
    */
-  onShow?: () => void
+  onShow?: () => void;
   /**
    * Callback called when the show animation is finished. The contents are completely
    * visible.
    */
-  onShowing?: () => void
+  onShowing?: () => void;
 }
 
-export type TransitionProps<BaseElement extends ElementType = TransitionOverridableTypeMap['defaultComponent']> =
-  OverridableComponentProps<TransitionOverridableTypeMap, BaseElement>
+export type TransitionProps<
+  BaseElement extends ElementType = TransitionOverridableTypeMap['defaultComponent'],
+> = OverridableComponentProps<TransitionOverridableTypeMap, BaseElement>
 
 /**
  * Component that serves as a base for implementing transitions over the children.
@@ -93,30 +94,36 @@ const Transition: OverridableComponent<TransitionOverridableTypeMap> = ({
 }: TransitionProps) => {
   const [animationFinished, setAnimationFinished] = useState(true)
 
-  const onTransitionEndWrapper = useCallback((e: TransitionEvent<HTMLDivElement>) => {
-    if (e.currentTarget === e.target) {
-      setAnimationFinished(true)
-      if (e.propertyName === transitionPropertyName) {
-        if (show) {
-          onShowing?.()
-        } else {
-          onHidden?.()
+  const onTransitionEndWrapper = useCallback(
+    (e: TransitionEvent<HTMLDivElement>) => {
+      if (e.currentTarget === e.target) {
+        setAnimationFinished(true)
+        if (e.propertyName === transitionPropertyName) {
+          if (show) {
+            onShowing?.()
+          } else {
+            onHidden?.()
+          }
         }
       }
-    }
-    onTransitionEnd?.(e)
-  }, [onHidden, onShowing, onTransitionEnd, show, transitionPropertyName])
+      onTransitionEnd?.(e)
+    },
+    [onHidden, onShowing, onTransitionEnd, show, transitionPropertyName],
+  )
 
-  const onTransitionStartWrapper = useCallback((e: TransitionEvent<HTMLDivElement>) => {
-    if (e.currentTarget === e.target && e.nativeEvent.propertyName === transitionPropertyName) {
-      if (show) {
-        onShow?.()
-      } else {
-        onHide?.()
+  const onTransitionStartWrapper = useCallback(
+    (e: TransitionEvent<HTMLDivElement>) => {
+      if (e.currentTarget === e.target && e.nativeEvent.propertyName === transitionPropertyName) {
+        if (show) {
+          onShow?.()
+        } else {
+          onHide?.()
+        }
       }
-    }
-    onTransitionStart?.(e)
-  }, [onHide, onShow, onTransitionStart, show, transitionPropertyName])
+      onTransitionStart?.(e)
+    },
+    [onHide, onShow, onTransitionStart, show, transitionPropertyName],
+  )
 
   if (show && animationFinished) {
     setAnimationFinished(false)
@@ -129,7 +136,7 @@ const Transition: OverridableComponent<TransitionOverridableTypeMap> = ({
         'visible transition-all duration-300',
         'aria-hidden:duration-150',
         !keepInteractiveWhenHidden && 'aria-hidden:invisible',
-        (!show && animationFinished && !keepInteractiveWhenHidden) && 'pointer-events-none',
+        !show && animationFinished && !keepInteractiveWhenHidden && 'pointer-events-none',
         className,
       )}
       onTransitionEnd={onTransitionEndWrapper}

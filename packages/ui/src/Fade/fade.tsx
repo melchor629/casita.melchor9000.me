@@ -3,26 +3,20 @@ import Transition, { type TransitionImplementationBaseProps } from '../Transitio
 import { clsx, type OverridableComponent, type OverridableComponentProps } from '../utils'
 
 type FadeMap = {
-  props: TransitionImplementationBaseProps
-  defaultComponent: 'div'
+  props: TransitionImplementationBaseProps;
+  defaultComponent: 'div';
 }
 
-export type FadeProps<BaseElement extends ElementType = FadeMap['defaultComponent']> = OverridableComponentProps<FadeMap, BaseElement>
+export type FadeProps<BaseElement extends ElementType = FadeMap['defaultComponent']> =
+  OverridableComponentProps<FadeMap, BaseElement>
 
 /**
  * Element that hides and shows its content using a fade transition.
  */
-const Fade: OverridableComponent<FadeMap> = ({
-  className,
-  ...props
-}: FadeProps) => (
+const Fade: OverridableComponent<FadeMap> = ({ className, ...props }: FadeProps) => (
   <Transition
     {...props}
-    className={clsx(
-      'opacity-100',
-      'aria-hidden:opacity-0',
-      className,
-    )}
+    className={clsx('opacity-100', 'aria-hidden:opacity-0', className)}
     transitionPropertyName="opacity"
     keepInteractiveWhenHidden
   />

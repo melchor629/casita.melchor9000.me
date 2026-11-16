@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useLayoutEffect, useMemo, useState,
-} from 'react'
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import Button from '../Button'
 import FadeAndMove from '../FadeAndMove'
 import Portal from '../Portal'
@@ -8,25 +6,25 @@ import Text from '../Text'
 import { clsx } from '../utils'
 
 export type DialogProps = Readonly<{
-  id: string
-  title: string
-  show?: boolean
-  className?: string
-  children?: React.ReactNode
-  buttons?: React.ReactNode[]
-  onClose: (reason: 'button' | 'escape' | 'backdrop') => void
-  onCloseStart?: () => void
-  onCloseEnd?: () => void
-  portal?: boolean | HTMLElement
-  closeLabel?: string
-  size?: 'extra-large' | 'large' | 'medium' | 'small'
+  id: string;
+  title: string;
+  show?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+  buttons?: React.ReactNode[];
+  onClose: (reason: 'button' | 'escape' | 'backdrop') => void;
+  onCloseStart?: () => void;
+  onCloseEnd?: () => void;
+  portal?: boolean | HTMLElement;
+  closeLabel?: string;
+  size?: 'extra-large' | 'large' | 'medium' | 'small';
   slots?: {
-    container?: React.ElementType
-  }
+    container?: React.ElementType;
+  };
   slotProps?: {
-    container?: React.ComponentProps<'div'>
-  }
-  unmountWhenHidden?: boolean
+    container?: React.ComponentProps<'div'>;
+  };
+  unmountWhenHidden?: boolean;
 }>
 
 export default function Dialog({
@@ -48,32 +46,45 @@ export default function Dialog({
 }: DialogProps) {
   const [element, setElement] = useState<HTMLDivElement | null>(null)
 
-  const onCloseImpl: React.MouseEventHandler<HTMLButtonElement> = useCallback((e) => {
-    e.preventDefault()
-    onClose('button')
-  }, [onClose])
+  const onCloseImpl: React.MouseEventHandler<HTMLButtonElement> = useCallback(
+    (e) => {
+      e.preventDefault()
+      onClose('button')
+    },
+    [onClose],
+  )
 
-  const finalButtons = useMemo(() => [
-    <Button type="button" color="neutral" variant="text" onClick={onCloseImpl} key="close">
-      {closeLabel || 'Close'}
-    </Button>,
-    ...(buttons || []),
-  ], [buttons, onCloseImpl, closeLabel])
+  const finalButtons = useMemo(
+    () => [
+      <Button type="button" color="neutral" variant="text" onClick={onCloseImpl} key="close">
+        {closeLabel || 'Close'}
+      </Button>,
+      ...(buttons || []),
+    ],
+    [buttons, onCloseImpl, closeLabel],
+  )
 
-  const onBackdropClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose('backdrop')
-    }
-  }, [onClose])
+  const onBackdropClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        onClose('backdrop')
+      }
+    },
+    [onClose],
+  )
 
   useLayoutEffect(() => {
     const abort = new AbortController()
     if (element) {
-      window.addEventListener('keyup', (ev) => {
-        if (ev.key === 'Escape') {
-          onClose('escape')
-        }
-      }, { signal: abort.signal, passive: true })
+      window.addEventListener(
+        'keyup',
+        (ev) => {
+          if (ev.key === 'Escape') {
+            onClose('escape')
+          }
+        },
+        { signal: abort.signal, passive: true },
+      )
     }
 
     return () => abort.abort()
@@ -121,7 +132,9 @@ export default function Dialog({
         >
           <ContainerElement {...slotProps.container} className="flex flex-col grow min-w-0 min-h-0">
             <div className="px-5 pt-4 mb-4 select-none">
-              <Text size="h4" id={`dialog-${id}-title`}>{title}</Text>
+              <Text size="h4" id={`dialog-${id}-title`}>
+                {title}
+              </Text>
             </div>
             <div className="px-5 overflow-y-auto shrink">{children}</div>
             <div className="flex justify-end gap-2 h-8 mt-5 mb-3 mx-3">{finalButtons}</div>

@@ -5,12 +5,7 @@ import Dialog from './dialog.tsx'
 
 it('dialog content is not mounted when unmountWhenHidden is set to true', async () => {
   await render(
-    <Dialog
-      id="test"
-      title="Test Dialog"
-      onClose={vi.fn()}
-      unmountWhenHidden
-    >
+    <Dialog id="test" title="Test Dialog" onClose={vi.fn()} unmountWhenHidden>
       Test content
     </Dialog>,
   )
@@ -20,12 +15,7 @@ it('dialog content is not mounted when unmountWhenHidden is set to true', async 
 
 it('dialog content has a close button', async () => {
   await render(
-    <Dialog
-      id="test"
-      title="Test Dialog"
-      onClose={vi.fn()}
-      show
-    >
+    <Dialog id="test" title="Test Dialog" onClose={vi.fn()} show>
       Test content
     </Dialog>,
   )
@@ -38,12 +28,7 @@ it('dialog content has a close button', async () => {
 it('dialog opened notifies close intention when button is pressed', async () => {
   const onClose = vi.fn()
   await render(
-    <Dialog
-      id="test"
-      title="Test Dialog"
-      onClose={onClose}
-      show
-    >
+    <Dialog id="test" title="Test Dialog" onClose={onClose} show>
       Test content
     </Dialog>,
   )
@@ -57,12 +42,7 @@ it('dialog opened notifies close intention when button is pressed', async () => 
 it('dialog opened notifies close intention when backdrop is clicked', async () => {
   const onClose = vi.fn()
   await render(
-    <Dialog
-      id="test"
-      title="Test Dialog"
-      onClose={onClose}
-      show
-    >
+    <Dialog id="test" title="Test Dialog" onClose={onClose} show>
       Test content
     </Dialog>,
   )
@@ -81,12 +61,7 @@ it('dialog opened notifies close intention when backdrop is clicked', async () =
 it('dialog opened notifies close intention when ESC is pressed', async () => {
   const onClose = vi.fn()
   await render(
-    <Dialog
-      id="test"
-      title="Test Dialog"
-      onClose={onClose}
-      show
-    >
+    <Dialog id="test" title="Test Dialog" onClose={onClose} show>
       Test content
     </Dialog>,
   )

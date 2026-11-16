@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import Icon from './icon'
 import * as icons from './icons'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Icon',
   component: Icon,
   parameters: {
@@ -29,15 +29,11 @@ const meta = {
       options: ['material-symbols', 'fontawesome-regular', 'fontawesome-brands'],
     },
   },
-} satisfies Meta<typeof Icon>
+})
 
-export default meta
+export const Default = meta.story()
 
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
-
-export const List: Story = {
+export const List = meta.story({
   render: ({ icon, ...props }) => {
     const Icon = icons[icon as keyof typeof icons] ?? icons.Home
     // @ts-expect-error there are icon types that do not support variant
@@ -53,4 +49,4 @@ export const List: Story = {
       options: Object.keys(icons).toSorted(),
     },
   },
-}
+})

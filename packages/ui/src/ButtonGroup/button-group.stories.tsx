@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import Button from '../Button'
-import ButtonStoriesMeta from '../Button/button.stories'
+import { Default as ButtonStoriesMeta } from '../Button/button.stories'
 import ButtonGroup from './button-group'
 
-const meta = {
-  title: 'molecules/ButtonGroup',
+const meta = preview.meta({
+  title: 'molecules/Button Group',
   component: ButtonGroup,
   parameters: {
     layout: 'centered',
@@ -16,17 +16,13 @@ const meta = {
     variant: 'filled',
   },
   argTypes: {
-    color: ButtonStoriesMeta.argTypes.color,
-    size: ButtonStoriesMeta.argTypes.size,
-    variant: ButtonStoriesMeta.argTypes.variant,
+    color: ButtonStoriesMeta.meta.input.argTypes!.color,
+    size: ButtonStoriesMeta.meta.input.argTypes!.size,
+    variant: ButtonStoriesMeta.meta.input.argTypes!.variant,
   },
-} satisfies Meta<typeof ButtonGroup>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {
+export const Default = meta.story({
   render: (props) => (
     <ButtonGroup {...props}>
       <Button>First</Button>
@@ -34,4 +30,4 @@ export const Default: Story = {
       <Button>Third</Button>
     </ButtonGroup>
   ),
-}
+})

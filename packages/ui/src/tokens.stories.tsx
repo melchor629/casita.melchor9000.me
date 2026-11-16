@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 
-const meta = {
+const meta = preview.type<{ args: { color?: string } }>().meta({
   title: 'Tokens',
   args: {
     color: undefined!,
@@ -8,11 +8,7 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<{ color?: string }>
-
-export default meta
-
-type Story = StoryObj<{ color?: string }>
+})
 
 function ColorRow({ className }: { readonly className: string }) {
   return (
@@ -23,7 +19,7 @@ function ColorRow({ className }: { readonly className: string }) {
   )
 }
 
-export const Colors: Story = {
+export const Colors = meta.story({
   render: ({ color }) => (
     <div className="flex flex-col gap-2">
       {(color === 'all' || color === 'primary') && (
@@ -95,19 +91,17 @@ export const Colors: Story = {
       options: ['all', 'primary', 'secondary', 'warning', 'error', 'success', 'text', 'elevated'],
     },
   },
-}
+})
 
 function FontRow({ className }: { readonly className: string }) {
   return (
     <div className="flex gap-2 items-center">
-      <div className={`${className} color-text-primary`}>
-        {className.substring(5)}
-      </div>
+      <div className={`${className} color-text-primary`}>{className.substring(5)}</div>
     </div>
   )
 }
 
-export const Fonts: Story = {
+export const Fonts = meta.story({
   render: () => (
     <div className="flex flex-col gap-2">
       <FontRow className="text-h1" />
@@ -119,4 +113,4 @@ export const Fonts: Story = {
       <FontRow className="text-body-small" />
     </div>
   ),
-}
+})

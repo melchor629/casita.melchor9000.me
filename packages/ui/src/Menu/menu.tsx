@@ -3,27 +3,33 @@ import { clsx } from '../utils'
 import MenuItem from './menu-item'
 
 export type MenuItemOptions = Readonly<{
-  key: string
-  icon?: ReactElement
-  label: ReactNode
-  selected?: boolean
-  disabled?: boolean
-  onAction?: (event: MouseEvent<HTMLButtonElement>) => void
+  key: string;
+  icon?: ReactElement;
+  label: ReactNode;
+  selected?: boolean;
+  disabled?: boolean;
+  onAction?: (event: MouseEvent<HTMLButtonElement>) => void;
 }>
 
-export type MenuProps = Readonly<Omit<ComponentPropsWithRef<'div'>, 'children'> & ({
-  /**
-   * The list of menu items to render inside the menu.
-   */
-  items: ReadonlyArray<MenuItemOptions>
-  children?: undefined
-} | {
-  /**
-   * The list of menu items elements to render.
-   */
-  children?: ReactElement | ReadonlyArray<ReactElement>
-  items?: undefined
-})>
+export type MenuProps = Readonly<
+  Omit<ComponentPropsWithRef<'div'>, 'children'> &
+    (
+      | {
+        /**
+           * The list of menu items to render inside the menu.
+           */
+        items: ReadonlyArray<MenuItemOptions>;
+        children?: undefined;
+      }
+      | {
+        /**
+           * The list of menu items elements to render.
+           */
+        children?: ReactElement | ReadonlyArray<ReactElement>;
+        items?: undefined;
+      }
+    )
+>
 
 const Menu = ({ children, className, items, ...props }: MenuProps) => {
   return (
@@ -38,10 +44,7 @@ const Menu = ({ children, className, items, ...props }: MenuProps) => {
       role="list"
     >
       {items?.map((item) => (
-        <MenuItem
-          {...item}
-          key={item.key}
-        />
+        <MenuItem {...item} key={item.key} />
       ))}
       {children}
     </div>

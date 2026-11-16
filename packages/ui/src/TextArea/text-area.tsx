@@ -1,10 +1,12 @@
 import type { ComponentPropsWithRef } from 'react'
 import { clsx } from '../utils'
 
-export type TextAreaProps = Readonly<ComponentPropsWithRef<'textarea'> & {
-  fullWidth?: boolean
-  size?: 'small' | 'medium' | 'large'
-}>
+export type TextAreaProps = Readonly<
+  ComponentPropsWithRef<'textarea'> & {
+    fullWidth?: boolean;
+    size?: 'small' | 'medium' | 'large';
+  }
+>
 
 const TextArea = ({ children, className, fullWidth, size, ...props }: TextAreaProps) => (
   <textarea

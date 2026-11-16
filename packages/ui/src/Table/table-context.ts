@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
 export const TableContext = createContext<{
-  hover?: boolean
+  hover?: boolean;
 }>({})
 
 export const TableScopeContext = createContext<'head' | 'body'>('body')

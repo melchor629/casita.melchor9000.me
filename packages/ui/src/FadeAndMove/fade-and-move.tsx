@@ -2,13 +2,11 @@ import type { ComponentPropsWithRef } from 'react'
 import Transition, { type TransitionImplementationBaseProps } from '../Transition'
 import { clsx } from '../utils'
 
-export type FadeAndMoveProps = Readonly<ComponentPropsWithRef<'div'> & TransitionImplementationBaseProps>
+export type FadeAndMoveProps = Readonly<
+  ComponentPropsWithRef<'div'> & TransitionImplementationBaseProps
+>
 
-export default function FadeAndMove({
-  children,
-  className,
-  ...props
-}: FadeAndMoveProps) {
+export default function FadeAndMove({ children, className, ...props }: FadeAndMoveProps) {
   return (
     <Transition
       {...props}

@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import LoadingContent from './loading-content'
 
-const meta = {
+const meta = preview.meta({
   title: 'molecules/Loading Content',
   component: LoadingContent,
   parameters: {
@@ -11,10 +11,6 @@ const meta = {
   args: {
     title: 'Loading...',
   },
-} satisfies Meta<typeof LoadingContent>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
+export const Default = meta.story()

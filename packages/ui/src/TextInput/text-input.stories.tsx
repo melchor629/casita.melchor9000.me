@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import Button from '../Button'
 import FormControl from '../FormControl'
 import { Home } from '../icons'
 import TextInput from './text-input'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Text Input',
   component: TextInput,
   parameters: {
@@ -25,31 +25,35 @@ const meta = {
       options: ['large', 'medium', 'small'],
     },
   },
-} satisfies Meta<typeof TextInput>
+})
 
-export default meta
+export const Default = meta.story()
 
-type Story = StoryObj<typeof meta>
+export const WithFormControl = meta.story({
+  render: (args) => (
+    <FormControl htmlFor="text" label="Text Input" helperText="Some text">
+      <TextInput {...args} id="text" />
+    </FormControl>
+  ),
+})
 
-export const Default: Story = {}
-
-export const WithFormControl: Story = {
-  render: (args) => <FormControl htmlFor="text" label="Text Input" helperText="Some text"><TextInput {...args} id="text" /></FormControl>,
-}
-
-export const WithFormControlError: Story = {
-  render: (args) => <FormControl htmlFor="text" label="Text Input" error="Invalid value!"><TextInput {...args} id="text" /></FormControl>,
+export const WithFormControlError = meta.story({
+  render: (args) => (
+    <FormControl htmlFor="text" label="Text Input" error="Invalid value!">
+      <TextInput {...args} id="text" />
+    </FormControl>
+  ),
   args: {},
-}
+})
 
-export const WithStartAdornment: Story = {
+export const WithStartAdornment = meta.story({
   args: {
     startAdornment: <Home size="medium" className="mx-1" />,
   },
-}
+})
 
-export const WithEndAdornment: Story = {
+export const WithEndAdornment = meta.story({
   args: {
     endAdornment: <Button size="small" icon={<Home />} variant="text" color="neutral" />,
   },
-}
+})

@@ -1,11 +1,11 @@
 import { flip, offset, shift } from '@floating-ui/react'
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useLayoutEffect, useState } from 'react'
 import { fn } from 'storybook/test'
+import preview from '#.storybook/preview'
 import Portal from '../Portal'
 import Popover, { type PopoverProps } from './popover'
 
-const meta = {
+const meta = preview.meta({
   title: 'molecules/Popover',
   component: Popover,
   subcomponents: {
@@ -25,9 +25,18 @@ const meta = {
     placement: {
       control: 'select',
       options: [
-        'top', 'right', 'bottom', 'left',
-        'top-start', 'right-start', 'bottom-start', 'left-start',
-        'top-end', 'right-end', 'bottom-end', 'left-end',
+        'top',
+        'right',
+        'bottom',
+        'left',
+        'top-start',
+        'right-start',
+        'bottom-start',
+        'left-start',
+        'top-end',
+        'right-end',
+        'bottom-end',
+        'left-end',
       ],
     },
     strategy: {
@@ -36,13 +45,9 @@ const meta = {
     },
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof Popover>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {
+export const Default = meta.story({
   render: (args) => {
     const [mousePos, setMousePos] = useState<PopoverProps['referenceElement'] | null>(null)
     useLayoutEffect(() => {
@@ -71,4 +76,4 @@ export const Default: Story = {
       </Popover>
     )
   },
-}
+})

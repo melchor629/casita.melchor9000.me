@@ -9,9 +9,7 @@ const props = {
 }
 
 it('content is rendered but not visible when hidden', async () => {
-  await render(
-    <Transition {...props}>content</Transition>,
-  )
+  await render(<Transition {...props}>content</Transition>)
 
   const locator = page.getByText('content')
   await expect.element(locator).toBeInTheDocument()
@@ -20,7 +18,9 @@ it('content is rendered but not visible when hidden', async () => {
 
 it('content is rendered and visible when shown', async () => {
   await render(
-    <Transition {...props} show>content</Transition>,
+    <Transition {...props} show>
+      content
+    </Transition>,
   )
 
   const locator = page.getByText('content')
@@ -30,7 +30,9 @@ it('content is rendered and visible when shown', async () => {
 
 it('content is not rendered when hidden and unmount when hidden', async () => {
   await render(
-    <Transition {...props} unmountWhenHidden>content</Transition>,
+    <Transition {...props} unmountWhenHidden>
+      content
+    </Transition>,
   )
 
   const locator = page.getByText('content')
@@ -39,21 +41,27 @@ it('content is not rendered when hidden and unmount when hidden', async () => {
 
 it('content renders when show after first render', async () => {
   const { rerender } = await render(
-    <Transition {...props} unmountWhenHidden>content</Transition>,
+    <Transition {...props} unmountWhenHidden>
+      content
+    </Transition>,
   )
 
   const locator = page.getByText('content')
   await expect.element(locator).not.toBeInTheDocument()
 
   await rerender(
-    <Transition {...props} unmountWhenHidden show>content</Transition>,
+    <Transition {...props} unmountWhenHidden show>
+      content
+    </Transition>,
   )
 
   await expect.element(locator).toBeInTheDocument()
   await expect.element(locator).toBeVisible()
 
   await rerender(
-    <Transition {...props} unmountWhenHidden>content</Transition>,
+    <Transition {...props} unmountWhenHidden>
+      content
+    </Transition>,
   )
 
   await expect.element(locator).not.toBeInTheDocument()
@@ -61,7 +69,9 @@ it('content renders when show after first render', async () => {
 
 it('content is kept and visible when keep interactive is set', async () => {
   await render(
-    <Transition {...props} unmountWhenHidden keepInteractiveWhenHidden>content</Transition>,
+    <Transition {...props} unmountWhenHidden keepInteractiveWhenHidden>
+      content
+    </Transition>,
   )
 
   const locator = page.getByText('content')

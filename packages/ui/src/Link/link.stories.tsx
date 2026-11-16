@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import Link from './link'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Link',
   component: Link,
   parameters: {
@@ -20,10 +20,6 @@ const meta = {
       options: ['never', 'hover', 'always'],
     },
   },
-} satisfies Meta<typeof Link>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
+export const Default = meta.story()

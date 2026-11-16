@@ -2,12 +2,12 @@ import { useLayoutEffect, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
 export type PortalProps = Readonly<{
-  children: ReactNode
+  children: ReactNode;
   /**
    * If `true` or an `HTMLElement`, then the {@link children}
    * will be placed inside the provided element (or body if `true`).
    */
-  portal?: boolean | HTMLElement
+  portal?: boolean | HTMLElement;
 }>
 
 /**

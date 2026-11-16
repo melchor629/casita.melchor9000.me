@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import InputLabel from '../InputLabel'
 import Switch from './switch'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Switch',
   component: Switch,
   parameters: {
@@ -16,15 +16,12 @@ const meta = {
     required: false,
   },
   argTypes: {},
-} satisfies Meta<typeof Switch>
+})
 
-export default meta
+export const Default = meta.story()
 
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
-
-export const WithLabel: Story = {
-  render: (args) =>
-    <InputLabel input={<Switch id="checkbox" {...args} />}>Switch label</InputLabel>,
-}
+export const WithLabel = meta.story({
+  render: (args) => (
+    <InputLabel input={<Switch id="checkbox" {...args} />}>Switch label</InputLabel>
+  ),
+})

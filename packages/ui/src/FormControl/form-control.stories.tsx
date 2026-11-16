@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import FormControl from './form-control'
 
-const meta = {
+const meta = preview.meta({
   title: 'molecules/Form Control',
   component: FormControl,
   parameters: {
@@ -14,24 +14,32 @@ const meta = {
     label: 'Form Control',
   },
   argTypes: {},
-} satisfies Meta<typeof FormControl>
+})
 
-export default meta
+export const Default = meta.story({
+  render: (args) => (
+    <FormControl {...args} htmlFor="text">
+      <input type="text" id="text" />
+    </FormControl>
+  ),
+})
 
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {
-  render: (args) => <FormControl {...args} htmlFor="text"><input type="text" id="text" /></FormControl>,
-}
-
-export const WithError: Story = {
-  render: (args) => <FormControl {...args} htmlFor="text"><input type="text" id="text" required /></FormControl>,
+export const WithError = meta.story({
+  render: (args) => (
+    <FormControl {...args} htmlFor="text">
+      <input type="text" id="text" required />
+    </FormControl>
+  ),
   args: {
     error: 'The field is required',
   },
-}
+})
 
-export const WithDisabled: Story = {
-  render: (args) => <FormControl {...args} htmlFor="text"><input type="text" id="text" disabled /></FormControl>,
+export const WithDisabled = meta.story({
+  render: (args) => (
+    <FormControl {...args} htmlFor="text">
+      <input type="text" id="text" disabled />
+    </FormControl>
+  ),
   args: {},
-}
+})

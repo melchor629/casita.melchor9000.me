@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
+import preview from '#.storybook/preview'
 import FormControlLabel from './form-control-label'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Form Control Label',
   component: FormControlLabel,
   parameters: {
@@ -19,15 +19,11 @@ const meta = {
       options: ['none', 'dense', 'normal'],
     },
   },
-} satisfies Meta<typeof FormControlLabel>
+})
 
-export default meta
+export const Default = meta.story()
 
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
-
-export const CssCheck: Story = {
+export const CssCheck = meta.story({
   args: {
     children: 'Form Label',
   },
@@ -36,4 +32,4 @@ export const CssCheck: Story = {
     const computedStyle = getComputedStyle(label)
     await expect(computedStyle.fontWeight).toBe('500')
   },
-}
+})

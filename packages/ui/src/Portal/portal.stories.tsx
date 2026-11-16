@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useRef } from 'react'
+import preview from '#.storybook/preview'
 import Portal from './portal'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Portal',
   component: Portal,
   parameters: {
@@ -13,19 +13,15 @@ const meta = {
     children: 'Content in portal',
     portal: false,
   },
-} satisfies Meta<typeof Portal>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const InPlace: Story = {
+export const InPlace = meta.story({
   args: {
     portal: false,
   },
-}
+})
 
-export const InBody: Story = {
+export const InBody = meta.story({
   args: {
     portal: true,
     children: (
@@ -34,9 +30,9 @@ export const InBody: Story = {
       </div>
     ),
   },
-}
+})
 
-export const InCustomElement: Story = {
+export const InCustomElement = meta.story({
   render: (args) => {
     const portalRootRef = useRef<HTMLDivElement>(null)
     return (
@@ -49,11 +45,9 @@ export const InCustomElement: Story = {
           <p>Portal root (content will appear here)</p>
         </div>
         <Portal {...args} portal={portalRootRef.current ?? undefined}>
-          <div className="p-2 bg-primary-main rounded text-text-contrasted">
-            Portaled content
-          </div>
+          <div className="p-2 bg-primary-main rounded text-text-contrasted">Portaled content</div>
         </Portal>
       </div>
     )
   },
-}
+})

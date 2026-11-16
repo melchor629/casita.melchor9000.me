@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import FormControl from '../FormControl'
 import TextArea from './text-area'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Text Area',
   component: TextArea,
   parameters: {
@@ -22,19 +22,23 @@ const meta = {
       options: ['large', 'medium', 'small'],
     },
   },
-} satisfies Meta<typeof TextArea>
+})
 
-export default meta
+export const Default = meta.story()
 
-type Story = StoryObj<typeof meta>
+export const WithFormControl = meta.story({
+  render: (args) => (
+    <FormControl htmlFor="text" label="Text Area" helperText="Some text">
+      <TextArea {...args} id="text" />
+    </FormControl>
+  ),
+})
 
-export const Default: Story = {}
-
-export const WithFormControl: Story = {
-  render: (args) => <FormControl htmlFor="text" label="Text Area" helperText="Some text"><TextArea {...args} id="text" /></FormControl>,
-}
-
-export const WithFormControlError: Story = {
-  render: (args) => <FormControl htmlFor="text" label="Text Area" error="Invalid value!"><TextArea {...args} id="text" /></FormControl>,
+export const WithFormControlError = meta.story({
+  render: (args) => (
+    <FormControl htmlFor="text" label="Text Area" error="Invalid value!">
+      <TextArea {...args} id="text" />
+    </FormControl>
+  ),
   args: {},
-}
+})

@@ -1,8 +1,4 @@
-import {
-  useCallback,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import Button from '../Button'
 import Collapse from '../Collapse'
 import Fade from '../Fade'
@@ -12,13 +8,15 @@ import TransitionGroup from '../TransitionGroup'
 import { ExpandMore } from '../icons'
 import { clsx } from '../utils'
 
-export type CollapsableTextProps = Readonly<TextProps<'p'> & {
-  /**
-   * Maximum number of lines to render when collapsed.
-   * @default 3
-   */
-  maxLines?: number
-}>
+export type CollapsableTextProps = Readonly<
+  TextProps<'p'> & {
+    /**
+     * Maximum number of lines to render when collapsed.
+     * @default 3
+     */
+    maxLines?: number;
+  }
+>
 
 const CollapsableText = ({ children, className, maxLines = 3, ...props }: CollapsableTextProps) => {
   const [div, setDiv] = useState<HTMLElement | null>(null)
@@ -49,7 +47,7 @@ const CollapsableText = ({ children, className, maxLines = 3, ...props }: Collap
       >
         {children}
       </Collapse>
-      {(maxLines < totalLines) && (
+      {maxLines < totalLines && (
         <Button
           type="button"
           variant="text"

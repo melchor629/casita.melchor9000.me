@@ -1,14 +1,28 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { clsx } from '../utils'
 
-export type TextInputProps = Readonly<Omit<ComponentProps<'input'>, 'size'> & {
-  type: 'text' | 'password' | 'color' | 'date' | 'datetime-local' | 'email' | 'month' | 'number' | 'search' |
-  'tel' | 'time' | 'url' | 'week'
-  size?: 'small' | 'medium' | 'large'
-  endAdornment?: ReactNode
-  startAdornment?: ReactNode
-  fullWidth?: boolean
-}>
+export type TextInputProps = Readonly<
+  Omit<ComponentProps<'input'>, 'size'> & {
+    type:
+      | 'text'
+      | 'password'
+      | 'color'
+      | 'date'
+      | 'datetime-local'
+      | 'email'
+      | 'month'
+      | 'number'
+      | 'search'
+      | 'tel'
+      | 'time'
+      | 'url'
+      | 'week';
+    size?: 'small' | 'medium' | 'large';
+    endAdornment?: ReactNode;
+    startAdornment?: ReactNode;
+    fullWidth?: boolean;
+  }
+>
 
 const TextInput = ({
   children,
@@ -47,11 +61,7 @@ const TextInput = ({
         {startAdornment}
       </div>
     )}
-    <input
-      type={type}
-      className={clsx('appearance-none w-full focus:outline-none')}
-      {...props}
-    />
+    <input type={type} className={clsx('appearance-none w-full focus:outline-none')} {...props} />
     {endAdornment && (
       <div
         className={clsx(

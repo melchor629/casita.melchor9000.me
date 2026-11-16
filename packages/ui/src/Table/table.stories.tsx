@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import Button from '../Button'
 import { Home } from '../icons'
 import Table from './table'
@@ -9,7 +9,7 @@ import TableHead from './table-head'
 import TableHeadCell from './table-head-cell'
 import TableRow from './table-row'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Table',
   component: Table,
   render: (props) => (
@@ -30,13 +30,17 @@ const meta = {
           <TableCell>32</TableCell>
           <TableCell>Bread</TableCell>
           <TableCell>592</TableCell>
-          <TableCell><Button icon={<Home />} size="small" variant="text" /></TableCell>
+          <TableCell>
+            <Button icon={<Home />} size="small" variant="text" />
+          </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>54</TableCell>
           <TableCell>Cheese</TableCell>
           <TableCell>205</TableCell>
-          <TableCell><Button icon={<Home />} size="small" variant="text" /></TableCell>
+          <TableCell>
+            <Button icon={<Home />} size="small" variant="text" />
+          </TableCell>
         </TableRow>
 
         <TableRow>
@@ -46,13 +50,17 @@ const meta = {
           <TableCell>581</TableCell>
           <TableCell>Wrench</TableCell>
           <TableCell>12</TableCell>
-          <TableCell><Button icon={<Home />} size="small" variant="text" /></TableCell>
+          <TableCell>
+            <Button icon={<Home />} size="small" variant="text" />
+          </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>582</TableCell>
           <TableCell>Screwdriver</TableCell>
           <TableCell>8</TableCell>
-          <TableCell><Button icon={<Home />} size="small" variant="text" /></TableCell>
+          <TableCell>
+            <Button icon={<Home />} size="small" variant="text" />
+          </TableCell>
         </TableRow>
       </TableBody>
     </Table>
@@ -73,20 +81,20 @@ const meta = {
     hover: false,
     noWrap: false,
   },
-} satisfies Meta<typeof Table>
+})
 
-export default meta
+export const Default = meta.story()
 
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
-
-export const WithContainer: Story = {
+export const WithContainer = meta.story({
   decorators: [
-    (Story) => <TableContainer className="min-w-[80dvw]"><Story /></TableContainer>,
+    (Story) => (
+      <TableContainer className="min-w-[80dvw]">
+        <Story />
+      </TableContainer>
+    ),
   ],
   args: {
     full: true,
     noWrap: true,
   },
-}
+})

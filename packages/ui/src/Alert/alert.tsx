@@ -33,14 +33,25 @@ const alertStyles = makeStyles({
 /**
  * Props for the Alert component.
  */
-export type AlertProps = Readonly<Omit<ComponentPropsWithRef<'div'>, 'title'> & MakeStylesProps<typeof alertStyles> & {
-  title: ReactNode
-}>
+export type AlertProps = Readonly<
+  Omit<ComponentPropsWithRef<'div'>, 'title'> &
+    MakeStylesProps<typeof alertStyles> & {
+      /**
+       * Title of the alert region, renders above the children.
+       */
+      title: ReactNode;
+    }
+>
 
 /**
  * A reusable component for displaying important information alerts based on severity.
  */
-export default function Alert({ children, severity = 'default', title: titleElement, ...props }: AlertProps) {
+export default function Alert({
+  children,
+  severity = 'default',
+  title: titleElement,
+  ...props
+}: AlertProps) {
   const { base, icon, text, title } = alertStyles({ severity })
 
   return (

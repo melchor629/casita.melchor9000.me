@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { BrowserRouter } from 'react-router'
+import preview from '#.storybook/preview'
 import ReactRouterLink from './react-router-link'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/React Router Link',
   component: ReactRouterLink,
   decorators: [
@@ -27,10 +27,6 @@ const meta = {
       options: ['never', 'hover', 'always'],
     },
   },
-} satisfies Meta<typeof ReactRouterLink>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
+export const Default = meta.story()

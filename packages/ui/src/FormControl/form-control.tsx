@@ -3,13 +3,15 @@ import FormControlHelperText from '../FormControlHelperText'
 import FormControlLabel from '../FormControlLabel'
 import { makeStyles } from '../utils'
 
-export type FormControlProps = Readonly<ComponentProps<'div'> & {
-  fullWidth?: boolean
-  label?: string
-  htmlFor?: string
-  helperText?: string
-  error?: boolean | string
-}>
+export type FormControlProps = Readonly<
+  ComponentProps<'div'> & {
+    fullWidth?: boolean;
+    label?: string;
+    htmlFor?: string;
+    helperText?: string;
+    error?: boolean | string;
+  }
+>
 
 const createStyles = makeStyles({
   base: 'max-w-full group/form-control',

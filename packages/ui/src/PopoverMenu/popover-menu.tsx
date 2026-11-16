@@ -6,17 +6,16 @@ import Popover, { type PopoverProps } from '../Popover'
 import { clsx } from '../utils'
 
 export type PopoverMenuProps = Readonly<
-  & MenuProps
-  & Pick<PopoverProps, 'onClose' | 'placement' | 'strategy' | 'middleware' | 'portal'>
-  & {
-    /**
-     * This function is called once the menu has been closed.
-     */
-    onClosed?: () => void
-    open?: boolean
-    referenceElement: PopoverProps['referenceElement'] | 'contextMenu'
-    unmountWhenHidden?: boolean
-  }
+  MenuProps &
+    Pick<PopoverProps, 'onClose' | 'placement' | 'strategy' | 'middleware' | 'portal'> & {
+      /**
+       * This function is called once the menu has been closed.
+       */
+      onClosed?: () => void;
+      open?: boolean;
+      referenceElement: PopoverProps['referenceElement'] | 'contextMenu';
+      unmountWhenHidden?: boolean;
+    }
 >
 
 const ignore = (e: SyntheticEvent) => {
@@ -40,12 +39,15 @@ export default function PopoverMenu({
   const isOpen = referenceElement === 'contextMenu' ? pos != null : open
   const [delayedIsOpen, setDelayedIsOpen] = useState(isOpen)
 
-  const onPopoverClose = useCallback<NonNullable<typeof onClose>>((reason) => {
-    if (referenceElement === 'contextMenu') {
-      setPos(null)
-    }
-    onClose?.(reason)
-  }, [referenceElement, onClose])
+  const onPopoverClose = useCallback<NonNullable<typeof onClose>>(
+    (reason) => {
+      if (referenceElement === 'contextMenu') {
+        setPos(null)
+      }
+      onClose?.(reason)
+    },
+    [referenceElement, onClose],
+  )
 
   useLayoutEffect(() => {
     if (referenceElement !== 'contextMenu') {

@@ -3,12 +3,13 @@ import { clsx, type OverridableComponent, type OverridableComponentProps } from 
 
 type LinkTypeMap = {
   props: {
-    underline?: 'never' | 'hover' | 'always' | true
-  }
-  defaultComponent: 'a'
+    underline?: 'never' | 'hover' | 'always' | true;
+  };
+  defaultComponent: 'a';
 }
 
-export type LinkProps<C extends ElementType = LinkTypeMap['defaultComponent']> = OverridableComponentProps<LinkTypeMap, C>
+export type LinkProps<C extends ElementType = LinkTypeMap['defaultComponent']> =
+  OverridableComponentProps<LinkTypeMap, C>
 
 const Link: OverridableComponent<LinkTypeMap> = ({
   className,

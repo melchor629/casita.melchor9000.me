@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { BrowserRouter } from 'react-router'
-import ButtonStory from '../Button/button.stories.tsx'
+import preview from '#.storybook/preview'
+import { Default as ButtonStory } from '../Button/button.stories.tsx'
 import ReactRouterButton from './react-router-button'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/React Router Button',
   component: ReactRouterButton,
   decorators: [
@@ -24,11 +24,7 @@ const meta = {
     variant: 'text',
     size: 'medium',
   },
-  argTypes: ButtonStory.argTypes,
-} satisfies Meta<typeof ReactRouterButton>
+  argTypes: ButtonStory.meta.input.argTypes,
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
+export const Default = meta.story()

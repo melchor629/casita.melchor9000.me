@@ -25,10 +25,10 @@ export default function MenuItem({
       aria-current={selected}
       onClick={onAction}
     >
-      {icon && (
-        <div className="inline-flex text-body-large">{icon}</div>
-      )}
-      <Text size="body" color="textMain" ellipsize>{label}</Text>
+      {icon && <div className="inline-flex text-body-large">{icon}</div>}
+      <Text size="body" color="textMain" ellipsize>
+        {label}
+      </Text>
     </button>
   )
 }

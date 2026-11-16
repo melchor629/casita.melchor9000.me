@@ -1,11 +1,13 @@
 import { useState, type ComponentProps } from 'react'
 import { makeStyles, type MakeStylesProps } from '../utils'
 
-export type LinearProgressProps = Readonly<ComponentProps<'div'> & {
-  min?: number
-  max?: number
-  value?: number
-} & MakeStylesProps<typeof styles>>
+export type LinearProgressProps = Readonly<
+  ComponentProps<'div'> & {
+    min?: number;
+    max?: number;
+    value?: number;
+  } & MakeStylesProps<typeof styles>
+>
 
 const styles = makeStyles({
   slots: {
@@ -71,17 +73,19 @@ const LinearProgress = ({
       const transform = divRef?.computedStyleMap().get('transform')
       const translateValue = (transform instanceof CSSTransformValue ? transform : null)
         ?.values()
-        .find((v) => v instanceof CSSTranslate)
-        ?.x
-      const [transPerc, transPx] = (translateValue instanceof CSSMathSum ? translateValue : null)
-        ?.values
-        .values().map((v) => (v as CSSUnitValue).value)
-        ?? []
+        .find((v) => v instanceof CSSTranslate)?.x
+      const [transPerc, transPx]
+        = (translateValue instanceof CSSMathSum ? translateValue : null)?.values
+          .values()
+          .map((v) => (v as CSSUnitValue).value) ?? []
       requestAnimationFrame(() =>
-        divRef?.animate([
-          { transform: `translateX(calc(${transPerc ?? 0}% + ${transPx ?? 0}px))` },
-          { transform: 'translateX(0px)' },
-        ], { duration: 200, easing: 'ease-out' }),
+        divRef?.animate(
+          [
+            { transform: `translateX(calc(${transPerc ?? 0}% + ${transPx ?? 0}px))` },
+            { transform: 'translateX(0px)' },
+          ],
+          { duration: 200, easing: 'ease-out' },
+        ),
       )
     }
     setProcessedVariant(variant)
@@ -99,7 +103,7 @@ const LinearProgress = ({
       <div
         ref={setDivRef}
         className={bar()}
-        data-progress={Math.max(min, Math.min(((value ?? min) - min) / (max - min) * 100, max))}
+        data-progress={Math.max(min, Math.min((((value ?? min) - min) / (max - min)) * 100, max))}
       />
     </div>
   )

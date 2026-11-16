@@ -1,9 +1,11 @@
+import addonA11y from '@storybook/addon-a11y'
+import addonDocs from '@storybook/addon-docs'
 import { withThemeByDataAttribute } from '@storybook/addon-themes'
-import type { Preview } from '@storybook/react-vite'
+import { definePreview } from '@storybook/react-vite'
 import '../styles/storybook.css'
 import ThemeAwareDocsContainer from './helpers/theme-aware-docs-container'
 
-const preview: Preview = {
+export default definePreview({
   decorators: [
     withThemeByDataAttribute({
       defaultTheme: 'dark',
@@ -23,8 +25,7 @@ const preview: Preview = {
     },
     docs: {
       container: ThemeAwareDocsContainer,
-    } satisfies import('@storybook/addon-docs').DocsTypes['parameters']['docs'],
+    },
   },
-}
-
-export default preview
+  addons: [addonA11y(), addonDocs()],
+})

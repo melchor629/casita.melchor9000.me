@@ -1,11 +1,13 @@
 import { useState, type Ref } from 'react'
 import { makeStyles, type MakeStylesProps } from '../utils'
 
-export type CircularProgressProps = Readonly<MakeStylesProps<typeof circularProgressStyles> & {
-  ref?: Ref<SVGSVGElement>
-  className?: string
-  percentage?: number
-}>
+export type CircularProgressProps = Readonly<
+  MakeStylesProps<typeof circularProgressStyles> & {
+    ref?: Ref<SVGSVGElement>;
+    className?: string;
+    percentage?: number;
+  }
+>
 
 const circularProgressStyles = makeStyles({
   slots: {
@@ -81,7 +83,7 @@ export default function CircularProgress({
   const [pathRef, setPathRef] = useState<SVGPathElement | null>(null)
   const [processedVariant, setProcessedVariant] = useState(variant)
   const styles = circularProgressStyles({ color, show, size, variant })
-  percentage = variant === 'indeterminate' ? 33 : percentage ?? 0
+  percentage = variant === 'indeterminate' ? 33 : (percentage ?? 0)
 
   if (variant !== processedVariant) {
     if (variant === 'determinate') {
@@ -89,14 +91,12 @@ export default function CircularProgress({
       const rotation = (transform instanceof CSSTransformValue ? transform : null)
         ?.values()
         .find((v) => v instanceof CSSRotate)
-        ?.angle
-        ?.to('deg')
-        .value
+        ?.angle?.to('deg').value
       requestAnimationFrame(() =>
-        pathRef?.animate([
-          { transform: `rotate(${rotation ?? 0}deg)` },
-          { transform: 'rotate(360deg)' },
-        ], { duration: 200, easing: 'ease-out' }),
+        pathRef?.animate(
+          [{ transform: `rotate(${rotation ?? 0}deg)` }, { transform: 'rotate(360deg)' }],
+          { duration: 200, easing: 'ease-out' },
+        ),
       )
     }
     setProcessedVariant(variant)

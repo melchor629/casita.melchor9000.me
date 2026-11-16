@@ -9,14 +9,7 @@ export type TransitionGroupProps = Readonly<ComponentPropsWithRef<'div'>>
  * expect to work in all scenarios.
  */
 const TransitionGroup = ({ children, className, ...props }: TransitionGroupProps) => (
-  <div
-    {...props}
-    className={clsx(
-      'grid',
-      '*:[grid-area:1/-1]',
-      className,
-    )}
-  >
+  <div {...props} className={clsx('grid', '*:[grid-area:1/-1]', className)}>
     {children}
   </div>
 )

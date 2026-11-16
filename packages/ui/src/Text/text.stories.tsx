@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import Text from './text'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Text',
   component: Text,
   parameters: {
@@ -15,7 +15,16 @@ const meta = {
     },
     color: {
       control: 'inline-radio',
-      options: ['textMain', 'textSecondary', 'contrasted', 'primary', 'secondary', 'warning', 'error', 'success'],
+      options: [
+        'textMain',
+        'textSecondary',
+        'contrasted',
+        'primary',
+        'secondary',
+        'warning',
+        'error',
+        'success',
+      ],
     },
     size: {
       control: 'inline-radio',
@@ -32,10 +41,6 @@ const meta = {
     italic: false,
     ellipsize: false,
   },
-} satisfies Meta<typeof Text>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
+export const Default = meta.story()

@@ -1,10 +1,12 @@
 import type { ComponentProps, ReactElement } from 'react'
 import { makeStyles } from '../utils'
 
-export type InputLabelProps = Readonly<ComponentProps<'label'> & {
-  input: ReactElement
-  margin?: 'none' | 'dense' | 'normal'
-}>
+export type InputLabelProps = Readonly<
+  ComponentProps<'label'> & {
+    input: ReactElement;
+    margin?: 'none' | 'dense' | 'normal';
+  }
+>
 
 const createStyles = makeStyles({
   slots: {
@@ -25,7 +27,14 @@ const createStyles = makeStyles({
   },
 })
 
-export default function InputLabel({ children, className, htmlFor, input, margin = 'none', ...props }: InputLabelProps) {
+export default function InputLabel({
+  children,
+  className,
+  htmlFor,
+  input,
+  margin = 'none',
+  ...props
+}: InputLabelProps) {
   const styles = createStyles({ margin })
   return (
     <label {...props} className={styles.base({ className })}>

@@ -17,6 +17,7 @@ export default [
         optionalDependencies: false,
         peerDependencies: true,
       }],
+      'import-x/prefer-default-export': 'off',
     },
   },
   {

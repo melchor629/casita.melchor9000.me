@@ -1,9 +1,10 @@
 import type { ComponentProps } from 'react'
 import { clsx } from '../utils'
 
-export type TableCellProps = ComponentProps<'td'> & Readonly<{
-  noWrap?: boolean
-}>
+export type TableCellProps = ComponentProps<'td'> &
+  Readonly<{
+    noWrap?: boolean;
+  }>
 
 const TableCell = ({ className, noWrap, ...props }: TableCellProps) => (
   <td

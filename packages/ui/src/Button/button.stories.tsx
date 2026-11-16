@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
+import preview from '#.storybook/preview'
 import { Home, Info } from '../icons'
 import Button from './button'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Button',
   component: Button,
   parameters: {
@@ -33,23 +33,19 @@ const meta = {
     size: 'medium',
     variant: 'filled',
   },
-} satisfies Meta<typeof Button>
+})
 
-export default meta
+export const Default = meta.story()
 
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
-
-export const WithIcon: Story = {
+export const WithIcon = meta.story({
   args: {
     icon: <Home />,
   },
-}
+})
 
-export const Icon: Story = {
+export const Icon = meta.story({
   args: {
     icon: <Info />,
     children: undefined,
   },
-}
+})

@@ -2,12 +2,14 @@ import { use, type ComponentProps } from 'react'
 import { clsx } from '../utils'
 import { TableScopeContext } from './table-context'
 
-export type TableHeadCellProps = Readonly<ComponentProps<'th'> & {
-  /**
-   * Try to shrink all cells in this column.
-   */
-  shrink?: boolean
-}>
+export type TableHeadCellProps = Readonly<
+  ComponentProps<'th'> & {
+    /**
+     * Try to shrink all cells in this column.
+     */
+    shrink?: boolean;
+  }
+>
 
 const TableHeadCell = ({ className, shrink, ...props }: TableHeadCellProps) => {
   const scope = use(TableScopeContext)

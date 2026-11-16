@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import TextStories from '../Text/text.stories'
+import preview from '#.storybook/preview'
+import { Default as TextStories } from '../Text/text.stories'
 import CollapsableText from './collapsable-text'
 
-const meta = {
+const meta = preview.meta({
   title: 'molecules/Collapsable Text',
   component: CollapsableText,
   parameters: {
@@ -10,20 +10,16 @@ const meta = {
   },
   tags: ['autodocs'],
   args: {
-    ...TextStories.args,
+    ...TextStories.meta.input.args,
     maxLines: 3,
-    children: Array(50).fill(TextStories.args.children).join('. ') + '. :)',
+    children: Array(50).fill('This is some nice text').join('. ') + '. :)',
   },
   argTypes: {
-    ...TextStories.argTypes,
+    ...TextStories.meta.input.argTypes,
     maxLines: {
       control: { type: 'range', min: 1, max: 25 },
     },
   },
-} satisfies Meta<typeof CollapsableText>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
+export const Default = meta.story()

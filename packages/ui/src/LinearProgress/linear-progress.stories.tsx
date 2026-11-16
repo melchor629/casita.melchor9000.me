@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import LinearProgress from './linear-progress'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Linear Progress',
   component: LinearProgress,
   render: (props) => <LinearProgress {...props} className="min-w-[80dvw]" />,
@@ -30,10 +30,6 @@ const meta = {
       options: ['indeterminate', 'determinate'],
     },
   },
-} satisfies Meta<typeof LinearProgress>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
+export const Default = meta.story()

@@ -1,5 +1,10 @@
 import type { ElementType, Ref } from 'react'
-import { makeStyles, type MakeStylesProps, type OverridableComponent, type OverridableComponentProps } from '../utils'
+import {
+  makeStyles,
+  type MakeStylesProps,
+  type OverridableComponent,
+  type OverridableComponentProps,
+} from '../utils'
 
 const textStyles = makeStyles({
   base: '',
@@ -65,12 +70,13 @@ const sizeMappings = Object.freeze({
 
 type TextTypeMap = {
   props: MakeStylesProps<typeof textStyles> & {
-    ref?: Ref<HTMLElement>
-  }
-  defaultComponent: 'p'
+    ref?: Ref<HTMLElement>;
+  };
+  defaultComponent: 'p';
 }
 
-export type TextProps<C extends ElementType = TextTypeMap['defaultComponent']> = OverridableComponentProps<TextTypeMap, C>
+export type TextProps<C extends ElementType = TextTypeMap['defaultComponent']> =
+  OverridableComponentProps<TextTypeMap, C>
 
 const Text: OverridableComponent<TextTypeMap> = ({
   align,
@@ -84,7 +90,21 @@ const Text: OverridableComponent<TextTypeMap> = ({
   ...props
 }: TextProps) => {
   const Component = props.component ?? sizeMappings[size ?? 'body']
-  return <Component {...props} className={textStyles({ align, className, color, ellipsize, italic, size, underline, weight })} />
+  return (
+    <Component
+      {...props}
+      className={textStyles({
+        align,
+        className,
+        color,
+        ellipsize,
+        italic,
+        size,
+        underline,
+        weight,
+      })}
+    />
+  )
 }
 
 export default Text

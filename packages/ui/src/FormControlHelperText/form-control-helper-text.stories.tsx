@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import FormControlHelperText from './form-control-helper-text'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Form Control Helper Text',
   component: FormControlHelperText,
   parameters: {
@@ -11,18 +11,14 @@ const meta = {
   args: {
     children: 'This is a helper text',
   },
-} satisfies Meta<typeof FormControlHelperText>
+})
 
-export default meta
+export const Default = meta.story()
 
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
-
-export const WithError: Story = {
+export const WithError = meta.story({
   render: (args) => (
     <div className="group/form-control error">
       <FormControlHelperText {...args}>Error message text</FormControlHelperText>
     </div>
   ),
-}
+})

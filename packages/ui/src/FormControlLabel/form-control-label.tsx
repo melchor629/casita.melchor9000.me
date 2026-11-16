@@ -2,9 +2,11 @@ import type { ComponentProps } from 'react'
 import Text from '../Text'
 import { makeStyles } from '../utils'
 
-export type FormControlLabelProps = Readonly<Omit<ComponentProps<'label'>, 'color'> & {
-  margin?: 'none' | 'dense' | 'normal'
-}>
+export type FormControlLabelProps = Readonly<
+  Omit<ComponentProps<'label'>, 'color'> & {
+    margin?: 'none' | 'dense' | 'normal';
+  }
+>
 
 const createStyles = makeStyles({
   base: `
@@ -22,10 +24,23 @@ const createStyles = makeStyles({
   },
 })
 
-export default function FormControlLabel({ children, className, margin = 'none', ...props }: FormControlLabelProps) {
+export default function FormControlLabel({
+  children,
+  className,
+  margin = 'none',
+  ...props
+}: FormControlLabelProps) {
   const styles = createStyles({ className, margin })
   return (
-    <Text component="label" {...props} color="inherit" size="body" weight="medium" className={styles} ellipsize>
+    <Text
+      component="label"
+      {...props}
+      color="inherit"
+      size="body"
+      weight="medium"
+      className={styles}
+      ellipsize
+    >
       {children}
     </Text>
   )

@@ -2,8 +2,7 @@ import { ButtonGroupContext } from '../Button/button-group-context'
 import { clsx } from '../utils'
 
 export type ButtonGroupProps = Readonly<
-  & React.ComponentProps<'div'>
-  & React.ComponentProps<typeof ButtonGroupContext>['value']
+  React.ComponentProps<'div'> & React.ComponentProps<typeof ButtonGroupContext>['value']
 >
 
 /**
@@ -12,7 +11,14 @@ export type ButtonGroupProps = Readonly<
  * This component groups a set of buttons, applying shared styling.
  * Individual buttons can override shared styles.
  */
-export default function ButtonGroup({ children, className, color, size, variant, ...props }: ButtonGroupProps) {
+export default function ButtonGroup({
+  children,
+  className,
+  color,
+  size,
+  variant,
+  ...props
+}: ButtonGroupProps) {
   return (
     <div
       {...props}
@@ -22,9 +28,7 @@ export default function ButtonGroup({ children, className, color, size, variant,
         className,
       )}
     >
-      <ButtonGroupContext value={{ color, size, variant }}>
-        {children}
-      </ButtonGroupContext>
+      <ButtonGroupContext value={{ color, size, variant }}>{children}</ButtonGroupContext>
     </div>
   )
 }

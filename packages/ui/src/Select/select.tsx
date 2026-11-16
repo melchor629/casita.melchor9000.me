@@ -1,27 +1,26 @@
 import { useCallback, useEffect, useMemo, type ChangeEvent, type ComponentProps } from 'react'
 import { clsx } from '../utils'
 
-export type SelectProps<T = string> = Readonly<Omit<ComponentProps<'select'>, 'value' | 'onChange' | 'role' | 'size'> & {
-  emptyValue?: T
-  values: readonly T[]
-  keySelector?: (value: T) => string
-  labelSelector?: (value: T) => string
-  onChange?: (value: T | null) => void
-  value: T | null
-  fullWidth?: boolean
-  size?: 'small' | 'medium' | 'large'
-  selectSize?: number
-}>
+export type SelectProps<T = string> = Readonly<
+  Omit<ComponentProps<'select'>, 'value' | 'onChange' | 'role' | 'size'> & {
+    emptyValue?: T;
+    values: readonly T[];
+    keySelector?: (value: T) => string;
+    labelSelector?: (value: T) => string;
+    onChange?: (value: T | null) => void;
+    value: T | null;
+    fullWidth?: boolean;
+    size?: 'small' | 'medium' | 'large';
+    selectSize?: number;
+  }
+>
 
 const iden = (value: unknown): string => value as string
 const str: (value: unknown) => string = JSON.stringify
 
 function Option({ children, className, ...props }: ComponentProps<'option'>) {
   return (
-    <option
-      {...props}
-      className={clsx('text-text-main bg-text-contrasted', className)}
-    >
+    <option {...props} className={clsx('text-text-main bg-text-contrasted', className)}>
       {children}
     </option>
   )
@@ -43,12 +42,18 @@ function Select<T>({
 }: SelectProps<T>) {
   const keys = useMemo(() => values.map(keySelector).map(str), [values, keySelector])
   const labels = useMemo(() => values.map(labelSelector), [values, labelSelector])
-  const valued = useMemo(() => value != null ? str(keySelector(value)) : '', [keySelector, value])
+  const valued = useMemo(
+    () => (value != null ? str(keySelector(value)) : ''),
+    [keySelector, value],
+  )
 
-  const onChangeImpl = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
-    const key = e.currentTarget.value
-    onChange?.(values.find((_, i) => keys[i] === key) ?? null)
-  }, [values, keys, onChange])
+  const onChangeImpl = useCallback(
+    (e: ChangeEvent<HTMLSelectElement>) => {
+      const key = e.currentTarget.value
+      onChange?.(values.find((_, i) => keys[i] === key) ?? null)
+    },
+    [values, keys, onChange],
+  )
 
   useEffect(() => {
     if (emptyValue != null) {
@@ -85,7 +90,9 @@ function Select<T>({
         </Option>
       )}
       {values.map((_, i) => (
-        <Option key={keys[i]} value={keys[i]}>{labels[i]}</Option>
+        <Option key={keys[i]} value={keys[i]}>
+          {labels[i]}
+        </Option>
       ))}
     </select>
   )

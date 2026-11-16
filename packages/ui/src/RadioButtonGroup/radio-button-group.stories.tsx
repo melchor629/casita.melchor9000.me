@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
-import ButtonStoriesMeta from '../Button/button.stories'
+import preview from '#.storybook/preview'
+import { Default as ButtonStoriesMeta } from '../Button/button.stories'
 import { RadioButtonGroup, RadioButton } from '.'
 
-const meta = {
+const meta = preview.meta({
   title: 'molecules/RadioButtonGroup',
   component: RadioButtonGroup,
   subcomponents: {
@@ -21,17 +21,13 @@ const meta = {
     onChange: fn(),
   },
   argTypes: {
-    color: ButtonStoriesMeta.argTypes.color,
-    size: ButtonStoriesMeta.argTypes.size,
-    variant: ButtonStoriesMeta.argTypes.variant,
+    color: ButtonStoriesMeta.meta.input.argTypes!.color,
+    size: ButtonStoriesMeta.meta.input.argTypes!.size,
+    variant: ButtonStoriesMeta.meta.input.argTypes!.variant,
   },
-} satisfies Meta<typeof RadioButtonGroup>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {
+export const Default = meta.story({
   render: (props) => (
     <RadioButtonGroup {...props}>
       <RadioButton value="1">First</RadioButton>
@@ -39,4 +35,4 @@ export const Default: Story = {
       <RadioButton value="3">Third</RadioButton>
     </RadioButtonGroup>
   ),
-}
+})

@@ -9,12 +9,13 @@ type CollapseMap = {
      * other techniques of collapsing. Note that when this is filled, the
      * `unmounWhenHidden` will be forced to be false.
      */
-    minSize?: string
-  }
-  defaultComponent: 'div'
+    minSize?: string;
+  };
+  defaultComponent: 'div';
 }
 
-export type CollapseProps<BaseElement extends ElementType = CollapseMap['defaultComponent']> = OverridableComponentProps<CollapseMap, BaseElement>
+export type CollapseProps<BaseElement extends ElementType = CollapseMap['defaultComponent']> =
+  OverridableComponentProps<CollapseMap, BaseElement>
 
 /**
  * Element that collapses or expands its contents based on the `show` prop. When expanding,

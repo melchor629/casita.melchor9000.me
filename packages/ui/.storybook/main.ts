@@ -1,6 +1,6 @@
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-import type { StorybookConfig } from '@storybook/react-vite'
+import { dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { defineMain } from '@storybook/react-vite/node'
 import tailwindcss from '@tailwindcss/vite'
 
 /**
@@ -10,7 +10,8 @@ import tailwindcss from '@tailwindcss/vite'
 function getAbsolutePath(value: string) {
   return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)))
 }
-const config: StorybookConfig = {
+
+export default defineMain({
   stories: [
     '../src/**/*.mdx',
     '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
@@ -26,7 +27,6 @@ const config: StorybookConfig = {
   features: {
     componentsManifest: true,
     experimentalReactComponentMeta: true,
-    experimentalReview: true,
   },
   viteFinal(config) {
     config.plugins = [
@@ -35,5 +35,4 @@ const config: StorybookConfig = {
     ]
     return config
   },
-}
-export default config
+})

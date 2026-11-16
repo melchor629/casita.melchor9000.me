@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import InputLabel from '../InputLabel'
 import Checkbox from './checkbox'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Checkbox',
   component: Checkbox,
   parameters: {
@@ -15,15 +15,12 @@ const meta = {
     readOnly: false,
   },
   argTypes: {},
-} satisfies Meta<typeof Checkbox>
+})
 
-export default meta
+export const Default = meta.story()
 
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
-
-export const WithLabel: Story = {
-  render: (args) =>
-    <InputLabel input={<Checkbox id="checkbox" {...args} />}>Checkbox label</InputLabel>,
-}
+export const WithLabel = meta.story({
+  render: (args) => (
+    <InputLabel input={<Checkbox id="checkbox" {...args} />}>Checkbox label</InputLabel>
+  ),
+})

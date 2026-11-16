@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import preview from '#.storybook/preview'
 import CircularProgress from './circular-progress'
 
-const meta = {
+const meta = preview.meta({
   title: 'atoms/Circular Progress',
   component: CircularProgress,
   parameters: {
@@ -33,10 +33,6 @@ const meta = {
       max: 100,
     },
   },
-} satisfies Meta<typeof CircularProgress>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
+export const Default = meta.story()

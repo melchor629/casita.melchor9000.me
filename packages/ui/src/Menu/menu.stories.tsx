@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
+import preview from '#.storybook/preview'
 import { Android, Github, Home, Settings } from '../icons'
 import Menu from './menu'
 import MenuItem from './menu-item'
 
-const meta = {
+const meta = preview.meta({
   title: 'molecules/Menu',
   component: Menu,
   subcomponents: {
@@ -47,10 +47,6 @@ const meta = {
     ],
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof Menu>
+})
 
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {}
+export const Default = meta.story()
