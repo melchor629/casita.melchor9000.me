@@ -5,17 +5,32 @@ export type IconProps<T extends BaseIconProps['type'] = BaseIconProps['type']> =
   'icon' | 'type'
 >
 
-const makeMaterialIcon
-  = (icon: string, title?: string) => (props: IconProps<'material-symbols'>) => (
-    <Icon {...props} icon={icon} title={title} type="material-symbols" />
+const makeMaterialIcon =
+  (icon: string, title?: string) => (props: IconProps<'material-symbols'>) => (
+    <Icon
+      {...props}
+      icon={icon}
+      title={title}
+      type="material-symbols"
+    />
   )
-const makeFaRegularIcon
-  = (icon: string, title?: string) => (props: IconProps<'fontawesome-regular'>) => (
-    <Icon {...props} icon={icon} title={title} type="fontawesome-regular" />
+const makeFaRegularIcon =
+  (icon: string, title?: string) => (props: IconProps<'fontawesome-regular'>) => (
+    <Icon
+      {...props}
+      icon={icon}
+      title={title}
+      type="fontawesome-regular"
+    />
   )
-const makeFaBrandsIcon
-  = (icon: string, title?: string) => (props: IconProps<'fontawesome-brands'>) => (
-    <Icon {...props} icon={icon} title={title} type="fontawesome-brands" />
+const makeFaBrandsIcon =
+  (icon: string, title?: string) => (props: IconProps<'fontawesome-brands'>) => (
+    <Icon
+      {...props}
+      icon={icon}
+      title={title}
+      type="fontawesome-brands"
+    />
   )
 
 // Material Symbols

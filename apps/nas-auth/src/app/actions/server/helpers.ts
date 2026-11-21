@@ -4,10 +4,12 @@ export type FailableError = Readonly<{
   cause?: FailableError
 }>
 
-export type FailableValidationFields = ReadonlyArray<Readonly<{
-  name: string
-  messages: ReadonlyArray<string>
-}>>
+export type FailableValidationFields = ReadonlyArray<
+  Readonly<{
+    name: string
+    messages: ReadonlyArray<string>
+  }>
+>
 
 export type FailableResult<TResult> = Readonly<
   | readonly [kind: 'k', v: TResult]
@@ -23,27 +25,15 @@ const mapError = (error: Error): FailableError => ({
   cause: error.cause instanceof Error ? mapError(error.cause) : undefined,
 })
 
-export const ok = <T>(value: T): FailableResult<T> => Object.freeze([
-  'k',
-  value,
-])
+export const ok = <T>(value: T): FailableResult<T> => Object.freeze(['k', value])
 
-export const invalid = <T = never>(fields: FailableValidationFields): FailableResult<T> => Object.freeze([
-  'v',
-  Object.freeze(fields),
-])
+export const invalid = <T = never>(fields: FailableValidationFields): FailableResult<T> =>
+  Object.freeze(['v', Object.freeze(fields)])
 
-export const error = <T = never>(error: Error): FailableResult<T> => Object.freeze([
-  'e',
-  mapError(error),
-])
+export const error = <T = never>(error: Error): FailableResult<T> =>
+  Object.freeze(['e', mapError(error)])
 
-export const forbidden = <T = never>(message: string): FailableResult<T> => Object.freeze([
-  'f',
-  message,
-])
+export const forbidden = <T = never>(message: string): FailableResult<T> =>
+  Object.freeze(['f', message])
 
-export const redirect = <T = never>(path: string): FailableResult<T> => Object.freeze([
-  'r',
-  path,
-])
+export const redirect = <T = never>(path: string): FailableResult<T> => Object.freeze(['r', path])

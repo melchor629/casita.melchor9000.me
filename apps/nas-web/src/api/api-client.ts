@@ -1,10 +1,5 @@
 import baseUrl from './base-url'
-import {
-  type BodyTypes,
-  type HTTPResponse,
-  type RequestOptions,
-  sendRequest,
-} from './client'
+import { type BodyTypes, type HTTPResponse, type RequestOptions, sendRequest } from './client'
 
 export class ApiClientException<T = unknown> extends Error {
   public readonly response: HTTPResponse
@@ -25,12 +20,37 @@ export class ApiClientException<T = unknown> extends Error {
 export interface ApiClient {
   get<T>(this: void, url: string, req?: Omit<RequestOptions, 'method'>): Promise<T>
   getRaw(this: void, url: string, type: 'blob', req?: Omit<RequestOptions, 'method'>): Promise<Blob>
-  getRaw(this: void, url: string, type: 'text', req?: Omit<RequestOptions, 'method'>): Promise<string>
-  getRaw(this: void, url: string, type: 'blob' | 'text', req?: Omit<RequestOptions, 'method'>): Promise<Blob | string>
-  post<BT extends BodyTypes, RT>(this: void, url: string, body: BT, req?: Omit<RequestOptions, 'method'>): Promise<RT>
+  getRaw(
+    this: void,
+    url: string,
+    type: 'text',
+    req?: Omit<RequestOptions, 'method'>,
+  ): Promise<string>
+  getRaw(
+    this: void,
+    url: string,
+    type: 'blob' | 'text',
+    req?: Omit<RequestOptions, 'method'>,
+  ): Promise<Blob | string>
+  post<BT extends BodyTypes, RT>(
+    this: void,
+    url: string,
+    body: BT,
+    req?: Omit<RequestOptions, 'method'>,
+  ): Promise<RT>
   del<RT>(this: void, url: string, req?: Omit<RequestOptions, 'method'>): Promise<RT>
-  patch<BT extends BodyTypes, RT>(this: void, url: string, body: BT, req?: Omit<RequestOptions, 'method'>): Promise<RT>
-  put<BT extends BodyTypes, RT>(this: void, url: string, body: BT, req?: Omit<RequestOptions, 'method'>): Promise<RT>
+  patch<BT extends BodyTypes, RT>(
+    this: void,
+    url: string,
+    body: BT,
+    req?: Omit<RequestOptions, 'method'>,
+  ): Promise<RT>
+  put<BT extends BodyTypes, RT>(
+    this: void,
+    url: string,
+    body: BT,
+    req?: Omit<RequestOptions, 'method'>,
+  ): Promise<RT>
   getAccessToken(this: void): Promise<string | null>
 }
 
@@ -44,25 +64,23 @@ const retryWait = (res: HTTPResponse) => {
 }
 
 const identifyExceptionAndThrow = async (res: HTTPResponse) => {
-  if (!res.headers.get('Content-Type')?.toLowerCase()
-    .includes('application/json')) {
+  if (!res.headers.get('Content-Type')?.toLowerCase().includes('application/json')) {
     throw new ApiClientException(res, await res.text())
   }
 
-  const parsedJson = await res.json() as object
+  const parsedJson = (await res.json()) as object
   throw new ApiClientException(res, parsedJson)
 }
 
 const headersWithToken = async (request?: RequestOptionsWithToken): Promise<HeadersInit> => {
   const token = await request?.getToken?.()
   if (!token) {
-    return request?.headers || {}
+    return new Headers(request?.headers)
   }
 
-  return {
-    ...(request?.headers || {}),
-    Authorization: `Bearer ${token}`,
-  }
+  const headers = new Headers(request?.headers)
+  headers.set('Authorization', `Bearer ${token}`)
+  return headers
 }
 
 const requestOptionsWithToken = async (
@@ -73,7 +91,7 @@ const requestOptionsWithToken = async (
     return { ...r, headers: await headersWithToken(r), method }
   }
 
-  return { ...(r || {}), method }
+  return { ...r, method }
 }
 
 const getUrl = (url: string) => {
@@ -107,9 +125,21 @@ export async function get<T>(url: string, r?: RequestOptionsWithToken): Promise<
 }
 
 export async function getRaw(url: string, type: 'blob', r?: RequestOptionsWithToken): Promise<Blob>
-export async function getRaw(url: string, type: 'text', r?: RequestOptionsWithToken): Promise<string>
-export async function getRaw(url: string, type: 'blob' | 'text', r?: RequestOptionsWithToken): Promise<Blob | string>
-export async function getRaw(url: string, type: 'blob' | 'text', r?: RequestOptionsWithToken): Promise<Blob | string> {
+export async function getRaw(
+  url: string,
+  type: 'text',
+  r?: RequestOptionsWithToken,
+): Promise<string>
+export async function getRaw(
+  url: string,
+  type: 'blob' | 'text',
+  r?: RequestOptionsWithToken,
+): Promise<Blob | string>
+export async function getRaw(
+  url: string,
+  type: 'blob' | 'text',
+  r?: RequestOptionsWithToken,
+): Promise<Blob | string> {
   const res = await sendRequest(getUrl(url), await requestOptionsWithToken(r))
   if (res.ok) {
     return type === 'blob' ? res.blob() : res.text()

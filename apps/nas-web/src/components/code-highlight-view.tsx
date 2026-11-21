@@ -83,7 +83,11 @@ export default function CodeHighlightView({ forceLanguage, module, path }: CodeH
   if (codeHighlight !== null) {
     return (
       <div>
-        <Text size="bodySmall" color="textSecondary" className="mb-1">
+        <Text
+          size="bodySmall"
+          color="textSecondary"
+          className="mb-1"
+        >
           {`${codeHighlight.lang ?? 'Unknown'} (${codeHighlight.relevance}%) `}
           {!codeHighlight.highlighted && <CircularProgress />}
         </Text>

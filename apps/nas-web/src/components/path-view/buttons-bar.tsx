@@ -1,9 +1,7 @@
 import { Button } from '@melchor629/ui'
-import ReactRouterButton from '@melchor629/ui/ReactRouterButton'
 import { ArrowUpward, MoreVert } from '@melchor629/ui/icons'
-import {
-  type FC, Fragment, useCallback, useEffect, useMemo, useState,
-} from 'react'
+import ReactRouterButton from '@melchor629/ui/ReactRouterButton'
+import { type FC, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import * as Path from '@/utils/path'
@@ -17,13 +15,9 @@ interface ButtonsBarProps {
   readonly selectedElements: Array<DirectoryMetadata | FileMetadata>
 }
 
-const ButtonsBar: FC<ButtonsBarProps> = ({
-  loading,
-  metadata,
-  module,
-  selectedElements,
-}) => {
-  const currentThing = metadata.type === 'dir' && selectedElements.length > 0 ? selectedElements : metadata
+const ButtonsBar: FC<ButtonsBarProps> = ({ loading, metadata, module, selectedElements }) => {
+  const currentThing =
+    metadata.type === 'dir' && selectedElements.length > 0 ? selectedElements : metadata
   const [optionsButtonElement, setOptionsButtonElement] = useState<HTMLElement | null>(null)
   const [showOptionsMenu, setShowOptionsMenu] = useState(false)
   const [thing, setThing] = useState(currentThing)
@@ -98,11 +92,7 @@ const ButtonsBar: FC<ButtonsBarProps> = ({
           ref={setOptionsButtonElement}
           icon={<MoreVert />}
         >
-          <span>
-            {metadata.type === 'dir' ? 'Folder' : 'File'}
-            {' '}
-            options
-          </span>
+          <span>{metadata.type === 'dir' ? 'Folder' : 'File'} options</span>
         </Button>,
       )
     }
@@ -124,13 +114,21 @@ const ButtonsBar: FC<ButtonsBarProps> = ({
 
   useEffect(() => {
     const ctrl = new AbortController()
-    window.addEventListener('contextmenu', () => setShowOptionsMenu(false), { capture: false, signal: ctrl.signal })
+    window.addEventListener('contextmenu', () => setShowOptionsMenu(false), {
+      capture: false,
+      signal: ctrl.signal,
+    })
     return () => ctrl.abort()
   }, [])
 
   return (
-    <ButtonsBarContainer disabled={loading} role="group">
-      {items.map((i) => <Fragment key={i.key}>{i}</Fragment>)}
+    <ButtonsBarContainer
+      disabled={loading}
+      role="group"
+    >
+      {items.map((i) => (
+        <Fragment key={i.key}>{i}</Fragment>
+      ))}
 
       <EntriesContextMenu
         referenceElement={optionsButtonElement}

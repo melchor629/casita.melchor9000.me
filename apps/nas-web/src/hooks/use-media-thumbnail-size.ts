@@ -14,7 +14,7 @@ const sizes = {
   season: { width: 200, height: 300 },
   show: { width: 200, height: 300 },
   track: { width: 200, height: 200 },
-} satisfies Record<Item['type'], { width: number, height?: number }>
+} satisfies Record<Item['type'], { width: number; height?: number }>
 
 const useMediaThumbnailSize = (type: Item['type']) => {
   const isSmallScreen = useMatchMediaQuery('(max-width: 767.98px)')

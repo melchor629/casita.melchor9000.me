@@ -1,5 +1,5 @@
-import { defineRelations } from "drizzle-orm";
-import * as schema from "./schema.ts";
+import { defineRelations } from 'drizzle-orm'
+import * as schema from './schema.ts'
 
 export const relations = defineRelations(schema, (r) => ({
   apiResource: {
@@ -35,7 +35,7 @@ export const relations = defineRelations(schema, (r) => ({
       from: r.userPermission.permissionId,
       to: r.permission.id,
       optional: false,
-    })
+    }),
   },
   permission: {
     application: r.one.application({

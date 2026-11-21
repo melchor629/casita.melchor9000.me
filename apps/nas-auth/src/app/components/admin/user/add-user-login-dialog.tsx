@@ -29,9 +29,18 @@ const AddUserLoginDialog = ({ opened, setOpened, userName }: AddUserLoginDialogP
   const [error, setError] = useState<string | null>(null)
 
   const onClose = useCallback(() => setOpened(false), [setOpened])
-  const password1Changed = useCallback((e: ChangeEvent<HTMLInputElement>) => setPassword1(e.currentTarget.value), [])
-  const password2Changed = useCallback((e: ChangeEvent<HTMLInputElement>) => setPassword2(e.currentTarget.value), [])
-  const disabledChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => setDisabled(e.currentTarget.checked), [])
+  const password1Changed = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setPassword1(e.currentTarget.value),
+    [],
+  )
+  const password2Changed = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setPassword2(e.currentTarget.value),
+    [],
+  )
+  const disabledChanged = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setDisabled(e.currentTarget.checked),
+    [],
+  )
 
   const clearState = useCallback(() => {
     setPassword1('')
@@ -41,33 +50,39 @@ const AddUserLoginDialog = ({ opened, setOpened, userName }: AddUserLoginDialogP
     addUserLoginMutation.reset()
   }, [addUserLoginMutation])
 
-  const save = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const save = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
 
-    if (!password1 || !password2) {
-      setError('Password is required')
-      return
-    }
+      if (!password1 || !password2) {
+        setError('Password is required')
+        return
+      }
 
-    if (password1 !== password2) {
-      setError('Passwords mismatch')
-      return
-    }
+      if (password1 !== password2) {
+        setError('Passwords mismatch')
+        return
+      }
 
-    setError(null)
-    getLoginId(userName, password1)
-      .then((loginId) => {
-        return addUserLoginMutation.mutateAsync({
-          type: 'local',
-          data: null,
-          disabled,
-          loginId,
-          userName,
-        }, { onSuccess: () => void revalidator() })
-      })
-      .then(() => setOpened(false))
-      .catch(() => {})
-  }, [password1, password2, userName, addUserLoginMutation, disabled, revalidator, setOpened])
+      setError(null)
+      getLoginId(userName, password1)
+        .then((loginId) => {
+          return addUserLoginMutation.mutateAsync(
+            {
+              type: 'local',
+              data: null,
+              disabled,
+              loginId,
+              userName,
+            },
+            { onSuccess: () => void revalidator() },
+          )
+        })
+        .then(() => setOpened(false))
+        .catch(() => {})
+    },
+    [password1, password2, userName, addUserLoginMutation, disabled, revalidator, setOpened],
+  )
 
   return (
     <Dialog
@@ -79,17 +94,44 @@ const AddUserLoginDialog = ({ opened, setOpened, userName }: AddUserLoginDialogP
       onClose={onClose}
       onCloseEnd={clearState}
       buttons={[
-        <Button key="save" onClick={save} loading={addUserLoginMutation.isPending}>Save</Button>,
+        <Button
+          key="save"
+          onClick={save}
+          loading={addUserLoginMutation.isPending}
+        >
+          Save
+        </Button>,
       ]}
     >
       <FormControlLabel htmlFor="password-1">Password</FormControlLabel>
-      <TextInput type="password" id="password-1" value={password1} onChange={password1Changed} />
+      <TextInput
+        type="password"
+        id="password-1"
+        value={password1}
+        onChange={password1Changed}
+      />
 
-      <FormControlLabel htmlFor="password-2" margin="normal">Repeat Password</FormControlLabel>
-      <TextInput type="password" id="password-2" value={password2} onChange={password2Changed} />
+      <FormControlLabel
+        htmlFor="password-2"
+        margin="normal"
+      >
+        Repeat Password
+      </FormControlLabel>
+      <TextInput
+        type="password"
+        id="password-2"
+        value={password2}
+        onChange={password2Changed}
+      />
 
       <InputLabel
-        input={<Checkbox id="disabled" checked={disabled} onChange={disabledChanged} />}
+        input={
+          <Checkbox
+            id="disabled"
+            checked={disabled}
+            onChange={disabledChanged}
+          />
+        }
         margin="normal"
       >
         Disabled

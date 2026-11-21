@@ -18,24 +18,22 @@ interface HeaderProps {
   readonly selectedElements: Array<DirectoryMetadata | FileMetadata>
 }
 
-const Header: FC<HeaderProps> = ({
-  loading,
-  metadata,
-  module,
-  onClick,
-  selectedElements,
-}) => (
-  <HeaderContainer className="sticky z-10" onClick={onClick}>
-    <HeaderTitle>{metadata.path === '/' ? module : Path.basename(metadata.path) || module}</HeaderTitle>
+const Header: FC<HeaderProps> = ({ loading, metadata, module, onClick, selectedElements }) => (
+  <HeaderContainer
+    className="sticky z-10"
+    onClick={onClick}
+  >
+    <HeaderTitle>
+      {metadata.path === '/' ? module : Path.basename(metadata.path) || module}
+    </HeaderTitle>
     <HeaderElementsContainer>
-      <div className="text-body-small w-full mb-2">
+      <div className="text-body-small mb-2 w-full">
         {Path.join('/', module, metadata.path)
           .split('/')
           .filter((p) => p)
           .map((p, i, a) => (
             <Fragment key={a.slice(0, i).join('/') || '/'}>
-              /
-              <ReactRouterLink to={`/${a.slice(0, i + 1).join('/')}`}>{p}</ReactRouterLink>
+              /<ReactRouterLink to={`/${a.slice(0, i + 1).join('/')}`}>{p}</ReactRouterLink>
             </Fragment>
           ))}
       </div>
@@ -43,12 +41,8 @@ const Header: FC<HeaderProps> = ({
       <HeaderElement label="Size">
         {useMemo(() => humanBytes(metadata.stat.size), [metadata.stat.size])}
       </HeaderElement>
-      <HeaderElement label="UID">
-        {metadata.stat.uid}
-      </HeaderElement>
-      <HeaderElement label="GID">
-        {metadata.stat.gid}
-      </HeaderElement>
+      <HeaderElement label="UID">{metadata.stat.uid}</HeaderElement>
+      <HeaderElement label="GID">{metadata.stat.gid}</HeaderElement>
       <HeaderElement label="Perms">
         {useMemo(() => unixPermissions(metadata.stat.fileMode), [metadata.stat.fileMode])}
       </HeaderElement>

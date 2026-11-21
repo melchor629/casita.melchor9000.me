@@ -38,8 +38,8 @@ jobs:
         run: bunx turbo run build --continue=dependencies-successful
         if: ${{ success() || failure() }}
 
-      - name: Check linter
-        run: bunx turbo run check lint --continue=always
+      - name: Run checks
+        run: bunx turbo run check --continue=always
         if: ${{ success() || failure() }}
 
   docker:

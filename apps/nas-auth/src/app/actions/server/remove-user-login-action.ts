@@ -11,7 +11,10 @@ type RemoveUserLoginData = Readonly<{
   type: CreateLoginInput['type']
 }>
 
-async function removeUserLoginAction(context: PageLoaderContext, { loginId, type }: RemoveUserLoginData) {
+async function removeUserLoginAction(
+  context: PageLoaderContext,
+  { loginId, type }: RemoveUserLoginData,
+) {
   const sessionResult = await ensureSession(context, 'user', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult

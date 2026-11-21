@@ -1,28 +1,29 @@
 {
   "name": "nas-auth",
-  "private": true,
   "version": "3.3.12",
+  "private": true,
   "description": "OIDC and Authorization server",
-  "main": "src/index.ts",
-  "type": "module",
-  "scripts": {
-    "start": "node --env-file-if-exists .env ./dist/server.ts",
-    "dev": "NODE_ENV=development node --env-file-if-exists=.env src/index.ts",
-    "build": "vite build --app",
-    "lint": "eslint src",
-    "check": "tsc -p . --noEmit",
-    "docker": "../../docker_build.sh"
-  },
-  "author": "melchor9000",
   "license": "ISC",
+  "author": "melchor9000",
   "bin": {
     "nas-auth": "./src/index.ts",
     "nas-auth-generate-jwks": "./src/generate-keys.js"
   },
+  "type": "module",
+  "main": "src/index.ts",
   "imports": {
     "#actions/*": "./src/app/actions/*",
     "#components/*": "./src/app/components/*",
     "#queries/*": "./src/queries/*"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists .env ./dist/server.ts",
+    "dev": "NODE_ENV=development node --env-file-if-exists=.env src/index.ts",
+    "build": "vite build --app",
+    "check:lint": "oxlint",
+    "check:fmt": "oxfmt --check",
+    "check:ts": "tsc -p . --noEmit",
+    "docker": "../../docker_build.sh"
   },
   "dependencies": {
     "@fastify/caching": "^9.0.5",
@@ -40,14 +41,14 @@
     "@fortawesome/react-fontawesome": "^3.5.0",
     "@melchor629/fastify-infra": "*",
     "@melchor629/infra": "*",
+    "@melchor629/nice-ssr": "*",
     "@melchor629/orm-nas-auth": "*",
     "@melchor629/ui": "*",
-    "@melchor629/nice-ssr": "*",
+    "@opentelemetry/api": "^1.10.0",
+    "@opentelemetry/instrumentation-redis": "^0.73.0",
     "@simplewebauthn/browser": "^14.0.0",
     "@simplewebauthn/server": "^14.1.0",
     "@tanstack/react-query": "^5.107.1",
-    "@opentelemetry/api": "^1.10.0",
-    "@opentelemetry/instrumentation-redis": "^0.73.0",
     "clsx": "^2.1.1",
     "fastify": "^5.12.8",
     "fastify-plugin": "^6.0.1",
@@ -62,14 +63,14 @@
   },
   "devDependencies": {
     "@melchor629/tsconfigs": "*",
-    "@vitejs/plugin-react": "^6.3.0",
     "@tailwindcss/vite": "^4.3.5",
     "@tanstack/eslint-plugin-query": "^5.107.1",
     "@tanstack/react-query-devtools": "^5.107.1",
     "@types/connect": "^3.4.35",
+    "@types/oidc-provider": "^9.13.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@types/oidc-provider": "^9.13.1",
+    "@vitejs/plugin-react": "^6.3.0",
     "pino-pretty": "^13.2.0",
     "tailwindcss": "^4.3.5",
     "vite": "^8.3.8"

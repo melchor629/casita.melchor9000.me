@@ -1,4 +1,13 @@
-import { Button, Table, TableBody, TableContainer, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
+import {
+  Button,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+  Text,
+} from '@melchor629/ui'
 import { Add } from '@melchor629/ui/icons'
 import { useState } from 'react'
 import type { GetApplications } from '#queries/application/get-applications.ts'
@@ -26,12 +35,22 @@ const EditUserPermissions = ({
 
   return (
     <div className="mt-8 mb-2">
-      <div className="flex justify-between items-baseline mb-2">
+      <div className="mb-2 flex items-baseline justify-between">
         <Text size="h3">Permissions</Text>
-        {!readOnly && <Button type="button" size="small" onClick={() => setOpened(true)} icon={<Add />} />}
+        {!readOnly && (
+          <Button
+            type="button"
+            size="small"
+            onClick={() => setOpened(true)}
+            icon={<Add />}
+          />
+        )}
       </div>
       <TableContainer>
-        <Table hover full>
+        <Table
+          hover
+          full
+        >
           <TableHead>
             <TableRow>
               <TableHeadCell>App</TableHeadCell>

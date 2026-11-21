@@ -11,17 +11,30 @@ const breadcrumbSections = [{ part: 'users', name: 'Users' }]
 
 const Users = ({ users }: { readonly users: GetUsers }) => {
   const [opened, setOpened] = useState(false)
-  const { data: { permissions } } = useEnsureGetSession()
+  const {
+    data: { permissions },
+  } = useEnsureGetSession()
   const userPermission = useMemo(() => permissions.find((p) => p.key === 'user'), [permissions])
 
   return (
     <>
-      <div className="flex justify-between items-baseline mb-2">
+      <div className="mb-2 flex items-baseline justify-between">
         <Text size="h2">Users</Text>
-        {userPermission?.write && <Button type="button" size="small" onClick={() => setOpened(true)} icon={<Add />} />}
+        {userPermission?.write && (
+          <Button
+            type="button"
+            size="small"
+            onClick={() => setOpened(true)}
+            icon={<Add />}
+          />
+        )}
       </div>
 
-      <Table className="mt-2 mb-6" hover full>
+      <Table
+        className="mt-2 mb-6"
+        hover
+        full
+      >
         <TableHead>
           <TableRow>
             <TableHeadCell>Pic</TableHeadCell>
@@ -39,7 +52,12 @@ const Users = ({ users }: { readonly users: GetUsers }) => {
         </TableBody>
       </Table>
 
-      {userPermission?.write && <AddUserDialog opened={opened} setOpened={setOpened} />}
+      {userPermission?.write && (
+        <AddUserDialog
+          opened={opened}
+          setOpened={setOpened}
+        />
+      )}
 
       <AdminBreadcrumb sections={breadcrumbSections} />
     </>

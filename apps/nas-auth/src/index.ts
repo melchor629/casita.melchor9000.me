@@ -8,12 +8,14 @@ try {
   await app.listen({
     port,
     host: isDebug ? 'localhost' : '::',
-  });
+  })
 
-  ['SIGINT', 'SIGTERM'].map((signal) => process.once(signal, () => {
-    app.log.warn('Closing...')
-    app.close().catch(() => {})
-  }))
+  ;['SIGINT', 'SIGTERM'].map((signal) =>
+    process.once(signal, () => {
+      app.log.warn('Closing...')
+      app.close().catch(() => {})
+    }),
+  )
 } catch (error) {
   console.error(error)
   process.exit(1)

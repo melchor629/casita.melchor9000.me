@@ -1,7 +1,5 @@
 import type { ApiClient } from '../api/api-client'
-import {
-  cancelUpload, doUpload, endUpload, resumeUpload, startUpload,
-} from '../api/fs'
+import { cancelUpload, doUpload, endUpload, resumeUpload, startUpload } from '../api/fs'
 import type { Job } from '../hooks/use-job-handler'
 import { humanBytes } from './number-format'
 import * as path from './path'
@@ -62,7 +60,11 @@ class UploadWorker extends UiWorker<UploadRequest, UploadData> {
     await endUpload(context.apiClient, context.params.module, context.data.uploadToken)
   }
 
-  protected async prepareRetry(apiClient: ApiClient, job: Job<UploadData>, params: UploadRequest): Promise<Omit<UploadData, 'jobId'>> {
+  protected async prepareRetry(
+    apiClient: ApiClient,
+    job: Job<UploadData>,
+    params: UploadRequest,
+  ): Promise<Omit<UploadData, 'jobId'>> {
     const { startPosition } = await resumeUpload(
       apiClient,
       params.module,
@@ -73,7 +75,8 @@ class UploadWorker extends UiWorker<UploadRequest, UploadData> {
     return { uploadToken: job.data.uploadToken, startPosition }
   }
 
-  protected generateName?: ((params: UploadRequest) => string) | undefined = (params) => `(${params.module}) ${params.file.name}`
+  protected generateName?: ((params: UploadRequest) => string) | undefined = (params) =>
+    `(${params.module}) ${params.file.name}`
 }
 
 const uploadWorker = new UploadWorker()

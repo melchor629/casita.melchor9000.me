@@ -29,11 +29,7 @@ const searchController: Controller<typeof schema> = async (req, reply) => {
     return
   }
 
-  reply.send(await mediaRepository.search(
-    req.appTenant!,
-    query,
-    limit,
-  ))
+  reply.send(await mediaRepository.search(req.appTenant!, query, limit))
 }
 
 searchController.options = {

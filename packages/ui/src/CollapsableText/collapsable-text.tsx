@@ -2,19 +2,20 @@ import { useCallback, useMemo, useState } from 'react'
 import Button from '../Button'
 import Collapse from '../Collapse'
 import Fade from '../Fade'
+import { ExpandMore } from '../icons'
 import type { TextProps } from '../Text'
 import Text from '../Text'
 import TransitionGroup from '../TransitionGroup'
-import { ExpandMore } from '../icons'
 import { clsx } from '../utils'
 
 export type CollapsableTextProps = Readonly<
   TextProps<'p'> & {
     /**
      * Maximum number of lines to render when collapsed.
+     *
      * @default 3
      */
-    maxLines?: number;
+    maxLines?: number
   }
 >
 

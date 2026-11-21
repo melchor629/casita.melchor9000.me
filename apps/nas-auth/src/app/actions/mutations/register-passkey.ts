@@ -1,4 +1,7 @@
-import { startRegistration, type PublicKeyCredentialCreationOptionsJSON } from '@simplewebauthn/browser'
+import {
+  startRegistration,
+  type PublicKeyCredentialCreationOptionsJSON,
+} from '@simplewebauthn/browser'
 import { useMutation, type MutationOptions } from '@tanstack/react-query'
 import { getSessionQueryOptions } from '#actions/queries/get-session.ts'
 
@@ -9,12 +12,14 @@ const registerPasskeyOptions: MutationOptions<void, Error, string> = {
       method: 'POST',
     })
     if (!registrationResponse.ok) {
-      throw new Error(`Failed starting registration process: ${registrationResponse.status} ${await registrationResponse.text()}`)
+      throw new Error(
+        `Failed starting registration process: ${registrationResponse.status} ${await registrationResponse.text()}`,
+      )
     }
 
-    const optionsJSON = await registrationResponse.json() as PublicKeyCredentialCreationOptionsJSON
-    const credential = await startRegistration({ optionsJSON })
-      .catch((e) => e as Error)
+    const optionsJSON =
+      (await registrationResponse.json()) as PublicKeyCredentialCreationOptionsJSON
+    const credential = await startRegistration({ optionsJSON }).catch((e) => e as Error)
     if (credential instanceof Error) {
       throw new Error(`Passkey creation failed or canceled: ${credential.message}`)
     }
@@ -31,7 +36,7 @@ const registerPasskeyOptions: MutationOptions<void, Error, string> = {
       throw new Error('Registration verification failed')
     }
 
-    const { verified } = await verificationResponse.json() as { verified: boolean }
+    const { verified } = (await verificationResponse.json()) as { verified: boolean }
     if (!verified) {
       throw new Error('Registration verification failed')
     }

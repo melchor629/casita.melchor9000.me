@@ -6,18 +6,25 @@ type EditUserPermissionInput = {
   write: boolean
 }
 
-const updateUserPermission = async (applicationKey: string, permissionName: string, userName: string, values: EditUserPermissionInput) => {
+const updateUserPermission = async (
+  applicationKey: string,
+  permissionName: string,
+  userName: string,
+  values: EditUserPermissionInput,
+) => {
   const permissionQuery = nasAuthDatabase.$with('perm').as(
     nasAuthDatabase
       .select({ permId: permission.id.as('permId'), userId: user.id.as('userId') })
       .from(permission)
       .innerJoin(application, eq(permission.applicationId, application.id))
       .crossJoin(user)
-      .where(and(
-        eq(permission.name, permissionName),
-        eq(application.key, applicationKey),
-        eq(user.userName, userName),
-      )),
+      .where(
+        and(
+          eq(permission.name, permissionName),
+          eq(application.key, applicationKey),
+          eq(user.userName, userName),
+        ),
+      ),
   )
 
   await nasAuthDatabase
@@ -28,10 +35,12 @@ const updateUserPermission = async (applicationKey: string, permissionName: stri
       write: values.write,
     })
     .from(permissionQuery)
-    .where(and(
-      eq(userPermission.permissionId, permissionQuery.permId),
-      eq(userPermission.userId, permissionQuery.userId),
-    ))
+    .where(
+      and(
+        eq(userPermission.permissionId, permissionQuery.permId),
+        eq(userPermission.userId, permissionQuery.userId),
+      ),
+    )
 }
 
 export default updateUserPermission

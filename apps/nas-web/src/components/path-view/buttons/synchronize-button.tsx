@@ -15,12 +15,14 @@ const SynchronizeButton: FC<SynchronizeButtonProps> = ({ entries, module }) => {
 
   const synchronize = useCallback(() => {
     for (const metadata of entries) {
-      jobsActions.register({
-        type: 'synchronization',
-        module,
-        path: metadata.path,
-        recursive: false,
-      }).catch(() => {})
+      jobsActions
+        .register({
+          type: 'synchronization',
+          module,
+          path: metadata.path,
+          recursive: false,
+        })
+        .catch(() => {})
     }
   }, [module, entries, jobsActions])
 

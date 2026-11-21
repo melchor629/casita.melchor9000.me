@@ -17,7 +17,7 @@ const permissionMapper = makeMapper<{
   table: 'permission'
   dto: PermissionDto
   row: PermissionRow
-  secondaryKey: { name: string, applicationKey: string }
+  secondaryKey: { name: string; applicationKey: string }
 }>()({
   select: {
     name: permission.name,

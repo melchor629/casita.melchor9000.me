@@ -14,14 +14,22 @@ type ApplicationProps = Readonly<{
 }>
 
 const Application = ({ application }: ApplicationProps) => {
-  const { data: { permissions } } = useEnsureGetSession()
+  const {
+    data: { permissions },
+  } = useEnsureGetSession()
 
-  const breadcrumbSections = useMemo(() => [
-    { name: 'Applications', part: 'applications' },
-    { name: application.name ?? '', part: application.key ?? '' },
-  ], [application])
+  const breadcrumbSections = useMemo(
+    () => [
+      { name: 'Applications', part: 'applications' },
+      { name: application.name ?? '', part: application.key ?? '' },
+    ],
+    [application],
+  )
 
-  const applicationPermission = useMemo(() => permissions.find((p) => p.key === 'application')!, [permissions])
+  const applicationPermission = useMemo(
+    () => permissions.find((p) => p.key === 'application')!,
+    [permissions],
+  )
 
   return (
     <>

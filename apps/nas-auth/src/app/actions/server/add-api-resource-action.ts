@@ -12,7 +12,10 @@ type AddApiResourceData = Readonly<{
   name: string
 }>
 
-async function addApiResourceAction(context: PageLoaderContext, { appId, ...data }: AddApiResourceData) {
+async function addApiResourceAction(
+  context: PageLoaderContext,
+  { appId, ...data }: AddApiResourceData,
+) {
   const sessionResult = await ensureSession(context, 'application', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult

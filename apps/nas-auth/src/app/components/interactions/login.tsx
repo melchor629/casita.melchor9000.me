@@ -1,5 +1,13 @@
 import { Alert, Button, CircularProgress, Text, TextInput } from '@melchor629/ui'
-import { AccountCircle, ArrowLeftAlt, ArrowRightAlt, Github, Google, KeyVertical, Passkey } from '@melchor629/ui/icons'
+import {
+  AccountCircle,
+  ArrowLeftAlt,
+  ArrowRightAlt,
+  Github,
+  Google,
+  KeyVertical,
+  Passkey,
+} from '@melchor629/ui/icons'
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useMemo, useState } from 'react'
 import usePasskeyLogin from '#actions/mutations/passkey-login.ts'
@@ -13,26 +21,44 @@ type LoginProps = Readonly<{
 }>
 
 const Login = ({ client, externalAuths, interaction }: LoginProps) => {
-  const [username, setUsername] = useState(interaction.params.login_hint as string ?? '')
+  const [username, setUsername] = useState((interaction.params.login_hint as string) ?? '')
   const [password, setPassword] = useState('')
-  const [step, setStep] = useState<'initial' | 'password' | 'passkey'>(username ? 'password' : 'initial')
-  const postExternalCallback = useMemo(() => new URLSearchParams({
-    uid: interaction.uid,
-  }).toString(), [interaction.uid])
+  const [step, setStep] = useState<'initial' | 'password' | 'passkey'>(
+    username ? 'password' : 'initial',
+  )
+  const postExternalCallback = useMemo(
+    () =>
+      new URLSearchParams({
+        uid: interaction.uid,
+      }).toString(),
+    [interaction.uid],
+  )
   const passkeyLogin = usePasskeyLogin()
 
   const hasGoogleAuth = useMemo(() => externalAuths.includes('google'), [externalAuths])
   const hasGithubAuth = useMemo(() => externalAuths.includes('github'), [externalAuths])
   const showPasswordStep = useCallback(() => setStep('password'), [])
   const backToMethodsStep = useCallback(() => setStep('initial'), [])
-  const signinPasskey = useCallback(() => { setStep('passkey'); passkeyLogin.reset(); passkeyLogin.mutate() }, [passkeyLogin])
+  const signinPasskey = useCallback(() => {
+    setStep('passkey')
+    passkeyLogin.reset()
+    passkeyLogin.mutate()
+  }, [passkeyLogin])
 
   return (
     <>
-      <Text size="h2" className="mb-5">Sign In</Text>
+      <Text
+        size="h2"
+        className="mb-5"
+      >
+        Sign In
+      </Text>
 
-      <div className="relative w-full mb-6">
-        <AnimatePresence mode="wait" initial={false}>
+      <div className="relative mb-6 w-full">
+        <AnimatePresence
+          mode="wait"
+          initial={false}
+        >
           {step === 'initial' && (
             <motion.div
               key="login-method"
@@ -40,7 +66,7 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
               animate={{ opacity: 1, translateX: 0 }}
               exit={{ opacity: 0, translateX: -8 }}
             >
-              <div className="flex flex-col justify-center gap-y-1.5 mb-4">
+              <div className="mb-4 flex flex-col justify-center gap-y-1.5">
                 {hasGoogleAuth && (
                   <Button
                     component="a"
@@ -82,7 +108,13 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
 
               <div className="flex flex-col">
                 <a href={`/i/${interaction.uid}/cancel`}>
-                  <Button className="w-full" variant="text" color="neutral">Cancel</Button>
+                  <Button
+                    className="w-full"
+                    variant="text"
+                    color="neutral"
+                  >
+                    Cancel
+                  </Button>
                 </a>
               </div>
             </motion.div>
@@ -99,7 +131,11 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
               exit={{ opacity: 0, translateX: 8 }}
             >
               {typeof interaction.params.login_error === 'string' && (
-                <Alert severity="error" title="Could not sign in" className="mb-4">
+                <Alert
+                  severity="error"
+                  title="Could not sign in"
+                  className="mb-4"
+                >
                   {interaction.params.login_error}
                 </Alert>
               )}
@@ -131,7 +167,12 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
               />
 
               <div className="flex flex-col gap-1.5">
-                <Button type="submit" icon={<ArrowRightAlt />}>Sign in</Button>
+                <Button
+                  type="submit"
+                  icon={<ArrowRightAlt />}
+                >
+                  Sign in
+                </Button>
                 <Button
                   type="button"
                   variant="text"
@@ -152,13 +193,20 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
               animate={{ opacity: 1, translateX: 0 }}
               exit={{ opacity: 0, translateX: 8 }}
             >
-              <div className="text-center mb-4">
-                <Text size="bodyLarge" className="mb-2">Signing in with Passkey</Text>
-                {passkeyLogin.isPending && (
-                  <CircularProgress size="large" />
-                )}
+              <div className="mb-4 text-center">
+                <Text
+                  size="bodyLarge"
+                  className="mb-2"
+                >
+                  Signing in with Passkey
+                </Text>
+                {passkeyLogin.isPending && <CircularProgress size="large" />}
                 {passkeyLogin.error && (
-                  <Alert severity="error" title="Could not sign in" className="text-start">
+                  <Alert
+                    severity="error"
+                    title="Could not sign in"
+                    className="text-start"
+                  >
                     {passkeyLogin.error.message}
                   </Alert>
                 )}

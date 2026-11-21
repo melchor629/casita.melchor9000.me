@@ -21,37 +21,49 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
   const [email, setEmail] = useState(user.email || '')
   const [disabled, setDisabled] = useState(user.disabled ?? false)
 
-  const save = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const save = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
 
-    if (readOnly) {
-      return
-    }
+      if (readOnly) {
+        return
+      }
 
-    updateUserMutation.mutate({
-      userName: user.userName,
+      updateUserMutation.mutate({
+        userName: user.userName,
+        displayName,
+        givenName,
+        familyName,
+        profileImageUrl,
+        email,
+        disabled,
+      })
+    },
+    [
+      user.userName,
+      readOnly,
+      updateUserMutation,
       displayName,
       givenName,
       familyName,
       profileImageUrl,
       email,
       disabled,
-    })
-  }, [
-    user.userName, readOnly,
-    updateUserMutation,
-    displayName, givenName, familyName, profileImageUrl, email, disabled,
-  ])
+    ],
+  )
 
-  const remove = useCallback((e: MouseEvent<HTMLElement>) => {
-    e.preventDefault()
+  const remove = useCallback(
+    (e: MouseEvent<HTMLElement>) => {
+      e.preventDefault()
 
-    if (readOnly || !canDelete) {
-      return
-    }
+      if (readOnly || !canDelete) {
+        return
+      }
 
-    removeUserMutation.mutate(user.userName)
-  }, [readOnly, canDelete, user.userName, removeUserMutation])
+      removeUserMutation.mutate(user.userName)
+    },
+    [readOnly, canDelete, user.userName, removeUserMutation],
+  )
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -64,7 +76,10 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
   }, [user])
 
   return (
-    <fieldset className="my-2" disabled={readOnly || updateUserMutation.isPending || removeUserMutation.isPending}>
+    <fieldset
+      className="my-2"
+      disabled={readOnly || updateUserMutation.isPending || removeUserMutation.isPending}
+    >
       <FormControlLabel htmlFor="user-name">User Name</FormControlLabel>
       <TextInput
         type="text"
@@ -73,49 +88,89 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
         readOnly
       />
 
-      <FormControlLabel htmlFor="display-name" margin="normal">Display Name</FormControlLabel>
+      <FormControlLabel
+        htmlFor="display-name"
+        margin="normal"
+      >
+        Display Name
+      </FormControlLabel>
       <TextInput
         type="text"
         id="display-name"
         value={displayName}
         readOnly={readOnly}
-        onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setDisplayName(e.currentTarget.value), [])}
+        onChange={useCallback(
+          (e: ChangeEvent<HTMLInputElement>) => setDisplayName(e.currentTarget.value),
+          [],
+        )}
       />
 
-      <FormControlLabel htmlFor="given-name" margin="normal">Given Name</FormControlLabel>
+      <FormControlLabel
+        htmlFor="given-name"
+        margin="normal"
+      >
+        Given Name
+      </FormControlLabel>
       <TextInput
         type="text"
         id="given-name"
         value={givenName}
         readOnly={readOnly}
-        onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setGivenName(e.currentTarget.value), [])}
+        onChange={useCallback(
+          (e: ChangeEvent<HTMLInputElement>) => setGivenName(e.currentTarget.value),
+          [],
+        )}
       />
 
-      <FormControlLabel htmlFor="family-name" margin="normal">Family Name</FormControlLabel>
+      <FormControlLabel
+        htmlFor="family-name"
+        margin="normal"
+      >
+        Family Name
+      </FormControlLabel>
       <TextInput
         type="text"
         id="family-name"
         value={familyName}
         readOnly={readOnly}
-        onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setFamilyName(e.currentTarget.value), [])}
+        onChange={useCallback(
+          (e: ChangeEvent<HTMLInputElement>) => setFamilyName(e.currentTarget.value),
+          [],
+        )}
       />
 
-      <FormControlLabel htmlFor="profile-image-url" margin="normal">Profile Image URL</FormControlLabel>
+      <FormControlLabel
+        htmlFor="profile-image-url"
+        margin="normal"
+      >
+        Profile Image URL
+      </FormControlLabel>
       <TextInput
         type="url"
         id="profile-image-url"
         value={profileImageUrl}
         readOnly={readOnly}
-        onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setProfileImageUrl(e.currentTarget.value), [])}
+        onChange={useCallback(
+          (e: ChangeEvent<HTMLInputElement>) => setProfileImageUrl(e.currentTarget.value),
+          [],
+        )}
       />
 
-      <FormControlLabel htmlFor="email" margin="normal">Email</FormControlLabel>
+      <FormControlLabel
+        htmlFor="email"
+        margin="normal"
+      >
+        Email
+      </FormControlLabel>
       <TextInput
         type="email"
         id="email"
         value={email}
         readOnly={readOnly}
-        onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setEmail(e.currentTarget.value), [])}
+        onChange={useCallback(
+          (e: ChangeEvent<HTMLInputElement>) => setEmail(e.currentTarget.value),
+          [],
+        )}
       />
 
       <div>
@@ -126,7 +181,10 @@ const EditUser = ({ canDelete, readOnly, user }: EditUserProps) => {
               id="disabled"
               checked={disabled}
               readOnly={readOnly}
-              onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setDisabled(e.currentTarget.checked), [])}
+              onChange={useCallback(
+                (e: ChangeEvent<HTMLInputElement>) => setDisabled(e.currentTarget.checked),
+                [],
+              )}
             />
           }
         >

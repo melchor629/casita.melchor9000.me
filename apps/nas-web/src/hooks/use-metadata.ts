@@ -7,12 +7,7 @@ import useApiClient from './use-api-client'
 
 export default function useMetadata(module: string, path: string) {
   const apiClient = useApiClient()
-  const {
-    data: metadata,
-    error,
-    isFetching,
-    refetch,
-  } = useStorageMetadata(module, path)
+  const { data: metadata, error, isFetching, refetch } = useStorageMetadata(module, path)
   const sseRef = useRef<FSEvents>(null!)
 
   useEffect(() => {
@@ -35,9 +30,7 @@ export default function useMetadata(module: string, path: string) {
   }, [module, apiClient])
 
   useEffect(() => {
-    const isCurrentPath = (eventPath: string) => (
-      eventPath === Path.join('/', path)
-    )
+    const isCurrentPath = (eventPath: string) => eventPath === Path.join('/', path)
 
     const reloadEvent = (event: { path: string }) => {
       if (isCurrentPath(event.path)) {

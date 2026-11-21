@@ -1,6 +1,6 @@
 import logger from '../logger.ts'
 
-type CloseableHandle = () => (void | Promise<unknown>)
+type CloseableHandle = () => void | Promise<unknown>
 
 const closeables: Map<string, CloseableHandle> = new Map()
 const log = logger.child({ module: 'stop-signal' })

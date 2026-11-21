@@ -16,13 +16,15 @@ async function handleMessage(filter: unknown) {
     }
 
     if (typeof filter === 'string') {
-      self.postMessage(await queue.add(async () => {
-        if (filter) {
-          return filterResults(await dictionaryPromise, filter)
-        }
+      self.postMessage(
+        await queue.add(async () => {
+          if (filter) {
+            return filterResults(await dictionaryPromise, filter)
+          }
 
-        return []
-      }))
+          return []
+        }),
+      )
     } else if (typeof filter === 'object' && 'type' in filter) {
       //
     }
@@ -32,24 +34,28 @@ async function handleMessage(filter: unknown) {
 }
 
 async function loadDictionary() {
-  const [basic, intermediate] = await Promise.all([loadBasicDictionary(), loadIntermediateDictionary()])
+  const [basic, intermediate] = await Promise.all([
+    loadBasicDictionary(),
+    loadIntermediateDictionary(),
+  ])
   return Object.freeze([...basic, ...intermediate])
 }
 
 async function loadBasicDictionary() {
   const path = '/j/dict.basic.json'
   const res = await fetch(path)
-  const yml = await res.json() as MutDictionaryEntry[][]
+  const yml = (await res.json()) as MutDictionaryEntry[][]
   return Object.freeze(yml.flat().map((entry) => processVocabEntry(entry, 'basic')))
 }
 
 async function loadIntermediateDictionary() {
   const path = '/j/dict.intermediate.json'
   const res = await fetch(path, { cache: 'default' })
-  const yml = await res.json() as Record<string, MutDictionaryEntry[]>
+  const yml = (await res.json()) as Record<string, MutDictionaryEntry[]>
   return Object.freeze(
-    Object.entries(yml)
-      .flatMap(([chapter, entries]) => entries.map((entry) => processVocabEntry(entry, 'intermediate', chapter))),
+    Object.entries(yml).flatMap(([chapter, entries]) =>
+      entries.map((entry) => processVocabEntry(entry, 'intermediate', chapter)),
+    ),
   )
 }
 
@@ -75,7 +81,11 @@ const godanTransformations = (() => {
  * @param chapter Optional chapter to fill in the entry.
  * @returns Altered vocabulary.
  */
-function processVocabEntry(entry: MutDictionaryEntry, level: 'basic' | 'intermediate', chapter?: number | string) {
+function processVocabEntry(
+  entry: MutDictionaryEntry,
+  level: 'basic' | 'intermediate',
+  chapter?: number | string,
+) {
   if (entry.type === 'verb') {
     const root = entry.value.slice(0, -2)
     entry.forms ??= {} as never
@@ -198,7 +208,7 @@ function filterResults(dictionary: readonly DictionaryEntry[], filter: string) {
         const chapter = parseInt(value, 10)
         results = results.filter((result) => result.chapter === chapter)
       } else if (tag === 'l') {
-        const level = value.startsWith('b') ? 'basic' : (value.startsWith('i') ? 'intermediate' : '')
+        const level = value.startsWith('b') ? 'basic' : value.startsWith('i') ? 'intermediate' : ''
         results = results.filter((result) => result.level === level)
       }
     } else {
@@ -207,17 +217,17 @@ function filterResults(dictionary: readonly DictionaryEntry[], filter: string) {
       const hiraValue = toHiragana(latValue)
       const kataValue = toKatakana(latValue)
       if (exact) {
-        results = results.filter((result) => (
-          result.meaning === latValue
-          || result.value === hiraValue
-          || result.value === kataValue
-        ))
+        results = results.filter(
+          (result) =>
+            result.meaning === latValue || result.value === hiraValue || result.value === kataValue,
+        )
       } else {
-        results = results.filter((result) => (
-          result.meaning.includes(latValue)
-          || result.value.includes(hiraValue)
-          || result.value.includes(kataValue)
-        ))
+        results = results.filter(
+          (result) =>
+            result.meaning.includes(latValue)
+            || result.value.includes(hiraValue)
+            || result.value.includes(kataValue),
+        )
       }
     }
   }

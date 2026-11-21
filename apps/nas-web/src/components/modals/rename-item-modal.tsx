@@ -1,7 +1,5 @@
 import { Alert, Button, Dialog, FormControl, TextInput } from '@melchor629/ui'
-import React, {
-  useCallback, useEffect, useMemo, useState,
-} from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import * as fs from '@/api/fs'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
@@ -15,9 +13,7 @@ interface RenameItemModalProps {
   readonly onClose: (hasRenamed?: boolean) => void
 }
 
-export default function RenameItemModal({
-  entry, module, onClose, show,
-}: RenameItemModalProps) {
+export default function RenameItemModal({ entry, module, onClose, show }: RenameItemModalProps) {
   const path = entry ? entry.path : ''
   const type = entry ? entry.type : 'dir'
 
@@ -25,13 +21,16 @@ export default function RenameItemModal({
   const [newName, setNewName] = useState(Path.basename(path) || path)
   const [error, setError] = useState<Error | null>(null)
   const newUrl = Path.join(Path.dirname(Path.join('/', module, path)), newName)
-  const onRenameImpl: React.MouseEventHandler = useCallback((e) => {
-    e.preventDefault()
-    setError(null)
-    fs.rename(apiClient, module, path, newName)
-      .then(() => onClose && onClose(true))
-      .catch((err) => setError(err as Error))
-  }, [module, path, newName, onClose, apiClient])
+  const onRenameImpl: React.MouseEventHandler = useCallback(
+    (e) => {
+      e.preventDefault()
+      setError(null)
+      fs.rename(apiClient, module, path, newName)
+        .then(() => onClose && onClose(true))
+        .catch((err) => setError(err as Error))
+    },
+    [module, path, newName, onClose, apiClient],
+  )
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -39,16 +38,19 @@ export default function RenameItemModal({
     setNewName(Path.basename(path) || path)
   }, [module, path, show])
 
-  const closeButton = useMemo(() => [
-    <Button
-      type="button"
-      onClick={onRenameImpl}
-      key="rename"
-      disabled={!newName}
-    >
-      Rename
-    </Button>,
-  ], [onRenameImpl, newName])
+  const closeButton = useMemo(
+    () => [
+      <Button
+        type="button"
+        onClick={onRenameImpl}
+        key="rename"
+        disabled={!newName}
+      >
+        Rename
+      </Button>,
+    ],
+    [onRenameImpl, newName],
+  )
 
   return (
     <Dialog
@@ -62,7 +64,10 @@ export default function RenameItemModal({
       portal
     >
       {error && (
-        <Alert severity="error" title="There was an error during rename">
+        <Alert
+          severity="error"
+          title="There was an error during rename"
+        >
           {JSON.stringify(error)}
         </Alert>
       )}

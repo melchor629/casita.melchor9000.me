@@ -4,20 +4,30 @@ import { basename } from '@/utils/path'
 import withTouchEvents from '../../touch-events'
 import DirectoryEntryIconView from '../directory-entry-icon-view'
 
-const Row = withTouchEvents(({
-  entry, isParentItem, module, ...props
-}: Readonly<React.ComponentPropsWithoutRef<'div'> & {
-  entry: DirectoryMetadata | FileMetadata
-  isParentItem: boolean
-  module: string
-}>) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  <div {...props}>
-    <DirectoryEntryIconView module={module} size="list" entry={entry} />
-    {' '}
-    <span className="text-truncate">{isParentItem ? '..' : basename(entry.path)}</span>
-  </div>
-))
+const Row = withTouchEvents(
+  ({
+    entry,
+    isParentItem,
+    module,
+    ...props
+  }: Readonly<
+    React.ComponentPropsWithoutRef<'div'> & {
+      entry: DirectoryMetadata | FileMetadata
+      isParentItem: boolean
+      module: string
+    }
+  >) => (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <div {...props}>
+      <DirectoryEntryIconView
+        module={module}
+        size="list"
+        entry={entry}
+      />{' '}
+      <span className="text-truncate">{isParentItem ? '..' : basename(entry.path)}</span>
+    </div>
+  ),
+)
 
 Row.displayName = 'Row'
 

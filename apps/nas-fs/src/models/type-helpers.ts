@@ -1,4 +1,11 @@
-import { type Static, Type, type TSchema, type TStringOptions, type TNumberOptions, type TSchemaOptions } from 'typebox'
+import {
+  type Static,
+  Type,
+  type TSchema,
+  type TStringOptions,
+  type TNumberOptions,
+  type TSchemaOptions,
+} from 'typebox'
 
 export { Type, type Static } from 'typebox'
 
@@ -37,8 +44,7 @@ export const ContentResponse = (
   Type.Unsafe({
     ...options,
     content: Object.fromEntries(
-      Object.entries(mimeTypes)
-        .map(([type, schema]) => [type, { schema }]),
+      Object.entries(mimeTypes).map(([type, schema]) => [type, { schema }]),
     ),
   })
 

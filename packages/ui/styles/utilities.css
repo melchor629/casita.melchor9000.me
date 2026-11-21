@@ -18,11 +18,7 @@
 }
 
 @utility body {
-  @apply
-    text-text-main bg-elevated-0 antialiased
-    accent-primary-main
-    selection:bg-primary-main selection:text-text-contrasted
-    transition-colors;
+  @apply text-text-main bg-elevated-0 accent-primary-main selection:bg-primary-main selection:text-text-contrasted antialiased transition-colors;
 }
 
 @custom-variant last-of-group {

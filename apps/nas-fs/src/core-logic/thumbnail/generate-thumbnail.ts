@@ -20,15 +20,13 @@ const generateThumbnail = async (
   format: 'jpg' | 'webp' | 'png' | 'avif' = 'jpg',
 ) => {
   const pixels = sizes[size]
-  let actions = sharp(sourcePath)
-    .rotate()
-    .resize({
-      width: pixels,
-      height: pixels,
-      fit: 'contain',
-      background: 'rgba(0, 0, 0, 0)',
-      withoutEnlargement: true,
-    })
+  let actions = sharp(sourcePath).rotate().resize({
+    width: pixels,
+    height: pixels,
+    fit: 'contain',
+    background: 'rgba(0, 0, 0, 0)',
+    withoutEnlargement: true,
+  })
 
   if (format === 'webp') {
     actions = actions.webp()
@@ -40,9 +38,15 @@ const generateThumbnail = async (
     actions = actions.jpeg()
   }
 
-  logger.debug({
-    sourcePath, targetPath, size, format,
-  }, 'Generating thumbnail')
+  logger.debug(
+    {
+      sourcePath,
+      targetPath,
+      size,
+      format,
+    },
+    'Generating thumbnail',
+  )
   const { data } = await actions.toBuffer({ resolveWithObject: true })
   await fs.mkdir(Path.dirname(targetPath), { recursive: true })
   await fs.writeFile(targetPath, data)

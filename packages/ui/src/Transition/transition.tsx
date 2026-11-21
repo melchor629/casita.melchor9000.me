@@ -3,60 +3,57 @@ import { clsx, type OverridableComponent, type OverridableComponentProps } from 
 
 type TransitionOverridableTypeMap = {
   props: {
-    show?: boolean;
-    className: string;
+    show?: boolean
+    className: string
     /**
      * CSS property name to track for during the transition.
      */
-    transitionPropertyName: string;
+    transitionPropertyName: string
     /**
-     * Keeps the contents interactive when hidden. Useful for situation where
-     * hidden does not completely hides the contents. When set, the value of
-     * `unmountWhenHidden` will be ignored.
+     * Keeps the contents interactive when hidden. Useful for situation where hidden does not
+     * completely hides the contents. When set, the value of `unmountWhenHidden` will be ignored.
      */
-    keepInteractiveWhenHidden?: boolean;
-    unmountWhenHidden?: boolean;
-    onHidden?: () => void;
-    onHide?: () => void;
-    onShow?: () => void;
-    onShowing?: () => void;
-  };
-  defaultComponent: 'div';
+    keepInteractiveWhenHidden?: boolean
+    unmountWhenHidden?: boolean
+    onHidden?: () => void
+    onHide?: () => void
+    onShow?: () => void
+    onShowing?: () => void
+  }
+  defaultComponent: 'div'
 }
 
 export type TransitionImplementationBaseProps = {
   /**
    * Shows or hides the contents.
    */
-  show?: boolean;
-  className?: string;
+  show?: boolean
+  className?: string
   /**
-   * When set, the contents will be unmounted from the tree if the element
-   * is hidden and transition has been finished.
+   * When set, the contents will be unmounted from the tree if the element is hidden and transition
+   * has been finished.
    */
-  unmountWhenHidden?: boolean;
+  unmountWhenHidden?: boolean
   /**
-   * Callback called when the hide animation is finished, which means the
-   * content is completely hidden. If `unmountWhenHidden` is set,
-   * the contents will still be present until react re-renders the component.
+   * Callback called when the hide animation is finished, which means the content is completely
+   * hidden. If `unmountWhenHidden` is set, the contents will still be present until react
+   * re-renders the component.
    */
-  onHidden?: () => void;
+  onHidden?: () => void
   /**
-   * Callback called when the hide animation starts. The contents are completely
-   * hidden and the animation has just started.
+   * Callback called when the hide animation starts. The contents are completely hidden and the
+   * animation has just started.
    */
-  onHide?: () => void;
+  onHide?: () => void
   /**
-   * Callback called when the show animation starts. The contents are hidden and
-   * the animation has started. If `unmountWhenHidden` is set, the contents have
-   * just been mounted.
+   * Callback called when the show animation starts. The contents are hidden and the animation has
+   * started. If `unmountWhenHidden` is set, the contents have just been mounted.
    */
-  onShow?: () => void;
+  onShow?: () => void
   /**
-   * Callback called when the show animation is finished. The contents are completely
-   * visible.
+   * Callback called when the show animation is finished. The contents are completely visible.
    */
-  onShowing?: () => void;
+  onShowing?: () => void
 }
 
 export type TransitionProps<
@@ -64,17 +61,16 @@ export type TransitionProps<
 > = OverridableComponentProps<TransitionOverridableTypeMap, BaseElement>
 
 /**
- * Component that serves as a base for implementing transitions over the children.
- * Shows and hides the contents using `aria-hidden` attribute. Includes certain
- * utilities like:
+ * Component that serves as a base for implementing transitions over the children. Shows and hides
+ * the contents using `aria-hidden` attribute. Includes certain utilities like:
+ *
  * - Hide content with `visibility: hidden` and make it not-interactive
  * - Unmount content when hidden
  * - Start and end callbacks for hide and show events
  * - Default transition durations for enter and exit
  *
- * Implementors should add shown styles inside the `className` property. Hidden
- * styles also go inside the `className` but must be prefixed with `aria-hidden:`
- * to apply only when hidden.
+ * Implementors should add shown styles inside the `className` property. Hidden styles also go
+ * inside the `className` but must be prefixed with `aria-hidden:` to apply only when hidden.
  */
 const Transition: OverridableComponent<TransitionOverridableTypeMap> = ({
   children,

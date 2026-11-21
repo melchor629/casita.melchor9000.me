@@ -10,13 +10,16 @@ export default function Vocabulary({ changePage }: { readonly changePage: () => 
   const [inputValue, setInputValue] = useState('')
   const filterFromSearchParams = searchParams.get('q')
 
-  const setFilter = useCallback((value: string) => {
-    if (filterFromSearchParams) {
-      navigate({ searchParams: new URLSearchParams() })
-    }
+  const setFilter = useCallback(
+    (value: string) => {
+      if (filterFromSearchParams) {
+        navigate({ searchParams: new URLSearchParams() })
+      }
 
-    setInputValue(value)
-  }, [filterFromSearchParams, navigate])
+      setInputValue(value)
+    },
+    [filterFromSearchParams, navigate],
+  )
 
   useEffect(() => {
     const id = setTimeout(() => setInputValue(localStorage.getItem('j:vocabInput') || ''))
@@ -26,7 +29,7 @@ export default function Vocabulary({ changePage }: { readonly changePage: () => 
   const filter = filterFromSearchParams || inputValue
   return (
     <>
-      <div className="flex gap-2 max-w-3xl w-full pt-4 px-4 pb-4 bg-primary-bg/30 backdrop-blur-sm z-10">
+      <div className="bg-primary-bg/30 z-10 flex w-full max-w-3xl gap-2 px-4 pt-4 pb-4 backdrop-blur-sm">
         <input
           type="text"
           id="vocab-filter"
@@ -42,10 +45,13 @@ export default function Vocabulary({ changePage }: { readonly changePage: () => 
           )}
           placeholder="write something..."
           value={inputValue}
-          onInput={useCallback((ev: InputEvent<HTMLInputElement>) => {
-            setFilter(ev.currentTarget.value)
-            localStorage.setItem('j:vocabInput', ev.currentTarget.value)
-          }, [setFilter])}
+          onInput={useCallback(
+            (ev: InputEvent<HTMLInputElement>) => {
+              setFilter(ev.currentTarget.value)
+              localStorage.setItem('j:vocabInput', ev.currentTarget.value)
+            },
+            [setFilter],
+          )}
         />
         <div>
           <CharButton

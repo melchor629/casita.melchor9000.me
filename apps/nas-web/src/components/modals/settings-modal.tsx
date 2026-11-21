@@ -17,15 +17,10 @@ interface SettingsModalProps {
   readonly onClose: () => void
 }
 
-export default function SettingsModal({
-  onClose,
-  show,
-}: SettingsModalProps) {
+export default function SettingsModal({ onClose, show }: SettingsModalProps) {
   const {
     update,
-    values: {
-      entryViewType, hidden, showThumbnails, theme,
-    },
+    values: { entryViewType, hidden, showThumbnails, theme },
   } = useSettingsContext()
   const {
     needRefresh: [needRefresh],
@@ -33,27 +28,76 @@ export default function SettingsModal({
 
   const onThemeChanged = useCallback((value: string) => update('theme', value as never), [update])
   const onHideFilesVisibilityClicked = useCallback(() => update('hidden', (v) => !v), [update])
-  const onEntryViewTypeChanged = useCallback((value: string) => update('entryViewType', value as never), [update])
-  const onShowThumbnailsVisibilityClicked = useCallback(() => update('showThumbnails', (v) => !v), [update])
+  const onEntryViewTypeChanged = useCallback(
+    (value: string) => update('entryViewType', value as never),
+    [update],
+  )
+  const onShowThumbnailsVisibilityClicked = useCallback(
+    () => update('showThumbnails', (v) => !v),
+    [update],
+  )
 
   return (
-    <Dialog id="settings-modal" title="Settings" show={show} onClose={onClose}>
+    <Dialog
+      id="settings-modal"
+      title="Settings"
+      show={show}
+      onClose={onClose}
+    >
       <div className="text-center">
         <div className="mb-2">
           <div className="mb-1 select-none">Theme</div>
-          <div className="btn-group btn-group-toggle btn-group-sm" role="group">
-            <RadioButtonGroup color="secondary" name="theme" value={theme} onChange={onThemeChanged}>
-              <RadioButton value="system" icon={<CircleHalfStrokeIcon />}>System</RadioButton>
-              <RadioButton value="dark" icon={<MoonIcon />}>Dark</RadioButton>
-              <RadioButton value="light" icon={<SunIcon />}>Light</RadioButton>
+          <div
+            className="btn-group btn-group-toggle btn-group-sm"
+            role="group"
+          >
+            <RadioButtonGroup
+              color="secondary"
+              name="theme"
+              value={theme}
+              onChange={onThemeChanged}
+            >
+              <RadioButton
+                value="system"
+                icon={<CircleHalfStrokeIcon />}
+              >
+                System
+              </RadioButton>
+              <RadioButton
+                value="dark"
+                icon={<MoonIcon />}
+              >
+                Dark
+              </RadioButton>
+              <RadioButton
+                value="light"
+                icon={<SunIcon />}
+              >
+                Light
+              </RadioButton>
             </RadioButtonGroup>
           </div>
         </div>
         <div className="mb-2">
           <div className="mb-1 select-none">Item View Style</div>
-          <RadioButtonGroup color="secondary" name="entryViewType" value={entryViewType} onChange={onEntryViewTypeChanged}>
-            <RadioButton value="list" icon={<BarsIcon />}>List</RadioButton>
-            <RadioButton value="grid" icon={<GridIcon />}>Grid</RadioButton>
+          <RadioButtonGroup
+            color="secondary"
+            name="entryViewType"
+            value={entryViewType}
+            onChange={onEntryViewTypeChanged}
+          >
+            <RadioButton
+              value="list"
+              icon={<BarsIcon />}
+            >
+              List
+            </RadioButton>
+            <RadioButton
+              value="grid"
+              icon={<GridIcon />}
+            >
+              Grid
+            </RadioButton>
           </RadioButtonGroup>
         </div>
 
@@ -87,15 +131,11 @@ export default function SettingsModal({
           </InputLabel>
         </div>
 
-        <div
-          className="text-text-secondary mt-3 select-none"
-        >
+        <div className="text-text-secondary mt-3 select-none">
           {`v${env.version} (${env.revision})`}
           {needRefresh && ' (New Version available!)'}
         </div>
-        <div
-          className="text-text-secondary mt-0.5 select-none"
-        >
+        <div className="text-text-secondary mt-0.5 select-none">
           {env.buildDate.toLocaleString()}
         </div>
       </div>

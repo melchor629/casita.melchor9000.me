@@ -1,6 +1,5 @@
 import fs from 'node:fs/promises'
 import Path from 'node:path'
-
 import type { App } from '../../models/app.ts'
 import { normalize } from './fs-watcher.ts'
 import { ensureExists } from './utils.ts'
@@ -9,10 +8,7 @@ const removeDirRecursive = async (directoryPath: string) => {
   const items = await Promise.all(
     (await fs.readdir(directoryPath))
       .map((item) => Path.join(directoryPath, item))
-      .map((item) => Promise.all([
-        Promise.resolve(item),
-        fs.stat(item),
-      ])),
+      .map((item) => Promise.all([Promise.resolve(item), fs.stat(item)])),
   )
   const files = items.filter(([, stats]) => !stats.isDirectory())
   const directories = items.filter(([, stats]) => stats.isDirectory())

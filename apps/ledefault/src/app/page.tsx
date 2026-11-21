@@ -11,21 +11,20 @@ export default function HomePage() {
   const navigate = useNavigate()
   const blocker = useBlocker(true)
 
-  const fadeout = useCallback(() =>
-    Promise.all(
-      Array.from(document.querySelectorAll('#uhm'))
-        .map((el) => {
-          const animation = el.animate([
-            { opacity: 1 },
-            { opacity: 0 },
-          ], {
+  const fadeout = useCallback(
+    () =>
+      Promise.all(
+        Array.from(document.querySelectorAll('#uhm')).map((el) => {
+          const animation = el.animate([{ opacity: 1 }, { opacity: 0 }], {
             duration: 1000,
             easing: 'linear',
           })
           setAnimated(false)
           return animation.finished
         }),
-    ), [])
+      ),
+    [],
+  )
 
   useEffect(() => {
     console.log("You've found a raspberry pi hosting things.")
@@ -39,20 +38,28 @@ export default function HomePage() {
 
   useEffect(() => {
     const abtctrl = new AbortController()
-    window.addEventListener('keyup', (event) => {
-      if (event.key === 'h') {
-        navigate('/w/')
-      } else if (event.key === 'j') {
-        navigate('/j/')
-      }
-      abtctrl.abort()
-    }, { passive: true, signal: abtctrl.signal })
-    return () => { if (!abtctrl.signal.aborted) abtctrl.abort() }
+    window.addEventListener(
+      'keyup',
+      (event) => {
+        if (event.key === 'h') {
+          navigate('/w/')
+        } else if (event.key === 'j') {
+          navigate('/j/')
+        }
+        abtctrl.abort()
+      },
+      { passive: true, signal: abtctrl.signal },
+    )
+    return () => {
+      if (!abtctrl.signal.aborted) abtctrl.abort()
+    }
   }, [navigate])
 
   useEffect(() => {
     if (blocker.state === 'blocked') {
-      fadeout().catch(() => {}).finally(() => blocker.proceed())
+      fadeout()
+        .catch(() => {})
+        .finally(() => blocker.proceed())
     }
   }, [blocker, fadeout])
 
@@ -83,7 +90,12 @@ export default function HomePage() {
  ~ .~ (   ) ~. ~
   (  : '~' :  ) `}
           </span>
-          <span className="text-inherit" id="pi">Raspberry Pi</span>
+          <span
+            className="text-inherit"
+            id="pi"
+          >
+            Raspberry Pi
+          </span>
           <span className="text-red-500">
             {`
    '~ .~~~. ~'

@@ -31,7 +31,11 @@ const meta = preview.meta({
           <TableCell>Bread</TableCell>
           <TableCell>592</TableCell>
           <TableCell>
-            <Button icon={<Home />} size="small" variant="text" />
+            <Button
+              icon={<Home />}
+              size="small"
+              variant="text"
+            />
           </TableCell>
         </TableRow>
         <TableRow>
@@ -39,7 +43,11 @@ const meta = preview.meta({
           <TableCell>Cheese</TableCell>
           <TableCell>205</TableCell>
           <TableCell>
-            <Button icon={<Home />} size="small" variant="text" />
+            <Button
+              icon={<Home />}
+              size="small"
+              variant="text"
+            />
           </TableCell>
         </TableRow>
 
@@ -51,7 +59,11 @@ const meta = preview.meta({
           <TableCell>Wrench</TableCell>
           <TableCell>12</TableCell>
           <TableCell>
-            <Button icon={<Home />} size="small" variant="text" />
+            <Button
+              icon={<Home />}
+              size="small"
+              variant="text"
+            />
           </TableCell>
         </TableRow>
         <TableRow>
@@ -59,7 +71,11 @@ const meta = preview.meta({
           <TableCell>Screwdriver</TableCell>
           <TableCell>8</TableCell>
           <TableCell>
-            <Button icon={<Home />} size="small" variant="text" />
+            <Button
+              icon={<Home />}
+              size="small"
+              variant="text"
+            />
           </TableCell>
         </TableRow>
       </TableBody>

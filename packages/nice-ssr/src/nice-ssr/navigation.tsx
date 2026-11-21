@@ -38,8 +38,8 @@ export const getSsrErrorType = (error: SsrError): SsrError[typeof ssrTypeSymbol]
   error[ssrTypeSymbol]
 
 /**
- * Redirects the request to another path or URL. Use this only
- * inside a loader function.
+ * Redirects the request to another path or URL. Use this only inside a loader function.
+ *
  * @param path New path to redirect the page to.
  */
 export function redirect(path: string): never {
@@ -49,9 +49,8 @@ export function redirect(path: string): never {
 }
 
 /**
- * Cuts the request and marks the response as not found. Use
- * this only inside a loader function, route handler or middleware.
- * The response will be the not found page. For returning other body,
+ * Cuts the request and marks the response as not found. Use this only inside a loader function,
+ * route handler or middleware. The response will be the not found page. For returning other body,
  * use `SsrResponse` in route handler or middleware.
  */
 export function notFound(): never {
@@ -60,66 +59,83 @@ export function notFound(): never {
   throw new SsrError('not-found')
 }
 
-type Blocker = Readonly<{
-  /**
-   * The state of the blocker.
-   */
-  state: 'unblocked'
-} | {
-  /**
-   * The state of the blocker.
-   */
-  state: 'blocked'
-  /**
-   * URL where it will navigate to.
-   */
-  location: URL
-  /**
-   * Proceeds with the navigation.
-   */
-  proceed: () => void
-  /**
-   * Resets the navigation by canceling it.
-   */
-  reset: () => void
-} | {
-  /**
-   * The state of the blocker.
-   */
-  state: 'proceeding'
-  /**
-   * URL that is navigating to.
-   */
-  location: URL
-}>
+type Blocker = Readonly<
+  | {
+      /**
+       * The state of the blocker.
+       */
+      state: 'unblocked'
+    }
+  | {
+      /**
+       * The state of the blocker.
+       */
+      state: 'blocked'
+      /**
+       * URL where it will navigate to.
+       */
+      location: URL
+      /**
+       * Proceeds with the navigation.
+       */
+      proceed: () => void
+      /**
+       * Resets the navigation by canceling it.
+       */
+      reset: () => void
+    }
+  | {
+      /**
+       * The state of the blocker.
+       */
+      state: 'proceeding'
+      /**
+       * URL that is navigating to.
+       */
+      location: URL
+    }
+>
 
 type BlockerFn = (newUrl: URL, result: Promise<'proceed' | 'block'>) => Promise<'proceed' | 'block'>
 
-type RouterContextState = Readonly<SsrRouterProviderProps & {
-  state: 'inactive' | 'navigating'
-  blockerFns: ReadonlyArray<BlockerFn>
-}>
+type RouterContextState = Readonly<
+  SsrRouterProviderProps & {
+    state: 'inactive' | 'navigating'
+    blockerFns: ReadonlyArray<BlockerFn>
+  }
+>
 
 type RouterContextActions = Readonly<{
   getState: () => RouterContextState
-  setState: (value: Partial<RouterContextState> | ((current: RouterContextState) => Partial<RouterContextState>)) => void
+  setState: (
+    value:
+      | Partial<RouterContextState>
+      | ((current: RouterContextState) => Partial<RouterContextState>),
+  ) => void
 
   appendBlockerFn: (fn: BlockerFn) => void
   removeBlockerFn: (fn: BlockerFn) => void
   removeAllBlockerFns: () => void
 
   changeUrl(newUrl: URL, viewTransition: NavigateOptions['viewTransition']): void
-  loadPage(newUrl: URL, justFetch?: boolean, viewTransition?: NavigateOptions['viewTransition']): Promise<void>
+  loadPage(
+    newUrl: URL,
+    justFetch?: boolean,
+    viewTransition?: NavigateOptions['viewTransition'],
+  ): Promise<void>
 }>
 
-export type SsrRouteAsset = Readonly<{
-  type: 'style' | 'module' | 'modulepreload'
-  path: string
-} | {
-  type: 'preload'
-  path: string
-  as: PreloadAs
-}>
+export type SsrRouteAsset = Readonly<
+  | {
+      type: 'style' | 'module' | 'modulepreload'
+      path: string
+    }
+  | {
+      type: 'preload'
+      path: string
+      as: PreloadAs
+    }
+>
 
 export type SsrRouterProviderProps = Readonly<{
   url: URL
@@ -128,7 +144,7 @@ export type SsrRouterProviderProps = Readonly<{
   params: Record<string, string>
   server?: {
     assets: SsrRouteAsset[]
-    nonce: { style?: string, script?: string }
+    nonce: { style?: string; script?: string }
   }
   client?: {
     renderPage: (
@@ -175,7 +191,7 @@ const loadPage = async (store: RouterContextActions, newUrl: URL, justFetch = fa
       accept: 'application/json+ssr',
     },
   })
-  const data = await res.json() as PartialPageRenderResult
+  const data = (await res.json()) as PartialPageRenderResult
   if (!justFetch) {
     store.setState({ ...data.c, url: new URL(data.c.url) })
   }
@@ -183,7 +199,11 @@ const loadPage = async (store: RouterContextActions, newUrl: URL, justFetch = fa
   return renderPage(data.c.pathname, data.t, data.p)
 }
 
-const trySmoothNavigation = async (actions: RouterContextActions, newUrl: URL, viewTransition: NavigateOptions['viewTransition']) => {
+const trySmoothNavigation = async (
+  actions: RouterContextActions,
+  newUrl: URL,
+  viewTransition: NavigateOptions['viewTransition'],
+) => {
   if (newUrl.pathname !== actions.getState().pathname) {
     try {
       const { promise: blockerResult, resolve } = Promise.withResolvers<'block' | 'proceed'>()
@@ -210,10 +230,14 @@ const trySmoothNavigation = async (actions: RouterContextActions, newUrl: URL, v
  * the blocker object will have `state === 'blocked'` and one of the `proceed` or `reset` functions
  * must be called to continue or cancel the navigation. When the state is `state === 'proceeding'`,
  * the navigation is taking place right now.
- * @param shouldBlock A boolean or function that returns a boolean which decides if the navigation should be blocked.
+ *
+ * @param shouldBlock A boolean or function that returns a boolean which decides if the navigation
+ *   should be blocked.
  * @returns The blocker interface.
  */
-export const useBlocker = (shouldBlock: boolean | ((opts: { current: URL, next: URL }) => boolean)): Blocker => {
+export const useBlocker = (
+  shouldBlock: boolean | ((opts: { current: URL; next: URL }) => boolean),
+): Blocker => {
   const { actions } = useRouterContext()
   const [blockerState, setBlockerState] = useState<Blocker>({ state: 'unblocked' })
 
@@ -223,7 +247,10 @@ export const useBlocker = (shouldBlock: boolean | ((opts: { current: URL, next: 
       if (shouldBlock === false) {
         return Promise.resolve<'proceed'>('proceed')
       }
-      if (typeof shouldBlock === 'function' && !shouldBlock({ current: actions.getState().url, next: newUrl })) {
+      if (
+        typeof shouldBlock === 'function'
+        && !shouldBlock({ current: actions.getState().url, next: newUrl })
+      ) {
         return Promise.resolve<'proceed'>('proceed')
       }
 
@@ -263,10 +290,13 @@ export const useBlocker = (shouldBlock: boolean | ((opts: { current: URL, next: 
 
 /**
  * Calculates the `href` of the provided path.
+ *
  * @param path The path to get the URL.
  * @returns The resolved href.
  */
-export const useHref = (path: string | { pathname?: string, searchParams?: URLSearchParams }): string => {
+export const useHref = (
+  path: string | { pathname?: string; searchParams?: URLSearchParams },
+): string => {
   const url = useRouterContextState(useCallback((state) => state.url, []))
   return useMemo(
     () =>
@@ -278,24 +308,25 @@ export const useHref = (path: string | { pathname?: string, searchParams?: URLSe
 }
 
 /**
- * Gets the pathname of the current page. The pathname does not include
- * search parameters nor hash.
+ * Gets the pathname of the current page. The pathname does not include search parameters nor hash.
+ *
  * @returns The pathname of the current page.
  */
-export const usePathname = (): string => useRouterContextState(useCallback((state) => state.pathname, []))
+export const usePathname = (): string =>
+  useRouterContextState(useCallback((state) => state.pathname, []))
 
 /**
- * Gets the search parameters parsed as {@link URLSearchParams} instance.
- * Any modifications on the object won't be reflected back, please use
- * {@link useNavigate} function instead.
+ * Gets the search parameters parsed as {@link URLSearchParams} instance. Any modifications on the
+ * object won't be reflected back, please use {@link useNavigate} function instead.
+ *
  * @returns The search parameters of the current page.
  */
 export const useSearchParams = (): URLSearchParams =>
   useRouterContextState(useCallback((state) => state.url.searchParams, []))
 
 /**
- * Gets the route parameters for the given page based on the template
- * defined for this page path.
+ * Gets the route parameters for the given page based on the template defined for this page path.
+ *
  * @returns The route parameters.
  */
 export const useParams = <T extends Record<string, string>>(): T =>
@@ -307,44 +338,50 @@ export type NavigateOptions = {
 }
 
 export type NavigateFn = (
-  path: string | { pathname?: string, searchParams?: URLSearchParams },
+  path: string | { pathname?: string; searchParams?: URLSearchParams },
   options?: NavigateOptions,
 ) => void
 
 /**
  * Gets a function that navigates the page to the new path.
+ *
  * @returns A function to navigate in the app.
  */
 export const useNavigate = (): NavigateFn => {
   const { actions } = useRouterContext()
-  return useMemo<NavigateFn>(() => (path, { mode = 'push', viewTransition = false } = {}) => {
-    const { url } = actions.getState()
-    const { origin } = url
-    if (typeof path === 'string') {
-      const a = new URL(path, origin)
-      path = { pathname: a.pathname, searchParams: a.searchParams }
-    }
-
-    const newUrl = new URL(
-      `${path.pathname ?? url.pathname}?${path.searchParams ?? ''}`.replace(/\?$/, ''),
-      origin,
-    )
-    if (import.meta.env.SSR) {
-      redirect(newUrl.toString())
-    }
-    trySmoothNavigation(actions, newUrl, viewTransition)
-      .then((result) => {
-        if (result === 'proceed') {
-          navigation.navigate(newUrl, { info: ssrTypeSymbol, history: mode })
+  return useMemo<NavigateFn>(
+    () =>
+      (path, { mode = 'push', viewTransition = false } = {}) => {
+        const { url } = actions.getState()
+        const { origin } = url
+        if (typeof path === 'string') {
+          const a = new URL(path, origin)
+          path = { pathname: a.pathname, searchParams: a.searchParams }
         }
-      })
-      .catch(() => {})
-  }, [actions])
+
+        const newUrl = new URL(
+          `${path.pathname ?? url.pathname}?${path.searchParams ?? ''}`.replace(/\?$/, ''),
+          origin,
+        )
+        if (import.meta.env.SSR) {
+          redirect(newUrl.toString())
+        }
+        trySmoothNavigation(actions, newUrl, viewTransition)
+          .then((result) => {
+            if (result === 'proceed') {
+              navigation.navigate(newUrl, { info: ssrTypeSymbol, history: mode })
+            }
+          })
+          .catch(() => {})
+      },
+    [actions],
+  )
 }
 
 /**
- * Gets the navigation status. If inactive, nothing is doing in the background. If navigating,
- * the system is loading the next page.
+ * Gets the navigation status. If inactive, nothing is doing in the background. If navigating, the
+ * system is loading the next page.
+ *
  * @returns The current navigation status.
  */
 export const useNavigationStatus = (): RouterContextState['state'] => {
@@ -355,36 +392,55 @@ export const useNavigationStatus = (): RouterContextState['state'] => {
 
 /**
  * Gets a function to force reload loader data when requested.
+ *
  * @returns A function to call when a data revalidation is needed.
  */
-export const useRevalidator = (): () => Promise<void> => {
+export const useRevalidator = (): (() => Promise<void>) => {
   const { actions } = useRouterContext()
-  const { state, url } = useRouterContextState(useCallback((s) => ({ state: s.state, url: s.url }), []))
+  const { state, url } = useRouterContextState(
+    useCallback((s) => ({ state: s.state, url: s.url }), []),
+  )
   return useCallback(() => {
     if (state === 'inactive') return actions.loadPage(url, true)
-    return Promise.reject(new Error('Cannot revalidate while loding another page or already revalidating'))
+    return Promise.reject(
+      new Error('Cannot revalidate while loding another page or already revalidating'),
+    )
   }, [actions, state, url])
 }
 
-export type LinkProps = Readonly<Omit<ComponentPropsWithRef<'a'>, 'href'> & {
-  /**
-   * The path to navigate to. Only absolute paths are supported.
-   */
-  to: string | {
-    pathname?: string
-    searchParams?: URLSearchParams
-  }
-} & NavigateOptions>
+export type LinkProps = Readonly<
+  Omit<ComponentPropsWithRef<'a'>, 'href'> & {
+    /**
+     * The path to navigate to. Only absolute paths are supported.
+     */
+    to:
+      | string
+      | {
+          pathname?: string
+          searchParams?: URLSearchParams
+        }
+  } & NavigateOptions
+>
 
-export const Link: FC<LinkProps> = ({ children, mode = 'push', onClick, to, viewTransition = false, ...props }: LinkProps) => {
+export const Link: FC<LinkProps> = ({
+  children,
+  mode = 'push',
+  onClick,
+  to,
+  viewTransition = false,
+  ...props
+}: LinkProps) => {
   const navigate = useNavigate()
   const href = useHref(to)
 
-  const improvedClick = useCallback<MouseEventHandler<HTMLAnchorElement>>((e) => {
-    e.preventDefault()
-    navigate(to, { mode, viewTransition })
-    onClick?.(e)
-  }, [navigate, to, mode, viewTransition, onClick])
+  const improvedClick = useCallback<MouseEventHandler<HTMLAnchorElement>>(
+    (e) => {
+      e.preventDefault()
+      navigate(to, { mode, viewTransition })
+      onClick?.(e)
+    },
+    [navigate, to, mode, viewTransition, onClick],
+  )
 
   return (
     <a
@@ -421,10 +477,18 @@ export const RenderHead = () => {
 
   return (
     <>
-      <meta key="utf8" charSet="UTF-8" />
+      <meta
+        key="utf8"
+        charSet="UTF-8"
+      />
 
       {metadata.title && <title>{metadata.title}</title>}
-      {metadata.description && <meta name="description" content={metadata.description} />}
+      {metadata.description && (
+        <meta
+          name="description"
+          content={metadata.description}
+        />
+      )}
       {metadata.baseHref && <base href={metadata.baseHref} />}
     </>
   )
@@ -434,56 +498,69 @@ export const RenderScripts = () => {
   return null
 }
 
-export function SsrRouterProvider({ initialPage, initialValue }: Readonly<{
+export function SsrRouterProvider({
+  initialPage,
+  initialValue,
+}: Readonly<{
   initialPage: ReactNode
   initialValue: SsrRouterProviderProps
 }>) {
-  const store = useMemo(() => createStore<RouterContextState>()(() => ({
-    basePath: initialValue.basePath,
-    blockerFns: [],
-    params: initialValue.params,
-    pathname: initialValue.pathname,
-    state: 'inactive',
-    url: initialValue.url,
-    server: initialValue.server,
-    metadata: initialValue.metadata,
-    client: initialValue.client,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  })), [])
+  const store = useMemo(
+    () =>
+      createStore<RouterContextState>()(() => ({
+        basePath: initialValue.basePath,
+        blockerFns: [],
+        params: initialValue.params,
+        pathname: initialValue.pathname,
+        state: 'inactive',
+        url: initialValue.url,
+        server: initialValue.server,
+        metadata: initialValue.metadata,
+        client: initialValue.client,
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      })),
+    [],
+  )
   const [loadPagePromise, setLoadPagePromise] = useState<Promise<ReactNode> | null>(null)
-  const [viewTransition, setViewTransition] = useState<NonNullable<NavigateOptions['viewTransition']>>('none')
+  const [viewTransition, setViewTransition] =
+    useState<NonNullable<NavigateOptions['viewTransition']>>('none')
   const [isTransitioning, startTransition] = useTransition()
 
-  const actions = useMemo((): RouterContextActions => ({
-    getState: () => store.getState(),
-    setState: (vfn) => store.setState((v) => {
-      const result = typeof vfn === 'function' ? vfn(v) : vfn
-      return { ...result }
+  const actions = useMemo(
+    (): RouterContextActions => ({
+      getState: () => store.getState(),
+      setState: (vfn) =>
+        store.setState((v) => {
+          const result = typeof vfn === 'function' ? vfn(v) : vfn
+          return { ...result }
+        }),
+      appendBlockerFn: (fn) => store.setState((v) => ({ blockerFns: [...v.blockerFns, fn] })),
+      removeAllBlockerFns: () => store.setState({ blockerFns: [] }),
+      removeBlockerFn: (fn) =>
+        store.setState((v) => {
+          const idx = v.blockerFns.indexOf(fn)
+          return idx >= 0
+            ? {
+                blockerFns: v.blockerFns.toSpliced(idx, 1),
+              }
+            : {}
+        }),
+      changeUrl(newUrl, viewTransition) {
+        if (viewTransition != null) setViewTransition(viewTransition)
+        startTransition(() => store.setState({ url: newUrl }))
+      },
+      async loadPage(newUrl, justFetch = false, viewTransition) {
+        const pagePromise = loadPage(this, newUrl, justFetch)
+        if (viewTransition != null) setViewTransition(viewTransition)
+        startTransition(() => {
+          store.setState({ state: 'navigating' })
+          setLoadPagePromise(pagePromise)
+        })
+        await pagePromise.finally(() => store.setState({ state: 'inactive' }))
+      },
     }),
-    appendBlockerFn: (fn) => store.setState((v) => ({ blockerFns: [...v.blockerFns, fn] })),
-    removeAllBlockerFns: () => store.setState({ blockerFns: [] }),
-    removeBlockerFn: (fn) => store.setState((v) => {
-      const idx = v.blockerFns.indexOf(fn)
-      return idx >= 0
-        ? {
-            blockerFns: v.blockerFns.toSpliced(idx, 1),
-          }
-        : {}
-    }),
-    changeUrl(newUrl, viewTransition) {
-      if (viewTransition != null) setViewTransition(viewTransition)
-      startTransition(() => store.setState({ url: newUrl }))
-    },
-    async loadPage(newUrl, justFetch = false, viewTransition) {
-      const pagePromise = loadPage(this, newUrl, justFetch)
-      if (viewTransition != null) setViewTransition(viewTransition)
-      startTransition(() => {
-        store.setState({ state: 'navigating' })
-        setLoadPagePromise(pagePromise)
-      })
-      await pagePromise.finally(() => store.setState({ state: 'inactive' }))
-    },
-  }), [store])
+    [store],
+  )
 
   useEffect(() => {
     if (import.meta.env.SSR) {
@@ -491,27 +568,42 @@ export function SsrRouterProvider({ initialPage, initialValue }: Readonly<{
     }
 
     const abort = new AbortController()
-    navigation.addEventListener('navigate', (e) => {
-      if (!e.canIntercept || e.navigationType === 'reload' || e.downloadRequest || e.formData || e.sourceElement instanceof Element) return
-      if (e.navigationType !== 'traverse' && e.info === ssrTypeSymbol) {
-        return e.intercept()
-      }
+    navigation.addEventListener(
+      'navigate',
+      (e) => {
+        if (
+          !e.canIntercept
+          || e.navigationType === 'reload'
+          || e.downloadRequest
+          || e.formData
+          || e.sourceElement instanceof Element
+        )
+          return
+        if (e.navigationType !== 'traverse' && e.info === ssrTypeSymbol) {
+          return e.intercept()
+        }
 
-      const newUrl = new URL(e.destination.url, location.origin)
-      e.intercept({
-        async handler() {
-          await trySmoothNavigation(actions, newUrl, e.navigationType === 'traverse' ? undefined : false)
-            .then((result) => {
-              if (result === 'proceed') e.scroll()
-              else e.preventDefault()
-            })
-            .catch(() => window.location.reload())
-        },
-      })
-    }, {
-      passive: false,
-      signal: abort.signal,
-    })
+        const newUrl = new URL(e.destination.url, location.origin)
+        e.intercept({
+          async handler() {
+            await trySmoothNavigation(
+              actions,
+              newUrl,
+              e.navigationType === 'traverse' ? undefined : false,
+            )
+              .then((result) => {
+                if (result === 'proceed') e.scroll()
+                else e.preventDefault()
+              })
+              .catch(() => window.location.reload())
+          },
+        })
+      },
+      {
+        passive: false,
+        signal: abort.signal,
+      },
+    )
     return () => abort.abort()
   }, [actions])
 
@@ -525,7 +617,7 @@ export function SsrRouterProvider({ initialPage, initialValue }: Readonly<{
       }}
     >
       <RootLayout>
-        <ViewTransition default={viewTransition === true ? 'auto' : (viewTransition || 'none')}>
+        <ViewTransition default={viewTransition === true ? 'auto' : viewTransition || 'none'}>
           {pageElement}
         </ViewTransition>
       </RootLayout>

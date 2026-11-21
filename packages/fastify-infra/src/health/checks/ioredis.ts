@@ -7,11 +7,7 @@ type RedisHealthCheckOptions = {
 
 const ioredisHealthCheck: HealthCheck<RedisHealthCheckOptions> = async ({ client }) => {
   const redis = typeof client === 'function' ? client() : client
-  if (
-    redis.status === 'connecting'
-      || redis.status === 'connect'
-      || redis.status === 'ready'
-  ) {
+  if (redis.status === 'connecting' || redis.status === 'connect' || redis.status === 'ready') {
     const [, keys, info] = await Promise.all([
       redis.ping('ping'),
       redis.dbsize(),
@@ -26,7 +22,13 @@ const ioredisHealthCheck: HealthCheck<RedisHealthCheckOptions> = async ({ client
             .split('\n')
             .slice(1)
             .map((split) => split.replaceAll('\r', '').split(':'))
-            .filter(([key]) => key.startsWith('redis_') || key.startsWith('valkey_') || key === 'os' || key.startsWith('uptime_')),
+            .filter(
+              ([key]) =>
+                key.startsWith('redis_')
+                || key.startsWith('valkey_')
+                || key === 'os'
+                || key.startsWith('uptime_'),
+            ),
         ),
       },
     }

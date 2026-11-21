@@ -4,13 +4,17 @@ import JapaneseWithRomaji from './japanese-with-romaji'
 
 /**
  * Renders the adjective conjugation table.
- * @param param0 props
+ *
+ * @param param0 Props
  */
 const AdjectiveTable = ({ result }: VocabularyComponentProps<AdjectiveDictionaryEntry>) => (
   <NaisTable>
     <thead>
       <tr>
-        <th className="w-0" aria-label="Empty" />
+        <th
+          className="w-0"
+          aria-label="Empty"
+        />
         <th>Positive</th>
         <th>Negative</th>
       </tr>

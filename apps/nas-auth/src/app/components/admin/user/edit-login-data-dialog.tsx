@@ -8,13 +8,15 @@ type EditLoginDataDialogProps = Readonly<{
   opened: boolean
 }>
 
-const mapData = (data: EditLoginDataDialogProps['data']) =>
-  JSON.stringify(data, undefined, 2)
+const mapData = (data: EditLoginDataDialogProps['data']) => JSON.stringify(data, undefined, 2)
 
 const EditLoginDataDialog = ({ close, data, opened }: EditLoginDataDialogProps) => {
   const [dataAsJson, setDataAsJson] = useState(() => mapData(data))
 
-  usePropState(data, useCallback((v: typeof data) => setDataAsJson(mapData(v)), []))
+  usePropState(
+    data,
+    useCallback((v: typeof data) => setDataAsJson(mapData(v)), []),
+  )
 
   return (
     <Dialog
@@ -25,7 +27,13 @@ const EditLoginDataDialog = ({ close, data, opened }: EditLoginDataDialogProps) 
       onClose={useCallback(() => close(), [close])}
       title="Login Data"
       buttons={[
-        <Button key="save" onClick={useCallback(() => close(JSON.parse(dataAsJson || 'null') as Record<string, unknown> | null), [close, dataAsJson])}>
+        <Button
+          key="save"
+          onClick={useCallback(
+            () => close(JSON.parse(dataAsJson || 'null') as Record<string, unknown> | null),
+            [close, dataAsJson],
+          )}
+        >
           Save
         </Button>,
       ]}
@@ -34,7 +42,10 @@ const EditLoginDataDialog = ({ close, data, opened }: EditLoginDataDialogProps) 
         rows={10}
         className="w-full"
         value={dataAsJson}
-        onChange={useCallback<ChangeEventHandler<HTMLTextAreaElement>>((e) => setDataAsJson(e.currentTarget.value), [])}
+        onChange={useCallback<ChangeEventHandler<HTMLTextAreaElement>>(
+          (e) => setDataAsJson(e.currentTarget.value),
+          [],
+        )}
       />
     </Dialog>
   )

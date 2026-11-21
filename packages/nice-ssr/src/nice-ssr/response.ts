@@ -27,50 +27,56 @@ const textStatusToNumber: Record<TextStatus, number> = Object.freeze({
 
 export type SsrResponseBuilder = Readonly<{
   /**
-   * Changes the status code of this request for the one provided by value.
-   * If using a string, it will be converted to the corresponding number.
+   * Changes the status code of this request for the one provided by value. If using a string, it
+   * will be converted to the corresponding number.
+   *
    * @param st HTTP Status code number or string.
    */
   status(st: number | TextStatus): SsrResponseBuilder
 
   /**
    * Sets one or more values to the header. Previous values will be removed.
+   *
    * @param name Header name.
    * @param value Header value or values.
    */
   header(name: string, value: string | string[]): SsrResponseBuilder
 
   /**
-   * Sets the value of the header if the value is not `null` or `undefined`.
-   * Previous values will be removed if there is a value.
+   * Sets the value of the header if the value is not `null` or `undefined`. Previous values will be
+   * removed if there is a value.
+   *
    * @param name Header name.
    * @param value Header value or values.
    */
   header(name: string, value: string | null | undefined): SsrResponseBuilder
 
   /**
-   * Creates the response with text as body. The string will be encoded
-   * using `utf-8`.
+   * Creates the response with text as body. The string will be encoded using `utf-8`.
+   *
    * @param text The text to return in the body.
    * @param encoding String encoding.
    */
   text(text: string | ArrayBuffer | ArrayBufferView<ArrayBuffer>, encoding?: string): SsrResponse
 
   /**
-   * Creates the response with the object provided as body. It will serialize
-   * the response as JSON using `utf-8` encoding.
+   * Creates the response with the object provided as body. It will serialize the response as JSON
+   * using `utf-8` encoding.
+   *
    * @param value JSON value to return in the body.
    */
   json(value: unknown): SsrResponse
 
   /**
    * Creates the response using the provided stream as body to send.
+   *
    * @param stream Stream to send to send as response.
    */
   stream(stream: ReadableStream | Blob): SsrResponse
 
   /**
    * Creates the response using the provided raw buffer or string as body to send.
+   *
    * @param data Data to send.
    */
   raw(data: ArrayBuffer | ArrayBufferView<ArrayBuffer> | string): SsrResponse
@@ -81,14 +87,18 @@ export type SsrResponseBuilder = Readonly<{
   empty(): SsrResponse
 
   /**
-   * Creates a response with the provided redirection and empty body. There are
-   * three types of redirections:
+   * Creates a response with the provided redirection and empty body. There are three types of
+   * redirections:
    *
-   * - `'moved'`: the resource is in another place permanently but not keep request (see [301](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/301))
-   * - `'temporary'`: go to another resource for now (see [307](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/307))
-   * - `'permanent'`: the resource is in another place permanently and keep request (see [308](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/308))
+   * - `'moved'`: the resource is in another place permanently but not keep request (see
+   *   [301](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/301))
+   * - `'temporary'`: go to another resource for now (see
+   *   [307](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/307))
+   * - `'permanent'`: the resource is in another place permanently and keep request (see
+   *   [308](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/308))
    *
    * By default uses `'temporary'` redirect.
+   *
    * @param to URL or relative path to redirect to.
    * @param type Type of redirection.
    */
@@ -98,6 +108,7 @@ export type SsrResponseBuilder = Readonly<{
 export class SsrResponse extends Response {
   /**
    * Creates a new response builder.
+   *
    * @param init Request initialization options
    * @returns Response builder
    */
@@ -163,8 +174,9 @@ export class SsrResponse extends Response {
   }
 
   /**
-   * Use in the middleware to notify that the request can continue. Any headers set in
-   * the response will be used for the final response.
+   * Use in the middleware to notify that the request can continue. Any headers set in the response
+   * will be used for the final response.
+   *
    * @param init Response initialization object.
    * @returns Response for continuing request.
    */

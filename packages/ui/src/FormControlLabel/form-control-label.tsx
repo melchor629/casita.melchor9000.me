@@ -4,7 +4,7 @@ import { makeStyles } from '../utils'
 
 export type FormControlLabelProps = Readonly<
   Omit<ComponentProps<'label'>, 'color'> & {
-    margin?: 'none' | 'dense' | 'normal';
+    margin?: 'none' | 'dense' | 'normal'
   }
 >
 

@@ -9,28 +9,35 @@ const getVideoImage = async (path: string, time: number, colourPrimaries?: strin
   const videoFilters = []
   if (colourPrimaries?.toLowerCase().includes('bt.2020')) {
     // SEE https://github.com/immich-app/immich/blob/main/server/src/utils/media.ts#L284 for tonemapping options
-    videoFilters.push('-vf', 'tonemapx=tonemap=mobius:desat=0:p=bt709:t=bt709:m=bt709:r=pc:peak=100:format=yuv420p')
+    videoFilters.push(
+      '-vf',
+      'tonemapx=tonemap=mobius:desat=0:p=bt709:t=bt709:m=bt709:r=pc:peak=100:format=yuv420p',
+    )
   }
-  const ffmpeg = execa('ffmpeg', [
-    '-nostats',
-    '-hide_banner',
-    '-ss',
-    time.toFixed(0),
-    '-i',
-    path,
-    ...videoFilters,
-    '-c:v',
-    'libwebp',
-    '-compression_level:v',
-    '5',
-    '-quality:v',
-    '90',
-    '-frames:v',
-    '1',
-    '-f',
-    'image2pipe',
-    '-',
-  ], { buffer: false, encoding: 'buffer', reject: false })
+  const ffmpeg = execa(
+    'ffmpeg',
+    [
+      '-nostats',
+      '-hide_banner',
+      '-ss',
+      time.toFixed(0),
+      '-i',
+      path,
+      ...videoFilters,
+      '-c:v',
+      'libwebp',
+      '-compression_level:v',
+      '5',
+      '-quality:v',
+      '90',
+      '-frames:v',
+      '1',
+      '-f',
+      'image2pipe',
+      '-',
+    ],
+    { buffer: false, encoding: 'buffer', reject: false },
+  )
   ffmpeg.stdout.on('data', (chunk: Buffer) => dataChunks.push(chunk))
   ffmpeg.stderr.on('data', (chunk: Buffer) => logChunks.push(chunk))
 
@@ -45,26 +52,19 @@ const getVideoImage = async (path: string, time: number, colourPrimaries?: strin
 }
 
 const getImagesFromVideo = async (metadata: File): Promise<ExtractedImage[]> => {
-  const videoTrack = metadata.mediainfo?.media.track.find((t) => t['@type'] === 'Video') as MediaInfoTrack | undefined
+  const videoTrack = metadata.mediainfo?.media.track.find((t) => t['@type'] === 'Video') as
+    | MediaInfoTrack
+    | undefined
   if (!videoTrack) {
     return []
   }
 
   const duration = parseFloat(videoTrack.Duration)
   const colourPrimaries = videoTrack.colour_primaries
-  const times = duration > 300
-    ? [
-        duration * 0.05,
-        duration * 0.1,
-        duration * 0.15,
-        duration * 0.2,
-        duration * 0.25,
-      ]
-    : [
-        duration * 0.05,
-        duration * 0.15,
-        duration * 0.3,
-      ]
+  const times =
+    duration > 300
+      ? [duration * 0.05, duration * 0.1, duration * 0.15, duration * 0.2, duration * 0.25]
+      : [duration * 0.05, duration * 0.15, duration * 0.3]
   const images: ExtractedImage[] = []
   for (const time of times) {
     images.push({

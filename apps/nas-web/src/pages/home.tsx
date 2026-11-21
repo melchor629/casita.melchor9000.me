@@ -26,8 +26,23 @@ export default function HomePage() {
       <NavbarBackdropFilter />
 
       <div className="mt-navbar">
-        <Suspense fallback={<div className="text-center my-2"><CircularProgress show size="large" /></div>}>
-          {apps.map(({ key, name }) => <RecentMedia key={key} name={name} module={key} />)}
+        <Suspense
+          fallback={
+            <div className="my-2 text-center">
+              <CircularProgress
+                show
+                size="large"
+              />
+            </div>
+          }
+        >
+          {apps.map(({ key, name }) => (
+            <RecentMedia
+              key={key}
+              name={name}
+              module={key}
+            />
+          ))}
         </Suspense>
       </div>
     </>

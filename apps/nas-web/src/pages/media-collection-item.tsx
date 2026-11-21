@@ -28,23 +28,48 @@ export default function MediaCollectionItemPage() {
     }
 
     if (itemMetadata.type === 'album') {
-      return <AlbumItem item={itemMetadata} module={module} />
+      return (
+        <AlbumItem
+          item={itemMetadata}
+          module={module}
+        />
+      )
     }
 
     if (itemMetadata.type === 'artist') {
-      return <ArtistItem item={itemMetadata} module={module} />
+      return (
+        <ArtistItem
+          item={itemMetadata}
+          module={module}
+        />
+      )
     }
 
     if (itemMetadata.type === 'movie') {
-      return <MovieItem item={itemMetadata} module={module} />
+      return (
+        <MovieItem
+          item={itemMetadata}
+          module={module}
+        />
+      )
     }
 
     if (itemMetadata.type === 'show') {
-      return <ShowItem item={itemMetadata} module={module} />
+      return (
+        <ShowItem
+          item={itemMetadata}
+          module={module}
+        />
+      )
     }
 
     if (itemMetadata.type === 'season') {
-      return <SeasonItem item={itemMetadata} module={module} />
+      return (
+        <SeasonItem
+          item={itemMetadata}
+          module={module}
+        />
+      )
     }
 
     return null
@@ -64,25 +89,19 @@ export default function MediaCollectionItemPage() {
 
   return (
     <>
-      <Helmet>
-        {title && <title>{title}</title>}
-      </Helmet>
+      <Helmet>{title && <title>{title}</title>}</Helmet>
 
       <NavbarBackdropFilter />
 
-      <div className="px-4 md:px-6 pb-5 pt-navbar mt-4">
+      <div className="pt-navbar mt-4 px-4 pb-5 md:px-6">
         {isLoading && (
-          <div
-            className="text-center fixed w-full pt-4 top-navbar"
-          >
+          <div className="top-navbar fixed w-full pt-4 text-center">
             <CircularProgress size="large" />
           </div>
         )}
 
         {!isLoading && !itemMetadata && (
-          <div className="text-center text-body-large text-text-secondary">
-            Item not found
-          </div>
+          <div className="text-body-large text-text-secondary text-center">Item not found</div>
         )}
 
         {itemElement}

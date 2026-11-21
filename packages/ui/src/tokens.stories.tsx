@@ -12,8 +12,8 @@ const meta = preview.type<{ args: { color?: string } }>().meta({
 
 function ColorRow({ className }: { readonly className: string }) {
   return (
-    <div className="flex gap-2 items-center">
-      <div className={`${className} size-6 rounded-md border border-text-main`} />
+    <div className="flex items-center gap-2">
+      <div className={`${className} border-text-main size-6 rounded-md border`} />
       <p className="font-bodyLarge">{className.substring(3)}</p>
     </div>
   )
@@ -95,7 +95,7 @@ export const Colors = meta.story({
 
 function FontRow({ className }: { readonly className: string }) {
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex items-center gap-2">
       <div className={`${className} color-text-primary`}>{className.substring(5)}</div>
     </div>
   )

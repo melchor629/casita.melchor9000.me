@@ -16,11 +16,11 @@ export type TextInputProps = Readonly<
       | 'tel'
       | 'time'
       | 'url'
-      | 'week';
-    size?: 'small' | 'medium' | 'large';
-    endAdornment?: ReactNode;
-    startAdornment?: ReactNode;
-    fullWidth?: boolean;
+      | 'week'
+    size?: 'small' | 'medium' | 'large'
+    endAdornment?: ReactNode
+    startAdornment?: ReactNode
+    fullWidth?: boolean
   }
 >
 
@@ -61,7 +61,11 @@ const TextInput = ({
         {startAdornment}
       </div>
     )}
-    <input type={type} className={clsx('appearance-none w-full focus:outline-none')} {...props} />
+    <input
+      type={type}
+      className={clsx('appearance-none w-full focus:outline-none')}
+      {...props}
+    />
     {endAdornment && (
       <div
         className={clsx(

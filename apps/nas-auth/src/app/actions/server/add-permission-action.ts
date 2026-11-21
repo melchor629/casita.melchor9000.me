@@ -11,7 +11,10 @@ type AddPermissionData = Readonly<{
   displayName: string | null
 }>
 
-async function addPermissionAction(context: PageLoaderContext, { appKey, ...data }: AddPermissionData) {
+async function addPermissionAction(
+  context: PageLoaderContext,
+  { appKey, ...data }: AddPermissionData,
+) {
   const sessionResult = await ensureSession(context, 'application', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult

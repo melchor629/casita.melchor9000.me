@@ -7,7 +7,7 @@ export type TableHeadCellProps = Readonly<
     /**
      * Try to shrink all cells in this column.
      */
-    shrink?: boolean;
+    shrink?: boolean
   }
 >
 

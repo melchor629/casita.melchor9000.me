@@ -7,9 +7,7 @@ const Jobs: FC<{ readonly shouldUpdate: boolean }> = ({ shouldUpdate }) => {
   const [{ remove, update }, jobs] = useJobHandler()
 
   const clearCompleted = useCallback(() => {
-    const jobsToRemove = jobs
-      .filter((job) => job.state === 'succeeded')
-      .map((job) => job.id)
+    const jobsToRemove = jobs.filter((job) => job.state === 'succeeded').map((job) => job.id)
     remove(jobsToRemove)
   }, [jobs, remove])
 
@@ -25,7 +23,7 @@ const Jobs: FC<{ readonly shouldUpdate: boolean }> = ({ shouldUpdate }) => {
 
   if (!jobs.length) {
     return (
-      <div className="text-center text-text-secondary select-none">
+      <div className="text-text-secondary text-center select-none">
         <span>No jobs</span>
       </div>
     )
@@ -34,12 +32,23 @@ const Jobs: FC<{ readonly shouldUpdate: boolean }> = ({ shouldUpdate }) => {
   return (
     <>
       <div className="text-right">
-        <Button type="button" size="small" variant="text" onClick={clearCompleted}>
+        <Button
+          type="button"
+          size="small"
+          variant="text"
+          onClick={clearCompleted}
+        >
           Clear completed
         </Button>
       </div>
 
-      {jobs.map((job) => <Job key={job.id} job={job} queue={job.queue} />)}
+      {jobs.map((job) => (
+        <Job
+          key={job.id}
+          job={job}
+          queue={job.queue}
+        />
+      ))}
     </>
   )
 }

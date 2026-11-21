@@ -3,16 +3,16 @@
   "version": "0.1.5",
   "private": true,
   "type": "module",
-  "scripts": {
-    "check": "tsc -p . --noEmit",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
-  },
   "exports": {
     ".": "./drizzle/client.ts",
     "./migrations": "./drizzle/migrations.ts",
     "./schema": "./drizzle/schema.ts"
+  },
+  "scripts": {
+    "check:ts": "tsc -p . --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@melchor629/infra": "*",
@@ -22,7 +22,7 @@
   "devDependencies": {
     "@melchor629/tsconfigs": "*",
     "@types/pg": "^8.23.1",
-    "drizzle-kit": "^1.0.0-rc.5-ab785fc",
-    "dotenv": "^18.0.10"
+    "dotenv": "^18.0.10",
+    "drizzle-kit": "^1.0.0-rc.5-ab785fc"
   }
 }

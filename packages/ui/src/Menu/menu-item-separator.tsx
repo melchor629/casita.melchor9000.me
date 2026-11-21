@@ -1,3 +1,3 @@
 export default function MenuItemSeparator() {
-  return <div className="my-1.5 mx-2 h-px border border-text-main opacity-disabled rounded-full" />
+  return <div className="border-text-main opacity-disabled mx-2 my-1.5 h-px rounded-full border" />
 }

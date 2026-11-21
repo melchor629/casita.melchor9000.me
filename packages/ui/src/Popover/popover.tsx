@@ -20,53 +20,52 @@ import { clsx } from '../utils'
 export type PopoverProps = Readonly<
   ComponentPropsWithRef<'div'> & {
     /**
-     * A function that tells the popover should be closed and its reason.
-     * The callback is called when the user presses escape or clicks outside
-     * the popover.
+     * A function that tells the popover should be closed and its reason. The callback is called
+     * when the user presses escape or clicks outside the popover.
+     *
      * @param reason The reason on why it is being closed.
      */
-    onClose?: (reason?: 'click' | 'escape') => void;
+    onClose?: (reason?: 'click' | 'escape') => void
     /**
-     * Where to place the popover container, based on the
-     * {@link PopoverProps.referenceElement}.
+     * Where to place the popover container, based on the {@link PopoverProps.referenceElement}.
+     *
      * @default 'bottom'
      */
-    placement?: Placement;
+    placement?: Placement
     /**
-     * The element that serves as reference on where the popover should be
-     * placed around. The element can be an HTML element or any virtual
-     * element that implements the basic function `getBoundingClientRect`.
-     * If set to `null`, the container position will not be updated.
+     * The element that serves as reference on where the popover should be placed around. The
+     * element can be an HTML element or any virtual element that implements the basic function
+     * `getBoundingClientRect`. If set to `null`, the container position will not be updated.
      *
      * See more about [Virtual Elements](https://floating-ui.com/docs/virtual-elements).
      */
-    referenceElement: Element | VirtualElement | null;
+    referenceElement: Element | VirtualElement | null
     /**
-     * Positioning strategy. Either to use `fixed` or `absolute` in the
-     * styles.
+     * Positioning strategy. Either to use `fixed` or `absolute` in the styles.
+     *
      * @default 'absolute'
      */
-    strategy?: Strategy;
+    strategy?: Strategy
     /**
-     * A list of {@link Middleware}s to alter the behaviour of the popover.
-     * See more in https://floating-ui.com/docs/middleware.
+     * A list of {@link Middleware}s to alter the behaviour of the popover. See more in
+     * https://floating-ui.com/docs/middleware.
+     *
      * @default [offset(8)]
      */
-    middleware?: Middleware[];
+    middleware?: Middleware[]
     /**
-     * Places the container and its children in a different HTML element.
-     * See {@link Portal}.
+     * Places the container and its children in a different HTML element. See {@link Portal}.
      */
-    portal?: PortalProps['portal'];
+    portal?: PortalProps['portal']
   }
 >
 
 /**
- * Put the `chidren` into a container, and positions that container to be
- * around the {@link PopoverProps.referenceElement}. The container can be
- * placed in diferent positions based on {@link PopoverProps.placement}.
- * The container and its children can be placed in a different HTML element
- * using {@link PopoverProps.portal}, only if it is filled.
+ * Put the `chidren` into a container, and positions that container to be around the
+ * {@link PopoverProps.referenceElement}. The container can be placed in diferent positions based on
+ * {@link PopoverProps.placement}. The container and its children can be placed in a different HTML
+ * element using {@link PopoverProps.portal}, only if it is filled.
+ *
  * @param param0 Props
  * @returns Element
  */
@@ -102,8 +101,8 @@ export default function Popover({
       return
     }
 
-    const path: Array<EventTarget | VirtualElement>
-      = 'composedPath' in e ? e.composedPath() : (e as { path: Element[] }).path
+    const path: Array<EventTarget | VirtualElement> =
+      'composedPath' in e ? e.composedPath() : (e as { path: Element[] }).path
     if (path.includes(referenceElement)) {
       return
     }
@@ -113,9 +112,9 @@ export default function Popover({
       return
     }
 
-    const button = path
-      .filter((element): element is HTMLButtonElement => element instanceof HTMLButtonElement)
-      .at(-1)
+    const button = path.findLast(
+      (element): element is HTMLButtonElement => element instanceof HTMLButtonElement,
+    )
 
     if (button && !button.disabled) {
       onClose?.('click')

@@ -5,8 +5,13 @@ export default function ErrorBoundary() {
   const error = useRouteError()
   if (isRouteErrorResponse(error)) {
     return (
-      <div className="w-full mt-navbar text-center">
-        <Text size="h2" className="mb-1">Error loading data</Text>
+      <div className="mt-navbar w-full text-center">
+        <Text
+          size="h2"
+          className="mb-1"
+        >
+          Error loading data
+        </Text>
         <Text size="bodyLarge">
           {`There was an error ${error.status} while fetching data for that page.`}
           Try reloading or contacting the master.
@@ -17,12 +22,20 @@ export default function ErrorBoundary() {
 
   if (error instanceof Error) {
     return (
-      <div className="w-full mt-navbar text-center">
-        <Text size="h2" className="mb-1">Unexpected error</Text>
+      <div className="mt-navbar w-full text-center">
+        <Text
+          size="h2"
+          className="mb-1"
+        >
+          Unexpected error
+        </Text>
         <Text size="bodyLarge">
           There was an unexpected error in the application. Try reloading or contacting the master.
         </Text>
-        <Text color="textSecondary" italic>
+        <Text
+          color="textSecondary"
+          italic
+        >
           {`${error.name}: ${error.message}`}
         </Text>
       </div>
@@ -30,8 +43,13 @@ export default function ErrorBoundary() {
   }
 
   return (
-    <div className="w-full mt-navbar text-center">
-      <Text size="h2" className="mb-1">Unexpected error</Text>
+    <div className="mt-navbar w-full text-center">
+      <Text
+        size="h2"
+        className="mb-1"
+      >
+        Unexpected error
+      </Text>
       <Text size="bodyLarge">
         There was an unexpected error in the application. Try reloading or contacting the master.
       </Text>

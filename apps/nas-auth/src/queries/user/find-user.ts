@@ -9,11 +9,13 @@ const findUser = async ({ displayName, email, userName }: Filters) => {
   const [result] = await nasAuthDatabase
     .select()
     .from(user)
-    .where(or(
-      displayName ? eq(user.displayName, displayName) : undefined,
-      email ? eq(user.email, email) : undefined,
-      userName ? eq(user.userName, userName) : undefined,
-    ))
+    .where(
+      or(
+        displayName ? eq(user.displayName, displayName) : undefined,
+        email ? eq(user.email, email) : undefined,
+        userName ? eq(user.userName, userName) : undefined,
+      ),
+    )
     .limit(1)
 
   return result ?? null

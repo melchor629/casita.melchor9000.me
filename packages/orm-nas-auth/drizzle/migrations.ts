@@ -1,14 +1,14 @@
 import process from 'node:process'
+import createLogger from '@melchor629/infra/logger'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
-import createLogger from '@melchor629/infra/logger'
 
 const migrationLogger = createLogger('orm-nas-auth:migrations')
 
 export default async function runNasAuthMigrations() {
   const db = drizzle(process.env.DATABASE_URL!, {
     logger: {
-      logQuery: (query, params) => migrationLogger.debug({ query, params }, 'Running query')
+      logQuery: (query, params) => migrationLogger.debug({ query, params }, 'Running query'),
     },
   })
 

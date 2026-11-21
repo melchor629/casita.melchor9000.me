@@ -5,7 +5,8 @@ import type { EntryRef } from '../jp-utils'
 
 /**
  * Renders one link of the ref list.
- * @param props props
+ *
+ * @param props Props
  */
 const RefLink = ({ refLink: ref }: { readonly refLink: EntryRef }) => {
   const linkTo = useMemo(() => {
@@ -28,28 +29,37 @@ const RefLink = ({ refLink: ref }: { readonly refLink: EntryRef }) => {
   )
   if (ref.type === 'basic') {
     return (
-      <Link className={vocabRefClasses} to={linkTo}>
-        B
-        {ref.chapter}
-        {' '}
-        {ref.word}
+      <Link
+        className={vocabRefClasses}
+        to={linkTo}
+      >
+        B{ref.chapter} {ref.word}
       </Link>
     )
   }
 
   if (ref.type === 'intermediate') {
     return (
-      <Link className={vocabRefClasses} to={linkTo}>
-        I
-        {ref.chapter}
-        {' '}
-        {ref.word}
+      <Link
+        className={vocabRefClasses}
+        to={linkTo}
+      >
+        I{ref.chapter} {ref.word}
       </Link>
     )
   }
 
   if (ref.type === 'url') {
-    return <a className={vocabRefClasses} href={ref.url.toString()} target="_blank" rel="noreferrer">{ref.name}</a>
+    return (
+      <a
+        className={vocabRefClasses}
+        href={ref.url.toString()}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {ref.name}
+      </a>
+    )
   }
 
   return null

@@ -1,15 +1,14 @@
 {
-  "extends": [
-    "@melchor629/tsconfigs/react.json",
-  ],
+  "extends": ["@melchor629/tsconfigs/react.json"],
   "compilerOptions": {
-    "rootDir": "./",
+    "rootDir": "./"
   },
   "include": [
     "src/",
+    "generate-index.ts",
     ".storybook/*.ts",
     "*.config.js",
     "*.config.ts",
-    "vitest.shims.d.ts",
+    "vitest.shims.d.ts"
   ]
 }

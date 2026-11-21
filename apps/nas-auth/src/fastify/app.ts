@@ -2,12 +2,7 @@ import createLogger from '@melchor629/infra/logger'
 import runNasAuthMigrations from '@melchor629/orm-nas-auth/migrations'
 import Fastify from 'fastify'
 import { nanoid } from 'nanoid'
-import {
-  cookieKeysDefault,
-  isDebug,
-  logLevel,
-  publicUrl,
-} from '../config.ts'
+import { cookieKeysDefault, isDebug, logLevel, publicUrl } from '../config.ts'
 import { fastifyInstrumentation } from '../instrumentation.ts'
 import client from '../redis.ts'
 import registerRoutes from '../routes/register.ts'
@@ -16,7 +11,7 @@ import registerRoutes from '../routes/register.ts'
 
 declare module 'fastify' {
   interface Session {
-    login?: Readonly<{ provider: string, interactionId: string }>
+    login?: Readonly<{ provider: string; interactionId: string }>
     loginResult?: Readonly<{
       provider: 'github' | 'google'
       token: import('@fastify/oauth2').Token
@@ -79,24 +74,29 @@ const createApp = async () => {
     checks: async (add, mkcheck) => {
       const health = await import('@melchor629/fastify-infra/health')
       add('redis', health.redisHealthCheck, { client: () => client })
-      add('orm', mkcheck<Record<string, never>>('orm', async () => {
-        try {
-          const { default: db, sql } = await import('@melchor629/orm-nas-auth')
-          const result = await db.execute(sql`select 1 from "auth"."application" limit 1`)
-          return {
-            status: 'healthy',
-            data: {
-              result: result.rows,
-            },
+      add(
+        'orm',
+        mkcheck<Record<string, never>>('orm', async () => {
+          try {
+            const { default: db, sql } = await import('@melchor629/orm-nas-auth')
+            const result = await db.execute(sql`select 1 from "auth"."application" limit 1`)
+            return {
+              status: 'healthy',
+              data: {
+                result: result.rows,
+              },
+            }
+          } catch (e) {
+            return {
+              status: 'unhealthy',
+              reason: `Cannot connect to psql: ${(e as Error).message}`,
+              data: {},
+            }
           }
-        } catch (e) {
-          return {
-            status: 'unhealthy',
-            reason: `Cannot connect to psql: ${(e as Error).message}`,
-            data: {},
-          }
-        }
-      }), {}, 'degraded')
+        }),
+        {},
+        'degraded',
+      )
     },
     shouldIncludeDetails: () => true,
   })
@@ -105,23 +105,26 @@ const createApp = async () => {
   registerRoutes(app as never)
 
   // register node-oidc
-  app.register(async function oidcPlugin(fastify) {
-    const { default: oidc } = await import('../oidc/oidc.ts')
-    const oidcCallback = oidc.callback()
-    fastify.removeAllContentTypeParsers()
-    fastify.addContentTypeParser('*', (_1, _2, done) => done(null))
-    fastify.all('/*', async (req, reply) => {
-      reply.hijack()
-      Object.assign(reply.raw, { reply })
-      Object.assign(req.raw, {
-        originalUrl: req.raw.url,
-        url: req.raw.url?.slice(5),
+  app.register(
+    async function oidcPlugin(fastify) {
+      const { default: oidc } = await import('../oidc/oidc.ts')
+      const oidcCallback = oidc.callback()
+      fastify.removeAllContentTypeParsers()
+      fastify.addContentTypeParser('*', (_1, _2, done) => done(null))
+      fastify.all('/*', async (req, reply) => {
+        reply.hijack()
+        Object.assign(reply.raw, { reply })
+        Object.assign(req.raw, {
+          originalUrl: req.raw.url,
+          url: req.raw.url?.slice(5),
+        })
+        await oidcCallback(req.raw, reply.raw)
       })
-      await oidcCallback(req.raw, reply.raw)
-    })
-  }, {
-    prefix: '/oidc',
-  })
+    },
+    {
+      prefix: '/oidc',
+    },
+  )
 
   // nice-ssr plugin
   await app.register(import('@fastify/middie'))

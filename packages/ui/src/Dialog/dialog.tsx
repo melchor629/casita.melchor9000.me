@@ -6,25 +6,25 @@ import Text from '../Text'
 import { clsx } from '../utils'
 
 export type DialogProps = Readonly<{
-  id: string;
-  title: string;
-  show?: boolean;
-  className?: string;
-  children?: React.ReactNode;
-  buttons?: React.ReactNode[];
-  onClose: (reason: 'button' | 'escape' | 'backdrop') => void;
-  onCloseStart?: () => void;
-  onCloseEnd?: () => void;
-  portal?: boolean | HTMLElement;
-  closeLabel?: string;
-  size?: 'extra-large' | 'large' | 'medium' | 'small';
+  id: string
+  title: string
+  show?: boolean
+  className?: string
+  children?: React.ReactNode
+  buttons?: React.ReactNode[]
+  onClose: (reason: 'button' | 'escape' | 'backdrop') => void
+  onCloseStart?: () => void
+  onCloseEnd?: () => void
+  portal?: boolean | HTMLElement
+  closeLabel?: string
+  size?: 'extra-large' | 'large' | 'medium' | 'small'
   slots?: {
-    container?: React.ElementType;
-  };
+    container?: React.ElementType
+  }
   slotProps?: {
-    container?: React.ComponentProps<'div'>;
-  };
-  unmountWhenHidden?: boolean;
+    container?: React.ComponentProps<'div'>
+  }
+  unmountWhenHidden?: boolean
 }>
 
 export default function Dialog({
@@ -56,7 +56,13 @@ export default function Dialog({
 
   const finalButtons = useMemo(
     () => [
-      <Button type="button" color="neutral" variant="text" onClick={onCloseImpl} key="close">
+      <Button
+        type="button"
+        color="neutral"
+        variant="text"
+        onClick={onCloseImpl}
+        key="close"
+      >
         {closeLabel || 'Close'}
       </Button>,
       ...(buttons || []),
@@ -130,14 +136,20 @@ export default function Dialog({
           role="dialog"
           aria-labelledby={`dialog-${id}-title`}
         >
-          <ContainerElement {...slotProps.container} className="flex flex-col grow min-w-0 min-h-0">
-            <div className="px-5 pt-4 mb-4 select-none">
-              <Text size="h4" id={`dialog-${id}-title`}>
+          <ContainerElement
+            {...slotProps.container}
+            className="flex min-h-0 min-w-0 grow flex-col"
+          >
+            <div className="mb-4 px-5 pt-4 select-none">
+              <Text
+                size="h4"
+                id={`dialog-${id}-title`}
+              >
                 {title}
               </Text>
             </div>
-            <div className="px-5 overflow-y-auto shrink">{children}</div>
-            <div className="flex justify-end gap-2 h-8 mt-5 mb-3 mx-3">{finalButtons}</div>
+            <div className="shrink overflow-y-auto px-5">{children}</div>
+            <div className="mx-3 mt-5 mb-3 flex h-8 justify-end gap-2">{finalButtons}</div>
           </ContainerElement>
         </div>
       </FadeAndMove>

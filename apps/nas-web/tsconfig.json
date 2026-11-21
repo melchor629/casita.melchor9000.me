@@ -1,7 +1,5 @@
 {
-  "extends": [
-    "@melchor629/tsconfigs/react.json",
-  ],
+  "extends": ["@melchor629/tsconfigs/react.json"],
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
@@ -9,12 +7,8 @@
       "@/components/*": ["./src/components/*"],
       "@/hooks/*": ["./src/hooks/*"],
       "@/utils/*": ["./src/utils/*"],
-      "@/workers/*": ["./src/workers/*"],
+      "@/workers/*": ["./src/workers/*"]
     }
   },
-  "include": [
-    "src/",
-    "*.config.js",
-    "*.config.ts",
-  ]
+  "include": ["src/", "*.config.js", "*.config.ts"]
 }

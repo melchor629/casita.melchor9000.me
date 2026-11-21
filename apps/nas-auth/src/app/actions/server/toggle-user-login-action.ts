@@ -9,7 +9,10 @@ type ToggleUserLoginOptions = Readonly<{
   type: string
 }>
 
-async function toggleUserLoginAction(context: PageLoaderContext, { id, type }: ToggleUserLoginOptions) {
+async function toggleUserLoginAction(
+  context: PageLoaderContext,
+  { id, type }: ToggleUserLoginOptions,
+) {
   const session = await getSession(context)
   if (!session) {
     return invalid([])

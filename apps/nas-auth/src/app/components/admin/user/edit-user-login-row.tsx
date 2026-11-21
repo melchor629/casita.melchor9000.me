@@ -14,11 +14,7 @@ type EditUserLoginRowProps = Readonly<{
   readOnly: boolean
 }>
 
-const EditUserLoginRow = ({
-  canDelete,
-  login,
-  readOnly,
-}: EditUserLoginRowProps) => {
+const EditUserLoginRow = ({ canDelete, login, readOnly }: EditUserLoginRowProps) => {
   const revalidator = useRevalidator()
   const editUserLoginMutation = useEditUserLogin()
   const removeUserLoginMutation = useRemoveUserLogin()
@@ -39,7 +35,10 @@ const EditUserLoginRow = ({
     setOpened(false)
   }, [])
 
-  const isDisabledChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => setIsDisabled(e.currentTarget.checked), [])
+  const isDisabledChanged = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setIsDisabled(e.currentTarget.checked),
+    [],
+  )
 
   const openData = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -54,31 +53,56 @@ const EditUserLoginRow = ({
     setOpened(false)
   }, [])
 
-  const save = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    if (readOnly) {
-      return
-    }
+  const save = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      if (readOnly) {
+        return
+      }
 
-    editUserLoginMutation.mutate({
-      disabled: isDisabled,
-      data: loginData,
-      loginId: login.loginId,
-      type: login.type,
-    }, { onSuccess: () => { setEditMode(false); void revalidator() } })
-  }, [readOnly, editUserLoginMutation, isDisabled, loginData, login.loginId, login.type, revalidator])
+      editUserLoginMutation.mutate(
+        {
+          disabled: isDisabled,
+          data: loginData,
+          loginId: login.loginId,
+          type: login.type,
+        },
+        {
+          onSuccess: () => {
+            setEditMode(false)
+            void revalidator()
+          },
+        },
+      )
+    },
+    [
+      readOnly,
+      editUserLoginMutation,
+      isDisabled,
+      loginData,
+      login.loginId,
+      login.type,
+      revalidator,
+    ],
+  )
 
-  const remove = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    if (readOnly || !canDelete) {
-      return
-    }
+  const remove = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      if (readOnly || !canDelete) {
+        return
+      }
 
-    removeUserLoginMutation.mutate({
-      loginId: login.loginId,
-      type: login.type,
-    }, { onSuccess: () => void revalidator() })
-  }, [readOnly, canDelete, removeUserLoginMutation, login.loginId, login.type, revalidator])
+      removeUserLoginMutation.mutate(
+        {
+          loginId: login.loginId,
+          type: login.type,
+        },
+        { onSuccess: () => void revalidator() },
+      )
+    },
+    [readOnly, canDelete, removeUserLoginMutation, login.loginId, login.type, revalidator],
+  )
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -90,13 +114,27 @@ const EditUserLoginRow = ({
     return (
       <TableRow>
         <TableCell>{login.type}</TableCell>
-        <TableCell><code>{login.loginId}</code></TableCell>
         <TableCell>
-          <Button size="small" onClick={openData} variant="text">Edit</Button>
+          <code>{login.loginId}</code>
+        </TableCell>
+        <TableCell>
+          <Button
+            size="small"
+            onClick={openData}
+            variant="text"
+          >
+            Edit
+          </Button>
         </TableCell>
         <TableCell className="select-none">
           <InputLabel
-            input={<Checkbox id={`${login.loginId}-disabled`} checked={isDisabled} onChange={isDisabledChanged} />}
+            input={
+              <Checkbox
+                id={`${login.loginId}-disabled`}
+                checked={isDisabled}
+                onChange={isDisabledChanged}
+              />
+            }
           >
             {isDisabled ? 'Yes' : 'No'}
           </InputLabel>
@@ -122,7 +160,11 @@ const EditUserLoginRow = ({
           </Button>
         </TableCell>
 
-        <EditLoginDataDialog data={loginData} opened={opened} close={editLoginDataClose} />
+        <EditLoginDataDialog
+          data={loginData}
+          opened={opened}
+          close={editLoginDataClose}
+        />
       </TableRow>
     )
   }
@@ -130,13 +172,34 @@ const EditUserLoginRow = ({
   return (
     <TableRow>
       <TableCell>{login.type}</TableCell>
-      <TableCell><code>{login.loginId}</code></TableCell>
       <TableCell>
-        {login.data ? <Button size="small" onClick={openData} variant="text">See</Button> : ''}
+        <code>{login.loginId}</code>
+      </TableCell>
+      <TableCell>
+        {login.data ? (
+          <Button
+            size="small"
+            onClick={openData}
+            variant="text"
+          >
+            See
+          </Button>
+        ) : (
+          ''
+        )}
       </TableCell>
       <TableCell>{login.disabled ? 'Yes' : 'No'}</TableCell>
       <TableCell noWrap>
-        {!readOnly && <Button size="small" onClick={activateEditMode} disabled={removeUserLoginMutation.isPending} variant="text">Edit</Button>}
+        {!readOnly && (
+          <Button
+            size="small"
+            onClick={activateEditMode}
+            disabled={removeUserLoginMutation.isPending}
+            variant="text"
+          >
+            Edit
+          </Button>
+        )}
         &nbsp;
         {!readOnly && canDelete && (
           <Button
@@ -152,7 +215,11 @@ const EditUserLoginRow = ({
         )}
       </TableCell>
 
-      <LoginDataDialog data={login.data} opened={opened} setOpened={setOpened} />
+      <LoginDataDialog
+        data={login.data}
+        opened={opened}
+        setOpened={setOpened}
+      />
     </TableRow>
   )
 }

@@ -31,7 +31,11 @@ type EditApplicationApiResourceAccessTokenProps = Readonly<{
   opened: boolean
 }>
 
-const EditApplicationApiResourceAccessToken = ({ accessToken, close, opened }: EditApplicationApiResourceAccessTokenProps) => {
+const EditApplicationApiResourceAccessToken = ({
+  accessToken,
+  close,
+  opened,
+}: EditApplicationApiResourceAccessTokenProps) => {
   const [state, setState] = useState(accessToken)
   usePropState(accessToken, setState)
 
@@ -42,27 +46,35 @@ const EditApplicationApiResourceAccessToken = ({ accessToken, close, opened }: E
     }))
   }, [])
 
-  const jwtSignAlgorithmChanged = useCallback((value: AsymmetricSigningAlgorithm | 'unset' | null) => setState((s) => ({
-    ...s,
-    jwt: {
-      ...s.jwt,
-      sign: {
-        ...s.jwt?.sign,
-        alg: value === 'unset' ? undefined : (value || undefined),
-      },
-    },
-  })), [])
+  const jwtSignAlgorithmChanged = useCallback(
+    (value: AsymmetricSigningAlgorithm | 'unset' | null) =>
+      setState((s) => ({
+        ...s,
+        jwt: {
+          ...s.jwt,
+          sign: {
+            ...s.jwt?.sign,
+            alg: value === 'unset' ? undefined : value || undefined,
+          },
+        },
+      })),
+    [],
+  )
 
-  const jwtSignKidChanged = useCallback(({ currentTarget: { value } }: ChangeEvent<HTMLInputElement>) => setState((s) => ({
-    ...s,
-    jwt: {
-      ...s.jwt,
-      sign: {
-        ...s.jwt?.sign,
-        kid: value || undefined,
-      },
-    },
-  })), [])
+  const jwtSignKidChanged = useCallback(
+    ({ currentTarget: { value } }: ChangeEvent<HTMLInputElement>) =>
+      setState((s) => ({
+        ...s,
+        jwt: {
+          ...s.jwt,
+          sign: {
+            ...s.jwt?.sign,
+            kid: value || undefined,
+          },
+        },
+      })),
+    [],
+  )
 
   return (
     <Dialog
@@ -73,7 +85,10 @@ const EditApplicationApiResourceAccessToken = ({ accessToken, close, opened }: E
       onClose={useCallback(() => close(), [close])}
       title="Access Token"
       buttons={[
-        <Button key="save" onClick={useCallback(() => close(state), [close, state])}>
+        <Button
+          key="save"
+          onClick={useCallback(() => close(state), [close, state])}
+        >
           Save
         </Button>,
       ]}
@@ -89,16 +104,26 @@ const EditApplicationApiResourceAccessToken = ({ accessToken, close, opened }: E
 
       {state.format === 'jwt' && state.jwt?.sign && (
         <>
-          <FormControlLabel htmlFor="at-jwt-alg" margin="normal">Sign Algorithm</FormControlLabel>
+          <FormControlLabel
+            htmlFor="at-jwt-alg"
+            margin="normal"
+          >
+            Sign Algorithm
+          </FormControlLabel>
           <Select
             fullWidth
             id="at-jwt-alg"
             values={asymmetricSigningAlgorithms}
-            value={state.jwt.sign.alg as AsymmetricSigningAlgorithm ?? 'unset'}
+            value={(state.jwt.sign.alg as AsymmetricSigningAlgorithm) ?? 'unset'}
             onChange={jwtSignAlgorithmChanged}
           />
 
-          <FormControlLabel htmlFor="at-jwt-kid" margin="normal">Sign Key ID</FormControlLabel>
+          <FormControlLabel
+            htmlFor="at-jwt-kid"
+            margin="normal"
+          >
+            Sign Key ID
+          </FormControlLabel>
           <TextInput
             type="text"
             id="at-jwt-kid"
@@ -108,11 +133,7 @@ const EditApplicationApiResourceAccessToken = ({ accessToken, close, opened }: E
         </>
       )}
 
-      {state.format === 'opaque' && (
-        <div>
-          opaque format does not have options
-        </div>
-      )}
+      {state.format === 'opaque' && <div>opaque format does not have options</div>}
     </Dialog>
   )
 }

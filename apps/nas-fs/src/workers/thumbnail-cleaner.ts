@@ -44,30 +44,31 @@ const thumbnailCleanerProcessor = async (job: Job<ThumbnailCleanerJobData>) => {
     // detect orphan thumbnail folders
     const orphanFolders = inDiskThumbnailPaths.filter((p) => !thumbnailPaths.find(([m]) => m === p))
     logger.debug(`Detected ${orphanFolders.length} orphan folders to clean up`)
-    await Promise.all(orphanFolders.map((path) => {
-      logger.debug({ path, jobId: job.id }, `Removing ${path}`)
-      return fs.remove(join(thumbnailPath, path))
-    }))
+    await Promise.all(
+      orphanFolders.map((path) => {
+        logger.debug({ path, jobId: job.id }, `Removing ${path}`)
+        return fs.remove(join(thumbnailPath, path))
+      }),
+    )
 
     // detect manifests without original images
-    const invalidThumbnailManifests = thumbnailPaths
-      .filter(([p]) => !inDiskThumbnailPaths.find((m) => m === p))
+    const invalidThumbnailManifests = thumbnailPaths.filter(
+      ([p]) => !inDiskThumbnailPaths.find((m) => m === p),
+    )
     logger.debug(`Detected ${invalidThumbnailManifests.length} invalid manifests to remove`)
-    await cache.remove(...invalidThumbnailManifests.map(([, thumbnailKey]) => {
-      logger.debug({ thumbnailKey, jobId: job.id }, `Removing manifest ${thumbnailKey}`)
-      return thumbnailKey
-    }))
+    await cache.remove(
+      ...invalidThumbnailManifests.map(([, thumbnailKey]) => {
+        logger.debug({ thumbnailKey, jobId: job.id }, `Removing manifest ${thumbnailKey}`)
+        return thumbnailKey
+      }),
+    )
 
     logger.info({ jobId: job.id }, 'Job finished for app')
   }
 }
 
-const thumbnailCleanerWorker = new BaseWorker(
-  queues.thumbnailCleaner,
-  thumbnailCleanerProcessor,
-  {
-    concurrency: 1,
-  },
-)
+const thumbnailCleanerWorker = new BaseWorker(queues.thumbnailCleaner, thumbnailCleanerProcessor, {
+  concurrency: 1,
+})
 
 export default thumbnailCleanerWorker

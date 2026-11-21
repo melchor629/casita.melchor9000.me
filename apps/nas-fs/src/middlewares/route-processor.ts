@@ -4,7 +4,9 @@ import { Type, type TSchema } from 'typebox'
 const isNullableSchema = (schema: TSchema): schema is TSchema & { nullable?: true } =>
   'nullable' in schema && schema.nullable === true
 
-const isRootSchema = (schema: TSchema): schema is TSchema & { title: string, $id: string, $schema: string } =>
+const isRootSchema = (
+  schema: TSchema,
+): schema is TSchema & { title: string; $id: string; $schema: string } =>
   'title' in schema && typeof schema.title === 'string' && !!schema.title
 
 const isStoredSchema = (schema: TSchema): schema is TSchema & { $id: string } =>

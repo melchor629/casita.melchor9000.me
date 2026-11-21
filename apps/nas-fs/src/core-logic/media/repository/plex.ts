@@ -18,9 +18,7 @@ const extractImageReference = (path?: string | null) => {
   }
 
   const match = thumbnailRegex.exec(path)
-  const ref = match && match.length >= 3
-    ? { itemId: match[1], imageKey: match[2] }
-    : null
+  const ref = match && match.length >= 3 ? { itemId: match[1], imageKey: match[2] } : null
   return ref
 }
 
@@ -66,9 +64,9 @@ const mapItem = (library: plex.Library, item: plex.LibraryContents['Metadata'][0
       summary: item.summary,
       thumbnail,
       title: item.title,
-      paths: item.Media.flatMap((media) => (
-        media.Part.map((part) => paths.reduce((v, p) => v.replace(p, ''), part.file))
-      )),
+      paths: item.Media.flatMap((media) =>
+        media.Part.map((part) => paths.reduce((v, p) => v.replace(p, ''), part.file)),
+      ),
     }
   }
 
@@ -122,9 +120,9 @@ const mapItem = (library: plex.Library, item: plex.LibraryContents['Metadata'][0
       id: item.ratingKey,
       thumbnail,
       title: item.title,
-      paths: item.Media.flatMap((media) => (
-        media.Part.map((part) => paths.reduce((v, p) => v.replace(p, ''), part.file))
-      )),
+      paths: item.Media.flatMap((media) =>
+        media.Part.map((part) => paths.reduce((v, p) => v.replace(p, ''), part.file)),
+      ),
     }
   }
 
@@ -189,9 +187,9 @@ const mapSearchItem = (
   }
 }
 
-const mapTag = ({ id, tag }: { id: string | number, tag: string }) => ({ id, tag })
+const mapTag = ({ id, tag }: { id: string | number; tag: string }) => ({ id, tag })
 
-const mapRating = (rating: { image: string, value: number }): Rating => {
+const mapRating = (rating: { image: string; value: number }): Rating => {
   if (rating.image.startsWith('imdb')) {
     return { source: 'imdb', value: rating.value / 10 }
   }
@@ -238,9 +236,9 @@ const mapMetadata = (library: plex.Library, metadata: plex.Metadata): ItemMetada
       genres: (metadata.Genre || []).map(mapTag),
       id: metadata.ratingKey,
       mood: (metadata.Mood || []).map(mapTag),
-      paths: metadata.Location.flatMap((location) => (
-        paths.reduce((v, p) => v.replace(p, ''), location.path)
-      )),
+      paths: metadata.Location.flatMap((location) =>
+        paths.reduce((v, p) => v.replace(p, ''), location.path),
+      ),
       references: (metadata.Guid || []).map(({ id }) => id),
       styles: (metadata.Style || []).map(mapTag),
       summary: metadata.summary,
@@ -259,18 +257,19 @@ const mapMetadata = (library: plex.Library, metadata: plex.Metadata): ItemMetada
       genres: metadata.Genre?.map(mapTag) ?? [],
       id: metadata.ratingKey,
       originalTitle: metadata.originalTitle,
-      paths: metadata.Media.flatMap((media) => (
-        media.Part.map((part) => paths.reduce((v, p) => v.replace(p, ''), part.file))
-      )),
+      paths: metadata.Media.flatMap((media) =>
+        media.Part.map((part) => paths.reduce((v, p) => v.replace(p, ''), part.file)),
+      ),
       producers: metadata.Producer?.map(mapTag) ?? [],
       ratings: metadata.Rating?.map(mapRating) ?? [],
       references: metadata.Guid?.map(({ id }) => id) ?? [],
-      roles: metadata.Role?.map((role) => ({
-        id: role.id,
-        role: role.role,
-        tag: role.tag,
-        thumbnailUrl: role.thumb,
-      })) ?? [],
+      roles:
+        metadata.Role?.map((role) => ({
+          id: role.id,
+          role: role.role,
+          tag: role.tag,
+          thumbnailUrl: role.thumb,
+        })) ?? [],
       summary: metadata.summary,
       studio: metadata.studio,
       tagLine: metadata.tagline,
@@ -304,17 +303,19 @@ const mapMetadata = (library: plex.Library, metadata: plex.Metadata): ItemMetada
       episodes: metadata.leafCount,
       genres: metadata.Genre.map(mapTag),
       id: metadata.ratingKey,
-      paths: metadata.Location?.map((location) => (
-        paths.reduce((v, p) => v.replace(p, ''), location.path)
-      )) ?? [],
+      paths:
+        metadata.Location?.map((location) =>
+          paths.reduce((v, p) => v.replace(p, ''), location.path),
+        ) ?? [],
       ratings: metadata.Rating?.map(mapRating) ?? [],
       references: metadata.Guid?.map(({ id }) => id) ?? [],
-      roles: metadata.Role?.map((role) => ({
-        id: role.id,
-        role: role.role,
-        tag: role.tag,
-        thumbnailUrl: role.thumb,
-      })) ?? [],
+      roles:
+        metadata.Role?.map((role) => ({
+          id: role.id,
+          role: role.role,
+          tag: role.tag,
+          thumbnailUrl: role.thumb,
+        })) ?? [],
       seasons: metadata.childCount,
       studio: metadata.studio,
       summary: metadata.summary,
@@ -352,7 +353,10 @@ const plexTypeToAreaType = Object.freeze({
   director: 'director',
   genre: 'genre',
 })
-const mapHub = <T extends plex.SearchResults['Hub'][0]>(library: plex.Library, hub: T): SearchResultArea | null => {
+const mapHub = <T extends plex.SearchResults['Hub'][0]>(
+  library: plex.Library,
+  hub: T,
+): SearchResultArea | null => {
   if (!hub.Metadata || hub.size === 0) {
     return null
   }
@@ -360,9 +364,9 @@ const mapHub = <T extends plex.SearchResults['Hub'][0]>(library: plex.Library, h
   if (hub.type in plexTypeToAreaType) {
     const type = plexTypeToAreaType[hub.type as keyof typeof plexTypeToAreaType]
     const libraryId = parseInt(library.key, 10)
-    const results = hub.Metadata
-      .filter((m) => m.librarySectionID === libraryId)
-      .map((m) => mapSearchItem(library, m))
+    const results = hub.Metadata.filter((m) => m.librarySectionID === libraryId).map((m) =>
+      mapSearchItem(library, m),
+    )
     const maxScore = results
       .map((item) => item.score)
       .reduce((sum, score) => Math.max(sum, score), 0.0)
@@ -436,15 +440,15 @@ export const getItemChildren = async (
   }
 
   const sort = options?.sort
-    ? `${sortOptionsToPlexSort[options.sort.by]}:${options.sort.order || 'asc'}` as const
+    ? (`${sortOptionsToPlexSort[options.sort.by]}:${options.sort.order || 'asc'}` as const)
     : undefined
 
   const content = key
     ? await plex.getChildren(key)
     : await plex.getLibraryMedia(library.key, {
-      sort: sort ?? (library.type === 'artist' ? undefined : 'titleSort:asc'),
-      type: library.type === 'artist' ? 'album' : undefined,
-    })
+        sort: sort ?? (library.type === 'artist' ? undefined : 'titleSort:asc'),
+        type: library.type === 'artist' ? 'album' : undefined,
+      })
   if (content?.librarySectionID.toString() !== library.key) {
     return []
   }
@@ -483,10 +487,7 @@ export const getThumbnail = async (
 }
 
 export const search = async (app: App, query: string, limit = 30): Promise<SearchResults> => {
-  const [response, library] = await Promise.all([
-    plex.search(query, limit),
-    getLibrary(app),
-  ])
+  const [response, library] = await Promise.all([plex.search(query, limit), getLibrary(app)])
 
   if (!library) {
     return { areas: [] }

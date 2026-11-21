@@ -31,7 +31,10 @@ const archiveTypes = [
   'application/x-xz',
 ]
 
-const ThumbnailIconContainer = styled('div', 'ThumbnailIconContainer')({
+const ThumbnailIconContainer = styled(
+  'div',
+  'ThumbnailIconContainer',
+)({
   base: '*:w-full *:h-full *:block leading-0',
   variants: {
     size: {
@@ -41,7 +44,10 @@ const ThumbnailIconContainer = styled('div', 'ThumbnailIconContainer')({
   },
 })
 
-const ThumbnailIcon = styled('div', 'ThumbnailIcon')({
+const ThumbnailIcon = styled(
+  'div',
+  'ThumbnailIcon',
+)({
   base: 'w-full pb-[100%] bg-contain bg-center',
   variants: {
     size: {
@@ -75,20 +81,22 @@ function DirectoryEntryIconView({ entry, module, size }: DirectoryEntryIconViewP
         // @ts-expect-error not standard yet
         || navigator.webkitConnection) as { type: string } | undefined
       const saveDataMode = ['bluetooth', 'cellular'].includes(connection?.type ?? 'unknown')
-      const format = (hasAvifSupport() && 'avif')
+      const format =
+        (hasAvifSupport() && 'avif')
         || (hasWebpSupport() && 'webp')
         || (saveDataMode && 'jpg')
         || 'png'
 
-      thumbnailManager.getThumbnail(
-        apiClient,
-        module,
-        entry,
-        { format, size: size === 'list' ? 'sm' : 'lg' },
-        ac.signal,
-        // force ignore cache if the function is called from the fs-events
-        !!path,
-      )
+      thumbnailManager
+        .getThumbnail(
+          apiClient,
+          module,
+          entry,
+          { format, size: size === 'list' ? 'sm' : 'lg' },
+          ac.signal,
+          // force ignore cache if the function is called from the fs-events
+          !!path,
+        )
         .then((pair) => (pair ? setBlobUrl(pair[0]) : setBlobUrl(null)))
         .catch(() => !ac.signal.aborted && setBlobUrl(null))
     }
@@ -104,7 +112,12 @@ function DirectoryEntryIconView({ entry, module, size }: DirectoryEntryIconViewP
 
   let icon
   if (blobUrl !== null) {
-    icon = <ThumbnailIcon style={{ backgroundImage: `url(${blobUrl})` }} size={size} />
+    icon = (
+      <ThumbnailIcon
+        style={{ backgroundImage: `url(${blobUrl})` }}
+        size={size}
+      />
+    )
   } else {
     const { mime, type } = entry
     if (type === 'dir') {

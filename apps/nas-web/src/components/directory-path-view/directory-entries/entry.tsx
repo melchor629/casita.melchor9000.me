@@ -6,14 +6,16 @@ type Metadata = FileMetadata | DirectoryMetadata
 type EntryProps = Readonly<{
   index: number
   data: EntryData
-  Component: FC<(React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>) & {
-    entry: Metadata
-    isParentItem: boolean
-    module: string
-    onTap?: (e: React.TouchEvent) => void
-    onLongTap?: (e: React.TouchEvent) => void
-    onContextMenu?: (e: React.MouseEvent) => void
-  }>
+  Component: FC<
+    React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+      entry: Metadata
+      isParentItem: boolean
+      module: string
+      onTap?: (e: React.TouchEvent) => void
+      onLongTap?: (e: React.TouchEvent) => void
+      onContextMenu?: (e: React.MouseEvent) => void
+    }
+  >
   entry: Metadata
 }>
 export type EntryData = Readonly<{
@@ -31,16 +33,8 @@ export type EntryData = Readonly<{
   onDragOver: (entry: Metadata) => React.DragEventHandler
   onDragStart: (entry: Metadata) => React.DragEventHandler
   onDrop: (entry: Metadata) => React.DragEventHandler
-  onLongTap: (
-    entry: Metadata,
-    isSelected: boolean,
-    isParentItem: boolean,
-  ) => void
-  onTap: (
-    entry: Metadata,
-    isSelected: boolean,
-    isParentItem: boolean,
-  ) => void
+  onLongTap: (entry: Metadata, isSelected: boolean, isParentItem: boolean) => void
+  onTap: (entry: Metadata, isSelected: boolean, isParentItem: boolean) => void
   selectedElements: Metadata[]
 }>
 
@@ -65,8 +59,8 @@ const Entry = memo(({ Component, data, entry, index }: EntryProps) => {
     selectedElements,
   } = data
 
-  const acceptsDraggedElements = entry.type === 'dir'
-    && (!draggingElement || entry.path !== draggingElement.path)
+  const acceptsDraggedElements =
+    entry.type === 'dir' && (!draggingElement || entry.path !== draggingElement.path)
   const isSelected = selectedElements.find((e) => e.path === entry.path) !== undefined
   const isParentItem = index === 0 && !isRoot
   const parentItemShouldNotBeSelected = isParentItem && selectedElements.length > 0
@@ -83,11 +77,15 @@ const Entry = memo(({ Component, data, entry, index }: EntryProps) => {
           : '',
         draggingElement && entry.path === draggingElement.path ? 'off' : '',
         parentItemShouldNotBeSelected ? 'off' : '',
-        dragOverElement && entry.type === 'dir' && dragOverElement.path === entry.path
+        dragOverElement
+          && entry.type === 'dir'
+          && dragOverElement.path === entry.path
           && 'drag-over',
         isSelected ? 'selected' : '',
         isLastSelectedInGroup ? 'last-selected' : '',
-      ].filter((s) => !!s).join(' ')}
+      ]
+        .filter((s) => !!s)
+        .join(' ')}
       onClick={isParentItem ? undefined : onClick(entry, isSelected)}
       onDoubleClick={onDoubleClick(entry)}
       draggable={hasWritePerm}
@@ -98,7 +96,9 @@ const Entry = memo(({ Component, data, entry, index }: EntryProps) => {
       onDrop={acceptsDraggedElements ? onDrop(entry) : undefined}
       onTap={() => onTap(entry, isSelected, isParentItem)}
       onLongTap={
-        !parentItemShouldNotBeSelected ? () => onLongTap(entry, isSelected, isParentItem) : undefined
+        !parentItemShouldNotBeSelected
+          ? () => onLongTap(entry, isSelected, isParentItem)
+          : undefined
       }
       onContextMenu={isParentItem ? undefined : onContextMenu(entry, isSelected)}
     />

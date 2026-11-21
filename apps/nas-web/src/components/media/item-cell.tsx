@@ -1,6 +1,6 @@
 import { Button } from '@melchor629/ui'
-import ReactRouterLink from '@melchor629/ui/ReactRouterLink'
 import { Download, Downloading } from '@melchor629/ui/icons'
+import ReactRouterLink from '@melchor629/ui/ReactRouterLink'
 import { type HTMLProps, useCallback, useMemo, useState } from 'react'
 import { getDownloadUrl } from '@/api/fs'
 import type { Item } from '@/api/fs/media'
@@ -16,13 +16,18 @@ interface ItemCellProps {
 
 export default function ItemCell({ item, module, style }: ItemCellProps) {
   const apiClient = useApiClient()
-  const { size: { width } } = useMediaThumbnailSize(item.type)
+  const {
+    size: { width },
+  } = useMediaThumbnailSize(item.type)
   const [preparing, setPreparing] = useState(false)
 
   const extraContent = useMemo(() => {
     if (item.type === 'album') {
       return (
-        <ReactRouterLink to={`/m/${module}/${item.artistId}`} underline="hover">
+        <ReactRouterLink
+          to={`/m/${module}/${item.artistId}`}
+          underline="hover"
+        >
           <small>
             {item.artistTitle}
             {item.year && ` (${item.year})`}
@@ -46,11 +51,10 @@ export default function ItemCell({ item, module, style }: ItemCellProps) {
     return null
   }, [module, item])
 
-  const linkUrl = useMemo(() => (
-    item.type === 'episode'
-      ? `/${module}${item.paths[0]}`
-      : `/m/${module}/${item.id}`
-  ), [item, module])
+  const linkUrl = useMemo(
+    () => (item.type === 'episode' ? `/${module}${item.paths[0]}` : `/m/${module}/${item.id}`),
+    [item, module],
+  )
 
   const download = useCallback(() => {
     if (item.type === 'episode') {
@@ -65,21 +69,28 @@ export default function ItemCell({ item, module, style }: ItemCellProps) {
   }, [module, item, apiClient])
 
   return (
-    <div className="text-center" style={{ width, ...style }}>
+    <div
+      className="text-center"
+      style={{ width, ...style }}
+    >
       <ReactRouterLink to={linkUrl}>
-        <ItemThumbnailImage module={module} item={item} forceLoadImage={style ? true : undefined} />
+        <ItemThumbnailImage
+          module={module}
+          item={item}
+          forceLoadImage={style ? true : undefined}
+        />
       </ReactRouterLink>
       <div className="pt-4 leading-5">
-        <span className="w-full inline-block text-truncate">
-          {item.title}
-        </span>
-        {extraContent && (
-          <span className="w-full inline-block text-truncate">
-            {extraContent}
-          </span>
-        )}
+        <span className="text-truncate inline-block w-full">{item.title}</span>
+        {extraContent && <span className="text-truncate inline-block w-full">{extraContent}</span>}
         {item.type === 'episode' && (
-          <Button variant="text" size="small" color="secondary" disabled={preparing} onClick={download}>
+          <Button
+            variant="text"
+            size="small"
+            color="secondary"
+            disabled={preparing}
+            onClick={download}
+          >
             {preparing ? <Downloading /> : <Download />}
           </Button>
         )}

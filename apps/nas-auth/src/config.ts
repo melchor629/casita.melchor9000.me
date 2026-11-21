@@ -6,13 +6,19 @@ export const logLevel = process.env.LOG_LEVEL || 'debug'
 export const publicUrl = process.env.PUBLIC_URL || `http://localhost:${port}`
 export const redisUrl = process.env.REDIS_URL || 'redis://localhost'
 export const redisPrefix = process.env.REDIS_PREFIX || 'nas-auth:'
-export const nasPersistanceUrl = new URL(process.env.NAS_PERSISTANCE_URL || 'http://localhost:8003/')
+export const nasPersistanceUrl = new URL(
+  process.env.NAS_PERSISTANCE_URL || 'http://localhost:8003/',
+)
 export const nasPersistanceApiKey = process.env.NAS_PERSISTANCE_API_KEY
 
 export const jwksFilePath = process.env.JWKS_FILE_PATH || './jwks.json'
 export const cookieKeysOauth = (process.env.OAUTH_COOKIE_KEYS || 'some,bodyoncetoldme').split(',')
-export const cookieKeysDefault = (process.env.DEFAULT_COOKIE_KEYS || cookieKeysOauth.join(',')).split(',')
-export const sessionSignKey = (process.env.SESSION_SIGN_KEY || cookieKeysDefault.join(',')).split(',')
+export const cookieKeysDefault = (
+  process.env.DEFAULT_COOKIE_KEYS || cookieKeysOauth.join(',')
+).split(',')
+export const sessionSignKey = (process.env.SESSION_SIGN_KEY || cookieKeysDefault.join(',')).split(
+  ',',
+)
 
 export const googleClientId = process.env.GOOGLE_CLIENT_ID
 export const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET

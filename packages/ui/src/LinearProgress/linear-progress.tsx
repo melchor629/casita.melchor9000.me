@@ -3,9 +3,9 @@ import { makeStyles, type MakeStylesProps } from '../utils'
 
 export type LinearProgressProps = Readonly<
   ComponentProps<'div'> & {
-    min?: number;
-    max?: number;
-    value?: number;
+    min?: number
+    max?: number
+    value?: number
   } & MakeStylesProps<typeof styles>
 >
 
@@ -74,8 +74,8 @@ const LinearProgress = ({
       const translateValue = (transform instanceof CSSTransformValue ? transform : null)
         ?.values()
         .find((v) => v instanceof CSSTranslate)?.x
-      const [transPerc, transPx]
-        = (translateValue instanceof CSSMathSum ? translateValue : null)?.values
+      const [transPerc, transPx] =
+        (translateValue instanceof CSSMathSum ? translateValue : null)?.values
           .values()
           .map((v) => (v as CSSUnitValue).value) ?? []
       requestAnimationFrame(() =>

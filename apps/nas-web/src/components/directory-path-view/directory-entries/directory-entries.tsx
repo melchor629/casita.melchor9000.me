@@ -1,18 +1,8 @@
 import type { VirtualElement } from '@floating-ui/react'
 import { clsx } from '@melchor629/ui/utils'
 import debounce from 'lodash-es/debounce'
-import React, {
-  type Ref,
-  useCallback,
-  useRef,
-  useState,
-} from 'react'
-import {
-  Virtuoso,
-  VirtuosoGrid,
-  type ContextProp,
-  type ItemProps,
-} from 'react-virtuoso'
+import React, { type Ref, useCallback, useRef, useState } from 'react'
+import { Virtuoso, VirtuosoGrid, type ContextProp, type ItemProps } from 'react-virtuoso'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
 import EntriesContextMenu from '@/components/path-view/entries-context-menu'
@@ -60,16 +50,17 @@ const listItemRenderer = (index: number, entry: Metadata, context: EntryData) =>
   />
 )
 
-const ListItem = ({ context: { selectedElements }, item, ...props }: ItemProps<Metadata> & ContextProp<EntryData>) => {
+const ListItem = ({
+  context: { selectedElements },
+  item,
+  ...props
+}: ItemProps<Metadata> & ContextProp<EntryData>) => {
   const isSelected = selectedElements.find((e) => e.path === item.path) !== undefined
   return (
     <div
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
-      className={clsx(
-        'directory-entries-item',
-        isSelected && 'selected',
-      )}
+      className={clsx('directory-entries-item', isSelected && 'selected')}
     />
   )
 }
@@ -91,12 +82,17 @@ const DirectoryEntries = ({
   const { entryViewType } = useSettings()
   const [draggingElement, setDraggingElement] = useState<Metadata | null>(null)
   const [dragOverElement, setDragOverElement] = useState<Metadata | null>(null)
-  const [contextMenuElement, setContextMenuElement] = useState<VirtualElement & { type: 'current' | 'selection', show: boolean }>({ show: false } as never)
+  const [contextMenuElement, setContextMenuElement] = useState<
+    VirtualElement & { type: 'current' | 'selection'; show: boolean }
+  >({ show: false } as never)
   const [prevEntries, setPrevEntries] = useState(entries)
   const [prevSelectedElements, setPrevSelectedElements] = useState(selectedElements)
   const permission = usePermission(module)!
 
-  const hideContextMenu = useCallback(() => setContextMenuElement((s) => ({ ...s, show: false })), [])
+  const hideContextMenu = useCallback(
+    () => setContextMenuElement((s) => ({ ...s, show: false })),
+    [],
+  )
 
   if (entries !== prevEntries) {
     setPrevEntries(entries)
@@ -113,15 +109,22 @@ const DirectoryEntries = ({
   }
 
   const hasWritePerm = permission.write
-  const onDragStart = useCallback((entry: Metadata): React.DragEventHandler => (e) => {
-    if (!hasWritePerm) {
-      return
-    }
-    hideContextMenu()
-    setDraggingElement(entry)
-    e.dataTransfer.dropEffect = 'move'
-    e.dataTransfer.setData('text/uri-list', `${window.location.toString()}/${path.basename(entry.path)}`)
-  }, [hasWritePerm, hideContextMenu])
+  const onDragStart = useCallback(
+    (entry: Metadata): React.DragEventHandler =>
+      (e) => {
+        if (!hasWritePerm) {
+          return
+        }
+        hideContextMenu()
+        setDraggingElement(entry)
+        e.dataTransfer.dropEffect = 'move'
+        e.dataTransfer.setData(
+          'text/uri-list',
+          `${window.location.toString()}/${path.basename(entry.path)}`,
+        )
+      },
+    [hasWritePerm, hideContextMenu],
+  )
 
   const onDragEnd: React.DragEventHandler = useCallback(() => {
     if (!hasWritePerm) {
@@ -130,121 +133,144 @@ const DirectoryEntries = ({
     setDraggingElement(null)
   }, [hasWritePerm])
 
-  const onDragOver = useCallback((entry: Metadata): React.DragEventHandler => (e) => {
-    if (!hasWritePerm) {
-      return
-    }
-    e.preventDefault()
-    if (draggingElement === null) {
-      return
-    }
-    setDragOverElement(entry)
-    e.dataTransfer.dropEffect = 'move'
-  }, [hasWritePerm, draggingElement])
-
-  const onDragLeave: React.DragEventHandler = useCallback((e) => {
-    if (!hasWritePerm) {
-      return
-    }
-    e.preventDefault()
-    setDragOverElement(null)
-  }, [hasWritePerm])
-
-  const onDrop = useCallback((entry: Metadata): React.DragEventHandler => (e) => {
-    if (!hasWritePerm) {
-      return
-    }
-    e.preventDefault()
-    if (draggingElement === null || entry.type === 'file') {
-      return
-    }
-    onEntryMove(draggingElement, entry)
-    setDragOverElement(null)
-  }, [hasWritePerm, draggingElement, onEntryMove])
-
-  const onClickCbkRef = useRef<(() => void) & { cancel: () => void } | null>(null)
-  const onDoubleClick = useCallback((entry: Metadata): React.MouseEventHandler => () => {
-    if (onClickCbkRef.current) {
-      onClickCbkRef.current.cancel()
-      onClickCbkRef.current = null
-    }
-    hideContextMenu()
-    onEntryOpen(entry)
-  }, [hideContextMenu, onEntryOpen])
-
-  const onClick = useCallback(
-    (entry: Metadata, isSelected: boolean): React.MouseEventHandler => (e) => {
-      e.persist()
-      const cbk = debounce(() => {
-        onClickCbkRef.current = null
-        if (isSelected) {
-          if (e.shiftKey) {
-            onEntryRangeSelect(entries.indexOf(entry))
-          } else if (e.ctrlKey || e.metaKey) {
-            onEntryDeselected(entry)
-          } else {
-            onEntrySelected(entry, false)
-          }
-        } else if (e.ctrlKey || e.metaKey) {
-          onEntrySelected(entry, true)
-        } else if (e.shiftKey) {
-          onEntryRangeSelect(entries.indexOf(entry))
-        } else {
-          onEntrySelected(entry)
+  const onDragOver = useCallback(
+    (entry: Metadata): React.DragEventHandler =>
+      (e) => {
+        if (!hasWritePerm) {
+          return
         }
-      }, 10)
-
-      let shouldCall = true
-      if (entryViewType === 'grid') {
-        const tagName = (e.target as HTMLElement).tagName.toLowerCase()
-        shouldCall = ['abbr', 'span', 'svg', 'path'].includes(tagName)
-        shouldCall = shouldCall || (tagName === 'div' && !!(e.target as HTMLDivElement).getAttribute('style'))
-      }
-
-      if (!shouldCall) {
-        return
-      }
-
-      e.stopPropagation()
-      hideContextMenu()
-      cbk()
-      onClickCbkRef.current = cbk
-    },
-    [onEntryRangeSelect, onEntryDeselected, onEntrySelected, entries, entryViewType, hideContextMenu],
+        e.preventDefault()
+        if (draggingElement === null) {
+          return
+        }
+        setDragOverElement(entry)
+        e.dataTransfer.dropEffect = 'move'
+      },
+    [hasWritePerm, draggingElement],
   )
 
-  const onTap = useCallback((
-    entry: Metadata,
-    isSelected: boolean,
-    isParentItem: boolean,
-  ) => {
-    if (selectedElements.length === 0) {
-      onEntryOpen(entry)
-    } else if (!isParentItem) {
-      if (isSelected) {
-        onEntryDeselected(entry)
-      } else {
-        onEntrySelected(entry, true)
+  const onDragLeave: React.DragEventHandler = useCallback(
+    (e) => {
+      if (!hasWritePerm) {
+        return
       }
-    }
-  }, [onEntryOpen, onEntryDeselected, onEntrySelected, selectedElements.length])
+      e.preventDefault()
+      setDragOverElement(null)
+    },
+    [hasWritePerm],
+  )
 
-  const onLongTap = useCallback((
-    entry: Metadata,
-    isSelected: boolean,
-    isParentItem: boolean,
-  ) => {
-    if (!isParentItem) {
-      if (isSelected) {
-        onEntryDeselected(entry)
-      } else {
-        onEntrySelected(entry, true)
+  const onDrop = useCallback(
+    (entry: Metadata): React.DragEventHandler =>
+      (e) => {
+        if (!hasWritePerm) {
+          return
+        }
+        e.preventDefault()
+        if (draggingElement === null || entry.type === 'file') {
+          return
+        }
+        onEntryMove(draggingElement, entry)
+        setDragOverElement(null)
+      },
+    [hasWritePerm, draggingElement, onEntryMove],
+  )
+
+  const onClickCbkRef = useRef<((() => void) & { cancel: () => void }) | null>(null)
+  const onDoubleClick = useCallback(
+    (entry: Metadata): React.MouseEventHandler =>
+      () => {
+        if (onClickCbkRef.current) {
+          onClickCbkRef.current.cancel()
+          onClickCbkRef.current = null
+        }
+        hideContextMenu()
+        onEntryOpen(entry)
+      },
+    [hideContextMenu, onEntryOpen],
+  )
+
+  const onClick = useCallback(
+    (entry: Metadata, isSelected: boolean): React.MouseEventHandler =>
+      (e) => {
+        e.persist()
+        const cbk = debounce(() => {
+          onClickCbkRef.current = null
+          if (isSelected) {
+            if (e.shiftKey) {
+              onEntryRangeSelect(entries.indexOf(entry))
+            } else if (e.ctrlKey || e.metaKey) {
+              onEntryDeselected(entry)
+            } else {
+              onEntrySelected(entry, false)
+            }
+          } else if (e.ctrlKey || e.metaKey) {
+            onEntrySelected(entry, true)
+          } else if (e.shiftKey) {
+            onEntryRangeSelect(entries.indexOf(entry))
+          } else {
+            onEntrySelected(entry)
+          }
+        }, 10)
+
+        let shouldCall = true
+        if (entryViewType === 'grid') {
+          const tagName = (e.target as HTMLElement).tagName.toLowerCase()
+          shouldCall = ['abbr', 'span', 'svg', 'path'].includes(tagName)
+          shouldCall =
+            shouldCall
+            || (tagName === 'div' && !!(e.target as HTMLDivElement).getAttribute('style'))
+        }
+
+        if (!shouldCall) {
+          return
+        }
+
+        e.stopPropagation()
+        hideContextMenu()
+        cbk()
+        onClickCbkRef.current = cbk
+      },
+    [
+      onEntryRangeSelect,
+      onEntryDeselected,
+      onEntrySelected,
+      entries,
+      entryViewType,
+      hideContextMenu,
+    ],
+  )
+
+  const onTap = useCallback(
+    (entry: Metadata, isSelected: boolean, isParentItem: boolean) => {
+      if (selectedElements.length === 0) {
+        onEntryOpen(entry)
+      } else if (!isParentItem) {
+        if (isSelected) {
+          onEntryDeselected(entry)
+        } else {
+          onEntrySelected(entry, true)
+        }
       }
-    }
-  }, [onEntryDeselected, onEntrySelected])
+    },
+    [onEntryOpen, onEntryDeselected, onEntrySelected, selectedElements.length],
+  )
 
-  const onContextMenu = useCallback((entry: Metadata, isSelected: boolean) =>
-    (e: React.MouseEvent<HTMLElement>) => {
+  const onLongTap = useCallback(
+    (entry: Metadata, isSelected: boolean, isParentItem: boolean) => {
+      if (!isParentItem) {
+        if (isSelected) {
+          onEntryDeselected(entry)
+        } else {
+          onEntrySelected(entry, true)
+        }
+      }
+    },
+    [onEntryDeselected, onEntrySelected],
+  )
+
+  const onContextMenu = useCallback(
+    (entry: Metadata, isSelected: boolean) => (e: React.MouseEvent<HTMLElement>) => {
       e.preventDefault()
       if (!isSelected) {
         onEntrySelected(entry)
@@ -266,39 +292,46 @@ const DirectoryEntries = ({
           toJSON: () => null,
         }),
       })
-    }
-  , [onEntrySelected])
+    },
+    [onEntrySelected],
+  )
 
-  const onOtherContextMenu = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target instanceof HTMLElement && e.target.draggable) return
-    e.preventDefault()
-    onUnselectAll()
+  const onOtherContextMenu = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.target instanceof HTMLElement && e.target.draggable) return
+      e.preventDefault()
+      onUnselectAll()
 
-    const { pageX, pageY } = e
-    setContextMenuElement({
-      type: 'current',
-      show: true,
-      getBoundingClientRect: () => ({
-        top: pageY,
-        left: pageX,
-        bottom: 0,
-        right: 0,
-        x: pageX,
-        y: pageY,
-        width: 1,
-        height: 1,
-        toJSON: () => null,
-      }),
-    })
-  }, [onUnselectAll])
+      const { pageX, pageY } = e
+      setContextMenuElement({
+        type: 'current',
+        show: true,
+        getBoundingClientRect: () => ({
+          top: pageY,
+          left: pageX,
+          bottom: 0,
+          right: 0,
+          x: pageX,
+          y: pageY,
+          width: 1,
+          height: 1,
+          toJSON: () => null,
+        }),
+      })
+    },
+    [onUnselectAll],
+  )
 
-  const onScrollerRefUpdated = useCallback((ref: HTMLElement | Window | null) => {
-    if (typeof scrollingDiv === 'function') {
-      scrollingDiv(ref as unknown as HTMLDivElement | null)
-    } else if (scrollingDiv) {
-      scrollingDiv.current = ref as unknown as HTMLDivElement | null
-    }
-  }, [scrollingDiv])
+  const onScrollerRefUpdated = useCallback(
+    (ref: HTMLElement | Window | null) => {
+      if (typeof scrollingDiv === 'function') {
+        scrollingDiv(ref as unknown as HTMLDivElement | null)
+      } else if (scrollingDiv) {
+        scrollingDiv.current = ref as unknown as HTMLDivElement | null
+      }
+    },
+    [scrollingDiv],
+  )
 
   const initialData = {
     dragOverElement,
@@ -355,7 +388,9 @@ const DirectoryEntries = ({
       )}
 
       <EntriesContextMenu
-        referenceElement={typeof contextMenuElement.getBoundingClientRect === 'function' ? contextMenuElement : null}
+        referenceElement={
+          typeof contextMenuElement.getBoundingClientRect === 'function' ? contextMenuElement : null
+        }
         module={module}
         entries={contextMenuElement.type === 'current' ? metadata : selectedElements}
         show={contextMenuElement.show}

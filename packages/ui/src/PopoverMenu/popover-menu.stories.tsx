@@ -1,8 +1,8 @@
 import { fn } from 'storybook/test'
 import preview from '#.storybook/preview'
+import { Android, Github, Home, Settings } from '../icons'
 import Menu from '../Menu/menu'
 import MenuItem from '../Menu/menu-item'
-import { Android, Github, Home, Settings } from '../icons'
 import PopoverMenu from './popover-menu'
 
 const meta = preview.meta({

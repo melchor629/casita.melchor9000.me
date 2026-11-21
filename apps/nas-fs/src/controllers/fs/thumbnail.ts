@@ -3,7 +3,13 @@ import { NotExistsException } from '../../core-logic/exceptions/index.ts'
 import { info } from '../../core-logic/fs/index.ts'
 import { getThumbnail } from '../../core-logic/thumbnail/index.ts'
 import { applicationKeyParam } from '../../models/app.ts'
-import { Binary, ContentResponse, StringEnum, Type, type Controller } from '../../models/controller.ts'
+import {
+  Binary,
+  ContentResponse,
+  StringEnum,
+  Type,
+  type Controller,
+} from '../../models/controller.ts'
 import { ApiErrorSchema } from '../../models/errors/api-error.ts'
 import pathWildcardParam from '../../models/fs/path-wildcard.ts'
 
@@ -20,9 +26,12 @@ const schema = {
   }),
   response: {
     default: ApiErrorSchema,
-    200: ContentResponse({
-      'image/*': Binary(),
-    }, { description: 'Thumbnail image' }),
+    200: ContentResponse(
+      {
+        'image/*': Binary(),
+      },
+      { description: 'Thumbnail image' },
+    ),
     304: { type: 'null', description: 'Information is fresh' },
     404: { type: 'null', description: 'Not thumbnail for this file' },
   },

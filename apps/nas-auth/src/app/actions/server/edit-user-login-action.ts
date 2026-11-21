@@ -13,7 +13,10 @@ type EditUserLoginData = Readonly<{
   type: CreateLoginInput['type']
 }>
 
-async function editUserLoginAction(context: PageLoaderContext, { loginId, type, ...data }: EditUserLoginData) {
+async function editUserLoginAction(
+  context: PageLoaderContext,
+  { loginId, type, ...data }: EditUserLoginData,
+) {
   const sessionResult = await ensureSession(context, 'user', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult

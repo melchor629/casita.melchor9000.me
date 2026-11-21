@@ -30,39 +30,46 @@ const Profile = ({ role, user }: ProfileProps) => {
 
   return (
     <>
-      <Text size="h1" className="mb-6">
+      <Text
+        size="h1"
+        className="mb-6"
+      >
         Hello again&nbsp;
-        {user.givenName || user.userName}
-        !
+        {user.givenName || user.userName}!
       </Text>
 
       {resolvedProfilePicUrl && (
-        <p className="flex justify-center mb-2">
+        <p className="mb-2 flex justify-center">
           <ViewTransition name="user:profile">
             <img
               src={resolvedProfilePicUrl}
               alt={`${user.userName} profile`}
-              className="w-20 h-20 rounded-full"
+              className="h-20 w-20 rounded-full"
             />
           </ViewTransition>
         </p>
       )}
       <p className="text-center">
-        You are
-        {' '}
-        {user.displayName || [user.givenName, user.familyName].filter((f) => f).join(' ')}
+        You are {user.displayName || [user.givenName, user.familyName].filter((f) => f).join(' ')}
       </p>
-      <p className="text-center opacity-80">
-        {user.userName}
-      </p>
+      <p className="text-center opacity-80">{user.userName}</p>
 
-      <div className="mt-6 flex justify-center flex-wrap gap-1.5">
-        <Link to="/profile" viewTransition>
+      <div className="mt-6 flex flex-wrap justify-center gap-1.5">
+        <Link
+          to="/profile"
+          viewTransition
+        >
           <Button icon={<PersonEdit />}>Edit profile</Button>
         </Link>
         {role === 'admin' && (
           <Link to="/admin">
-            <Button variant="text" color="secondary" icon={<Settings />}>Admin</Button>
+            <Button
+              variant="text"
+              color="secondary"
+              icon={<Settings />}
+            >
+              Admin
+            </Button>
           </Link>
         )}
         <Button

@@ -18,7 +18,9 @@ const GenerateThumbnailsButton: FC<GenerateThumbnailsButtonProps> = ({
 
   const generateThumbnails = useCallback(() => {
     Promise.all(
-      selectedElements.map((m) => jobsActions.register({ type: 'thumbnailGeneration', module, metadata: m })),
+      selectedElements.map((m) =>
+        jobsActions.register({ type: 'thumbnailGeneration', module, metadata: m }),
+      ),
     ).catch(() => {})
   }, [module, selectedElements, jobsActions])
 

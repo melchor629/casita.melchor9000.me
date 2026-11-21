@@ -17,17 +17,20 @@ const appRoutesPlugin = async (fastify: FastifyInstance) => {
   await fastify.register(import('../middlewares/swagger.ts'))
   await fastify.register(import('../middlewares/route-processor.ts'))
 
-  await fastify.register(async (app) => {
-    await app.register(import('../middlewares/app-tenant.ts'))
-    await app.register(import('../middlewares/check-for-permission.ts'))
+  await fastify.register(
+    async (app) => {
+      await app.register(import('../middlewares/app-tenant.ts'))
+      await app.register(import('../middlewares/check-for-permission.ts'))
 
-    await app.register(import('./fs/index.ts'))
-    await app.register(import('./upload/index.ts'), { prefix: '/upload' })
-    await app.register(import('./jobs/index.ts'), { prefix: '/jobs' })
-    await app.register(import('./media/index.ts'), { prefix: '/media' })
-  }, {
-    prefix: '/:appKey',
-  })
+      await app.register(import('./fs/index.ts'))
+      await app.register(import('./upload/index.ts'), { prefix: '/upload' })
+      await app.register(import('./jobs/index.ts'), { prefix: '/jobs' })
+      await app.register(import('./media/index.ts'), { prefix: '/media' })
+    },
+    {
+      prefix: '/:appKey',
+    },
+  )
 
   await fastify.register(import('@melchor629/fastify-infra/health'), {
     config: {
@@ -35,20 +38,26 @@ const appRoutesPlugin = async (fastify: FastifyInstance) => {
     },
     checks: async (add) => {
       const health = await import('@melchor629/fastify-infra/health')
-      add('redis', health.ioredisHealthCheck, { client: () => (getCache('π') as unknown as { client: Redis }).client })
+      add('redis', health.ioredisHealthCheck, {
+        client: () => (getCache('π') as unknown as { client: Redis }).client,
+      })
       add('nas-auth', health.externalHealthCheck, { url: new URL(authApiBaseUrl) }, 'degraded')
       add('plex', getPlexHealth, undefined, 'degraded')
     },
-    shouldIncludeDetails: (req) => !!req.jwtToken?.payload.sub || process.env.NODE_ENV !== 'production',
+    shouldIncludeDetails: (req) =>
+      !!req.jwtToken?.payload.sub || process.env.NODE_ENV !== 'production',
   })
   fastify.get('/', homeController.options, homeController)
 
-  fastify.setNotFoundHandler({
-    preHandler: fastify.rateLimit({
-      max: 10,
-      timeWindow: '10s',
-    }),
-  }, notFoundController)
+  fastify.setNotFoundHandler(
+    {
+      preHandler: fastify.rateLimit({
+        max: 10,
+        timeWindow: '10s',
+      }),
+    },
+    notFoundController,
+  )
 }
 
 export default appRoutesPlugin

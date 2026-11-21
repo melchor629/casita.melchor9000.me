@@ -12,7 +12,10 @@ function AppMain() {
   return (
     <HelmetProvider>
       <Suspense fallback={<AppLoader message="Loading app..." />}>
-        <Helmet titleTemplate="%s - NAS Web" defaultTitle="NAS Web" />
+        <Helmet
+          titleTemplate="%s - NAS Web"
+          defaultTitle="NAS Web"
+        />
 
         <ThemeProvider>
           <AuthProvider

@@ -1,7 +1,12 @@
 import type { FastifyContextConfig, FastifyRequest } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
 import healthCheckRunner from './runner.ts'
-import type { HealthCheck, HealthCheckEntry, HealthCheckResponse, HealthCheckStatus } from './types.ts'
+import type {
+  HealthCheck,
+  HealthCheckEntry,
+  HealthCheckResponse,
+  HealthCheckStatus,
+} from './types.ts'
 
 type HealthCheckPluginOptions = Readonly<{
   shouldIncludeDetails?: (request: FastifyRequest) => Promise<boolean> | boolean
@@ -60,53 +65,56 @@ const responseSchema = {
 const mkcheck = <T>(type: string, fn: Omit<HealthCheck<T>, 'type'>): HealthCheck<T> =>
   Object.assign(fn, { type }) as unknown as HealthCheck<T>
 
-const healthCheckPlugin = fastifyPlugin(async (fastify, options: HealthCheckPluginOptions): Promise<void> => {
-  const checks: HealthCheckEntry[] = []
-  await options.checks((key, fn, params, maxWords) => {
-    checks.push({
-      key,
-      params,
-      fn: fn as HealthCheck<unknown>,
-      failureAs: maxWords,
-    })
-  }, mkcheck)
+const healthCheckPlugin = fastifyPlugin(
+  async (fastify, options: HealthCheckPluginOptions): Promise<void> => {
+    const checks: HealthCheckEntry[] = []
+    await options.checks((key, fn, params, maxWords) => {
+      checks.push({
+        key,
+        params,
+        fn: fn as HealthCheck<unknown>,
+        failureAs: maxWords,
+      })
+    }, mkcheck)
 
-  fastify.get<{ Body: never, Reply: HealthCheckResponse }>(
-    options.path ?? '/health',
-    {
-      logLevel: 'fatal',
-      schema: {
+    fastify.get<{ Body: never; Reply: HealthCheckResponse }>(
+      options.path ?? '/health',
+      {
+        logLevel: 'fatal',
+        schema: {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore from swagger
+          summary: 'Health Check',
+          produces: ['application/json'],
+          tags: ['health'],
+          response: {
+            200: responseSchema,
+            503: responseSchema,
+          },
+        },
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore from swagger
-        summary: 'Health Check',
-        produces: ['application/json'],
-        tags: ['health'],
-        response: {
-          200: responseSchema,
-          503: responseSchema,
-        },
+        config: { otel: false, ...options.config },
       },
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore from swagger
-      config: { otel: false, ...options.config },
-    },
-    async (req, reply) => {
-      const shouldIncludeDetails = await options.shouldIncludeDetails?.(req) ?? true
-      const response = await healthCheckRunner(checks, req.cancelSignal)
-      if (shouldIncludeDetails) {
-        await reply.send(response)
-      } else {
-        await reply.send({ ...response, checks: {} })
-      }
-    },
-  )
-}, {
-  name: '@melchor629/fastify-infra/health',
-  fastify: '>=4',
-  decorators: {
-    request: ['cancelSignal'],
+      async (req, reply) => {
+        const shouldIncludeDetails = (await options.shouldIncludeDetails?.(req)) ?? true
+        const response = await healthCheckRunner(checks, req.cancelSignal)
+        if (shouldIncludeDetails) {
+          await reply.send(response)
+        } else {
+          await reply.send({ ...response, checks: {} })
+        }
+      },
+    )
   },
-  dependencies: ['@melchor629/fastify-infra/abort'],
-})
+  {
+    name: '@melchor629/fastify-infra/health',
+    fastify: '>=4',
+    decorators: {
+      request: ['cancelSignal'],
+    },
+    dependencies: ['@melchor629/fastify-infra/abort'],
+  },
+)
 
 export default healthCheckPlugin

@@ -2,31 +2,46 @@ import { Link } from '@melchor629/nice-ssr'
 import { Fragment, useMemo } from 'react'
 
 type AdminBreadcrumbProps = Readonly<{
-  sections?: ReadonlyArray<{ part: string, name: string }>
+  sections?: ReadonlyArray<{ part: string; name: string }>
 }>
 
 const LinkContent = ({ children }: { readonly children: string }) => (
-  <span className="text-text-main bg-elevated-border hover:bg-elevated-1 px-1 py-0.5 rounded-sm transition">{children}</span>
+  <span className="text-text-main bg-elevated-border hover:bg-elevated-1 rounded-sm px-1 py-0.5 transition">
+    {children}
+  </span>
 )
 
 export default function AdminBreadcrumb({ sections = [] }: AdminBreadcrumbProps) {
-  const links = useMemo(() => (
-    sections
-      .map(({ name, part }, i) => ({
+  const links = useMemo(
+    () =>
+      sections.map(({ name, part }, i) => ({
         name,
-        path: (i ? '/admin/' : '/admin') + sections.slice(0, i).map((part) => part.part).join('/') + `/${part}`,
-      }))
-  ), [sections])
+        path:
+          (i ? '/admin/' : '/admin')
+          + sections
+            .slice(0, i)
+            .map((part) => part.part)
+            .join('/')
+          + `/${part}`,
+      })),
+    [sections],
+  )
 
   return (
-    <div className="mt-2 text-xs text-text-main select-none">
-      <Link to="/"><LinkContent>Home</LinkContent></Link>
+    <div className="text-text-main mt-2 text-xs select-none">
+      <Link to="/">
+        <LinkContent>Home</LinkContent>
+      </Link>
       &nbsp;&gt;&nbsp;
-      <Link to="/admin"><LinkContent>Admin</LinkContent></Link>
+      <Link to="/admin">
+        <LinkContent>Admin</LinkContent>
+      </Link>
       {links.map(({ name, path }) => (
         <Fragment key={path}>
           &nbsp;&gt;&nbsp;
-          <Link to={path}><LinkContent>{name}</LinkContent></Link>
+          <Link to={path}>
+            <LinkContent>{name}</LinkContent>
+          </Link>
         </Fragment>
       ))}
     </div>

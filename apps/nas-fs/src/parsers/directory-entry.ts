@@ -20,17 +20,23 @@ interface ExtraOptions<V = boolean> {
 const statsToDirectoryEntryType = (stat: BigIntStats): DirectoryEntryType => {
   if (stat.isDirectory()) {
     return 'dir'
-  } if (stat.isFile()) {
+  }
+  if (stat.isFile()) {
     return 'file'
-  } if (stat.isSymbolicLink()) {
+  }
+  if (stat.isSymbolicLink()) {
     return 'symlink'
-  } if (stat.isBlockDevice()) {
+  }
+  if (stat.isBlockDevice()) {
     return 'block-dev'
-  } if (stat.isCharacterDevice()) {
+  }
+  if (stat.isCharacterDevice()) {
     return 'char-dev'
-  } if (stat.isSocket()) {
+  }
+  if (stat.isSocket()) {
     return 'socket'
-  } if (stat.isFIFO()) {
+  }
+  if (stat.isFIFO()) {
     return 'fifo'
   }
 
@@ -39,18 +45,16 @@ const statsToDirectoryEntryType = (stat: BigIntStats): DirectoryEntryType => {
 
 const directoryExtend = async (directoryEntry: DirectoryEntryBase): Promise<Directory> => {
   const itemsInDir = await fs.readdir(directoryEntry.realPath)
-  const storagePath = directoryEntry.path !== '/'
-    ? directoryEntry.realPath.slice(0, -directoryEntry.path.length)
-    : directoryEntry.realPath
+  const storagePath =
+    directoryEntry.path !== '/'
+      ? directoryEntry.realPath.slice(0, -directoryEntry.path.length)
+      : directoryEntry.realPath
   return {
     ...directoryEntry,
     type: 'dir',
     contents: await Promise.all(
       itemsInDir.map(async (item) => {
-        const info = await fromPath(
-          Path.join(directoryEntry.path, item),
-          storagePath,
-        )
+        const info = await fromPath(Path.join(directoryEntry.path, item), storagePath)
         if (info.type === 'file') {
           return { ...info, mime: await getMimeType(info.realPath) }
         }
@@ -95,9 +99,10 @@ const fileExtend = async (directoryEntry: DirectoryEntryBase): Promise<File> => 
 const symlinkExtend = async (directoryEntry: DirectoryEntryBase): Promise<Symlink> => {
   const value = await fs.readlink(directoryEntry.realPath)
   const resolved = Path.resolve(value)
-  const storagePath = directoryEntry.path !== '/'
-    ? directoryEntry.realPath.slice(0, -directoryEntry.path.length)
-    : directoryEntry.realPath
+  const storagePath =
+    directoryEntry.path !== '/'
+      ? directoryEntry.realPath.slice(0, -directoryEntry.path.length)
+      : directoryEntry.realPath
   const isRooted = resolved.startsWith(storagePath)
   return {
     ...directoryEntry,

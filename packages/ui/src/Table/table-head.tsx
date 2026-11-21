@@ -6,7 +6,10 @@ export type TableHeadProps = ComponentProps<'thead'>
 
 const TableHead = ({ className, ...props }: TableHeadProps) => (
   <TableScopeContext value="head">
-    <thead {...props} className={clsx(className)} />
+    <thead
+      {...props}
+      className={clsx(className)}
+    />
   </TableScopeContext>
 )
 

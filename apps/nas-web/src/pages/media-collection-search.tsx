@@ -1,16 +1,8 @@
 import { Helmet } from '@dr.pogodin/react-helmet'
 import { TextInput } from '@melchor629/ui'
 import ReactRouterLink from '@melchor629/ui/ReactRouterLink'
-import {
-  type ChangeEventHandler,
-  useCallback,
-  useMemo,
-} from 'react'
-import {
-  Navigate,
-  useParams,
-  useSearchParams,
-} from 'react-router'
+import { type ChangeEventHandler, useCallback, useMemo } from 'react'
+import { Navigate, useParams, useSearchParams } from 'react-router'
 import SearchResults from '../components/media/search-results'
 import NavbarBackdropFilter from '../components/navbar-backdrop-filter'
 import { useTokenInfo } from '../hooks/use-token-info'
@@ -21,27 +13,40 @@ export default function MediaCollectionSearchPage() {
   const tokenInfo = useTokenInfo()
   const { module } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
-  const app = useMemo(() => (
-    tokenInfo.permissions
-      .filter(({ applicationKey }) => applicationKey === 'nas-fs')
-      .filter(({ name }) => !name.endsWith(':admin'))
-      .map((perm) => ({ key: perm.name, name: perm.displayName }))
-      .find((perm) => perm.key === module)
-  ), [tokenInfo.permissions, module])
+  const app = useMemo(
+    () =>
+      tokenInfo.permissions
+        .filter(({ applicationKey }) => applicationKey === 'nas-fs')
+        .filter(({ name }) => !name.endsWith(':admin'))
+        .map((perm) => ({ key: perm.name, name: perm.displayName }))
+        .find((perm) => perm.key === module),
+    [tokenInfo.permissions, module],
+  )
   const searchFilter = searchParams.get('q') || ''
   const shouldReplaceHistory = !!searchFilter
 
-  const onSearchFilterChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
-    setSearchParams({ q: e.target.value }, { replace: shouldReplaceHistory })
-  }, [setSearchParams, shouldReplaceHistory])
+  const onSearchFilterChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      setSearchParams({ q: e.target.value }, { replace: shouldReplaceHistory })
+    },
+    [setSearchParams, shouldReplaceHistory],
+  )
 
-  const onSearchFilterSubmit = useCallback((e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setSearchParams((s) => ({ q: s.get('q') || '' }))
-  }, [setSearchParams])
+  const onSearchFilterSubmit = useCallback(
+    (e: React.SubmitEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      setSearchParams((s) => ({ q: s.get('q') || '' }))
+    },
+    [setSearchParams],
+  )
 
   if (!app || !module) {
-    return <Navigate to="/" replace />
+    return (
+      <Navigate
+        to="/"
+        replace
+      />
+    )
   }
 
   return (
@@ -52,7 +57,7 @@ export default function MediaCollectionSearchPage() {
 
       <NavbarBackdropFilter />
 
-      <div className="px-2 md:px-4 pb-3 pt-navbar">
+      <div className="pt-navbar px-2 pb-3 md:px-4">
         <h2 className="text-h2 mb-3">
           <ReactRouterLink to={`/m/${module}/`}>{app.name}</ReactRouterLink>
         </h2>
@@ -68,7 +73,10 @@ export default function MediaCollectionSearchPage() {
             onChange={onSearchFilterChange}
           />
         </form>
-        <SearchResults module={module} searchFilter={searchFilter} />
+        <SearchResults
+          module={module}
+          searchFilter={searchFilter}
+        />
       </div>
     </>
   )

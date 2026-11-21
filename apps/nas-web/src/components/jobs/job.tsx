@@ -21,15 +21,17 @@ const Job: FC<Props> = ({ job, queue }) => {
     aborted: 'text-primary-main',
   }[job.state]
 
-  const progressValue = (typeof job.progress === 'number' ? job.progress : job.progress?.value ?? 0) * 100
-  const progressDescription = typeof job.progress === 'object' ? job.progress?.description : `${progressValue.toFixed(0)}%`
+  const progressValue =
+    (typeof job.progress === 'number' ? job.progress : (job.progress?.value ?? 0)) * 100
+  const progressDescription =
+    typeof job.progress === 'object' ? job.progress?.description : `${progressValue.toFixed(0)}%`
   return (
     <div className="p-2">
-      <div className="flex justify-between mb-2 select-none">
+      <div className="mb-2 flex justify-between select-none">
         <small className={colorClass}>{startCase(job.state)}</small>
         <small className="text-text-secondary">{startCase(queue)}</small>
       </div>
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <span>{job.name}</span>
         <div>
           {(job.state === 'processing' || job.state === 'enqueued') && job.abortable && (
@@ -71,8 +73,14 @@ const Job: FC<Props> = ({ job, queue }) => {
       <div>
         {job.state === 'processing' && job.progress && (
           <div className="mt-2">
-            <LinearProgress value={Math.trunc(progressValue)} aria-labelledby={`job-progress-${job.id}-label`} />
-            <div className="text-center" id={`job-progress-${job.id}-label`}>
+            <LinearProgress
+              value={Math.trunc(progressValue)}
+              aria-labelledby={`job-progress-${job.id}-label`}
+            />
+            <div
+              className="text-center"
+              id={`job-progress-${job.id}-label`}
+            >
               <small>{progressDescription}</small>
             </div>
           </div>
@@ -82,7 +90,8 @@ const Job: FC<Props> = ({ job, queue }) => {
           <code>
             {job.message
               // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              || (job.error instanceof ApiClientException && job.error.parsedBody?.message as string)
+              || (job.error instanceof ApiClientException
+                && (job.error.parsedBody?.message as string))
               || job.error?.message
               || `${job.error}`}
           </code>

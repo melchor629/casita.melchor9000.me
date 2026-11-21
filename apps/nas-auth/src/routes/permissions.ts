@@ -1,14 +1,13 @@
 import { createRemoteJWKSet, jwtVerify } from 'jose'
 import { publicUrl } from '../config.ts'
 import oidc from '../oidc/oidc.ts'
-import getPermissionsForUser, { type PermissionsForUser } from '../queries/user/get-permissions-for-user.ts'
+import getPermissionsForUser, {
+  type PermissionsForUser,
+} from '../queries/user/get-permissions-for-user.ts'
 import type { Controller, GenericRoute } from './models.ts'
 
 interface Route extends GenericRoute {
-  Reply:
-    | PermissionsForUser
-    | { message: string, statusCode: number }
-    | void
+  Reply: PermissionsForUser | { message: string; statusCode: number } | void
 }
 
 const jwks = createRemoteJWKSet(new URL(`${publicUrl}/oidc/jwks`))
@@ -26,10 +25,10 @@ const getPermissionsForToken: Controller<Route> = async (req, res) => {
     return res.status(401).send({ message: 'Unauthorized', statusCode: 401 })
   }
 
-  const { payload: { client_id: clientId, sub } } = await req.trace(
-    'getPermissions jwt verify',
-    {},
-    () => jwtVerify(token, jwks, { issuer: publicUrl }),
+  const {
+    payload: { client_id: clientId, sub },
+  } = await req.trace('getPermissions jwt verify', {}, () =>
+    jwtVerify(token, jwks, { issuer: publicUrl }),
   )
   if (!sub) {
     return res.status(400).send({
@@ -39,11 +38,7 @@ const getPermissionsForToken: Controller<Route> = async (req, res) => {
   }
 
   if (typeof clientId === 'string') {
-    const client = await req.trace(
-      'getPermissions getClient',
-      {},
-      () => oidc.Client.find(clientId),
-    )
+    const client = await req.trace('getPermissions getClient', {}, () => oidc.Client.find(clientId))
     const origins = client?.['urn:custom:client:allowed-cors-origins'] as string[] | undefined
     if (origins?.length && origins.includes(req.headers.origin || '')) {
       res.header('Access-Control-Allow-Origin', req.headers.origin)
@@ -52,11 +47,7 @@ const getPermissionsForToken: Controller<Route> = async (req, res) => {
     }
   }
 
-  const response = await req.trace(
-    'get-permissions',
-    {},
-    () => getPermissionsForUser(sub),
-  )
+  const response = await req.trace('get-permissions', {}, () => getPermissionsForUser(sub))
   return res.send(response)
 }
 

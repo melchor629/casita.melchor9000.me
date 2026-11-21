@@ -45,8 +45,10 @@ const getPermissionsForUser = async (userName: string): Promise<PermissionsForUs
       delete: row.delete,
     })),
     applications: Object.fromEntries(
-      result
-        .map((row) => [row.applicationKey, { key: row.applicationKey, name: row.applicationName }] as const),
+      result.map(
+        (row) =>
+          [row.applicationKey, { key: row.applicationKey, name: row.applicationName }] as const,
+      ),
     ),
   }
 }

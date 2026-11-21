@@ -9,20 +9,20 @@ export default class RedisSubscriptorListener extends EventEmitter implements Su
   private readonly client: Redis
   private readonly key: (key: string) => string
 
-  constructor(
-    client: Redis,
-    key: (key: string) => string,
-    signal?: AbortSignal,
-  ) {
+  constructor(client: Redis, key: (key: string) => string, signal?: AbortSignal) {
     super()
     this.client = client
     this.key = key
     this.client.on('message', this.onMessageReceived)
     this.client.on('pmessage', this.onPMessageReceived)
 
-    signal?.addEventListener('abort', () => {
-      this.dispose().catch(error => this.emit('error', error))
-    }, false)
+    signal?.addEventListener(
+      'abort',
+      () => {
+        this.dispose().catch((error) => this.emit('error', error))
+      },
+      false,
+    )
   }
 
   public async subscribe(...channels: string[]): Promise<void> {
@@ -66,6 +66,11 @@ export default class RedisSubscriptorListener extends EventEmitter implements Su
   }
 
   private onPMessageReceived = (pattern: string, channel: string, value: string) => {
-    this.emit('patternMessage', pattern.replace(this.key(''), ''), channel.replace(this.key(''), ''), value)
+    this.emit(
+      'patternMessage',
+      pattern.replace(this.key(''), ''),
+      channel.replace(this.key(''), ''),
+      value,
+    )
   }
 }

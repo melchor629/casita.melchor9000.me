@@ -12,7 +12,7 @@ const schema = {
 }
 
 const homeController: Controller<typeof schema> = async (req, reply) => {
-  reply.status(200).send({
+  await reply.status(200).send({
     version: req.server.packageJson.version,
   })
 }

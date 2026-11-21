@@ -18,8 +18,10 @@ const Consent = ({ client, interaction: { details, params, uid } }: ConsentProps
   }, [details.missingOIDCScope])
 
   const missingClaims = useMemo(() => {
-    const missingOIDCClaims = new Set(details.missingOIDCClaims as string[]);
-    ['sub', 'sid', 'auth_time', 'acr', 'amr', 'iss'].forEach(Set.prototype.delete.bind(missingOIDCClaims))
+    const missingOIDCClaims = new Set(details.missingOIDCClaims as string[])
+    ;['sub', 'sid', 'auth_time', 'acr', 'amr', 'iss'].forEach(
+      Set.prototype.delete.bind(missingOIDCClaims),
+    )
     return Array.from(missingOIDCClaims.keys())
   }, [details.missingOIDCClaims])
 
@@ -30,7 +32,12 @@ const Consent = ({ client, interaction: { details, params, uid } }: ConsentProps
   ].some(Boolean)
   return (
     <>
-      <Text size="h2" className="mb-3">Authorize</Text>
+      <Text
+        size="h2"
+        className="mb-3"
+      >
+        Authorize
+      </Text>
 
       <ul className="list-none">
         {noConsentToShow && (
@@ -39,8 +46,10 @@ const Consent = ({ client, interaction: { details, params, uid } }: ConsentProps
         {!!missingScopes.length && (
           <>
             <li>scopes:</li>
-            <ul className="list-disc list-inside">
-              {missingScopes.map((scope) => <li key={scope}>{scope}</li>)}
+            <ul className="list-inside list-disc">
+              {missingScopes.map((scope) => (
+                <li key={scope}>{scope}</li>
+              ))}
             </ul>
           </>
         )}
@@ -48,27 +57,31 @@ const Consent = ({ client, interaction: { details, params, uid } }: ConsentProps
           <>
             <li>claims:</li>
             <ul>
-              {missingClaims.map((claim) => <li key={claim}>{claim}</li>)}
+              {missingClaims.map((claim) => (
+                <li key={claim}>{claim}</li>
+              ))}
             </ul>
           </>
         )}
-        {details.missingResourceScopes != null && (
-          Object.entries(details.missingResourceScopes as Record<string, string[]>).map(([indicator, scopes]) => (
-            <Fragment key={indicator}>
-              <li>
-                {indicator}
-                :
-              </li>
-              <ul>
-                {scopes.map((scope) => <li key={scope}>{scope}</li>)}
-              </ul>
-            </Fragment>
-          ))
-        )}
+        {details.missingResourceScopes != null
+          && Object.entries(details.missingResourceScopes as Record<string, string[]>).map(
+            ([indicator, scopes]) => (
+              <Fragment key={indicator}>
+                <li>{indicator}:</li>
+                <ul>
+                  {scopes.map((scope) => (
+                    <li key={scope}>{scope}</li>
+                  ))}
+                </ul>
+              </Fragment>
+            ),
+          )}
         {Array.isArray(params.scope) && params.scope.includes('offline_access') && (
           <li>
             the client is asking to have offline access to this authorization
-            {((!Array.isArray(details.missingOIDCScope)) || !details.missingOIDCScope.includes('offline_access')) && '(which you\'ve previously granted)'}
+            {(!Array.isArray(details.missingOIDCScope)
+              || !details.missingOIDCScope.includes('offline_access'))
+              && "(which you've previously granted)"}
           </li>
         )}
       </ul>
@@ -77,7 +90,7 @@ const Consent = ({ client, interaction: { details, params, uid } }: ConsentProps
         autoComplete="off"
         action={`/i/${uid}/confirm`}
         method="POST"
-        className="flex justify-between mt-3 mb-4"
+        className="mt-3 mb-4 flex justify-between"
       >
         <Button type="submit">Continue</Button>
         <Link to={`/i/${uid}/cancel`}>

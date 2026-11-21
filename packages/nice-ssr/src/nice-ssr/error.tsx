@@ -1,10 +1,12 @@
 import { Component, type Context, type FC, type PropsWithChildren } from 'react'
 import { SsrRouterContext } from './navigation'
 
-type ErrorBoundaryProps = Readonly<PropsWithChildren<{
-  component: FC<ErrorComponentProps>
-  error?: CsrError | null
-}>>
+type ErrorBoundaryProps = Readonly<
+  PropsWithChildren<{
+    component: FC<ErrorComponentProps>
+    error?: CsrError | null
+  }>
+>
 
 export type CsrError = Readonly<{
   /**
@@ -28,7 +30,6 @@ export type CsrError = Readonly<{
 type ErrorBoundaryState = Readonly<{
   hasError: boolean
   error: CsrError | null
-  component: FC<ErrorComponentProps>
 }>
 
 export type ErrorComponentProps = Readonly<{
@@ -42,7 +43,7 @@ export type ErrorComponentProps = Readonly<{
   reset: () => void
 }>
 
-const initialState: ErrorBoundaryState = { hasError: false, error: null, component: null! }
+const initialState: ErrorBoundaryState = { hasError: false, error: null }
 
 export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   static contextType = SsrRouterContext
@@ -53,7 +54,6 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
     super(props)
     this.state = {
       ...initialState,
-      component: props.component,
       hasError: props.error != null,
       error: props.error ?? null,
     }
@@ -63,19 +63,14 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
     return { hasError: true, error }
   }
 
-  componentDidUpdate(prevProps: ErrorBoundaryProps): void {
-    if (prevProps.component !== this.props.component) {
-      this.setState({
-        component: this.props.component,
-      })
-    }
-  }
-
   render() {
     if (this.state.hasError) {
-      const Component = this.state.component
+      const Component = this.props.component
       return (
-        <Component error={this.state.error!} reset={this.#resetErrorBoundary} />
+        <Component
+          error={this.state.error!}
+          reset={this.#resetErrorBoundary}
+        />
       )
     }
 
@@ -89,13 +84,12 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
       // this is an error page, reload page is better
       const { state, url } = this.context.store.getState()
       if (state === 'inactive') {
-        this.context.actions.loadPage(url, true)
-          .catch(() => {})
+        this.context.actions.loadPage(url, true).catch(() => {})
       }
     }
 
     if (error != null) {
-      this.setState({ ...initialState, component: this.state.component })
+      this.setState(initialState)
     }
   }
 }

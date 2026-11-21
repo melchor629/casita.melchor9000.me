@@ -37,15 +37,15 @@ type MergeVariantMaps<Left extends TVVariantsShape, Right extends TVVariantsShap
 ] extends [undefined]
   ? Right
   : [Right] extends [undefined]
-      ? Left
-      : Simplify<{
+    ? Left
+    : Simplify<{
         [K in keyof Left | keyof Right]: K extends keyof Right
           ? K extends keyof Left
             ? MergeVariantOptions<Left[K], Right[K]>
             : Right[K]
           : K extends keyof Left
             ? Left[K]
-            : never;
+            : never
       }>
 type MergeVariantOptions<Left, Right> = [Left, Right] extends [
   Record<string, unknown>,
@@ -58,8 +58,8 @@ type ClassNameValue = ClassNameArray | string | null | undefined | 0 | 0n | fals
 type ClassNameArray = readonly ClassNameValue[]
 
 interface OverridableTypeMap {
-  props: object;
-  defaultComponent: ElementType;
+  props: object
+  defaultComponent: ElementType
 }
 
 export type OverridableComponent<TypeMap extends OverridableTypeMap> = {
@@ -68,25 +68,25 @@ export type OverridableComponent<TypeMap extends OverridableTypeMap> = {
       /**
        * Uses this component as base component to render.
        */
-      readonly component: Component;
+      readonly component: Component
     } & OverrideProps<TypeMap, Component>,
-  ): JSX.Element | null;
-  (props: DefaultProps<TypeMap>): JSX.Element | null;
+  ): JSX.Element | null
+  (props: DefaultProps<TypeMap>): JSX.Element | null
 }
 
 type CommonProps = {
   /**
    * Adds additional classes to the element.
    */
-  className?: string;
+  className?: string
 }
 
 type OverrideProps<
   TypeMap extends OverridableTypeMap,
   Component extends ElementType,
-> = TypeMap['props'] &
-  CommonProps &
-  DistributiveOmit<ComponentPropsWithRef<Component>, keyof TypeMap['props'] | keyof CommonProps>
+> = TypeMap['props']
+  & CommonProps
+  & DistributiveOmit<ComponentPropsWithRef<Component>, keyof TypeMap['props'] | keyof CommonProps>
 
 type DefaultProps<TypeMap extends OverridableTypeMap> = OverrideProps<
   TypeMap,
@@ -98,11 +98,10 @@ export type OverridableComponentProps<
   C extends ElementType = TypeMap['defaultComponent'],
 > = OverrideProps<TypeMap, C> & {
   /**
-   * Replaces the base component to other. This component will now receive
-   * the props from the override components and types will change to reflect
-   * that.
+   * Replaces the base component to other. This component will now receive the props from the
+   * override components and types will change to reflect that.
    */
-  component?: C;
+  component?: C
 }
 
 export function styled<const Comp extends ElementType>(Component: Comp, name: string) {
@@ -119,12 +118,17 @@ export function styled<const Comp extends ElementType>(Component: Comp, name: st
   >(options: Parameters<typeof tv<V, DV, CV, B, undefined, E, EV, undefined>>[0]) {
     const styles = tv<V, DV, CV, B, undefined, E, EV, undefined>(options)
     const comp = (
-      props: ComponentPropsWithRef<Comp> &
-        VariantProps<TVReturnType<V, undefined, B, EV, undefined, E>>,
+      props: ComponentPropsWithRef<Comp>
+        & VariantProps<TVReturnType<V, undefined, B, EV, undefined, E>>,
     ) => {
       const className = styles(props)
-      // @ts-expect-error ssshhh!
-      return <Component {...props} className={className} />
+      return (
+        // @ts-expect-error ssshhh!
+        <Component
+          {...props}
+          className={className}
+        />
+      )
     }
     comp.displayName = name
     return comp

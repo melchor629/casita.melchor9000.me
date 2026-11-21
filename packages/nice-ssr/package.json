@@ -1,12 +1,14 @@
 {
   "name": "@melchor629/nice-ssr",
-  "private": true,
   "version": "0.6.6",
+  "private": true,
+  "files": [
+    "bin/",
+    "dist/",
+    "src/nice-ssr/"
+  ],
   "type": "module",
   "sideEffects": false,
-  "engines": {
-    "node": ">=22"
-  },
   "exports": {
     "./vite": {
       "types": "./dist/vite/plugin.d.ts",
@@ -31,14 +33,23 @@
   "scripts": {
     "build": "rm -rf dist && tsc -p .",
     "dev": "tsc -p . --watch",
-    "lint": "eslint src",
-    "check": "tsc -p . --noEmit"
+    "check:lint": "oxlint",
+    "check:fmt": "oxfmt --check",
+    "check:ts": "tsc -p . --noEmit"
   },
   "dependencies": {
     "@fastify/static": "^10.1.10",
     "astring": "^1.9.0",
     "fastify-plugin": "^6.0.1",
     "zustand": "^5.1.0"
+  },
+  "devDependencies": {
+    "@fastify/middie": "^9.3.6",
+    "@melchor629/tsconfigs": "*",
+    "@types/estree": "^1.0.10",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "vite": "^8.3.8"
   },
   "peerDependencies": {
     "@opentelemetry/api": "^1.10.0",
@@ -52,17 +63,7 @@
       "optional": true
     }
   },
-  "devDependencies": {
-    "@fastify/middie": "^9.3.6",
-    "@melchor629/tsconfigs": "*",
-    "@types/estree": "^1.0.10",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "vite": "^8.3.8"
-  },
-  "files": [
-    "bin/",
-    "dist/",
-    "src/nice-ssr/"
-  ]
+  "engines": {
+    "node": ">=22"
+  }
 }

@@ -6,49 +6,51 @@ import { useButtonGroup } from './button-group-context'
 type ButtonTypeMap = {
   props: {
     /**
-     * The color the button has. Use Primary for the important button.
-     * Use Secondary for other buttons next to the Primary. Use Error
-     * to indicate a dangerous action, and cannot be used alongside
-     * Primary. Use neutral for other buttons.
+     * The color the button has. Use Primary for the important button. Use Secondary for other
+     * buttons next to the Primary. Use Error to indicate a dangerous action, and cannot be used
+     * alongside Primary. Use neutral for other buttons.
+     *
      * @default 'primary'
      */
-    color?: 'primary' | 'secondary' | 'neutral' | 'warning' | 'error';
+    color?: 'primary' | 'secondary' | 'neutral' | 'warning' | 'error'
     /**
      * Disables the button in a way that cannot be interacted with.
      */
-    disabled?: boolean;
+    disabled?: boolean
     /**
-     * If filled, renders the icon at the start of the button. If the
-     * button does not contain any children, then just renders the
-     * icon. Styles are a bit changed when only an icon is rendered.
+     * If filled, renders the icon at the start of the button. If the button does not contain any
+     * children, then just renders the icon. Styles are a bit changed when only an icon is
+     * rendered.
      */
-    icon?: ReactElement;
-    loading?: boolean;
+    icon?: ReactElement
+    loading?: boolean
     /**
-     * The variant of the button. Filled has a background color, whereas
-     * text colours the text instead.
+     * The variant of the button. Filled has a background color, whereas text colours the text
+     * instead.
+     *
      * @default 'filled'
      */
-    variant?: 'filled' | 'text';
+    variant?: 'filled' | 'text'
     /**
      * The size of the button.
+     *
      * @default 'medium'
      */
-    size?: 'large' | 'medium' | 'small';
-  };
-  defaultComponent: 'button';
+    size?: 'large' | 'medium' | 'small'
+  }
+  defaultComponent: 'button'
 }
 
 export type ButtonProps<C extends ElementType = ButtonTypeMap['defaultComponent']> =
   OverridableComponentProps<ButtonTypeMap, C>
 
 /**
- * Fancy button that can be styled with {@link ButtonProps.variant} and have different colours
- * based on {@link ButtonProps.color} or size {@link ButtonProps.size}. The button also allows
- * rendering an icon which will be placed before the text. If no children is provided, the
- * button will act as in *Icon Button* changing slightly the layout. Additionally, if the button
- * triggers an asynchronous operation, {@link ButtonProps.loading} set to `true` will replace
- * the contents with a {@link CircularProgress} to indicate background work.
+ * Fancy button that can be styled with {@link ButtonProps.variant} and have different colours based
+ * on {@link ButtonProps.color} or size {@link ButtonProps.size}. The button also allows rendering
+ * an icon which will be placed before the text. If no children is provided, the button will act as
+ * in _Icon Button_ changing slightly the layout. Additionally, if the button triggers an
+ * asynchronous operation, {@link ButtonProps.loading} set to `true` will replace the contents with
+ * a {@link CircularProgress} to indicate background work.
  */
 const Button: OverridableComponent<ButtonTypeMap> = ({
   children,
@@ -157,7 +159,7 @@ const Button: OverridableComponent<ButtonTypeMap> = ({
       >
         {children}
       </div>
-      <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+      <div className="absolute top-0 left-0 flex h-full w-full items-center justify-center">
         <CircularProgress
           size={size}
           show={loading}

@@ -1,5 +1,14 @@
 import { useNavigate } from '@melchor629/nice-ssr'
-import { Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+  Text,
+} from '@melchor629/ui'
 import { Add } from '@melchor629/ui/icons'
 import { useMemo, useState } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
@@ -15,19 +24,32 @@ type ClientsProps = Readonly<{
 
 const Clients = ({ clients }: ClientsProps) => {
   const [opened, setOpened] = useState(false)
-  const { data: { permissions } } = useEnsureGetSession()
+  const {
+    data: { permissions },
+  } = useEnsureGetSession()
   const navigate = useNavigate()
 
   const permission = useMemo(() => permissions.find((p) => p.key === 'client')!, [permissions])
 
   return (
     <>
-      <div className="flex justify-between items-baseline mb-2">
+      <div className="mb-2 flex items-baseline justify-between">
         <Text size="h2">Clients</Text>
-        {permission.write && <Button type="button" size="small" onClick={() => setOpened(true)} icon={<Add />} />}
+        {permission.write && (
+          <Button
+            type="button"
+            size="small"
+            onClick={() => setOpened(true)}
+            icon={<Add />}
+          />
+        )}
       </div>
 
-      <Table className="mt-2 mb-4" full hover>
+      <Table
+        className="mt-2 mb-4"
+        full
+        hover
+      >
         <TableHead>
           <TableRow>
             <TableHeadCell>ID</TableHeadCell>
@@ -49,7 +71,12 @@ const Clients = ({ clients }: ClientsProps) => {
         </TableBody>
       </Table>
 
-      {permission.write && <AddClientDialog opened={opened} setOpened={setOpened} />}
+      {permission.write && (
+        <AddClientDialog
+          opened={opened}
+          setOpened={setOpened}
+        />
+      )}
 
       <AdminBreadcrumb sections={breadcrumbSections} />
     </>

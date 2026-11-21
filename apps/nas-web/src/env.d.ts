@@ -1,6 +1,6 @@
-import type {} from 'vite/client'
 import type {} from 'vite-plugin-pwa/client'
 import type {} from 'vite-plugin-svgr/client'
+import type {} from 'vite/client'
 
 declare global {
   interface ImportMetaEnv {

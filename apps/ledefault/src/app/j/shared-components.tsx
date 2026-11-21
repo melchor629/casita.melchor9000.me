@@ -24,10 +24,18 @@ export function TextArea({ children, className, ref, ...props }: TextAreaProps) 
   )
 }
 
-type CharButtonProps = Readonly<ComponentPropsWithRef<'button'> & {
-  variant?: 'primary' | 'secondary'
-}>
-export function CharButton({ children, className, ref, variant = 'primary', ...props }: CharButtonProps) {
+type CharButtonProps = Readonly<
+  ComponentPropsWithRef<'button'> & {
+    variant?: 'primary' | 'secondary'
+  }
+>
+export function CharButton({
+  children,
+  className,
+  ref,
+  variant = 'primary',
+  ...props
+}: CharButtonProps) {
   return (
     <button
       {...props}

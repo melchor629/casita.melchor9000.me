@@ -85,7 +85,7 @@ const config: Configuration = {
 
   // Json Web Key Store
   jwks: fs.existsSync(jwksFilePath)
-    ? JSON.parse(fs.readFileSync(jwksFilePath, { encoding: 'utf-8' })) as JWKS
+    ? (JSON.parse(fs.readFileSync(jwksFilePath, { encoding: 'utf-8' })) as JWKS)
     : { keys: [] },
 
   // tell the which scopes do we support
@@ -135,12 +135,14 @@ const config: Configuration = {
     resourceIndicators: {
       enabled: true,
       defaultResource(_ctx, client, oneOf) {
-        return oneOf || client[defaultApiResourcesProp] as string
+        return oneOf || (client[defaultApiResourcesProp] as string)
       },
       async getResourceServerInfo(_ctx, resource, client) {
         const { [allowedApiResourcesProp]: allowedApiResources } = client
         if (!Array.isArray(allowedApiResources) || !allowedApiResources.includes(resource)) {
-          throw new errors.InvalidTarget(`The Client '${client.clientId}' cannot access API Resource '${resource}'`)
+          throw new errors.InvalidTarget(
+            `The Client '${client.clientId}' cannot access API Resource '${resource}'`,
+          )
         }
 
         const apiResource = await getApiResource(resource)
@@ -227,7 +229,9 @@ const config: Configuration = {
 
         // validate array of api resources
         if (!Array.isArray(value) || !value.every((v) => typeof v === 'string')) {
-          throw new errors.InvalidClientMetadata(`${allowedApiResourcesProp} must be an array of strings`)
+          throw new errors.InvalidClientMetadata(
+            `${allowedApiResourcesProp} must be an array of strings`,
+          )
         }
       }
 
@@ -288,10 +292,10 @@ const config: Configuration = {
     RefreshToken(ctx, token, client) {
       if (
         ctx
-          && ctx.oidc.entities.RotatedRefreshToken
-          && client.applicationType === 'web'
-          && client.tokenEndpointAuthMethod === 'none'
-          && !token.isSenderConstrained()
+        && ctx.oidc.entities.RotatedRefreshToken
+        && client.applicationType === 'web'
+        && client.tokenEndpointAuthMethod === 'none'
+        && !token.isSenderConstrained()
       ) {
         // Non-Sender Constrained SPA RefreshTokens do not have infinite expiration through rotation
         return ctx.oidc.entities.RotatedRefreshToken.remainingTTL
@@ -299,13 +303,13 @@ const config: Configuration = {
 
       return 14 * 24 * 60 * 60 // 14 days in seconds
     },
-    Session: 1209600, /* 14 days in seconds */
+    Session: 1209600 /* 14 days in seconds */,
   },
 
   // helper function to load existing grants or create ones with pre-stablished values
   async loadExistingGrant(ctx) {
-    const grantId = ctx.oidc.result?.consent?.grantId
-      || ctx.oidc.session?.grantIdFor(ctx.oidc.client!.clientId)
+    const grantId =
+      ctx.oidc.result?.consent?.grantId || ctx.oidc.session?.grantIdFor(ctx.oidc.client!.clientId)
     let grant
     if (grantId) {
       grant = await ctx.oidc.provider.Grant.find(grantId)

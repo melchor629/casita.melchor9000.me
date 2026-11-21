@@ -8,5 +8,10 @@ export default function AuthPage() {
     return redirectPath || '/'
   }, [])
 
-  return <Navigate to={path} replace />
+  return (
+    <Navigate
+      to={path}
+      replace
+    />
+  )
 }

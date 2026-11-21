@@ -11,7 +11,10 @@ type RemoveUserPermissionData = Readonly<{
   applicationKey: string
 }>
 
-async function removeUserPermissionAction(context: PageLoaderContext, { applicationKey, permissionName, userName }: RemoveUserPermissionData) {
+async function removeUserPermissionAction(
+  context: PageLoaderContext,
+  { applicationKey, permissionName, userName }: RemoveUserPermissionData,
+) {
   const sessionResult = await ensureSession(context, 'user', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult

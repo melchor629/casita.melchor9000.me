@@ -13,7 +13,11 @@ const ItemChildren = ({ className, itemId, module }: ItemChildrenProps) => {
   return (
     <div className={className}>
       {data?.items.map((itemChild) => (
-        <ItemCell key={itemChild.id} item={itemChild} module={module} />
+        <ItemCell
+          key={itemChild.id}
+          item={itemChild}
+          module={module}
+        />
       ))}
     </div>
   )

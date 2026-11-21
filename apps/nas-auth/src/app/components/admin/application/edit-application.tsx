@@ -5,7 +5,7 @@ import { useEditApplication } from '../../../actions/mutations/edit-application'
 import { useRemoveApplication } from '../../../actions/mutations/remove-application'
 
 type EditApplicationProps = Readonly<{
-  application: { key: string, name: string }
+  application: { key: string; name: string }
   canDelete: boolean
   readOnly: boolean
 }>
@@ -16,32 +16,41 @@ const EditApplication = ({ application, canDelete, readOnly }: EditApplicationPr
   const revalidate = useRevalidator()
   const [name, setName] = useState(application.name || '')
 
-  const save = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const save = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
 
-    if (readOnly) {
-      return
-    }
+      if (readOnly) {
+        return
+      }
 
-    editApplicationMutation.mutate({
-      key: application.key,
-      name,
-    }, { onSuccess: () => { revalidate().catch(() => {}) } })
-  }, [
-    application.key, readOnly,
-    editApplicationMutation, revalidate,
-    name,
-  ])
+      editApplicationMutation.mutate(
+        {
+          key: application.key,
+          name,
+        },
+        {
+          onSuccess: () => {
+            revalidate().catch(() => {})
+          },
+        },
+      )
+    },
+    [application.key, readOnly, editApplicationMutation, revalidate, name],
+  )
 
-  const remove = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const remove = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
 
-    if (readOnly || !canDelete) {
-      return
-    }
+      if (readOnly || !canDelete) {
+        return
+      }
 
-    removeApplicationMutation.mutate(application.key)
-  }, [readOnly, canDelete, removeApplicationMutation, application.key])
+      removeApplicationMutation.mutate(application.key)
+    },
+    [readOnly, canDelete, removeApplicationMutation, application.key],
+  )
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -49,7 +58,12 @@ const EditApplication = ({ application, canDelete, readOnly }: EditApplicationPr
   }, [application])
 
   return (
-    <fieldset className="my-2" disabled={readOnly || editApplicationMutation.isPending || removeApplicationMutation.isPending}>
+    <fieldset
+      className="my-2"
+      disabled={
+        readOnly || editApplicationMutation.isPending || removeApplicationMutation.isPending
+      }
+    >
       <FormControlLabel htmlFor="key">Key</FormControlLabel>
       <TextInput
         type="text"
@@ -58,7 +72,12 @@ const EditApplication = ({ application, canDelete, readOnly }: EditApplicationPr
         readOnly
       />
 
-      <FormControlLabel htmlFor="name" margin="normal">Name</FormControlLabel>
+      <FormControlLabel
+        htmlFor="name"
+        margin="normal"
+      >
+        Name
+      </FormControlLabel>
       <TextInput
         type="text"
         id="name"
@@ -67,7 +86,7 @@ const EditApplication = ({ application, canDelete, readOnly }: EditApplicationPr
         onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setName(e.target.value), [])}
       />
 
-      <div className="flex justify-end gap-2 mt-4">
+      <div className="mt-4 flex justify-end gap-2">
         {!readOnly && (
           <Button
             type="button"

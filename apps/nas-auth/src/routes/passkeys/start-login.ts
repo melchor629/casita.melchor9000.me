@@ -1,4 +1,7 @@
-import { generateAuthenticationOptions, type PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/server'
+import {
+  generateAuthenticationOptions,
+  type PublicKeyCredentialRequestOptionsJSON,
+} from '@simplewebauthn/server'
 import oidc from '../../oidc/oidc.ts'
 import type { Controller, GenericRoute } from '../models.ts'
 
@@ -11,10 +14,8 @@ interface Route extends GenericRoute {
 }
 
 const startPasskeyLoginController: Controller<Route> = async (req, res) => {
-  const interaction = await req.trace(
-    'interaction details',
-    {},
-    () => oidc.interactionDetails(req.raw, res.raw),
+  const interaction = await req.trace('interaction details', {}, () =>
+    oidc.interactionDetails(req.raw, res.raw),
   )
   const { prompt } = interaction
   if (prompt.name !== 'login') {

@@ -11,7 +11,7 @@ const getKey = (key: string) => `nas-web:${key}`
 
 const getItem = <T>(key: string): T | null => {
   const value = localStorage.getItem(getKey(key))
-  return value ? JSON.parse(value) as T : null
+  return value ? (JSON.parse(value) as T) : null
 }
 
 const setItem = <T>(key: string, value: T): T => {

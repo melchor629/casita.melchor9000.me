@@ -24,7 +24,10 @@ const itemContent = (_: number, item: Item, module: string) => (
   />
 )
 
-const GridContainer = styled('div', 'GridContainer')({
+const GridContainer = styled(
+  'div',
+  'GridContainer',
+)({
   base: 'grid justify-around gap-y-4 gap-x-6 grid-cols-[repeat(auto-fill,var(--grid-item-width))]',
 })
 

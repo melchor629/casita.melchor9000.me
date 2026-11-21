@@ -6,11 +6,7 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   appType: 'custom',
-  plugins: [
-    react(),
-    tailwindcss(),
-    niceSsrPlugin({ devTools: { enabled: true } }),
-  ],
+  plugins: [react(), tailwindcss(), niceSsrPlugin({ devTools: { enabled: true } })],
   build: {
     emptyOutDir: true,
   },

@@ -19,7 +19,11 @@ function getRouteModule(path: string, type: 'page' | 'error' | 'not-found') {
   return getRouteModulePath(path, type)
 }
 
-async function renderPage(path: string, type: 'page' | 'error' | 'not-found', props: Record<string, unknown>) {
+async function renderPage(
+  path: string,
+  type: 'page' | 'error' | 'not-found',
+  props: Record<string, unknown>,
+) {
   const routes = getRouteModule(path, type)
   const routeModule = routes[routes.length - 1] as PagePathModule
   const [{ default: Page }, { default: Error }, ...layouts] = await Promise.all([
@@ -32,7 +36,10 @@ async function renderPage(path: string, type: 'page' | 'error' | 'not-found', pr
   ])
   return layouts.reduce(
     (children, Layout) => <Layout>{children}</Layout>,
-    <ErrorBoundary component={Error} error={type === 'error' ? props.error as CsrError : undefined}>
+    <ErrorBoundary
+      component={Error}
+      error={type === 'error' ? (props.error as CsrError) : undefined}
+    >
       <Page {...props} />
     </ErrorBoundary>,
   )

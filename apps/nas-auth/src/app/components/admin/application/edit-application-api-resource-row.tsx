@@ -50,9 +50,18 @@ const EditApplicationApiResourceRow = ({
     setScopesOpened(false)
   }, [])
 
-  const nameChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => setName(e.currentTarget.value), [])
-  const audienceChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => setAudience(e.currentTarget.value), [])
-  const accessTokenTTLChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => setAccessTokenTTL(e.currentTarget.valueAsNumber), [])
+  const nameChanged = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setName(e.currentTarget.value),
+    [],
+  )
+  const audienceChanged = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setAudience(e.currentTarget.value),
+    [],
+  )
+  const accessTokenTTLChanged = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setAccessTokenTTL(e.currentTarget.valueAsNumber),
+    [],
+  )
 
   const onAccessTokenDialogClose = useCallback((data?: typeof accessToken) => {
     if (data) {
@@ -70,37 +79,61 @@ const EditApplicationApiResourceRow = ({
     setScopesOpened(false)
   }, [])
 
-  const save = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    if (readOnly) {
-      return
-    }
+  const save = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      if (readOnly) {
+        return
+      }
 
-    editApiResourceMutation.mutate({
-      key: apiResource.key,
+      editApiResourceMutation.mutate(
+        {
+          key: apiResource.key,
+          name,
+          audience,
+          accessTokenFormat: accessToken.format,
+          jwt: accessToken.jwt,
+          accessTokenTTL: accessTokenTTL ?? undefined,
+          scopes,
+        },
+        {
+          onSuccess: () => {
+            setEditMode(false)
+            void revalidate()
+          },
+        },
+      )
+    },
+    [
+      readOnly,
+      apiResource.key,
+      editApiResourceMutation,
+      revalidate,
       name,
       audience,
-      accessTokenFormat: accessToken.format,
-      jwt: accessToken.jwt,
-      accessTokenTTL: accessTokenTTL ?? undefined,
+      accessToken,
+      accessTokenTTL,
       scopes,
-    }, { onSuccess: () => { setEditMode(false); void revalidate() } })
-  }, [
-    readOnly, apiResource.key, editApiResourceMutation, revalidate,
-    name, audience, accessToken, accessTokenTTL, scopes,
-  ])
+    ],
+  )
 
-  const remove = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    if (readOnly || !canDelete) {
-      return
-    }
+  const remove = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      if (readOnly || !canDelete) {
+        return
+      }
 
-    removeApiResourceMutation.mutate({
-      appId,
-      key: apiResource.key,
-    }, { onSuccess: () => void revalidate() })
-  }, [readOnly, canDelete, removeApiResourceMutation, appId, apiResource.key, revalidate])
+      removeApiResourceMutation.mutate(
+        {
+          appId,
+          key: apiResource.key,
+        },
+        { onSuccess: () => void revalidate() },
+      )
+    },
+    [readOnly, canDelete, removeApiResourceMutation, appId, apiResource.key, revalidate],
+  )
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -119,10 +152,22 @@ const EditApplicationApiResourceRow = ({
       <TableRow>
         <TableCell>{apiResource.key}</TableCell>
         <TableCell>
-          <TextInput type="text" className="mb-0" value={name} onChange={nameChanged} size="small" />
+          <TextInput
+            type="text"
+            className="mb-0"
+            value={name}
+            onChange={nameChanged}
+            size="small"
+          />
         </TableCell>
         <TableCell>
-          <TextInput type="text" className="mb-0" value={audience} onChange={audienceChanged} size="small" />
+          <TextInput
+            type="text"
+            className="mb-0"
+            value={audience}
+            onChange={audienceChanged}
+            size="small"
+          />
         </TableCell>
         <TableCell>
           <Button
@@ -205,7 +250,14 @@ const EditApplicationApiResourceRow = ({
       <TableCell>{apiResource.accessTokenTTL ?? 'default'}</TableCell>
       <TableCell noWrap>
         {!readOnly && (
-          <Button size="small" onClick={activateEditMode} disabled={removeApiResourceMutation.isPending} variant="text">Edit</Button>
+          <Button
+            size="small"
+            onClick={activateEditMode}
+            disabled={removeApiResourceMutation.isPending}
+            variant="text"
+          >
+            Edit
+          </Button>
         )}
         &nbsp;
         {!readOnly && canDelete && (

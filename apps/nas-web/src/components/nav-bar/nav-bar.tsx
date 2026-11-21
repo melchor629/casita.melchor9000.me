@@ -1,5 +1,4 @@
 import { Button, CircularProgress } from '@melchor629/ui'
-import PopoverMenu from '@melchor629/ui/PopoverMenu'
 import {
   Apps as AppsIcon,
   Home as HomeIcon,
@@ -7,9 +6,8 @@ import {
   Logout as LogoutIcon,
   Settings as SettingsIcon,
 } from '@melchor629/ui/icons'
-import {
-  memo, useCallback, useEffect, useMemo, useState,
-} from 'react'
+import PopoverMenu from '@melchor629/ui/PopoverMenu'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuth } from 'react-oidc-context'
 import { Link, useLocation, useNavigation } from 'react-router'
 import { useTokenInfo } from '@/hooks/use-token-info'
@@ -58,12 +56,15 @@ const NavBar = memo(() => {
     setShowChangeApp((v) => !v)
   }, [])
 
-  const onLogout: React.MouseEventHandler = useCallback((e) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const onLogout: React.MouseEventHandler = useCallback(
+    (e) => {
+      e.preventDefault()
+      e.stopPropagation()
 
-    removeUser().catch(() => {})
-  }, [removeUser])
+      removeUser().catch(() => {})
+    },
+    [removeUser],
+  )
 
   const openAuth: React.MouseEventHandler = useCallback((e) => {
     e.preventDefault()
@@ -72,15 +73,18 @@ const NavBar = memo(() => {
     window.open(env.identity.authority, '_blank')
   }, [])
 
-  const openAuth2: React.KeyboardEventHandler = useCallback((e) => {
-    if (e.code === 'Enter') {
-      openAuth(e as never)
-    }
-  }, [openAuth])
+  const openAuth2: React.KeyboardEventHandler = useCallback(
+    (e) => {
+      if (e.code === 'Enter') {
+        openAuth(e as never)
+      }
+    },
+    [openAuth],
+  )
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-40 flex flex-row items-center justify-between px-3 py-2 h-navbar">
+      <nav className="h-navbar fixed top-0 right-0 left-0 z-40 flex flex-row items-center justify-between px-3 py-2">
         <div className="flex items-center gap-1">
           <Button
             component={Link}
@@ -104,16 +108,29 @@ const NavBar = memo(() => {
           </Button>
           <CircularProgress show={state !== 'idle'} />
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           <div
-            className="hidden md:inline-flex text-center text-muted select-none cursor-pointer mr-2"
+            className="text-muted mr-2 hidden cursor-pointer text-center select-none md:inline-flex"
             role="button"
             onClick={openAuth}
             onKeyDown={openAuth2}
             tabIndex={0}
           >
-            {!tokenInfo.picture && <span role="img" aria-label="Saluting hand">👋</span>}
-            {tokenInfo.picture && <img alt="User profile" src={tokenInfo.picture} className="inline-block size-6 rounded-full" />}
+            {!tokenInfo.picture && (
+              <span
+                role="img"
+                aria-label="Saluting hand"
+              >
+                👋
+              </span>
+            )}
+            {tokenInfo.picture && (
+              <img
+                alt="User profile"
+                src={tokenInfo.picture}
+                className="inline-block size-6 rounded-full"
+              />
+            )}
             <span>
               &nbsp;&nbsp;
               {tokenInfo.displayName || tokenInfo.userName}
@@ -163,7 +180,11 @@ const NavBar = memo(() => {
         referenceElement={appButtonRef}
       >
         {apps.map(({ key, name }) => (
-          <AppLink key={key} appKey={key} name={name} />
+          <AppLink
+            key={key}
+            appKey={key}
+            name={name}
+          />
         ))}
       </PopoverMenu>
     </>

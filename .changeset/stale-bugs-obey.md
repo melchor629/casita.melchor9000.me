@@ -1,5 +1,5 @@
 ---
-"@melchor629/ui": patch
+'@melchor629/ui': patch
 ---
 
 Upgrade storybook to v11

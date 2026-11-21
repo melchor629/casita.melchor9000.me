@@ -4,9 +4,8 @@ import type { ComponentProps } from 'react'
 export type SwitchProps = Omit<ComponentProps<'input'>, 'type'>
 
 /**
- * Similar to a checkbox input, but rendering as an iOS-like switch.
- * It is still an checkbox underneath and the position of the handle
- * is based on the input checked status.
+ * Similar to a checkbox input, but rendering as an iOS-like switch. It is still an checkbox
+ * underneath and the position of the handle is based on the input checked status.
  */
 const Switch = ({ children, className, ...props }: SwitchProps) => (
   <input

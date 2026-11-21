@@ -3,11 +3,14 @@ export const round = (value: number, roundTo = 2): number => Number(value.toFixe
 export const humanNumbers = (value: number, unit: string, p = 1000, roundTo = 2) => {
   if (value < p) {
     return `${round(value, roundTo)}${unit}`
-  } if (value < p * p) {
+  }
+  if (value < p * p) {
     return `${round(value / p, roundTo)}K${unit}`
-  } if (value < p * p * p) {
+  }
+  if (value < p * p * p) {
     return `${round(value / p / p, roundTo)}M${unit}`
-  } if (value < p * p * p * p) {
+  }
+  if (value < p * p * p * p) {
     return `${round(value / p / p / p, roundTo)}G${unit}`
   }
   return `${round(value / p / p / p / p, roundTo)}T${unit}`

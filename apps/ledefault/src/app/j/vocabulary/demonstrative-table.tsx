@@ -4,7 +4,8 @@ import JapaneseWithRomaji from './japanese-with-romaji'
 
 /**
  * Renders the demostratives table.
- * @param param0 props
+ *
+ * @param param0 Props
  */
 const DemonstrativeTable = ({ result }: VocabularyComponentProps<DemonstrativeDictionaryEntry>) => (
   <>
@@ -49,10 +50,7 @@ const DemonstrativeTable = ({ result }: VocabularyComponentProps<DemonstrativeDi
     </NaisTable>
 
     <p className={result.details ? 'pb-2' : ''}>
-      Este demostrativo actúa como un
-      {' '}
-      {result.actsAs === 'adjective' ? 'adjetivo' : 'sustantivo'}
-      .
+      Este demostrativo actúa como un {result.actsAs === 'adjective' ? 'adjetivo' : 'sustantivo'}.
     </p>
   </>
 )

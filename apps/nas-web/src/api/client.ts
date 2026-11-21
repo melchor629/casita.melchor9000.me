@@ -34,15 +34,15 @@ const queryMapToUrlencodeString = (q: QueryMap): URLSearchParams => {
 }
 
 const prepareRequest = (r: RequestOptions | undefined, body?: BodyTypes): RequestInit => {
-  const opts: RequestInit = r ?? ({})
+  const opts: RequestInit = r ?? {}
   opts.method = r ? r.method : 'get'
   if (body !== undefined) {
     if (
       body instanceof ArrayBuffer
-            || body instanceof Blob
-            || body instanceof FormData
-            || body instanceof URLSearchParams
-            || typeof body === 'string'
+      || body instanceof Blob
+      || body instanceof FormData
+      || body instanceof URLSearchParams
+      || typeof body === 'string'
     ) {
       opts.body = body
     } else if (Array.isArray(body) || typeof body === 'object') {
@@ -83,8 +83,8 @@ export async function sendRequest<BT extends BodyTypes>(
   bodyOrReq?: BT | Partial<RequestOptions>,
   reqOpt?: RequestOptions,
 ) {
-  const body = reqOpt !== undefined ? bodyOrReq as BT : undefined
-  const req = reqOpt !== undefined ? reqOpt : bodyOrReq as RequestOptions | undefined
+  const body = reqOpt !== undefined ? (bodyOrReq as BT) : undefined
+  const req = reqOpt !== undefined ? reqOpt : (bodyOrReq as RequestOptions | undefined)
   const finalRequest = body ? prepareRequest(req, body) : req
 
   if (finalRequest) {

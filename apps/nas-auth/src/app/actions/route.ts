@@ -24,7 +24,7 @@ export async function POST(req: SsrRequest) {
   } else if (inputFormat === 'b') {
     args = [await req.blob()]
   } else if (inputFormat === 'j') {
-    args = await req.json() as unknown[]
+    args = (await req.json()) as unknown[]
   } else {
     log.debug({ action, inputFormat }, 'Invalid input format')
     return SsrResponse.new().status(400).empty()

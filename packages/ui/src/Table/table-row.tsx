@@ -8,8 +8,8 @@ export type TableRowProps = ComponentProps<'tr'>
 const TableRow = ({ className, ...props }: TableRowProps) => {
   const { hover } = use(TableContext)
   const scope = use(TableScopeContext)
-  const hasCellHeader
-    = Children.toArray(props.children)
+  const hasCellHeader =
+    Children.toArray(props.children)
       .map((d) => (d && typeof d === 'object' && 'type' in d ? d.type : null))
       .find((t) => t === 'th' || t === TableHeadCell) != null
   return (

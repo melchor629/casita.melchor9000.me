@@ -35,6 +35,7 @@ export const Default = meta.story()
 
 export const List = meta.story({
   render: ({ icon, ...props }) => {
+    // oxlint-disable-next-line import/namespace
     const Icon = icons[icon as keyof typeof icons] ?? icons.Home
     // @ts-expect-error there are icon types that do not support variant
     return <Icon {...props} />

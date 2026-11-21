@@ -10,10 +10,8 @@ interface Route extends GenericRoute {
 }
 
 const alreadyLoggedInController: Controller<Route> = async (req, res) => {
-  const interaction = await req.trace(
-    'interaction details',
-    {},
-    () => oidc.interactionDetails(req.raw, res.raw),
+  const interaction = await req.trace('interaction details', {}, () =>
+    oidc.interactionDetails(req.raw, res.raw),
   )
   const { prompt } = interaction
   if (prompt.name !== 'login') {
@@ -27,12 +25,14 @@ const alreadyLoggedInController: Controller<Route> = async (req, res) => {
     return
   }
 
-  await req.trace('interaction finished', {}, () => oidc.interactionFinished(
-    req.raw,
-    res.raw,
-    { login: { accountId } },
-    { mergeWithLastSubmission: false },
-  ))
+  await req.trace('interaction finished', {}, () =>
+    oidc.interactionFinished(
+      req.raw,
+      res.raw,
+      { login: { accountId } },
+      { mergeWithLastSubmission: false },
+    ),
+  )
 }
 
 alreadyLoggedInController.options = {

@@ -7,15 +7,27 @@ import type { GetApplications } from '#queries/application/get-applications.ts'
 import type { GetPermissions } from '#queries/permission/get-permissions.ts'
 import type { GetUserQuery } from '#queries/user/get-user.ts'
 
-const User = ({ applications, permissions, user }: {
+const User = ({
+  applications,
+  permissions,
+  user,
+}: {
   readonly applications: GetApplications
   readonly permissions: GetPermissions
   readonly user: GetUserQuery
 }) => {
-  const { data: { permissions: userPerms } } = useEnsureGetSession()
+  const {
+    data: { permissions: userPerms },
+  } = useEnsureGetSession()
 
   const breadcrumbSections = useMemo(
-    () => user ? [{ part: 'users', name: 'Users' }, { part: user.userName, name: user.userName }] : [],
+    () =>
+      user
+        ? [
+            { part: 'users', name: 'Users' },
+            { part: user.userName, name: user.userName },
+          ]
+        : [],
     [user],
   )
   const userPermission = useMemo(() => userPerms.find((p) => p.key === 'user')!, [userPerms])

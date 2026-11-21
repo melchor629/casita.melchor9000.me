@@ -5,12 +5,14 @@ import apiResourceMapper from './mapper.ts'
 export type CreateApiResource = typeof apiResourceMapper.$dto.$insert
 
 const createApiResource = async (values: CreateApiResource) => {
-  const appIdQuery = nasAuthDatabase.$with('app').as(
-    nasAuthDatabase
-      .select({ id: application.id, key: application.key })
-      .from(application)
-      .where(eq(application.key, values.applicationKey)),
-  )
+  const appIdQuery = nasAuthDatabase
+    .$with('app')
+    .as(
+      nasAuthDatabase
+        .select({ id: application.id, key: application.key })
+        .from(application)
+        .where(eq(application.key, values.applicationKey)),
+    )
 
   const [result] = await nasAuthDatabase
     .with(appIdQuery)

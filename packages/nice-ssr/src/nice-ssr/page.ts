@@ -7,9 +7,11 @@ export type Metadata = Readonly<{
   baseHref?: string
 }>
 
-export type PageLoaderContext<
-  TParams extends Record<string, string> = Record<never, string>,
-> = Omit<SsrRequest<TParams>, 'body' | 'bodyUsed' | 'arrayBuffer' | 'blob' | 'formData' | 'json' | 'text'>
+export type PageLoaderContext<TParams extends Record<string, string> = Record<never, string>> =
+  Omit<
+    SsrRequest<TParams>,
+    'body' | 'bodyUsed' | 'arrayBuffer' | 'blob' | 'formData' | 'json' | 'text'
+  >
 
 export type PageLoader<
   TLoaderData extends Record<string, unknown>,
@@ -25,8 +27,7 @@ export type PageModule<
   loader?: PageLoader<TLoaderData, TParams>
 }>
 
-export type PageHelperModule<
-  TLoaderData extends Record<string, unknown> = Record<never, never>,
-> = Readonly<{
-  default: FunctionComponent<TLoaderData>
-}>
+export type PageHelperModule<TLoaderData extends Record<string, unknown> = Record<never, never>> =
+  Readonly<{
+    default: FunctionComponent<TLoaderData>
+  }>

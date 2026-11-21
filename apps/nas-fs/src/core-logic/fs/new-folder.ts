@@ -1,6 +1,5 @@
 import fs from 'node:fs/promises'
 import Path from 'node:path'
-
 import type { App } from '../../models/app.ts'
 import { normalize } from './fs-watcher.ts'
 import { ensureExists, ensureNotExists } from './utils.ts'

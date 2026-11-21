@@ -22,6 +22,15 @@ export const Default = meta.story()
 
 export const WithLabel = meta.story({
   render: (args) => (
-    <InputLabel input={<Switch id="checkbox" {...args} />}>Switch label</InputLabel>
+    <InputLabel
+      input={
+        <Switch
+          id="checkbox"
+          {...args}
+        />
+      }
+    >
+      Switch label
+    </InputLabel>
   ),
 })

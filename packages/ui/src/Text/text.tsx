@@ -70,9 +70,9 @@ const sizeMappings = Object.freeze({
 
 type TextTypeMap = {
   props: MakeStylesProps<typeof textStyles> & {
-    ref?: Ref<HTMLElement>;
-  };
-  defaultComponent: 'p';
+    ref?: Ref<HTMLElement>
+  }
+  defaultComponent: 'p'
 }
 
 export type TextProps<C extends ElementType = TextTypeMap['defaultComponent']> =

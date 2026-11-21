@@ -68,15 +68,28 @@ function createMultipleButtonItems(
 ) {
   const buttons: Array<ReactElement> = []
 
-  buttons.push(<DownloadButton key="download" module={module} metadata={entries} />)
+  buttons.push(
+    <DownloadButton
+      key="download"
+      module={module}
+      metadata={entries}
+    />,
+  )
 
-  buttons.push(<GenerateDownloadUrl key="generate-url" module={module} metadata={entries} />)
+  buttons.push(
+    <GenerateDownloadUrl
+      key="generate-url"
+      module={module}
+      metadata={entries}
+    />,
+  )
 
-  const containsMediaForPlaylist = entries.find((e) => (
-    e.type === 'file'
-    && !e.hidden
-    && (e.mime?.mime.startsWith('audio') || e.mime?.mime.startsWith('video'))
-  ))
+  const containsMediaForPlaylist = entries.find(
+    (e) =>
+      e.type === 'file'
+      && !e.hidden
+      && (e.mime?.mime.startsWith('audio') || e.mime?.mime.startsWith('video')),
+  )
   buttons.push(
     <DownloadPlsButton
       key="playlist"
@@ -96,10 +109,22 @@ function createMultipleButtonItems(
       const isAndroid = navigator.userAgent.includes('Android ')
 
       if (isMedia && isMac) {
-        buttons.push(<IinaButton key="iina" module={module} metadata={metadata} />)
+        buttons.push(
+          <IinaButton
+            key="iina"
+            module={module}
+            metadata={metadata}
+          />,
+        )
       }
       if ((isMedia || isImage) && isAndroid) {
-        buttons.push(<AndroidButton key="android" module={module} metadata={metadata} />)
+        buttons.push(
+          <AndroidButton
+            key="android"
+            module={module}
+            metadata={metadata}
+          />,
+        )
       }
     }
   }
@@ -116,13 +141,25 @@ function createMultipleButtonItems(
   }
 
   if (modulePermission.delete) {
-    buttons.push(<DeleteButton key="delete" module={module} entries={entries} />)
+    buttons.push(
+      <DeleteButton
+        key="delete"
+        module={module}
+        entries={entries}
+      />,
+    )
   }
 
   if (moduleAdminPermission?.write && moduleAdminPermission?.delete) {
     buttons.push(<MenuItemSeparator key="space-1" />)
 
-    buttons.push(<SynchronizeButton key="sync" module={module} entries={entries} />)
+    buttons.push(
+      <SynchronizeButton
+        key="sync"
+        module={module}
+        entries={entries}
+      />,
+    )
 
     buttons.push(
       <GenerateThumbnailsButton
@@ -155,29 +192,61 @@ function createUniqueButtonItems(
   const isMac = navigator.platform.includes('Mac')
   const isAndroid = navigator.userAgent.includes('Android ')
   const isRootPath = metadata.path === '/'
-  const containsMediaForPlaylist = metadata?.type === 'dir'
-    ? metadata.contents.find((e) => (
-      e.type === 'file'
-      && (e.mime?.mime.startsWith('audio') || e.mime?.mime.startsWith('video'))
-      && !e.hidden
-    ))
-    : metadata?.mime?.mime.startsWith('audio') || metadata?.mime?.mime.startsWith('video')
+  const containsMediaForPlaylist =
+    metadata?.type === 'dir'
+      ? metadata.contents.find(
+          (e) =>
+            e.type === 'file'
+            && (e.mime?.mime.startsWith('audio') || e.mime?.mime.startsWith('video'))
+            && !e.hidden,
+        )
+      : metadata?.mime?.mime.startsWith('audio') || metadata?.mime?.mime.startsWith('video')
 
   const elements: Array<ReactElement> = []
 
   if (metadata.type === 'file') {
-    elements.push(<DownloadButton key="download" module={module} metadata={metadata} />)
-    elements.push(<GenerateDownloadUrl key="generate-url" module={module} metadata={[metadata]} />)
+    elements.push(
+      <DownloadButton
+        key="download"
+        module={module}
+        metadata={metadata}
+      />,
+    )
+    elements.push(
+      <GenerateDownloadUrl
+        key="generate-url"
+        module={module}
+        metadata={[metadata]}
+      />,
+    )
 
     if (containsMediaForPlaylist) {
-      elements.push(<DownloadPlsButton key="playlist" module={module} metadata={metadata} />)
+      elements.push(
+        <DownloadPlsButton
+          key="playlist"
+          module={module}
+          metadata={metadata}
+        />,
+      )
     }
 
     if (isMedia && isMac) {
-      elements.push(<IinaButton key="iina" module={module} metadata={metadata} />)
+      elements.push(
+        <IinaButton
+          key="iina"
+          module={module}
+          metadata={metadata}
+        />,
+      )
     }
     if ((isMedia || isImage) && isAndroid) {
-      elements.push(<AndroidButton key="android" module={module} metadata={metadata} />)
+      elements.push(
+        <AndroidButton
+          key="android"
+          module={module}
+          metadata={metadata}
+        />,
+      )
     }
   }
 
@@ -200,19 +269,43 @@ function createUniqueButtonItems(
     )
 
     if (containsMediaForPlaylist) {
-      elements.push(<DownloadPlsButton key="playlist" module={module} metadata={metadata} />)
+      elements.push(
+        <DownloadPlsButton
+          key="playlist"
+          module={module}
+          metadata={metadata}
+        />,
+      )
     }
 
     if (modulePermission.write) {
-      elements.push(<UploadButton key="upload" module={module} metadata={metadata} />)
-      elements.push(<CreateButton key="create" module={module} metadata={metadata} />)
+      elements.push(
+        <UploadButton
+          key="upload"
+          module={module}
+          metadata={metadata}
+        />,
+      )
+      elements.push(
+        <CreateButton
+          key="create"
+          module={module}
+          metadata={metadata}
+        />,
+      )
     }
   }
 
   if (moduleAdminPermission?.write && moduleAdminPermission?.delete) {
     elements.push(<MenuItemSeparator key="space-1" />)
 
-    elements.push(<SynchronizeButton key="sync" module={module} entries={[metadata]} />)
+    elements.push(
+      <SynchronizeButton
+        key="sync"
+        module={module}
+        entries={[metadata]}
+      />,
+    )
     elements.push(
       <GenerateThumbnailsButton
         key="generate-thumbnails"

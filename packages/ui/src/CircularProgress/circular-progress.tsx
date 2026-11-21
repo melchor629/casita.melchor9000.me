@@ -3,9 +3,9 @@ import { makeStyles, type MakeStylesProps } from '../utils'
 
 export type CircularProgressProps = Readonly<
   MakeStylesProps<typeof circularProgressStyles> & {
-    ref?: Ref<SVGSVGElement>;
-    className?: string;
-    percentage?: number;
+    ref?: Ref<SVGSVGElement>
+    className?: string
+    percentage?: number
   }
 >
 

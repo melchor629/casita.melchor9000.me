@@ -14,9 +14,7 @@ const telemetry = createTelemetry({
   endpoint: {
     url: otlp.url!,
   },
-  instrumentations: [
-    fastifyInstrumentation,
-  ],
+  instrumentations: [fastifyInstrumentation],
 })
 
 process.on('SIGTERM', () => void telemetry?.[Symbol.asyncDispose]())

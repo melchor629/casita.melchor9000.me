@@ -2,12 +2,7 @@ import { Helmet } from '@dr.pogodin/react-helmet'
 import { Text } from '@melchor629/ui'
 import ReactRouterLink from '@melchor629/ui/ReactRouterLink'
 import { useEffect, useState } from 'react'
-import {
-  type LoaderFunction,
-  Navigate,
-  useLocation,
-  useParams,
-} from 'react-router'
+import { type LoaderFunction, Navigate, useLocation, useParams } from 'react-router'
 import type { DirectoryMetadata } from '../api/fs/directory'
 import type { FileMetadata } from '../api/fs/file'
 import DirectoryPathView from '../components/directory-path-view'
@@ -70,7 +65,9 @@ export default function ModulePathPage() {
   if (metadata == null && loadingMetadata) {
     return (
       <div className="mt-navbar">
-        <Helmet><title>Loading...</title></Helmet>
+        <Helmet>
+          <title>Loading...</title>
+        </Helmet>
         <AppLoader message="Loading information..." />
       </div>
     )
@@ -79,7 +76,7 @@ export default function ModulePathPage() {
   if (error != null) {
     const fullPath = Path.join('/', module, path)
     return (
-      <div className="sticky top-0 mt-navbar px-6 py-4">
+      <div className="mt-navbar sticky top-0 px-6 py-4">
         <Text size="h2">
           Could not load&nbsp;
           {fullPath}
@@ -88,10 +85,9 @@ export default function ModulePathPage() {
           {'Go to '}
           <ReactRouterLink to={Path.dirname(fullPath)}>parent folder</ReactRouterLink>
           {' or go to '}
-          <ReactRouterLink to={Path.join('/', module)}>root folder</ReactRouterLink>
-          .
+          <ReactRouterLink to={Path.join('/', module)}>root folder</ReactRouterLink>.
         </div>
-        <pre className="p-6 text-text-secondary">{JSON.stringify(error, undefined, 2)}</pre>
+        <pre className="text-text-secondary p-6">{JSON.stringify(error, undefined, 2)}</pre>
       </div>
     )
   }
@@ -117,22 +113,20 @@ export default function ModulePathPage() {
         selectedElements={selectedElements}
       />
 
-      {metadata.type === 'dir'
-        ? (
-          <DirectoryPathView
-            module={module}
-            metadata={metadata}
-            hidden={hidden}
-            selectedElements={selectedElements}
-            setSelectedElements={setSelectedElements}
-          />
-          )
-        : (
-          <FilePathView
-            metadata={metadata}
-            module={module}
-          />
-          )}
+      {metadata.type === 'dir' ? (
+        <DirectoryPathView
+          module={module}
+          metadata={metadata}
+          hidden={hidden}
+          selectedElements={selectedElements}
+          setSelectedElements={setSelectedElements}
+        />
+      ) : (
+        <FilePathView
+          metadata={metadata}
+          module={module}
+        />
+      )}
     </>
   )
 }

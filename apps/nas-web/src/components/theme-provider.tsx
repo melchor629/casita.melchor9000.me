@@ -1,6 +1,4 @@
-import {
-  type PropsWithChildren, useCallback, useLayoutEffect, useMemo,
-} from 'react'
+import { type PropsWithChildren, useCallback, useLayoutEffect, useMemo } from 'react'
 import useMatchMediaQuery from '../hooks/use-match-media-query'
 import { useSettings } from '../hooks/use-settings'
 

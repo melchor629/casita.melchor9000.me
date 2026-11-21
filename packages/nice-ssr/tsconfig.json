@@ -1,16 +1,9 @@
 {
-  "extends": [
-    "@melchor629/tsconfigs/react.json",
-    "@melchor629/tsconfigs/buildable.json",
-  ],
+  "extends": ["@melchor629/tsconfigs/react.json", "@melchor629/tsconfigs/buildable.json"],
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-    "sourceMap": true,
+    "sourceMap": true
   },
-  "include": [
-    "src/",
-    "*.config.js",
-    "bin/"
-  ]
+  "include": ["src/", "*.config.js", "bin/"]
 }

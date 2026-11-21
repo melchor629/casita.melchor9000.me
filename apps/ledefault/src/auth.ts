@@ -4,13 +4,14 @@ import { traefikAuthUrl } from './config'
 const loginEndpoint = new URL('/auth', traefikAuthUrl)
 const userEndpoint = new URL('/me', traefikAuthUrl)
 
-export const isLoggedIn = (req: { headers: Headers }) => req.headers.get('cookie')?.includes('ta-ls')
+export const isLoggedIn = (req: { headers: Headers }) =>
+  req.headers.get('cookie')?.includes('ta-ls')
 
 type LogInResults =
-  | { type: 'redirect', cookies: string[], url: URL }
+  | { type: 'redirect'; cookies: string[]; url: URL }
   | { type: 'logged-in' }
-  | { type: 'server-error', status: number, body: string, headers: Record<string, string> }
-  | { type: 'internal-error', err: unknown }
+  | { type: 'server-error'; status: number; body: string; headers: Record<string, string> }
+  | { type: 'internal-error'; err: unknown }
 export const startLogIn = async (req: SsrRequest): Promise<LogInResults> => {
   const headers = new Headers(req.headers)
   headers.set('x-forwarded-method', 'get')
@@ -47,8 +48,8 @@ export const startLogIn = async (req: SsrRequest): Promise<LogInResults> => {
 
 type GetUserResults =
   | { type: 'not-logged-in' }
-  | { type: 'server-error', status: number, body: string }
-  | { type: 'success', data: { sub: string } }
+  | { type: 'server-error'; status: number; body: string }
+  | { type: 'success'; data: { sub: string } }
 export const getUser = cache(async (req: { headers: Headers }): Promise<GetUserResults> => {
   if (!isLoggedIn(req)) {
     return { type: 'not-logged-in' }
@@ -62,6 +63,6 @@ export const getUser = cache(async (req: { headers: Headers }): Promise<GetUserR
     return { type: 'server-error', status: response.status, body: await response.text() }
   }
 
-  const data = await response.json() as { sub: string }
+  const data = (await response.json()) as { sub: string }
   return { type: 'success', data }
 })

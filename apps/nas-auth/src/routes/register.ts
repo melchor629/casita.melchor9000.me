@@ -17,8 +17,16 @@ const registerRoutes = (app: FastifyInstance) => {
   app.get('/i/:uid/cancel', cancelController.options, cancelController)
   app.get('/i/:uid/post-external', postExternalLoginController.options, postExternalLoginController)
 
-  app.post('/pk/register/start', startPasskeyRegistrationController.options, startPasskeyRegistrationController)
-  app.post('/pk/register/finish', finishPasskeyRegistrationController.options, finishPasskeyRegistrationController)
+  app.post(
+    '/pk/register/start',
+    startPasskeyRegistrationController.options,
+    startPasskeyRegistrationController,
+  )
+  app.post(
+    '/pk/register/finish',
+    finishPasskeyRegistrationController.options,
+    finishPasskeyRegistrationController,
+  )
   app.post('/i/:uid/pk/start', startPasskeyLoginController.options, startPasskeyLoginController)
   app.post('/i/:uid/pk/finish', finishPasskeyLoginController.options, finishPasskeyLoginController)
 

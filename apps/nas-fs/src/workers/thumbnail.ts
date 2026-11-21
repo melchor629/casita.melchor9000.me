@@ -50,7 +50,7 @@ const thumbnailProcessor = async (
     for (const p of paths) {
       const manifest = await createSpan(
         `thumbnail read-or-create-thumbnail-manifest ${p}`,
-        async () => readOrCreateThubnailManifest(app, await info(app, p) as File),
+        async () => readOrCreateThubnailManifest(app, (await info(app, p)) as File),
       )
       const progress = 10 + (i / paths.length) * 90
       await job.updateProgress(progress)
@@ -63,13 +63,13 @@ const thumbnailProcessor = async (
             for (let n = 0; n < manifest.images.length; n += 1) {
               const fullThumbnailPath = `${join(fullThumbnailFolderPath, size, n.toString())}.${format}`
               const originalThumbnailPath = join(fullThumbnailFolderPath, 'original', n.toString())
-              const canAccess = await fs.access(fullThumbnailPath, fs.constants.R_OK)
+              const canAccess = await fs
+                .access(fullThumbnailPath, fs.constants.R_OK)
                 .then(() => true)
                 .catch(() => false)
               if (!canAccess) {
-                await createSpan(
-                  `thumbnail generate-thumbnail ${p} ${size} ${n} ${format}`,
-                  () => generateThumbnail(originalThumbnailPath, fullThumbnailPath, size, format),
+                await createSpan(`thumbnail generate-thumbnail ${p} ${size} ${n} ${format}`, () =>
+                  generateThumbnail(originalThumbnailPath, fullThumbnailPath, size, format),
                 )
               }
             }

@@ -50,22 +50,23 @@ const createLogger = (service: string, logLevel?: LevelWithSilentOrString) =>
         return {
           status: reply.statusCode,
           contentType: reply.getHeader('content-type'),
-          contentLength: parseInt(reply.getHeader('content-length') as string || '-1', 10),
+          contentLength: parseInt((reply.getHeader('content-length') as string) || '-1', 10),
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
           user: (reply.request as any)?.jwtToken?.payload?.sub,
         }
       },
     },
-    transport: process.env.NODE_ENV !== 'production'
-      ? {
-          target: import.meta.resolve('pino-pretty'),
-          options: {
-            colorize: true,
-            ignore: 'pid,hostname',
-            translateTime: 'HH:MM:ss.l Z',
-          },
-        }
-      : undefined,
+    transport:
+      process.env.NODE_ENV !== 'production'
+        ? {
+            target: import.meta.resolve('pino-pretty'),
+            options: {
+              colorize: true,
+              ignore: 'pid,hostname',
+              translateTime: 'HH:MM:ss.l Z',
+            },
+          }
+        : undefined,
   })
 
 export default createLogger

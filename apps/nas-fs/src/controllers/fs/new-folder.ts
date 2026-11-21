@@ -4,7 +4,10 @@ import { applicationKeyParam } from '../../models/app.ts'
 import { Type, type Controller } from '../../models/controller.ts'
 import { ApiErrorSchema } from '../../models/errors/api-error.ts'
 import BadRequestError from '../../models/errors/bad-request-error.ts'
-import { NewFolderRequestSchema, NewFolderResponseSchema } from '../../models/fs/new-folder-request.ts'
+import {
+  NewFolderRequestSchema,
+  NewFolderResponseSchema,
+} from '../../models/fs/new-folder-request.ts'
 
 const schema = {
   summary: 'Creates a new folder',
@@ -30,7 +33,10 @@ const newFolderController: Controller<typeof schema> = async (req, reply) => {
     if (e instanceof NotExistsException) {
       throw new BadRequestError('The path must exist', 'path')
     } else if (e instanceof AlreadyExistsException) {
-      throw new BadRequestError('Cannot create folder, another item exists with the same name', 'folderName')
+      throw new BadRequestError(
+        'Cannot create folder, another item exists with the same name',
+        'folderName',
+      )
     } else {
       throw e
     }

@@ -7,7 +7,8 @@ interface Route extends RouteGenericInterface {
 
 const notFoundController = (req: FastifyRequest<Route>, reply: FastifyReply) => {
   const xForwardedPrefix = req.headers['x-forwarded-prefix'] || ''
-  const urlPathPrefix = typeof xForwardedPrefix === 'string' ? xForwardedPrefix : xForwardedPrefix[0]
+  const urlPathPrefix =
+    typeof xForwardedPrefix === 'string' ? xForwardedPrefix : xForwardedPrefix[0]
   reply.status(404).send({
     statusCode: 404,
     type: 'not-found',

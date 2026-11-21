@@ -12,11 +12,20 @@ import JapaneseWithRomaji from './japanese-with-romaji'
 import KanjiReadings from './kanji-readings'
 import RefLinkStack from './ref-link-stack'
 
-const typesWithDetails = Object.freeze(['verb', 'demonstrative', 'adjective', 'ichidan-verb', 'godan-verb', 'irregular-verb', 'kanji'])
+const typesWithDetails = Object.freeze([
+  'verb',
+  'demonstrative',
+  'adjective',
+  'ichidan-verb',
+  'godan-verb',
+  'irregular-verb',
+  'kanji',
+])
 
 /**
  * Renders the given entry to the list.
- * @param param0 props
+ *
+ * @param param0 Props
  */
 const VocabularyResult = memo(function VocabularyResult({ result }: VocabularyComponentProps) {
   const [detailsOpen, setDetailsOpen] = useState(false)
@@ -37,7 +46,7 @@ const VocabularyResult = memo(function VocabularyResult({ result }: VocabularyCo
         'flex flex-row gap-2',
       )}
     >
-      <div className="my-0.5 flex flex-col items-center gap-1 min-w-7">
+      <div className="my-0.5 flex min-w-7 flex-col items-center gap-1">
         {hasDetails && (
           <button
             type="button"
@@ -60,22 +69,19 @@ const VocabularyResult = memo(function VocabularyResult({ result }: VocabularyCo
         )}
       </div>
 
-      <div
-        className={clsx(
-          'grow',
-          'flex flex-row flex-wrap',
-          'gap-x-2 gap-y-1',
-          'items-center',
-        )}
-      >
+      <div className={clsx('grow', 'flex flex-row flex-wrap', 'gap-x-2 gap-y-1', 'items-center')}>
         <div className="grow">
           <JapaneseWithRomaji
             value={result.value}
-            otherValue={'pronuntiation' in result && result.pronuntiation
-              ? result.pronuntiation
-              : (result.type === 'kanji' ? `${result.onyomi}・${result.kunyomi}` : undefined)}
+            otherValue={
+              'pronuntiation' in result && result.pronuntiation
+                ? result.pronuntiation
+                : result.type === 'kanji'
+                  ? `${result.onyomi}・${result.kunyomi}`
+                  : undefined
+            }
           />
-          <div className="uppercase text-xs opacity-75 select-none">
+          <div className="text-xs uppercase opacity-75 select-none">
             {result.type}
             {' · '}
             {result.level === 'basic' && 'B'}
@@ -83,11 +89,12 @@ const VocabularyResult = memo(function VocabularyResult({ result }: VocabularyCo
             {result.chapter}
           </div>
         </div>
-        <div className="p-0">
-          {result.meaning}
-        </div>
+        <div className="p-0">{result.meaning}</div>
         {hasDetails && (
-          <Collapse className="-mt-1 min-w-full duration-500 aria-hidden:duration-500" show={detailsOpen}>
+          <Collapse
+            className="-mt-1 min-w-full duration-500 aria-hidden:duration-500"
+            show={detailsOpen}
+          >
             <div className="py-1">
               {result.type === 'verb' && <BasicVerbTable result={result} />}
               {result.type === 'ichidan-verb' && <InformalVerbTable result={result} />}

@@ -25,7 +25,7 @@ export const InBody = meta.story({
   args: {
     portal: true,
     children: (
-      <div className="fixed bottom-4 right-4 p-4 bg-primary-main text-white rounded-md">
+      <div className="bg-primary-main fixed right-4 bottom-4 rounded-md p-4 text-white">
         Portal to body
       </div>
     ),
@@ -39,13 +39,16 @@ export const InCustomElement = meta.story({
       <div className="flex flex-col gap-4">
         <div
           ref={portalRootRef}
-          className="border-2 border-dashed border-text-secondary p-4 rounded-md"
+          className="border-text-secondary rounded-md border-2 border-dashed p-4"
           data-testid="portal-root"
         >
           <p>Portal root (content will appear here)</p>
         </div>
-        <Portal {...args} portal={portalRootRef.current ?? undefined}>
-          <div className="p-2 bg-primary-main rounded text-text-contrasted">Portaled content</div>
+        <Portal
+          {...args}
+          portal={portalRootRef.current ?? undefined}
+        >
+          <div className="bg-primary-main text-text-contrasted rounded p-2">Portaled content</div>
         </Portal>
       </div>
     )

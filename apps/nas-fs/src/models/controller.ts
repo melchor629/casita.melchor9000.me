@@ -12,6 +12,7 @@ import type {
 
 /**
  * Route definition for a controller
+ *
  * @internal
  */
 export type GenericRoute = RouteGenericInterface
@@ -38,17 +39,12 @@ type ControllerHandler<TSchema extends FastifySchema> = RouteHandlerMethod<
 
 /**
  * Controller definition
+ *
  * @internal
  */
-export type Controller<TSchema extends FastifySchema = FastifySchema> = ControllerHandler<TSchema> & {
-  options: ControllerOptions<TSchema>
-}
+export type Controller<TSchema extends FastifySchema = FastifySchema> =
+  ControllerHandler<TSchema> & {
+    options: ControllerOptions<TSchema>
+  }
 
-export {
-  Type,
-  DateTime,
-  Nullable,
-  StringEnum,
-  Binary,
-  ContentResponse,
-} from './type-helpers.ts'
+export { Type, DateTime, Nullable, StringEnum, Binary, ContentResponse } from './type-helpers.ts'

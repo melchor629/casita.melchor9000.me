@@ -3,14 +3,7 @@ import path from 'node:path'
 import createLogger from '@melchor629/infra/logger'
 import fastify from 'fastify'
 import { nanoid } from 'nanoid'
-import {
-  base,
-  enableExtraSecurity,
-  isProduction,
-  logLevel,
-  port,
-  staticDirPath,
-} from './config.ts'
+import { base, enableExtraSecurity, isProduction, logLevel, port, staticDirPath } from './config.ts'
 
 // Create http server
 const app = fastify({
@@ -40,13 +33,16 @@ await app.register(import('@fastify/helmet'), {
   contentSecurityPolicy: {
     reportOnly: !enableExtraSecurity,
     directives: {
-      'img-src': ['\'self\'', 'data:', '*.melchor9000.me'],
-      'media-src': ['\'self\'', 'blob:'],
-      'style-src': ['\'self\'', '\'unsafe-inline\''],
-      'script-src': ['\'self\'', (req) => {
-        req.headers['x-script-nonce'] = nanoid()
-        return `'nonce-${req.headers['x-script-nonce']}'`
-      }],
+      'img-src': ["'self'", 'data:', '*.melchor9000.me'],
+      'media-src': ["'self'", 'blob:'],
+      'style-src': ["'self'", "'unsafe-inline'"],
+      'script-src': [
+        "'self'",
+        (req) => {
+          req.headers['x-script-nonce'] = nanoid()
+          return `'nonce-${req.headers['x-script-nonce']}'`
+        },
+      ],
     },
   },
 })
@@ -69,7 +65,7 @@ await app.register(import('@fastify/static'), {
 })
 
 // health check
-const ok = Buffer.from([0x4F, 0x4B, 0x0A])
+const ok = Buffer.from([0x4f, 0x4b, 0x0a])
 app.get<{ Reply: Buffer }>(
   '/h',
   { logLevel: 'silent', compress: false, helmet: false },

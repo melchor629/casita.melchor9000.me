@@ -49,24 +49,29 @@ const synchronizationWorker: JobWorker<SynchronizationJobParams, Synchronization
       const { id } = jobs[i]
       if (result.status === 'fulfilled') {
         switch (result.value.state) {
-          case 'active': return { id, state: 'processing', progress: result.value.progress / 100 }
-          case 'completed': return {
-            id,
-            state: 'succeeded',
-            resume: `Processed ${result.value.returnValue.length} entries`,
-          }
-          case 'failed': return {
-            id,
-            state: 'failed',
-            message: result.value.failedReason,
-            error: {
-              name: 'JobError',
+          case 'active':
+            return { id, state: 'processing', progress: result.value.progress / 100 }
+          case 'completed':
+            return {
+              id,
+              state: 'succeeded',
+              resume: `Processed ${result.value.returnValue.length} entries`,
+            }
+          case 'failed':
+            return {
+              id,
+              state: 'failed',
               message: result.value.failedReason,
-              stack: result.value.stackTrace,
-            },
-          }
-          case 'waiting': return { id, state: 'enqueued' }
-          default: return { id, state: 'failed', message: `Job in ${result.value.state}` }
+              error: {
+                name: 'JobError',
+                message: result.value.failedReason,
+                stack: result.value.stackTrace,
+              },
+            }
+          case 'waiting':
+            return { id, state: 'enqueued' }
+          default:
+            return { id, state: 'failed', message: `Job in ${result.value.state}` }
         }
       }
 

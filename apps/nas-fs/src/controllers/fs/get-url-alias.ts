@@ -13,11 +13,14 @@ const schema = {
   }),
   response: {
     default: ApiErrorSchema,
-    200: ContentResponse({
-      'application/octet-stream': Binary(),
-    }, {
-      description: 'Content for the file or directory',
-    }),
+    200: ContentResponse(
+      {
+        'application/octet-stream': Binary(),
+      },
+      {
+        description: 'Content for the file or directory',
+      },
+    ),
     304: { type: 'null', description: 'Content is fresh' },
     404: NotFoundApiErrorSchema,
   },

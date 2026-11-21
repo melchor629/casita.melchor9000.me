@@ -25,8 +25,18 @@ const StartLogin = () => {
 
   return (
     <>
-      <Text className="mb-4" size="h1">Hello again!</Text>
-      <Button type="button" onClick={startLoginProcess}>Login</Button>
+      <Text
+        className="mb-4"
+        size="h1"
+      >
+        Hello again!
+      </Text>
+      <Button
+        type="button"
+        onClick={startLoginProcess}
+      >
+        Login
+      </Button>
     </>
   )
 }

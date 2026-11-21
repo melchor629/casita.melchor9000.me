@@ -13,10 +13,12 @@ const schema = {
     thumbnailKey: mediaItemThumbnailKeyParamSchema,
   }),
   headers: Type.Object({
-    accept: Type.Optional(Type.String({
-      examples: ['image/webp', 'image/avif', 'image/jpeg', 'image/png'],
-      default: 'image/jpeg',
-    })),
+    accept: Type.Optional(
+      Type.String({
+        examples: ['image/webp', 'image/avif', 'image/jpeg', 'image/png'],
+        default: 'image/jpeg',
+      }),
+    ),
   }),
   querystring: Type.Object({
     w: Type.Optional(Type.Integer({ minimum: 100, maximum: 5_000 })),
@@ -25,15 +27,18 @@ const schema = {
   }),
   response: {
     default: ApiErrorSchema,
-    200: ContentResponse({
-      'image/jpeg': Binary(),
-      'image/png': Binary(),
-      'image/webp': Binary(),
-      'image/avif': Binary(),
-      'image/*': Binary(),
-    }, {
-      description: 'Item thumbnail',
-    }),
+    200: ContentResponse(
+      {
+        'image/jpeg': Binary(),
+        'image/png': Binary(),
+        'image/webp': Binary(),
+        'image/avif': Binary(),
+        'image/*': Binary(),
+      },
+      {
+        description: 'Item thumbnail',
+      },
+    ),
     404: { type: 'null', description: 'Item does not exist or does not have a thumbnail' },
   },
   tags: ['media'],
@@ -80,9 +85,10 @@ const getThumbnailController: Controller<typeof schema> = async (req, reply) => 
   if (result) {
     reply
       .header('content-type', result.contentType)
-      .header('cache-control', result.cacheControl === 'no-cache'
-        ? 'max-age=86400'
-        : result.cacheControl)
+      .header(
+        'cache-control',
+        result.cacheControl === 'no-cache' ? 'max-age=86400' : result.cacheControl,
+      )
     if ('data' in result) {
       return reply.send(result.data)
     }

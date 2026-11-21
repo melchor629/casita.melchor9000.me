@@ -9,7 +9,7 @@ export type HealthCheckResult = Readonly<{
 export type HealthCheckResponse = Readonly<{
   status: HealthCheckStatus
   duration: number
-  checks: Record<string, HealthCheckResult & { readonly duration: number, readonly type: string }>
+  checks: Record<string, HealthCheckResult & { readonly duration: number; readonly type: string }>
 }>
 
 export type HealthCheck<T> = ((params: T, signal: AbortSignal) => Promise<HealthCheckResult>) & {

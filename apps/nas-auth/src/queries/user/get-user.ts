@@ -1,5 +1,11 @@
 import nasAuthDatabase, { asc, eq } from '@melchor629/orm-nas-auth'
-import { application, login, permission, user, userPermission } from '@melchor629/orm-nas-auth/schema'
+import {
+  application,
+  login,
+  permission,
+  user,
+  userPermission,
+} from '@melchor629/orm-nas-auth/schema'
 import loginMapper from '#queries/login/mapper.ts'
 import userPermissionMapper from '#queries/user-permission/mapper.ts'
 import userMapper from './mapper.ts'
@@ -7,17 +13,20 @@ import userMapper from './mapper.ts'
 type GetUserRelationKeys = 'logins' | 'permissions'
 type GetUserRelations = Partial<Record<GetUserRelationKeys, boolean>>
 
-type ApplyRelation<Value, Condition extends boolean | undefined> =
-  Condition extends true
-    ? Value
-    : Condition extends boolean
-      ? Value | undefined
-      : never
+type ApplyRelation<Value, Condition extends boolean | undefined> = Condition extends true
+  ? Value
+  : Condition extends boolean
+    ? Value | undefined
+    : never
 
-export type GetUserQuery<Relations extends GetUserRelations = Record<GetUserRelationKeys, true>> = (typeof userMapper.$dto.$select) & {
-  logins: ApplyRelation<Array<typeof loginMapper.$dto.$select>, Relations['logins']>
-  permissions: ApplyRelation<Array<typeof userPermissionMapper.$dto.$select>, Relations['permissions']>
-}
+export type GetUserQuery<Relations extends GetUserRelations = Record<GetUserRelationKeys, true>> =
+  typeof userMapper.$dto.$select & {
+    logins: ApplyRelation<Array<typeof loginMapper.$dto.$select>, Relations['logins']>
+    permissions: ApplyRelation<
+      Array<typeof userPermissionMapper.$dto.$select>,
+      Relations['permissions']
+    >
+  }
 
 const getUser = async <TRel extends GetUserRelations>(
   { userName }: { userName: string },
@@ -51,7 +60,9 @@ const getUser = async <TRel extends GetUserRelations>(
       .innerJoin(user, eq(userPermission.userId, user.id))
       .where(eq(userPermission.userId, userResult.id))
       .orderBy(asc(application.name), asc(permission.name))
-    userDto.permissions = permissionResults.map(userPermissionMapper.toDto) as GetUserQuery<TRel>['permissions']
+    userDto.permissions = permissionResults.map(
+      userPermissionMapper.toDto,
+    ) as GetUserQuery<TRel>['permissions']
   }
 
   return userDto

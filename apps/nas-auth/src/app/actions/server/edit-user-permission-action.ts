@@ -13,7 +13,10 @@ type AddUserPermissionData = Readonly<{
   delete: boolean
 }>
 
-async function editUserPermissionAction(context: PageLoaderContext, { applicationKey, permissionName, userName, ...data }: AddUserPermissionData) {
+async function editUserPermissionAction(
+  context: PageLoaderContext,
+  { applicationKey, permissionName, userName, ...data }: AddUserPermissionData,
+) {
   const sessionResult = await ensureSession(context, 'user', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult

@@ -14,7 +14,8 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
   const searchParams = useSearchParams()
 
   const onVideoPosterClick = useCallback(() => {
-    video?.play()
+    video
+      ?.play()
       .then(() => setPendingToPlay(false))
       .catch((error: DOMException) => {
         console.error('Error code', error.name, 'object', error)
@@ -35,7 +36,17 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
         playerUi.configure({
           enableTooltips: false,
           keyboardSeekDistance: 5,
-          controlPanelElements: ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'quality', 'playback_rate', 'cast', 'fullscreen'],
+          controlPanelElements: [
+            'play_pause',
+            'time_and_duration',
+            'spacer',
+            'mute',
+            'volume',
+            'quality',
+            'playback_rate',
+            'cast',
+            'fullscreen',
+          ],
           customContextMenu: true,
           contextMenuElements: ['save_video_frame', 'mute', 'statistics'],
           seekBarColors: {
@@ -48,7 +59,8 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
         } satisfies Partial<ReturnType<(typeof playerUi)['getConfiguration']>>)
         setPlayer(player)
         cleanupFn = () => {
-          playerUi.destroy()
+          playerUi
+            .destroy()
             .then(() => player.detach())
             .catch(() => {})
         }
@@ -67,21 +79,15 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
       return
     }
 
-    player.load(manifest.src.path, null, manifest.src.type)
-      .catch((error: Shaka.util.Error) => {
-        console.error('Error code', error.code, 'object', error)
-        alert(`Video cannot be played in this browser. (${error.code})`)
-      })
+    player.load(manifest.src.path, null, manifest.src.type).catch((error: Shaka.util.Error) => {
+      console.error('Error code', error.code, 'object', error)
+      alert(`Video cannot be played in this browser. (${error.code})`)
+    })
   }, [player, manifest.src])
 
   return (
-    <div className="w-dvw h-dvh flex justify-center items-center bg-black scheme-dark">
-      <main
-        className={clsx(
-          'aspect-video relative',
-          styles.llea,
-        )}
-      >
+    <div className="flex h-dvh w-dvw items-center justify-center bg-black scheme-dark">
+      <main className={clsx('aspect-video relative', styles.llea)}>
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
           ref={setVideo}
@@ -103,7 +109,7 @@ export default function Player({ manifest }: { readonly manifest: Manifest }) {
             tabIndex={-1}
           >
             {/* Play Circle (material Icons) */}
-            <PlayCircle className="text-5xl absolute top-4 left-3" />
+            <PlayCircle className="absolute top-4 left-3 text-5xl" />
           </button>
         )}
       </main>

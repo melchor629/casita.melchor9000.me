@@ -11,7 +11,14 @@ const LoginDataDialog = ({ data, opened, setOpened }: LoginDataDialogProps) => {
   const dataAsJson = useMemo(() => JSON.stringify(data, undefined, 2), [data])
 
   return (
-    <Dialog id="show-login-data" portal size="extra-large" title="Login Data" show={opened} onClose={useCallback(() => setOpened(false), [setOpened])}>
+    <Dialog
+      id="show-login-data"
+      portal
+      size="extra-large"
+      title="Login Data"
+      show={opened}
+      onClose={useCallback(() => setOpened(false), [setOpened])}
+    >
       <pre className="overflow-x-auto">
         <code>{dataAsJson}</code>
       </pre>

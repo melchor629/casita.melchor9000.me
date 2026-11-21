@@ -3,6 +3,15 @@
   "version": "0.16.9",
   "private": true,
   "type": "module",
+  "scripts": {
+    "dev": ". ./env.sh && vite",
+    "build": ". ./env.sh && vite build --base \"${BASE_PATH}\"",
+    "check:lint": "oxlint",
+    "check:fmt": "oxfmt --check",
+    "check:ts": "tsc -p .",
+    "clean": "rm -rf dist node_modules/.cache",
+    "docker": "../../docker_build.sh"
+  },
   "dependencies": {
     "@dr.pogodin/react-helmet": "^3.3.2",
     "@floating-ui/react": "^0.27.20",
@@ -25,14 +34,6 @@
     "tailwind-variants": "^4.0.2",
     "zustand": "^5.1.0"
   },
-  "scripts": {
-    "dev": ". ./env.sh && vite",
-    "build": ". ./env.sh && vite build --base \"${BASE_PATH}\"",
-    "check": "tsc -p .",
-    "lint": "eslint src",
-    "clean": "rm -rf dist node_modules/.cache",
-    "docker": "../../docker_build.sh"
-  },
   "devDependencies": {
     "@melchor629/eslint-config": "^0.4.1",
     "@melchor629/tsconfigs": "*",
@@ -48,7 +49,7 @@
     "workbox-window": "^7.4.1"
   },
   "overrides": {
-    "vite": "^8.0.0",
-    "serialize-javascript": "~7.0.5"
+    "serialize-javascript": "~7.0.5",
+    "vite": "^8.0.0"
   }
 }

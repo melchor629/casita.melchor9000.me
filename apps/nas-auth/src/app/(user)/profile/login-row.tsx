@@ -3,7 +3,7 @@ import { Github, Google, KeyVertical, Passkey } from '@melchor629/ui/icons'
 import { useCallback } from 'react'
 import { useToggleUserLogin } from '#actions/mutations/toggle-user-login.ts'
 
-type Login = { id: string, disabled: boolean, type: string, name?: string | null }
+type Login = { id: string; disabled: boolean; type: string; name?: string | null }
 const LoginRow = ({ login: { disabled, id, name, type } }: { readonly login: Login }) => {
   const toggleUserLogin = useToggleUserLogin()
 
@@ -12,9 +12,14 @@ const LoginRow = ({ login: { disabled, id, name, type } }: { readonly login: Log
   }, [toggleUserLogin, id, type])
 
   return (
-    <div className="inline-flex w-full gap-1 items-center">
-      <div className="leading-0 mr-0.5">
-        <Checkbox name={id} checked={!disabled} disabled={toggleUserLogin.isPending} onChange={toggle} />
+    <div className="inline-flex w-full items-center gap-1">
+      <div className="mr-0.5 leading-0">
+        <Checkbox
+          name={id}
+          checked={!disabled}
+          disabled={toggleUserLogin.isPending}
+          onChange={toggle}
+        />
       </div>
       {type === 'github' && <Github />}
       {type === 'google' && <Google />}

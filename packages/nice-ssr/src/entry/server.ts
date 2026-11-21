@@ -9,7 +9,7 @@ type RenderRouteOptions = Readonly<{
   log: Logger
   basePathname?: `/${string}`
   error?: Error | 'not-found'
-  processError?: ((error: Error) => void)
+  processError?: (error: Error) => void
   signal: AbortSignal
   props?: Record<string, unknown>
 }>
@@ -23,11 +23,12 @@ async function renderRouteInternal(
   // get relative pathname from the basePathname/prefix
   const url = new URL(request.url)
   const pathname = url.pathname.slice((basePathname?.length ?? 1) - 1) as `/${string}`
-  const route = error === 'not-found'
-    ? getNotFoundPage(pathname)
-    : error
-      ? getErrorPage(pathname, error)
-      : get(pathname) ?? getNotFoundPage(pathname)
+  const route =
+    error === 'not-found'
+      ? getNotFoundPage(pathname)
+      : error
+        ? getErrorPage(pathname, error)
+        : (get(pathname) ?? getNotFoundPage(pathname))
 
   span.setAttribute('nice-ssr.pathname', route.routePathname)
   span.setAttribute('nice-ssr.type', route.type)
@@ -37,12 +38,7 @@ async function renderRouteInternal(
 
   try {
     log.debug('Generating response')
-    const res = await route.render(
-      request,
-      log,
-      basePathname ?? '/',
-      props,
-    )
+    const res = await route.render(request, log, basePathname ?? '/', props)
     return res
   } catch (e) {
     span.recordException(e instanceof Error ? e : 'Unknown error')
@@ -54,7 +50,14 @@ async function renderRouteInternal(
       const type = getSsrErrorType(e)
       if (type === 'not-found') {
         log.debug('Received not found from code')
-        return renderRoute(request, { log, basePathname, processError, error: 'not-found', signal, props })
+        return renderRoute(request, {
+          log,
+          basePathname,
+          processError,
+          error: 'not-found',
+          signal,
+          props,
+        })
       } else if (type === 'redirect') {
         return SsrResponse.new().redirect(e.message as never)
       }
@@ -62,7 +65,9 @@ async function renderRouteInternal(
 
     try {
       processError?.(e)
-    } catch {}
+    } catch {
+      // if it fails, it does not matter, just for better debugging experience
+    }
     log.error(e, 'Rendering error')
     return renderRoute(request, { log, basePathname, error: e, signal, processError, props })
   }
@@ -74,7 +79,9 @@ export async function renderRoute(
 ): Promise<Response> {
   const url = new URL(request.url)
   return await startSpan(
-    options.error ? `render error ${request.method} ${url.pathname}` : `render ${request.method} ${url.pathname}`,
+    options.error
+      ? `render error ${request.method} ${url.pathname}`
+      : `render ${request.method} ${url.pathname}`,
     async (span) => {
       return await renderRouteInternal(request, options, span)
     },

@@ -5,12 +5,14 @@ import permissionMapper from './mapper.ts'
 type CreatePermissionInput = typeof permissionMapper.$dto.$insert
 
 const createPermission = async (values: CreatePermissionInput) => {
-  const appKeyQuery = nasAuthDatabase.$with('app_key').as(
-    nasAuthDatabase
-      .select({ id: application.id, key: application.key })
-      .from(application)
-      .where(eq(application.key, values.applicationKey)),
-  )
+  const appKeyQuery = nasAuthDatabase
+    .$with('app_key')
+    .as(
+      nasAuthDatabase
+        .select({ id: application.id, key: application.key })
+        .from(application)
+        .where(eq(application.key, values.applicationKey)),
+    )
 
   const [newPermission] = await nasAuthDatabase
     .with(appKeyQuery)

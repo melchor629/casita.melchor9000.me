@@ -1,6 +1,6 @@
+import createLogger from '@melchor629/infra/logger'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { relations } from './relations.ts'
-import createLogger from '@melchor629/infra/logger'
 
 const logger = createLogger('orm-nas-auth')
 

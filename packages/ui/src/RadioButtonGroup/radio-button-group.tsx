@@ -4,10 +4,10 @@ import { RadioButtonGroupContext } from './radio-button-group-context'
 
 export type RadioButtonGroupProps = Readonly<
   Omit<ButtonGroupProps, 'defaultValue' | 'onChange'> & {
-    defaultValue?: string;
-    name: string;
-    onChange?: (value: string) => void;
-    value?: string;
+    defaultValue?: string
+    name: string
+    onChange?: (value: string) => void
+    value?: string
   }
 >
 
@@ -32,7 +32,12 @@ const RadioButtonGroup = ({
   )
 
   return (
-    <ButtonGroup color={color} size={size} variant={variant} role="radiogroup">
+    <ButtonGroup
+      color={color}
+      size={size}
+      variant={variant}
+      role="radiogroup"
+    >
       <RadioButtonGroupContext
         value={{
           name,

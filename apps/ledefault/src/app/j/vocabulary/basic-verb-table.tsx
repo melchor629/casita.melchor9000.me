@@ -4,13 +4,17 @@ import JapaneseWithRomaji from './japanese-with-romaji'
 
 /**
  * Renders the verb conjugation table.
- * @param props props
+ *
+ * @param props Props
  */
 const BasicVerbTable = ({ result }: VocabularyComponentProps<BasicVerbDictionaryEntry>) => (
   <NaisTable>
     <thead>
       <tr>
-        <th className="w-0" aria-label="Empty" />
+        <th
+          className="w-0"
+          aria-label="Empty"
+        />
         <th>Positive</th>
         <th>Negative</th>
       </tr>

@@ -14,9 +14,7 @@ const getThumbnailHashForMetadata = (metadata: File) => {
 }
 
 const createThumbnailManifest = async (
-  {
-    cache, logger, notifier, storagePath, thumbnailPath,
-  }: App,
+  { cache, logger, notifier, storagePath, thumbnailPath }: App,
   metadata: File,
 ): Promise<ThumbnailManifest> => {
   const key = `${metadata.path}:thumbnail`
@@ -37,15 +35,17 @@ const createThumbnailManifest = async (
   }
 
   await fs.mkdir(Path.join(thumbnailFolderPath, 'original'), { recursive: true })
-  await Promise.all(images.map(async (image, j) => {
-    const source = Path.join(storagePath, metadata.path)
-    const target = Path.join(thumbnailFolderPath, 'original', j.toString())
-    if (image.originalSoftLink) {
-      await fs.unlink(target).catch(() => {})
-      return fs.symlink(source, target)
-    }
-    return fs.writeFile(target, image.data)
-  }))
+  await Promise.all(
+    images.map(async (image, j) => {
+      const source = Path.join(storagePath, metadata.path)
+      const target = Path.join(thumbnailFolderPath, 'original', j.toString())
+      if (image.originalSoftLink) {
+        await fs.unlink(target).catch(() => {})
+        return fs.symlink(source, target)
+      }
+      return fs.writeFile(target, image.data)
+    }),
+  )
 
   logger.trace({ path: metadata.path }, `File ${metadata.path} has ${images.length} images`)
   const manifest = {
@@ -53,16 +53,15 @@ const createThumbnailManifest = async (
     modificationTime: new Date().toISOString(),
     images: images.map((image) => ({ ...image, data: undefined, originalSoftLink: undefined })),
   }
-  await Promise.all([
-    cache.set(key, manifest),
-    notifier.thumbnail(metadata.path),
-  ])
+  await Promise.all([cache.set(key, manifest), notifier.thumbnail(metadata.path)])
   return manifest
 }
 
 const readOrCreateThumbnailManifest = async (app: App, metadata: File) => {
   const { logger: parentLogger } = app
-  const logger = parentLogger.child({ module: 'core-logic.thumbnail.read-or-create-thumbnail-manifest' })
+  const logger = parentLogger.child({
+    module: 'core-logic.thumbnail.read-or-create-thumbnail-manifest',
+  })
 
   try {
     let manifest = await readThumbnailManifest(app, metadata)

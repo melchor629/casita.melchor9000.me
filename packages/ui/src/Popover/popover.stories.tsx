@@ -71,7 +71,11 @@ export const Default = meta.story({
       return () => window.removeEventListener('mousemove', fn, false)
     }, [])
     return (
-      <Popover {...args} referenceElement={mousePos} middleware={[offset(8), flip(), shift()]}>
+      <Popover
+        {...args}
+        referenceElement={mousePos}
+        middleware={[offset(8), flip(), shift()]}
+      >
         <div className="bg-primary-main size-4 rounded-md shadow-md" />
       </Popover>
     )

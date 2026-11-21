@@ -12,15 +12,32 @@ export default function LogoutPage({ form }: { readonly form?: string }) {
 
   return (
     <div>
-      <Text size="h2" className="mb-6">Do you want to logout?</Text>
+      <Text
+        size="h2"
+        className="mb-6"
+      >
+        Do you want to logout?
+      </Text>
 
       <div dangerouslySetInnerHTML={{ __html: form }} />
 
-      <div className="flex gap-1.5 justify-center">
-        <Button type="submit" form="op.logoutForm" value="yes" name="logout" color="error">
+      <div className="flex justify-center gap-1.5">
+        <Button
+          type="submit"
+          form="op.logoutForm"
+          value="yes"
+          name="logout"
+          color="error"
+        >
           Sign out
         </Button>
-        <Button type="submit" form="op.logoutForm" color="primary">Stay in</Button>
+        <Button
+          type="submit"
+          form="op.logoutForm"
+          color="primary"
+        >
+          Stay in
+        </Button>
       </div>
     </div>
   )

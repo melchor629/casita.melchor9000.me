@@ -5,7 +5,10 @@ type ExternalHealthCheckOptions = {
   headers?: Headers | Record<string, string>
 }
 
-const externalHealthCheck: HealthCheck<ExternalHealthCheckOptions> = async ({ headers, url }, signal) => {
+const externalHealthCheck: HealthCheck<ExternalHealthCheckOptions> = async (
+  { headers, url },
+  signal,
+) => {
   try {
     const res = await fetch(new URL('./health', url), {
       headers,

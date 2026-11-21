@@ -1,24 +1,21 @@
 import { animated, useTransition } from '@react-spring/web'
-import {
-  type FC,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { type FC, useEffect, useMemo, useRef, useState } from 'react'
 import { getThumbnailUrl } from '../api/fs'
 import type { FileMetadata } from '../api/fs/file'
 import type { ThumbnailImage, ThumbnailManifest } from '../api/fs/thumbnail-manifest'
 import useApiClient from '../hooks/use-api-client'
 import { getManifest } from '../utils/thumbnail-manager'
 
-const ImagesSlideShow: FC<{ readonly images: Array<ThumbnailImage & { url: string }> }> = ({ images }) => {
+const ImagesSlideShow: FC<{ readonly images: Array<ThumbnailImage & { url: string }> }> = ({
+  images,
+}) => {
   const imgs = useMemo(() => images.map((img, i) => ({ ...img, key: img.type ?? i })), [images])
   const [imgPos, setImgPos] = useState(0)
   const [maxWidth, maxHeight] = useMemo(
-    () => images
-      .map((i) => [i.width ?? 0, i.height ?? 0])
-      .reduce(([aw, ah], [w, h]) => [Math.max(aw, w), Math.max(ah, h)], [0, 0]),
+    () =>
+      images
+        .map((i) => [i.width ?? 0, i.height ?? 0])
+        .reduce(([aw, ah], [w, h]) => [Math.max(aw, w), Math.max(ah, h)], [0, 0]),
     [images],
   )
   const [allowedWidth, setAllowedWidth] = useState(1)
@@ -52,7 +49,10 @@ const ImagesSlideShow: FC<{ readonly images: Array<ThumbnailImage & { url: strin
   }, [imgs.length])
 
   return (
-    <div ref={divRef} className="flex justify-center w-full">
+    <div
+      ref={divRef}
+      className="flex w-full justify-center"
+    >
       <div
         className="relative"
         style={{
@@ -93,7 +93,10 @@ export default function ImagesFilePathView({ metadata, module }: ImagesFilePathV
   }, [module, metadata, apiClient])
 
   useEffect(() => {
-    apiClient.getAccessToken().then(setToken).catch(() => setToken(null))
+    apiClient
+      .getAccessToken()
+      .then(setToken)
+      .catch(() => setToken(null))
   }, [apiClient])
 
   if (!thumbnailManifest?.images?.length || !token) {

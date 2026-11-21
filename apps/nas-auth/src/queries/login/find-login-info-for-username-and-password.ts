@@ -11,14 +11,13 @@ const findLoginInfoForUsernameAndPassword = async (userId: string, password: str
     })
     .from(login)
     .innerJoin(user, eq(login.userId, user.id))
-    .where(and(
-      eq(login.type, 'local'),
-      eq(login.loginId, loginId),
-      or(
-        eq(user.userName, userId),
-        eq(user.email, userId),
+    .where(
+      and(
+        eq(login.type, 'local'),
+        eq(login.loginId, loginId),
+        or(eq(user.userName, userId), eq(user.email, userId)),
       ),
-    ))
+    )
     .limit(1)
   return results.at(0)
 }

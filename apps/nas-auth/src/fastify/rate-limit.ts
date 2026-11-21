@@ -1,3 +1,4 @@
+// oxlint-disable promise/no-callback-in-promise
 import type { FastifyRateLimitOptions, FastifyRateLimitStore } from '@fastify/rate-limit'
 import { fastifyPlugin } from 'fastify-plugin'
 import { redisPrefix } from '../config.ts'
@@ -28,15 +29,19 @@ class RedisStore implements FastifyRateLimitStore {
     return new RedisStore(this.#options).#setRoute(id)
   }
 
-  incr(key: string, callback: (error: Error | null, result?: { current: number; ttl: number; }) => void): void {
+  incr(
+    key: string,
+    callback: (error: Error | null, result?: { current: number; ttl: number }) => void,
+  ): void {
     const redisKey = `${redisPrefix}:rate-limit:${this.#route}:[${key}]`
-    client.rateLimit(
-      redisKey,
-      this.#options.timeWindow,
-      this.#options.max,
-      this.#options.continueExceeding ?? false,
-      this.#options.exponentialBackoff ?? false,
-    )
+    client
+      .rateLimit(
+        redisKey,
+        this.#options.timeWindow,
+        this.#options.max,
+        this.#options.continueExceeding ?? false,
+        this.#options.exponentialBackoff ?? false,
+      )
       .then((result) => callback(null, { current: result[0], ttl: result[1] }))
       .catch(callback)
   }

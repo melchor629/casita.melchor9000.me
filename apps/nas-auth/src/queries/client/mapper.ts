@@ -2,14 +2,13 @@ import { client } from '@melchor629/orm-nas-auth/schema'
 import type { ClientMetadata } from 'oidc-provider'
 import { makeMapper } from '../base-mapper.ts'
 
-type RemoveIndexer<K> =
-  string extends K
+type RemoveIndexer<K> = string extends K
+  ? never
+  : number extends K
     ? never
-    : number extends K
+    : symbol extends K
       ? never
-      : symbol extends K
-        ? never
-        : K
+      : K
 
 type RemoveIndex<T> = {
   [K in keyof T as RemoveIndexer<K>]: T[K]

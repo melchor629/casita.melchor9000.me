@@ -141,8 +141,7 @@ const hiraganaCharRows = [
   ...kana.map((serie) => serie.map(([h, l]) => [h, l] as const)),
   [],
   [
-    ...Object.entries(kanaSpecials.ySeries)
-      .map(([lat, [h]]) => [h, lat] as const),
+    ...Object.entries(kanaSpecials.ySeries).map(([lat, [h]]) => [h, lat] as const),
     [kanaSpecials.tsu[0], 'x2'] as const,
   ],
 ]
@@ -150,34 +149,29 @@ const katakanaCharRows = [
   ...kana.map((serie) => serie.filter((r) => r.length === 3).map(([, l, k]) => [k, l] as const)),
   [],
   [
-    ...Object.entries(kanaSpecials.ySeries)
-      .map(([lat, [, k]]) => [k, lat] as const),
+    ...Object.entries(kanaSpecials.ySeries).map(([lat, [, k]]) => [k, lat] as const),
     [kanaSpecials.tsu[1], 'x2'] as const,
   ],
 ]
 
 /**
  * Converts kana to romaji
- **/
+ */
 function toRomaji(value: string): string {
   return wanakana.toRomaji(value)
 }
 
 export { toRomaji, hiraganaCharRows, katakanaCharRows }
 
-type Mutable<T> = (
-  T extends object
-    ? { -readonly [K in keyof T]: Mutable<T[K]> }
-    : T extends ReadonlyArray<infer TT>
-      ? Array<Mutable<TT>>
-      : T
-)
+type Mutable<T> = T extends object
+  ? { -readonly [K in keyof T]: Mutable<T[K]> }
+  : T extends ReadonlyArray<infer TT>
+    ? Array<Mutable<TT>>
+    : T
 
-type DictEntryRef = Readonly<{ type: 'basic' | 'intermediate', chapter: number, word?: string }>
-type UrlEntryRef = Readonly<{ type: 'url', url: string | URL, name: string }>
-export type EntryRef =
-  | DictEntryRef
-  | UrlEntryRef
+type DictEntryRef = Readonly<{ type: 'basic' | 'intermediate'; chapter: number; word?: string }>
+type UrlEntryRef = Readonly<{ type: 'url'; url: string | URL; name: string }>
+export type EntryRef = DictEntryRef | UrlEntryRef
 
 export type BaseDictionaryEntry<TType extends string = string> = Readonly<{
   type: TType
@@ -189,9 +183,10 @@ export type BaseDictionaryEntry<TType extends string = string> = Readonly<{
   refs?: ReadonlyArray<EntryRef>
 }>
 
-export type WordDictionaryEntry<TType extends string = string> = BaseDictionaryEntry<TType> & Readonly<{
-  pronuntiation?: string
-}>
+export type WordDictionaryEntry<TType extends string = string> = BaseDictionaryEntry<TType>
+  & Readonly<{
+    pronuntiation?: string
+  }>
 
 export type NounDictionaryEntry = WordDictionaryEntry<'noun' | 'interjection' | 'adverb'>
 export type MarkerDictionaryEntry = BaseDictionaryEntry<'marker' | 'particle'>
@@ -200,72 +195,79 @@ export type InterrogativeDictionaryEntry = WordDictionaryEntry<'interrogative'>
 export type NaAdjectiveDictionaryEntry = WordDictionaryEntry<'na-adj'>
 export type NoAdjectiveDictionaryEntry = WordDictionaryEntry<'no-adj'>
 
-export type BasicVerbDictionaryEntry = WordDictionaryEntry<'verb'> & Readonly<{
-  forms: Readonly<{
-    present: {
-      readonly positive: string
-      readonly negative: string
-    }
-    past: {
-      readonly positive: string
-      readonly negative: string
-    }
-    te?: string
-    mashou: string
-    tai: string
+export type BasicVerbDictionaryEntry = WordDictionaryEntry<'verb'>
+  & Readonly<{
+    forms: Readonly<{
+      present: {
+        readonly positive: string
+        readonly negative: string
+      }
+      past: {
+        readonly positive: string
+        readonly negative: string
+      }
+      te?: string
+      mashou: string
+      tai: string
+    }>
   }>
-}>
 
-export type AdjectiveDictionaryEntry = WordDictionaryEntry<'adjective'> & Readonly<{
-  forms: Readonly<{
-    present: {
-      readonly positive: string
-      readonly negative: string
-    }
-    past: {
-      readonly positive: string
-      readonly negative: string
-    }
-    te: string
-    garu: string
+export type AdjectiveDictionaryEntry = WordDictionaryEntry<'adjective'>
+  & Readonly<{
+    forms: Readonly<{
+      present: {
+        readonly positive: string
+        readonly negative: string
+      }
+      past: {
+        readonly positive: string
+        readonly negative: string
+      }
+      te: string
+      garu: string
+    }>
   }>
-}>
 
-export type DemonstrativeDictionaryEntry = WordDictionaryEntry<'demonstrative'> & Readonly<{
-  actsAs: 'noun' | 'adjective' | 'adverb'
-  forms: Readonly<{
-    k: readonly [jp: string, sp: string]
-    s: readonly [jp: string, sp: string]
-    a: readonly [jp: string, sp: string]
-    d: readonly [jp: string, sp: string]
+export type DemonstrativeDictionaryEntry = WordDictionaryEntry<'demonstrative'>
+  & Readonly<{
+    actsAs: 'noun' | 'adjective' | 'adverb'
+    forms: Readonly<{
+      k: readonly [jp: string, sp: string]
+      s: readonly [jp: string, sp: string]
+      a: readonly [jp: string, sp: string]
+      d: readonly [jp: string, sp: string]
+    }>
   }>
-}>
 
-export type InformalVerbDictionaryEntry = WordDictionaryEntry<'ichidan-verb' | 'godan-verb' | 'irregular-verb'> & Readonly<{
-  forms: Readonly<{
-    present: {
-      readonly positive: string
-      readonly negative: string
-    }
-    past: {
-      readonly positive: string
-      readonly negative: string
-    }
-    te: {
-      readonly positive: string
-      readonly negative: string
-    }
-    letsDo: string
-    wantTo: string
-    formal: Omit<BasicVerbDictionaryEntry['forms'], 'te' | 'tai'>
+export type InformalVerbDictionaryEntry = WordDictionaryEntry<
+  'ichidan-verb' | 'godan-verb' | 'irregular-verb'
+>
+  & Readonly<{
+    forms: Readonly<{
+      present: {
+        readonly positive: string
+        readonly negative: string
+      }
+      past: {
+        readonly positive: string
+        readonly negative: string
+      }
+      te: {
+        readonly positive: string
+        readonly negative: string
+      }
+      letsDo: string
+      wantTo: string
+      formal: Omit<BasicVerbDictionaryEntry['forms'], 'te' | 'tai'>
+    }>
+    mode?: 'transitive' | 'intransitive'
   }>
-  mode?: 'transitive' | 'intransitive'
-}>
 
-export type KanjiEntry = BaseDictionaryEntry<'kanji'> & Readonly<{
-  onyomi: string
-  kunyomi: string
-}>
+export type KanjiEntry = BaseDictionaryEntry<'kanji'>
+  & Readonly<{
+    onyomi: string
+    kunyomi: string
+  }>
 
 export type DictionaryEntry =
   | NounDictionaryEntry
@@ -282,13 +284,20 @@ export type DictionaryEntry =
 
 export type MutDictionaryEntry = Mutable<DictionaryEntry>
 
-export type VocabularyComponentProps<T extends DictionaryEntry = DictionaryEntry> = { readonly result: T }
+export type VocabularyComponentProps<T extends DictionaryEntry = DictionaryEntry> = {
+  readonly result: T
+}
 
-type Yamlify<T extends Record<string, unknown>> = Omit<T, 'level' | 'chapter' | 'forms'> & (
-  T extends { forms: infer F }
-    ? { forms?: Partial<F extends { formal: Record<string, unknown> } ? Omit<F, 'formal'> & { formal: string | F['formal'] } : F> }
-    : Record<string, never>
-)
+type Yamlify<T extends Record<string, unknown>> = Omit<T, 'level' | 'chapter' | 'forms'>
+  & (T extends { forms: infer F }
+    ? {
+        forms?: Partial<
+          F extends { formal: Record<string, unknown> }
+            ? Omit<F, 'formal'> & { formal: string | F['formal'] }
+            : F
+        >
+      }
+    : Record<string, never>)
 export type IntermediateDictionaryEntry =
   | Yamlify<NounDictionaryEntry>
   | Yamlify<MarkerDictionaryEntry>

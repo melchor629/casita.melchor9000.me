@@ -1,28 +1,30 @@
 @font-face {
-  font-family: "Font Awesome Regular";
+  font-family: 'Font Awesome Regular';
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2");
+  src: url('../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2');
 }
 
 @font-face {
-  font-family: "Font Awesome Solid";
+  font-family: 'Font Awesome Solid';
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2");
+  src: url('../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2');
 }
 
 @font-face {
-  font-family: "Font Awesome Brands";
+  font-family: 'Font Awesome Brands';
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2");
+  src: url('../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2');
 }
 
-.fa-regular, .fa-solid, .fa-brands {
+.fa-regular,
+.fa-solid,
+.fa-brands {
   font-weight: 400;
   font-style: normal;
   user-select: none;
@@ -36,13 +38,13 @@
 }
 
 .fa-regular {
-  font-family: "Font Awesome Regular";
+  font-family: 'Font Awesome Regular';
 }
 
 .fa-solid {
-  font-family: "Font Awesome Solid";
+  font-family: 'Font Awesome Solid';
 }
 
 .fa-brands {
-  font-family: "Font Awesome Brands";
+  font-family: 'Font Awesome Brands';
 }

@@ -1,5 +1,14 @@
 import { useNavigate } from '@melchor629/nice-ssr'
-import { Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Text } from '@melchor629/ui'
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+  Text,
+} from '@melchor629/ui'
 import { Add } from '@melchor629/ui/icons'
 import { useMemo, useState } from 'react'
 import { useEnsureGetSession } from '#actions/queries/get-session.ts'
@@ -14,19 +23,32 @@ type ApplicationsProps = Readonly<{
 }>
 
 const Applications = ({ applications }: ApplicationsProps) => {
-  const { data: { permissions } } = useEnsureGetSession()
+  const {
+    data: { permissions },
+  } = useEnsureGetSession()
   const [opened, setOpened] = useState(false)
   const permission = useMemo(() => permissions.find((p) => p.key === 'application')!, [permissions])
   const navigate = useNavigate()
 
   return (
     <>
-      <div className="flex justify-between items-baseline mb-2">
+      <div className="mb-2 flex items-baseline justify-between">
         <Text size="h2">Applications</Text>
-        {permission.write && <Button type="button" size="small" onClick={() => setOpened(true)} icon={<Add />} />}
+        {permission.write && (
+          <Button
+            type="button"
+            size="small"
+            onClick={() => setOpened(true)}
+            icon={<Add />}
+          />
+        )}
       </div>
 
-      <Table className="mt-2 mb-4" hover full>
+      <Table
+        className="mt-2 mb-4"
+        hover
+        full
+      >
         <TableHead>
           <TableRow>
             <TableHeadCell>Key</TableHeadCell>
@@ -38,7 +60,7 @@ const Applications = ({ applications }: ApplicationsProps) => {
             <TableRow
               key={application.key}
               className="cursor-pointer"
-              role="button"
+              role="link"
               onClick={() => navigate(`/admin/applications/${application.key}`)}
             >
               <TableCell>{application.key}</TableCell>
@@ -48,7 +70,12 @@ const Applications = ({ applications }: ApplicationsProps) => {
         </TableBody>
       </Table>
 
-      {permission.write && <AddApplicationDialog opened={opened} setOpened={setOpened} />}
+      {permission.write && (
+        <AddApplicationDialog
+          opened={opened}
+          setOpened={setOpened}
+        />
+      )}
 
       <AdminBreadcrumb sections={breadcrumbSections} />
     </>

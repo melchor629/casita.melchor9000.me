@@ -1,11 +1,11 @@
-@import "tailwindcss";
-@import "@melchor629/ui/styles";
+@import 'tailwindcss';
+@import '@melchor629/ui/styles';
 
 @source "../node_modules/@melchor629/ui";
 
 @font-face {
   font-family: 'Furifont Sans';
-  src: url("/j/font") format("woff2");
+  src: url('/j/font') format('woff2');
   font-weight: 250 900;
   ascent-override: 88%;
   descent-override: 12%;

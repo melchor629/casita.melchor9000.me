@@ -28,7 +28,10 @@ const AddUserPermissionDialog = ({
   const [hasWrite, setHasWrite] = useState(false)
   const [hasDelete, setHasDelete] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const applications = useMemo(() => Object.freeze(allApplications.map((a) => [a.key, a.name] as const)), [allApplications])
+  const applications = useMemo(
+    () => Object.freeze(allApplications.map((a) => [a.key, a.name] as const)),
+    [allApplications],
+  )
   const permissionsForApplication = useMemo(
     () => allPermissions.filter((perm) => perm.applicationKey === applicationId),
     [allPermissions, applicationId],
@@ -44,33 +47,48 @@ const AddUserPermissionDialog = ({
     addUserPermissionMutation.reset()
   }, [addUserPermissionMutation])
 
-  const save = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const save = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
 
-    if (!applicationId) {
-      setError('Application is required')
-      return
-    }
+      if (!applicationId) {
+        setError('Application is required')
+        return
+      }
 
-    if (!permission) {
-      setError('Permission is required')
-      return
-    }
+      if (!permission) {
+        setError('Permission is required')
+        return
+      }
 
-    setError(null)
-    addUserPermissionMutation.mutate({
+      setError(null)
+      addUserPermissionMutation.mutate(
+        {
+          userName,
+          permissionName: permission.name,
+          applicationKey: permission.applicationKey,
+          write: hasWrite,
+          delete: hasDelete,
+        },
+        {
+          onSuccess: () => {
+            setOpened(false)
+            void revalidator()
+          },
+        },
+      )
+    },
+    [
+      applicationId,
+      permission,
+      addUserPermissionMutation,
       userName,
-      permissionName: permission.name,
-      applicationKey: permission.applicationKey,
-      write: hasWrite,
-      delete: hasDelete,
-    }, {
-      onSuccess: () => {
-        setOpened(false)
-        void revalidator()
-      },
-    })
-  }, [applicationId, permission, addUserPermissionMutation, userName, hasWrite, hasDelete, setOpened, revalidator])
+      hasWrite,
+      hasDelete,
+      setOpened,
+      revalidator,
+    ],
+  )
 
   return (
     <Dialog
@@ -82,7 +100,13 @@ const AddUserPermissionDialog = ({
       onClose={onClose}
       onCloseEnd={clearState}
       buttons={[
-        <Button key="save" onClick={save} loading={addUserPermissionMutation.isPending}>Save</Button>,
+        <Button
+          key="save"
+          onClick={save}
+          loading={addUserPermissionMutation.isPending}
+        >
+          Save
+        </Button>,
       ]}
     >
       <div className="mb-2">
@@ -91,7 +115,10 @@ const AddUserPermissionDialog = ({
         <Select
           id="application-id"
           value={[applicationId, ''] as const}
-          onChange={useCallback((app: readonly [string, string] | null) => setApplicationId(app ? app[0] : ''), [])}
+          onChange={useCallback(
+            (app: readonly [string, string] | null) => setApplicationId(app ? app[0] : ''),
+            [],
+          )}
           values={applications}
           keySelector={useCallback(([k]: readonly [string, string]) => k, [])}
           labelSelector={useCallback(([, v]: readonly [string, string]) => v, [])}
@@ -120,7 +147,10 @@ const AddUserPermissionDialog = ({
               type="checkbox"
               id="has-write"
               checked={hasWrite}
-              onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setHasWrite(e.currentTarget.checked), [])}
+              onChange={useCallback(
+                (e: ChangeEvent<HTMLInputElement>) => setHasWrite(e.currentTarget.checked),
+                [],
+              )}
             />
           }
         >
@@ -135,7 +165,10 @@ const AddUserPermissionDialog = ({
               type="checkbox"
               id="has-delete"
               checked={hasDelete}
-              onChange={useCallback((e: ChangeEvent<HTMLInputElement>) => setHasDelete(e.currentTarget.checked), [])}
+              onChange={useCallback(
+                (e: ChangeEvent<HTMLInputElement>) => setHasDelete(e.currentTarget.checked),
+                [],
+              )}
             />
           }
         >

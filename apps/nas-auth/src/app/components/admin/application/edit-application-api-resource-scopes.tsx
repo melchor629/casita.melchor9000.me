@@ -9,7 +9,11 @@ type EditApplicationApiResourceScopesProps = Readonly<{
   scopes: readonly string[]
 }>
 
-const EditApplicationApiResourceScopes = ({ close, opened, scopes }: EditApplicationApiResourceScopesProps) => {
+const EditApplicationApiResourceScopes = ({
+  close,
+  opened,
+  scopes,
+}: EditApplicationApiResourceScopesProps) => {
   const [state, setState] = useState(scopes)
   usePropState(scopes, setState)
 
@@ -26,13 +30,14 @@ const EditApplicationApiResourceScopes = ({ close, opened, scopes }: EditApplica
     }
   }, [])
 
-  const deleteScope = useCallback((scope: string) => setState((s) => {
-    const idx = s.indexOf(scope)
-    return [
-      ...s.slice(0, idx),
-      ...s.slice(idx + 1),
-    ]
-  }), [])
+  const deleteScope = useCallback(
+    (scope: string) =>
+      setState((s) => {
+        const idx = s.indexOf(scope)
+        return [...s.slice(0, idx), ...s.slice(idx + 1)]
+      }),
+    [],
+  )
 
   return (
     <Dialog
@@ -43,22 +48,38 @@ const EditApplicationApiResourceScopes = ({ close, opened, scopes }: EditApplica
       title="Scopes"
       onClose={useCallback(() => close(), [close])}
       buttons={[
-        <Button key="save" onClick={useCallback(() => close(state), [close, state])}>
+        <Button
+          key="save"
+          onClick={useCallback(() => close(state), [close, state])}
+        >
           Save
         </Button>,
       ]}
     >
-      <div className="px-3 pt-2 pb-1 mb-2 border rounded-sm flex flex-wrap">
+      <div className="mb-2 flex flex-wrap rounded-sm border px-3 pt-2 pb-1">
         {state.map((scope) => (
-          <div key={scope} className="px-2 py-1 mr-1 mb-1 border rounded-sm select-none">
+          <div
+            key={scope}
+            className="mr-1 mb-1 rounded-sm border px-2 py-1 select-none"
+          >
             {scope}
             &nbsp;
-            <button type="button" onClick={() => deleteScope(scope)}>&times;</button>
+            <button
+              type="button"
+              onClick={() => deleteScope(scope)}
+            >
+              &times;
+            </button>
           </div>
         ))}
-        {state.length === 0 && <div className="text-body text-text-secondary">No scopes defined</div>}
+        {state.length === 0 && (
+          <div className="text-body text-text-secondary">No scopes defined</div>
+        )}
       </div>
-      <TextInput type="text" onKeyUp={newScopeKeyUp} />
+      <TextInput
+        type="text"
+        onKeyUp={newScopeKeyUp}
+      />
     </Dialog>
   )
 }

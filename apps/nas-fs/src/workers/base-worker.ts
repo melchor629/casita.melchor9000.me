@@ -1,7 +1,5 @@
 import { type Span, type Tracer, trace } from '@opentelemetry/api'
-import {
-  Job, type Processor, Worker, type WorkerOptions,
-} from 'bullmq'
+import { Job, type Processor, Worker, type WorkerOptions } from 'bullmq'
 import { BullMQOtel } from 'bullmq-otel'
 import packageJson from '../../package.json' with { type: 'json' }
 import { redisUrl } from '../config.ts'

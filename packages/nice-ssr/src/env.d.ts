@@ -1,7 +1,12 @@
 /// <reference types="vite/client" />
 
 declare module 'virtual:ssr/routes' {
-  import type { PageModule, PageHelperModule, RouteHandler, RouteModule } from '@melchor629/nice-ssr'
+  import type {
+    PageModule,
+    PageHelperModule,
+    RouteHandler,
+    RouteModule,
+  } from '@melchor629/nice-ssr'
 
   type Lazy<T> = () => Promise<T>
   export type RootPathModule = {
@@ -27,16 +32,21 @@ declare module 'virtual:ssr/routes' {
   export type NothingPageModule = BasePathModule & {
     type: 'nothing'
   }
-  export type ResourcePathModule =
-    | PagePathModule
-    | RoutePathModule
-  export type PathModule =
-    | ResourcePathModule
-    | NothingPageModule
+  export type ResourcePathModule = PagePathModule | RoutePathModule
+  export type PathModule = ResourcePathModule | NothingPageModule
 
   export const modules: RootPathModule
   export function getModulePath(path: string, mode?: 'exact' | 'nearest'): ReadonlyArray<PathModule>
-  export function getRouteModulePath(path: string, type: 'page'): readonly [...PathModule[], PagePathModule] | null
-  export function getRouteModulePath(path: string, type: 'error' | 'not-found'): readonly [...PathModule[], PagePathModule]
-  export function getRouteModulePath(path: string, type: 'route'): readonly [...PathModule[], RoutePathModule] | null
+  export function getRouteModulePath(
+    path: string,
+    type: 'page',
+  ): readonly [...PathModule[], PagePathModule] | null
+  export function getRouteModulePath(
+    path: string,
+    type: 'error' | 'not-found',
+  ): readonly [...PathModule[], PagePathModule]
+  export function getRouteModulePath(
+    path: string,
+    type: 'route',
+  ): readonly [...PathModule[], RoutePathModule] | null
 }

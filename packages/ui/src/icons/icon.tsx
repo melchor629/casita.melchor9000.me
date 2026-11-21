@@ -3,17 +3,17 @@ import { clsx } from '../utils'
 
 export type IconProps = Readonly<
   Omit<ComponentPropsWithRef<'span'>, 'children'> & {
-    size?: 'inherit' | 'small' | 'medium' | 'large';
-    icon: string;
+    size?: 'inherit' | 'small' | 'medium' | 'large'
+    icon: string
   } & (
       | {
-        type: 'material-symbols' | 'fontawesome-regular';
-        variant?: 'filled' | 'outlined';
-      }
+          type: 'material-symbols' | 'fontawesome-regular'
+          variant?: 'filled' | 'outlined'
+        }
       | {
-        type: 'fontawesome-brands';
-        variant?: undefined;
-      }
+          type: 'fontawesome-brands'
+          variant?: undefined
+        }
     )
 >
 

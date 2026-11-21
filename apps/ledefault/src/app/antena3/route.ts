@@ -12,15 +12,14 @@ export async function POST(request: SsrRequest) {
     return SsrResponse.new().status('internal-server-error').empty()
   }
 
-  const token = Buffer.from(await crypto.subtle.digest(
-    'SHA-512',
-    Buffer.from(`#${username}·${password}%`, 'utf8'),
-  )).toString('base64')
+  const token = Buffer.from(
+    await crypto.subtle.digest('SHA-512', Buffer.from(`#${username}·${password}%`, 'utf8')),
+  ).toString('base64')
   if (request.headers.get('Authorization') !== `Token ${token}`) {
     return SsrResponse.new().status('unauthorized').empty()
   }
 
-  const body = await request.json() as { yesterday?: boolean, type?: 'check-in' | 'holiday' }
+  const body = (await request.json()) as { yesterday?: boolean; type?: 'check-in' | 'holiday' }
   const checkDate = new Date()
   if (body.yesterday) {
     checkDate.setDate(checkDate.getDate() - 1)
@@ -94,7 +93,10 @@ async function loginRequest(username: string, password: string): Promise<[string
   })
 
   await checkOkResponse(response)
-  const { authorization, session } = await response.json() as { session: string, authorization: string }
+  const { authorization, session } = (await response.json()) as {
+    session: string
+    authorization: string
+  }
   return [session, authorization]
 }
 
@@ -144,7 +146,7 @@ async function getUserIdRequest(
     },
   })
   await checkOkResponse(response)
-  const data = await response.json() as {
+  const data = (await response.json()) as {
     TWPPlan?: {
       WorkerPlanOrder?: Record<string, unknown>[]
     }
@@ -178,17 +180,19 @@ async function checkInRequest(
 
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 10_000)
-  await checkOkResponse(await fetch(url, {
-    method: 'POST',
-    signal: abortController.signal,
-    body: xmlBody,
-    headers: {
-      authorization,
-      caseSession: sessionId,
-      'Content-Type': 'text/plain',
-      'User-Agent': 'Mozilla/5.0',
-    },
-  }))
+  await checkOkResponse(
+    await fetch(url, {
+      method: 'POST',
+      signal: abortController.signal,
+      body: xmlBody,
+      headers: {
+        authorization,
+        caseSession: sessionId,
+        'Content-Type': 'text/plain',
+        'User-Agent': 'Mozilla/5.0',
+      },
+    }),
+  )
 }
 
 const oneDay = 86400000
@@ -228,15 +232,17 @@ async function markAsHolidaysRequest(
 
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 10_000)
-  await checkOkResponse(await fetch(url, {
-    method: 'POST',
-    signal: abortController.signal,
-    body: xmlBody,
-    headers: {
-      authorization,
-      caseSession: sessionId,
-      'Content-Type': 'text/plain',
-      'User-Agent': 'Mozilla/5.0',
-    },
-  }))
+  await checkOkResponse(
+    await fetch(url, {
+      method: 'POST',
+      signal: abortController.signal,
+      body: xmlBody,
+      headers: {
+        authorization,
+        caseSession: sessionId,
+        'Content-Type': 'text/plain',
+        'User-Agent': 'Mozilla/5.0',
+      },
+    }),
+  )
 }

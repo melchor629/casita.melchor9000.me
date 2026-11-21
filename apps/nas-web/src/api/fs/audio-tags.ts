@@ -1,11 +1,11 @@
 export interface Rating {
   /**
-     * Rating source, could be an e-mail address
-     */
+   * Rating source, could be an e-mail address
+   */
   source?: string
   /**
-     * Rating [0..1]
-     */
+   * Rating [0..1]
+   */
   rating: number
 }
 
@@ -19,116 +19,116 @@ export interface CommonTags {
     of: number
   }
   /**
-     * Release year
-     */
+   * Release year
+   */
   year?: number
   /**
-     * Track title
-     */
+   * Track title
+   */
   title?: string
   /**
-     * Track, maybe several artists written in a single string.
-     */
+   * Track, maybe several artists written in a single string.
+   */
   artist?: string
   /**
-     * Track artists, aims to capture every artist in a different string.
-     */
+   * Track artists, aims to capture every artist in a different string.
+   */
   artists?: string[]
   /**
-     * Track album artists
-     */
+   * Track album artists
+   */
   albumartist?: string
   /**
-     * Album title
-     */
+   * Album title
+   */
   album?: string
   /**
-     * Release data
-     */
+   * Release data
+   */
   date?: string
   /**
-     * Original release date
-     */
+   * Original release date
+   */
   originaldate?: string
   /**
-     * Original release yeat
-     */
+   * Original release yeat
+   */
   originalyear?: number
   /**
-     * List of comments
-     */
+   * List of comments
+   */
   comment?: string[]
   /**
-     * Genre
-     */
+   * Genre
+   */
   genre?: string[]
   /**
-     * Track composer
-     */
+   * Track composer
+   */
   composer?: string[]
   /**
-     * Lyrics
-     */
+   * Lyrics
+   */
   lyrics?: string[]
   /**
-     * Album title, formatted for alphabetic ordering
-     */
+   * Album title, formatted for alphabetic ordering
+   */
   albumsort?: string
   /**
-     * Track title, formatted for alphabetic ordering
-     */
+   * Track title, formatted for alphabetic ordering
+   */
   titlesort?: string
   /**
-     * The canonical title of the work
-     */
+   * The canonical title of the work
+   */
   work?: string
   /**
-     * Track artist, formatted for alphabetic ordering
-     */
+   * Track artist, formatted for alphabetic ordering
+   */
   artistsort?: string
   /**
-     * Album artist, formatted for alphabetic ordering
-     */
+   * Album artist, formatted for alphabetic ordering
+   */
   albumartistsort?: string
   /**
-     * Composer(s), formatted for alphabetic ordering
-     */
+   * Composer(s), formatted for alphabetic ordering
+   */
   composersort?: string[]
   /**
-     * Lyricist(s)
-     */
+   * Lyricist(s)
+   */
   lyricist?: string[]
   /**
-     * Writer(s)
-     */
+   * Writer(s)
+   */
   writer?: string[]
   /**
-     * Conductor(s)
-     */
+   * Conductor(s)
+   */
   conductor?: string[]
   /**
-     * Remixer(s)
-     */
+   * Remixer(s)
+   */
   remixer?: string[]
   /**
-     * Arranger(s)
-     */
+   * Arranger(s)
+   */
   arranger?: string[]
   /**
-     * Engineer(s)
-     */
+   * Engineer(s)
+   */
   engineer?: string[]
   /**
-     * Producer(s)
-     */
+   * Producer(s)
+   */
   producer?: string[]
   /**
-     * Mix-DJ(s)
-     */
+   * Mix-DJ(s)
+   */
   djmixer?: string[]
   /**
-     * Mixed by
-     */
+   * Mixed by
+   */
   mixer?: string[]
   technician?: string[]
   label?: string[]
@@ -141,40 +141,40 @@ export interface CommonTags {
   rating?: Rating[]
   bpm?: number
   /**
-     * Keywords to reflect the mood of the audio, e.g. 'Romantic' or 'Sad'
-     */
+   * Keywords to reflect the mood of the audio, e.g. 'Romantic' or 'Sad'
+   */
   mood?: string
   /**
-     * Release format, e.g. 'CD'
-     */
+   * Release format, e.g. 'CD'
+   */
   media?: string
   /**
-     * Release catalog number(s)
-     */
+   * Release catalog number(s)
+   */
   catalognumber?: string[]
   /**
-     * TV show title
-     */
+   * TV show title
+   */
   tvShow?: string
   /**
-     * TV show title, formatted for alphabetic ordering
-     */
+   * TV show title, formatted for alphabetic ordering
+   */
   tvShowSort?: string
   /**
-     * TV season title sequence number
-     */
+   * TV season title sequence number
+   */
   tvSeason?: number
   /**
-     * TV Episode sequence number
-     */
+   * TV Episode sequence number
+   */
   tvEpisode?: number
   /**
-     * TV episode ID
-     */
+   * TV episode ID
+   */
   tvEpisodeId?: string
   /**
-     * TV network
-     */
+   * TV network
+   */
   tvNetwork?: string
   podcast?: string
   podcasturl?: string
@@ -218,12 +218,12 @@ export interface CommonTags {
   discogs_votes?: number
   discogs_rating?: number
   /**
-     * Track gain in dB; eg: "-7.03 dB"
-     */
+   * Track gain in dB; eg: "-7.03 dB"
+   */
   replaygain_track_gain?: string
   /**
-     * Track peak [0..1]
-     */
+   * Track peak [0..1]
+   */
   replaygain_track_peak?: number
 }
 

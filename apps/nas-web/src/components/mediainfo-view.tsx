@@ -1,24 +1,17 @@
 import { Button, Dialog, Text } from '@melchor629/ui'
 import { Launch } from '@melchor629/ui/icons'
-import {
-  memo,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import type { MediaInfo, MediaInfoTrack } from '../api/fs/mediainfo'
 import { humanBytes, humanDuration } from '../utils/number-format'
 import highlightCode from '../workers/code-highlighter'
 
-type NullableTupleValues<T extends readonly [...unknown[]]> = (
-  T extends readonly [...infer Item]
-    ? [...(Item[0] | null | undefined)[]]
-    : (
-        T extends readonly [infer First, ...infer Rest]
-          ? [First | null | undefined, ...NullableTupleValues<Rest>]
-          : (T extends readonly [infer First] ? [First] : [])
-      )
-)
+type NullableTupleValues<T extends readonly [...unknown[]]> = T extends readonly [...infer Item]
+  ? [...(Item[0] | null | undefined)[]]
+  : T extends readonly [infer First, ...infer Rest]
+    ? [First | null | undefined, ...NullableTupleValues<Rest>]
+    : T extends readonly [infer First]
+      ? [First]
+      : []
 
 interface MediaInfoTrackPropertyMapper<T extends readonly [...string[]] = readonly [...string[]]> {
   keys: T
@@ -26,32 +19,40 @@ interface MediaInfoTrackPropertyMapper<T extends readonly [...string[]] = readon
   map?: (v: NullableTupleValues<T>) => string | false | null | undefined
 }
 
-const MediaInfoTrackView = memo(({
-  properties,
-  track,
-}: { readonly track: MediaInfoTrack, readonly properties: MediaInfoTrackPropertyMapper[] }) => (
-  <li>
-    {`${track['@type']} #${track['@typeorder'] || '1'}`}
-    <ul className="ml-4">
-      {properties
-        .map((property) => [
-          property,
-          property.keys.map((key) => track[key] as string | undefined),
-        ] as const)
-        .map(([property, values]) => [
-          property,
-          property.map ? property.map(values) : values.filter((val) => !!val).join(' '),
-        ] as const)
-        .filter(([, value]) => value)
-        .map(([property, value]) => (
-          <li key={property.keys.join(',')}>
-            <b>{property.name}</b>
-            {`: ${value}`}
-          </li>
-        ))}
-    </ul>
-  </li>
-))
+const MediaInfoTrackView = memo(
+  ({
+    properties,
+    track,
+  }: {
+    readonly track: MediaInfoTrack
+    readonly properties: MediaInfoTrackPropertyMapper[]
+  }) => (
+    <li>
+      {`${track['@type']} #${track['@typeorder'] || '1'}`}
+      <ul className="ml-4">
+        {properties
+          .map(
+            (property) =>
+              [property, property.keys.map((key) => track[key] as string | undefined)] as const,
+          )
+          .map(
+            ([property, values]) =>
+              [
+                property,
+                property.map ? property.map(values) : values.filter((val) => !!val).join(' '),
+              ] as const,
+          )
+          .filter(([, value]) => value)
+          .map(([property, value]) => (
+            <li key={property.keys.join(',')}>
+              <b>{property.name}</b>
+              {`: ${value}`}
+            </li>
+          ))}
+      </ul>
+    </li>
+  ),
+)
 
 const audioProperties: MediaInfoTrackPropertyMapper[] = [
   {
@@ -62,8 +63,10 @@ const audioProperties: MediaInfoTrackPropertyMapper[] = [
         return null
       }
 
-      return `${format} ${version || ''} ${profile || ''} ${additionalFeatures || ''}`
-        .replaceAll(/ +/g, ' ')
+      return `${format} ${version || ''} ${profile || ''} ${additionalFeatures || ''}`.replaceAll(
+        / +/g,
+        ' ',
+      )
     },
   },
   {
@@ -126,10 +129,10 @@ const MediaInfoChaptersView = memo(({ value }: { readonly value: MediaInfoTrack 
     Chapters
     <ul className="ml-4">
       {Object.entries(value.extra!)
-        .map(([time, chapter]) => [
-          time.split('_').slice(1),
-          chapter.split(':').slice(1).join(':'),
-        ] as const)
+        .map(
+          ([time, chapter]) =>
+            [time.split('_').slice(1), chapter.split(':').slice(1).join(':')] as const,
+        )
         .map(([time, chapter]) => (
           <li key={time.join(':')}>
             <code>{`${time[0]}:${time[1]}:${time[2]}.${time[3]}`}</code>
@@ -168,10 +171,13 @@ export default function MediaInfoView({ mediainfo }: { readonly mediainfo: Media
 
   useEffect(() => {
     const abort = new AbortController()
-    highlightCode({
-      code: rawMediainfo,
-      lang: 'json',
-    }, abort.signal)
+    highlightCode(
+      {
+        code: rawMediainfo,
+        lang: 'json',
+      },
+      abort.signal,
+    )
       .then((res) => res.success && setHighlightedMediainfo(res.result.value))
       .catch(() => {})
 
@@ -180,7 +186,7 @@ export default function MediaInfoView({ mediainfo }: { readonly mediainfo: Media
 
   return (
     <div>
-      <div className="flex mb-3 gap-1 items-center">
+      <div className="mb-3 flex items-center gap-1">
         <Text size="h3">Media info</Text>
         &nbsp;
         <Button

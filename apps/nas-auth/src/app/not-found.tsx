@@ -5,7 +5,12 @@ import Layout from '#components/layout.tsx'
 const NotFoundPage = () => (
   <Layout>
     <div className="text-center">
-      <Text size="h4" className="mb-4">404</Text>
+      <Text
+        size="h4"
+        className="mb-4"
+      >
+        404
+      </Text>
       <Text>This page could not be found.</Text>
     </div>
   </Layout>

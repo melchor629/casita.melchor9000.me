@@ -34,14 +34,14 @@ const IinaButton: FC<IinaButtonProps> = ({ disabled, metadata, module }) => {
     <MenuItem
       onAction={openOnIina}
       disabled={preparing || disabled}
-      icon={(
+      icon={
         <img
           src="https://iina.io/images/iina_triangle_s.png"
           alt="iina logo"
           width="1em"
           className="inline-block pb-0.5 invert-100 dark:invert-0"
         />
-      )}
+      }
       label="Open in iina"
     />
   )

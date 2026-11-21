@@ -6,7 +6,8 @@ export const env = Object.freeze({
   revision: import.meta.env.VITE_REVISION || 'no-rev',
   buildDate: new Date(import.meta.env.VITE_BUILD_DATE ?? 0),
   identity: Object.freeze({
-    authority: import.meta.env.VITE_IDENTITY_AUTHORITY?.replace(/\/$/, '') || 'http://localhost:8001',
+    authority:
+      import.meta.env.VITE_IDENTITY_AUTHORITY?.replace(/\/$/, '') || 'http://localhost:8001',
     clientId: import.meta.env.VITE_IDENTITY_CLIENT_ID || 'nas-fs',
     clientSecret: import.meta.env.VITE_IDENTITY_CLIENT_SECRET,
     redirectUri: `${new URL(import.meta.env.BASE_URL, window.location.origin).toString().replace(/\/$/, '')}/auth`,

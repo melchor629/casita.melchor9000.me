@@ -13,7 +13,14 @@ export default function AppLoader({ loaderComponent, message, navbarMargin }: Ap
   return (
     <div className={clsx('text-center', navbarMargin ? 'mt-navbar' : 'mt-6')}>
       <LoaderComponent />
-      {message && <Text size="h3" weight="medium">{message}</Text>}
+      {message && (
+        <Text
+          size="h3"
+          weight="medium"
+        >
+          {message}
+        </Text>
+      )}
     </div>
   )
 }

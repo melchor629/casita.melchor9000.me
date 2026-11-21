@@ -10,11 +10,11 @@ import uploadWorker from '../utils/upload-manager'
 import useApiClient from './use-api-client'
 
 export type JobState = (
-  { state: 'enqueued' } |
-  { state: 'processing', progress?: number | { value: number, description: string } | null } |
-  { state: 'succeeded', resume?: string } |
-  { state: 'failed', message?: string, error?: Error } |
-  { state: 'aborted' }
+  | { state: 'enqueued' }
+  | { state: 'processing'; progress?: number | { value: number; description: string } | null }
+  | { state: 'succeeded'; resume?: string }
+  | { state: 'failed'; message?: string; error?: Error }
+  | { state: 'aborted' }
 ) & { id: string }
 
 interface EnqueuedJobData<Data extends object> {
@@ -25,7 +25,11 @@ interface EnqueuedJobData<Data extends object> {
 }
 
 export interface JobWorker<Params extends object, Data extends object> {
-  enqueue(this: void, apiClient: ApiClient, jobRequest: JobRequest<Params>): Promise<EnqueuedJobData<Data>>
+  enqueue(
+    this: void,
+    apiClient: ApiClient,
+    jobRequest: JobRequest<Params>,
+  ): Promise<EnqueuedJobData<Data>>
   retry(this: void, apiClient: ApiClient, job: Job<Data>): Promise<Data>
   abort(this: void, apiClient: ApiClient, job: Job<Data>): Promise<void>
   update(this: void, apiClient: ApiClient, jobs: Job<Data>[]): Promise<JobState[]>
@@ -34,27 +38,29 @@ export interface JobWorker<Params extends object, Data extends object> {
 export type JobRequest<Params extends object> = Params
 
 export type JobWorkerTypes = keyof typeof jobWorkers
-type JobParamsType<T> = T extends JobWorker<infer U, object>
-  ? U
-  : (
-      T extends JobWorkerTypes
-        ? ((typeof jobWorkers)[T] extends JobWorker<infer U, object> ? U : never)
+type JobParamsType<T> =
+  T extends JobWorker<infer U, object>
+    ? U
+    : T extends JobWorkerTypes
+      ? (typeof jobWorkers)[T] extends JobWorker<infer U, object>
+        ? U
         : never
-    )
-type JobDataType<T> = T extends JobWorker<object, infer U>
-  ? U
-  : (
-      T extends JobWorkerTypes
-        ? ((typeof jobWorkers)[T] extends JobWorker<object, infer U> ? U : never)
+      : never
+type JobDataType<T> =
+  T extends JobWorker<object, infer U>
+    ? U
+    : T extends JobWorkerTypes
+      ? (typeof jobWorkers)[T] extends JobWorker<object, infer U>
+        ? U
         : never
-    )
+      : never
 type JobRequestWithType<Type extends JobWorkerTypes> = JobParamsType<Type> & { type: Type }
 
 export interface Job<Data = object> {
   id: string
   name: string
   state: 'enqueued' | 'processing' | 'succeeded' | 'failed' | 'aborted'
-  progress?: number | { value: number, description: string } | null
+  progress?: number | { value: number; description: string } | null
   retryCount: number
   error?: Error
   message?: string
@@ -116,17 +122,13 @@ const useJobState = create<State & Actions>()(
 
         enqueue(queue, job) {
           set((state) => ({
-            jobs: [
-              ...state.jobs,
-              { ...job, queue },
-            ],
+            jobs: [...state.jobs, { ...job, queue }],
           }))
         },
 
         remove(jobIds) {
           set((state) => ({
-            jobs: state.jobs
-              .filter((job) => !jobIds.includes(job.id)),
+            jobs: state.jobs.filter((job) => !jobIds.includes(job.id)),
           }))
         },
 
@@ -164,7 +166,8 @@ const useJobState = create<State & Actions>()(
                   return { ...job, state: 'processing', progress: jobState.progress }
                 case 'failed':
                   return { ...job, state: 'failed', message: jobState.message }
-                default: return job
+                default:
+                  return job
               }
             }),
           }))
@@ -195,68 +198,72 @@ const useJobHandler = () => {
   const jobs = useJobState((state) => state.jobs)
   const apiClient = useApiClient()
 
-  const actions = useMemo<JobHandlerActions>(() => ({
-    register: async <T extends JobWorkerTypes>({ type, ...request }: JobRequestWithType<T>) => {
-      const id = `${type}:${nanoid()}`
-      const worker = jobWorkers[type]
-      const {
-        abortable, data, name, retriable,
-      } = await worker.enqueue(apiClient, request as never)
-      useJobState.getState().enqueue(type, {
-        id,
-        name,
-        abortable,
-        retriable,
-        retryCount: 0,
-        state: 'enqueued',
-        data: data as never,
-      })
-      return id
-    },
-    retry: async (jobId: string) => {
-      const state = useJobState.getState()
-      const job = state.jobs.find((j) => j.id === jobId)
-      if (!job || !job.retriable) {
-        return
-      }
-
-      const worker = jobWorkers[job.queue]
-      const newData = await worker.retry(apiClient, job as never)
-      state.retry(jobId, newData)
-    },
-    abort: async (jobId: string) => {
-      const state = useJobState.getState()
-      const job = state.jobs.find((j) => j.id === jobId)
-      if (!job || !job.abortable) {
-        return
-      }
-
-      const worker = jobWorkers[job.queue]
-      await worker.abort(apiClient, job as never)
-      state.abort(jobId)
-    },
-    remove: (jobIds) => useJobState.getState().remove(jobIds),
-    update: async () => {
-      const state = useJobState.getState()
-      const unfinishedJobs = state.jobs
-        .filter((j) => j.state === 'enqueued' || j.state === 'processing')
-      const unfinishedJobsPerWorker = unfinishedJobs
-        .reduce<{ [JK in JobWorkerTypes]: Job<JobDataType<JK>>[] }>(
-          (groups, job) => ({ ...groups, [job.queue]: [...groups[job.queue], job] }),
-          {
-            synchronization: [],
-            thumbnailGeneration: [],
-            thumbnailDelete: [],
-            upload: [],
-          },
+  const actions = useMemo<JobHandlerActions>(
+    () => ({
+      register: async <T extends JobWorkerTypes>({ type, ...request }: JobRequestWithType<T>) => {
+        const id = `${type}:${nanoid()}`
+        const worker = jobWorkers[type]
+        const { abortable, data, name, retriable } = await worker.enqueue(
+          apiClient,
+          request as never,
         )
-      const newJobStates = await Promise.all(
-        Object.entries(unfinishedJobsPerWorker)
-          .map(([q, j]) => jobWorkers[q as JobWorkerTypes].update(apiClient, j as never)),
-      )
-      state.update(newJobStates.flat())
-    },
-  }), [apiClient])
+        useJobState.getState().enqueue(type, {
+          id,
+          name,
+          abortable,
+          retriable,
+          retryCount: 0,
+          state: 'enqueued',
+          data: data as never,
+        })
+        return id
+      },
+      retry: async (jobId: string) => {
+        const state = useJobState.getState()
+        const job = state.jobs.find((j) => j.id === jobId)
+        if (!job || !job.retriable) {
+          return
+        }
+
+        const worker = jobWorkers[job.queue]
+        const newData = await worker.retry(apiClient, job as never)
+        state.retry(jobId, newData)
+      },
+      abort: async (jobId: string) => {
+        const state = useJobState.getState()
+        const job = state.jobs.find((j) => j.id === jobId)
+        if (!job || !job.abortable) {
+          return
+        }
+
+        const worker = jobWorkers[job.queue]
+        await worker.abort(apiClient, job as never)
+        state.abort(jobId)
+      },
+      remove: (jobIds) => useJobState.getState().remove(jobIds),
+      update: async () => {
+        const state = useJobState.getState()
+        const unfinishedJobs = state.jobs.filter(
+          (j) => j.state === 'enqueued' || j.state === 'processing',
+        )
+        const unfinishedJobsPerWorker = unfinishedJobs.reduce<{
+          [JK in JobWorkerTypes]: Job<JobDataType<JK>>[]
+        }>((groups, job) => ({ ...groups, [job.queue]: [...groups[job.queue], job] }), {
+          synchronization: [],
+          thumbnailGeneration: [],
+          thumbnailDelete: [],
+          upload: [],
+        })
+        const newJobStates = await Promise.all(
+          Object.entries(unfinishedJobsPerWorker).map(([q, j]) =>
+            jobWorkers[q as JobWorkerTypes].update(apiClient, j as never),
+          ),
+        )
+        state.update(newJobStates.flat())
+      },
+    }),
+    [apiClient],
+  )
 
   return [actions, jobs] as const
 }

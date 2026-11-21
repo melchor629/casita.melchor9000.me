@@ -1,35 +1,37 @@
 {
   "name": "@melchor629/infra",
-  "private": true,
   "version": "0.1.7",
+  "private": true,
   "type": "module",
   "sideEffects": false,
-  "engines": {
-    "node": ">=22"
-  },
   "exports": {
     "./logger": "./src/logger.ts",
     "./telemetry": "./src/telemetry.ts"
   },
   "scripts": {
-    "lint": "eslint src",
-    "check": "tsc -p . --noEmit"
+    "check:lint": "oxlint",
+    "check:fmt": "oxfmt --check",
+    "check:ts": "tsc -p . --noEmit"
   },
   "dependencies": {
-    "@opentelemetry/core": "^2.12.1",
-    "@opentelemetry/instrumentation": "^0.301.1",
-    "@opentelemetry/sdk-trace-node": "^2.12.1",
-    "@opentelemetry/sdk-metrics": "^2.12.1",
     "@opentelemetry/context-async-hooks": "^2.12.1",
-    "@opentelemetry/instrumentation-fs": "^0.44.0",
-    "@opentelemetry/instrumentation-undici": "^0.35.0",
-    "@opentelemetry/instrumentation-runtime-node": "^0.38.0",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.301.1",
+    "@opentelemetry/core": "^2.12.1",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.301.1",
-    "@opentelemetry/semantic-conventions": "^1.45.0",
-    "@opentelemetry/resources": "^2.12.1",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.301.1",
+    "@opentelemetry/instrumentation": "^0.301.1",
+    "@opentelemetry/instrumentation-fs": "^0.44.0",
+    "@opentelemetry/instrumentation-runtime-node": "^0.38.0",
+    "@opentelemetry/instrumentation-undici": "^0.35.0",
     "@opentelemetry/resource-detector-container": "^0.9.1",
+    "@opentelemetry/resources": "^2.12.1",
+    "@opentelemetry/sdk-metrics": "^2.12.1",
+    "@opentelemetry/sdk-trace-node": "^2.12.1",
+    "@opentelemetry/semantic-conventions": "^1.45.0",
     "pino": "^10.4.0"
+  },
+  "devDependencies": {
+    "@melchor629/tsconfigs": "*",
+    "fastify": "^5.12.8"
   },
   "peerDependencies": {
     "@opentelemetry/api": "^1.10.0",
@@ -40,8 +42,7 @@
       "optional": true
     }
   },
-  "devDependencies": {
-    "fastify": "^5.12.8",
-    "@melchor629/tsconfigs": "*"
+  "engines": {
+    "node": ">=22"
   }
 }

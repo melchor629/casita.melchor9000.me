@@ -13,12 +13,12 @@ const archiveFolder = ({ compression, path }: ArchiveFolderOptions) => {
       ...headers,
       uid: 1000,
       gid: 1000,
-      mode: ({
+      mode: {
         directory: 0o755,
         file: 0o644,
         link: headers.mode,
         symlink: 0o777,
-      })[headers.type],
+      }[headers.type],
     }),
     ignore: (name) => basename(name).startsWith('.'),
   })
@@ -28,9 +28,7 @@ const archiveFolder = ({ compression, path }: ArchiveFolderOptions) => {
     return tar.pipe(gzip)
   }
   if (compression === 'brotli') {
-    const br = zlib.createBrotliCompress(
-      { params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 6 } },
-    )
+    const br = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 6 } })
     return tar.pipe(br)
   }
   if (compression === 'deflate') {

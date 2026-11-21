@@ -56,18 +56,21 @@ export const actions = Object.freeze({
   'toggle-user-login-action': toggleUserLoginAction,
   'update-session-user': updateSessionUserAction,
   'upload-user-profile-picture': uploadUserProfilePictureAction,
-} satisfies Record<string, (request: PageLoaderContext, ...args: never[]) => Promise<FailableResult<unknown>>>)
+} satisfies Record<
+  string,
+  (request: PageLoaderContext, ...args: never[]) => Promise<FailableResult<unknown>>
+>)
 
 export type ActionParameters<T extends keyof typeof actions> =
-  Parameters<(typeof actions)[T]> extends [PageLoaderContext, ...infer P]
-    ? P
-    : []
+  Parameters<(typeof actions)[T]> extends [PageLoaderContext, ...infer P] ? P : []
 
 export type ActionReturnType<T extends keyof typeof actions> =
   Awaited<ReturnType<(typeof actions)[T]>> extends FailableResult<infer E> ? E : never
 
-type ActionFunctionType<T extends keyof typeof actions> =
-  (request: PageLoaderContext, ...args: unknown[]) => Promise<FailableResult<ActionReturnType<T>>>
+type ActionFunctionType<T extends keyof typeof actions> = (
+  request: PageLoaderContext,
+  ...args: unknown[]
+) => Promise<FailableResult<ActionReturnType<T>>>
 
 export const runActionForLoader = async <T extends keyof typeof actions>(
   action: T,

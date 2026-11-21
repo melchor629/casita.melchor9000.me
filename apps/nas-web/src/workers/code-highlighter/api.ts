@@ -3,11 +3,14 @@ import type { CodeHighlightRequest, CodeHighlightResponse } from './types'
 
 const worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' })
 
-const requests = new Map<string, {
-  resolve(value: CodeHighlightResponse): void
-  reject(reason: unknown): void
-  signal: AbortSignal | undefined
-}>()
+const requests = new Map<
+  string,
+  {
+    resolve(value: CodeHighlightResponse): void
+    reject(reason: unknown): void
+    signal: AbortSignal | undefined
+  }
+>()
 
 worker.addEventListener('message', (ev: MessageEvent<CodeHighlightResponse>) => {
   const { reqId } = ev.data

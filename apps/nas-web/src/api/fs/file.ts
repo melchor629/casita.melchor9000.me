@@ -6,16 +6,7 @@ export interface FileMetadata extends Metadata<'file'> {
   mediainfo?: MediaInfo
   audioTags?: AudioTags
   exif?: Record<
-    'file'
-    | 'jfif'
-    | 'pngFile'
-    | 'pngText'
-    | 'png'
-    | 'exif'
-    | 'iptc'
-    | 'xmp'
-    | 'icc'
-    | 'gps',
+    'file' | 'jfif' | 'pngFile' | 'pngText' | 'png' | 'exif' | 'iptc' | 'xmp' | 'icc' | 'gps',
     object
   >
 }

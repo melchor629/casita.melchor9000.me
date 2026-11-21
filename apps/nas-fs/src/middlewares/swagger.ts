@@ -78,11 +78,9 @@ const swaggerPlugin: FastifyPluginAsync = async (fastify) => {
     } satisfies import('@scalar/fastify-api-reference').FastifyApiReferenceOptions)
   } else {
     fastify.get('/oas/json', (req) => Promise.resolve(req.server.swagger()))
-    fastify.get('/oas/yaml', (req, reply) => (
-      reply
-        .header('content-type', 'application/yaml')
-        .send(req.server.swagger({ yaml: true }))
-    ))
+    fastify.get('/oas/yaml', (req, reply) =>
+      reply.header('content-type', 'application/yaml').send(req.server.swagger({ yaml: true })),
+    )
   }
 }
 

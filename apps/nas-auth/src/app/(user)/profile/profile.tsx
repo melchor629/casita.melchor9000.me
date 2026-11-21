@@ -1,14 +1,7 @@
 import { Link, useNavigate } from '@melchor629/nice-ssr'
 import { Button, FormControl, Select, Text, TextInput } from '@melchor629/ui'
 import { FileUpload, KeyVertical, Passkey } from '@melchor629/ui/icons'
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  ViewTransition,
-} from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, ViewTransition } from 'react'
 import { useUpdateSessionUser } from '#actions/mutations/update-session-user.ts'
 import { useUploadUserProfilePicture } from '#actions/mutations/upload-user-profile-picture.ts'
 import { useGetSession } from '#actions/queries/get-session.ts'
@@ -50,15 +43,18 @@ const Profile = ({ changePasswordMode }: { readonly changePasswordMode: boolean 
       return
     }
 
-    updateSessionUser.mutate({
-      displayName,
-      givenName,
-      familyName,
-      profileImageUrl,
-      origin: location.origin,
-    }, {
-      onSuccess: () => navigate('/'),
-    })
+    updateSessionUser.mutate(
+      {
+        displayName,
+        givenName,
+        familyName,
+        profileImageUrl,
+        origin: location.origin,
+      },
+      {
+        onSuccess: () => navigate('/'),
+      },
+    )
   }, [data, updateSessionUser, displayName, profileImageUrl, familyName, givenName, navigate])
 
   const selectFile = useCallback(() => {
@@ -103,15 +99,23 @@ const Profile = ({ changePasswordMode }: { readonly changePasswordMode: boolean 
 
   if (!data) {
     return (
-      <div className="flex justify-center w-full">
+      <div className="flex w-full justify-center">
         <LoadingContent title="Loading user" />
       </div>
     )
   }
 
   return (
-    <fieldset className="min-inline-auto" disabled={updateSessionUser.isPending}>
-      <Text size="h1" className="mb-6">Edit profile</Text>
+    <fieldset
+      className="min-inline-auto"
+      disabled={updateSessionUser.isPending}
+    >
+      <Text
+        size="h1"
+        className="mb-6"
+      >
+        Edit profile
+      </Text>
 
       <FormControl
         label="Display name"
@@ -166,24 +170,24 @@ const Profile = ({ changePasswordMode }: { readonly changePasswordMode: boolean 
         label="Profile Image URL"
         className="mb-2"
       >
-        {realProfileImageUrl
-          ? (
-            <p className="flex justify-center mb-2">
-              <ViewTransition name="user:profile">
-                <img
-                  src={realProfileImageUrl}
-                  alt="profile"
-                  className="w-36 h-36 rounded-full"
-                />
-              </ViewTransition>
-            </p>
-            )
-          : (
-            <p className="mb-2 flex justify-center">
-              <span className="w-36 h-36 flex justify-center items-center border rounded-full">Nop</span>
-            </p>
-            )}
-        <div className="flex flex-nowrap justify-between mb-2 gap-2">
+        {realProfileImageUrl ? (
+          <p className="mb-2 flex justify-center">
+            <ViewTransition name="user:profile">
+              <img
+                src={realProfileImageUrl}
+                alt="profile"
+                className="h-36 w-36 rounded-full"
+              />
+            </ViewTransition>
+          </p>
+        ) : (
+          <p className="mb-2 flex justify-center">
+            <span className="flex h-36 w-36 items-center justify-center rounded-full border">
+              Nop
+            </span>
+          </p>
+        )}
+        <div className="mb-2 flex flex-nowrap justify-between gap-2">
           <Select
             name="uploadedProfileImages"
             values={pictures}
@@ -191,7 +195,7 @@ const Profile = ({ changePasswordMode }: { readonly changePasswordMode: boolean 
             labelSelector={(value) => value || 'Select one file'}
             onChange={selectPfp}
             emptyValue=""
-            className="grow-0 w-full"
+            className="w-full grow-0"
           />
           <Button
             type="button"
@@ -218,14 +222,37 @@ const Profile = ({ changePasswordMode }: { readonly changePasswordMode: boolean 
       </FormControl>
 
       <div className="mt-6 mb-8 flex justify-between">
-        <Button type="button" onClick={save} loading={updateSessionUser.isPending}>Save</Button>
-        <Link to="/" viewTransition>
-          <Button variant="text" color="neutral">Cancel</Button>
+        <Button
+          type="button"
+          onClick={save}
+          loading={updateSessionUser.isPending}
+        >
+          Save
+        </Button>
+        <Link
+          to="/"
+          viewTransition
+        >
+          <Button
+            variant="text"
+            color="neutral"
+          >
+            Cancel
+          </Button>
         </Link>
       </div>
 
-      <Text weight="medium" className="mb-1 mt-3 select-none">Logins & Passkeys</Text>
-      <Text size="bodySmall" color="textSecondary" className="mb-2">
+      <Text
+        weight="medium"
+        className="mt-3 mb-1 select-none"
+      >
+        Logins & Passkeys
+      </Text>
+      <Text
+        size="bodySmall"
+        color="textSecondary"
+        className="mb-2"
+      >
         View and disable/enable all associated logins for your account. Changes are applied
         instantly!
       </Text>
@@ -251,14 +278,23 @@ const Profile = ({ changePasswordMode }: { readonly changePasswordMode: boolean 
           Register Passkey
         </Button>
       </div>
-      <div className="flex w-full flex-col gap-1 mb-2">
+      <div className="mb-2 flex w-full flex-col gap-1">
         {data.user.logins.map((l) => (
-          <LoginRow key={l.id} login={l} />
+          <LoginRow
+            key={l.id}
+            login={l}
+          />
         ))}
       </div>
 
-      <ChangePasswordDialog onClose={closeChangePasswordDialog} show={showChangePasswordDialog} />
-      <RegisterPasskeyDialog onClose={closeRegisterPasskeyDialog} show={showRegisterPasskeyDialog} />
+      <ChangePasswordDialog
+        onClose={closeChangePasswordDialog}
+        show={showChangePasswordDialog}
+      />
+      <RegisterPasskeyDialog
+        onClose={closeRegisterPasskeyDialog}
+        show={showRegisterPasskeyDialog}
+      />
     </fieldset>
   )
 }

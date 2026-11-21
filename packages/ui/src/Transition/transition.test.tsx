@@ -18,7 +18,10 @@ it('content is rendered but not visible when hidden', async () => {
 
 it('content is rendered and visible when shown', async () => {
   await render(
-    <Transition {...props} show>
+    <Transition
+      {...props}
+      show
+    >
       content
     </Transition>,
   )
@@ -30,7 +33,10 @@ it('content is rendered and visible when shown', async () => {
 
 it('content is not rendered when hidden and unmount when hidden', async () => {
   await render(
-    <Transition {...props} unmountWhenHidden>
+    <Transition
+      {...props}
+      unmountWhenHidden
+    >
       content
     </Transition>,
   )
@@ -41,7 +47,10 @@ it('content is not rendered when hidden and unmount when hidden', async () => {
 
 it('content renders when show after first render', async () => {
   const { rerender } = await render(
-    <Transition {...props} unmountWhenHidden>
+    <Transition
+      {...props}
+      unmountWhenHidden
+    >
       content
     </Transition>,
   )
@@ -50,7 +59,11 @@ it('content renders when show after first render', async () => {
   await expect.element(locator).not.toBeInTheDocument()
 
   await rerender(
-    <Transition {...props} unmountWhenHidden show>
+    <Transition
+      {...props}
+      unmountWhenHidden
+      show
+    >
       content
     </Transition>,
   )
@@ -59,7 +72,10 @@ it('content renders when show after first render', async () => {
   await expect.element(locator).toBeVisible()
 
   await rerender(
-    <Transition {...props} unmountWhenHidden>
+    <Transition
+      {...props}
+      unmountWhenHidden
+    >
       content
     </Transition>,
   )
@@ -69,7 +85,11 @@ it('content renders when show after first render', async () => {
 
 it('content is kept and visible when keep interactive is set', async () => {
   await render(
-    <Transition {...props} unmountWhenHidden keepInteractiveWhenHidden>
+    <Transition
+      {...props}
+      unmountWhenHidden
+      keepInteractiveWhenHidden
+    >
       content
     </Transition>,
   )

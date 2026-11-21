@@ -7,7 +7,10 @@ import { applicationKeyParam } from '../../models/app.ts'
 import { Binary, Type, type Controller } from '../../models/controller.ts'
 import { ApiErrorSchema } from '../../models/errors/api-error.ts'
 import BadRequestError from '../../models/errors/bad-request-error.ts'
-import { FullUploadRequestSchema, type FullUploadRequest } from '../../models/uploads/full-upload-request.ts'
+import {
+  FullUploadRequestSchema,
+  type FullUploadRequest,
+} from '../../models/uploads/full-upload-request.ts'
 
 const schema = {
   summary: 'Uploads a small file directly',
@@ -26,9 +29,7 @@ const schema = {
   tags: ['upload'],
 }
 
-const hashString = (str: string) => createHash('SHA512')
-  .update(str)
-  .digest('hex')
+const hashString = (str: string) => createHash('SHA512').update(str).digest('hex')
 
 const fullUploadController: Controller<typeof schema> = async (req, reply) => {
   // ignore body validation errors
@@ -37,11 +38,11 @@ const fullUploadController: Controller<typeof schema> = async (req, reply) => {
   }
 
   let ctx: {
-    directoryPath: string,
-    fileName: string,
-    path: string,
-    realPath: string,
-    uploadPath: string,
+    directoryPath: string
+    fileName: string
+    path: string
+    realPath: string
+    uploadPath: string
   } | null = null
   for await (const part of req.parts({ limits: { parts: 2, files: 1, fields: 1 } })) {
     if (part.type === 'field') {
@@ -84,7 +85,10 @@ const fullUploadController: Controller<typeof schema> = async (req, reply) => {
       if (ctx === null) {
         // consume whole stream before failing
         part.file.resume()
-        throw new BadRequestError('"request" field has not been sent or has been sent after the file', 'request')
+        throw new BadRequestError(
+          '"request" field has not been sent or has been sent after the file',
+          'request',
+        )
       }
 
       const inStream = part.file

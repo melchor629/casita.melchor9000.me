@@ -43,7 +43,12 @@ export const metadata = ({ client }: ClientPageProps) => ({
 
 const ClientPage = ({ apiResources, client, session }: ClientPageProps) => {
   usePrefillGetSession(session)
-  return <Client apiResources={apiResources} client={client} />
+  return (
+    <Client
+      apiResources={apiResources}
+      client={client}
+    />
+  )
 }
 
 export default ClientPage

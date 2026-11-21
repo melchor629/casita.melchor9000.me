@@ -95,16 +95,25 @@ const clamp = (el: HTMLElement, lineClamp: number) => {
   el.appendChild(line)
 }
 
-const ClampedText = memo(({ children, lines }: { readonly children: string, readonly lines: number }) => {
-  const ref = useRef<HTMLElement>(null)
+const ClampedText = memo(
+  ({ children, lines }: { readonly children: string; readonly lines: number }) => {
+    const ref = useRef<HTMLElement>(null)
 
-  useEffect(() => {
-    if (ref.current) {
-      clamp(ref.current, lines)
-    }
-  }, [children, lines])
+    useEffect(() => {
+      if (ref.current) {
+        clamp(ref.current, lines)
+      }
+    }, [children, lines])
 
-  return <abbr title={children} ref={ref}>{children}</abbr>
-})
+    return (
+      <abbr
+        title={children}
+        ref={ref}
+      >
+        {children}
+      </abbr>
+    )
+  },
+)
 
 export default ClampedText

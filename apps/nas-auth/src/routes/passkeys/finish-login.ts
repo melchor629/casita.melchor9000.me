@@ -1,4 +1,8 @@
-import { verifyAuthenticationResponse, type AuthenticationResponseJSON, type WebAuthnCredential } from '@simplewebauthn/server'
+import {
+  verifyAuthenticationResponse,
+  type AuthenticationResponseJSON,
+  type WebAuthnCredential,
+} from '@simplewebauthn/server'
 import findLoginInfoForPasskey from '#queries/login/find-login-info-for-passkey.ts'
 import oidc from '../../oidc/oidc.ts'
 import type { Controller, GenericRoute } from '../models.ts'
@@ -8,16 +12,14 @@ interface Route extends GenericRoute {
     data: AuthenticationResponseJSON
   }
   Reply: {
-    200: { verified: false } | { verified: true, location: string }
+    200: { verified: false } | { verified: true; location: string }
     400: { message: string }
   }
 }
 
 const finishPasskeyLoginController: Controller<Route> = async (req, res) => {
-  const interaction = await req.trace(
-    'interaction details',
-    {},
-    () => oidc.interactionDetails(req.raw, res.raw),
+  const interaction = await req.trace('interaction details', {}, () =>
+    oidc.interactionDetails(req.raw, res.raw),
   )
   const { prompt } = interaction
   if (prompt.name !== 'login') {

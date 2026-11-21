@@ -30,11 +30,19 @@ export default function SearchResults({ module, searchFilter }: SearchResultsPro
   const { data: results } = useMediaLibrarySearchResults(module, delayedSearchFilter)
   const [isLoading, startTransition] = useTransition()
 
-  const updateFilter = useMemo(() => debounce((value: string) => {
-    startTransition(() => {
-      setDelayedSearchFilter(value)
-    })
-  }, 500, { leading: true }), [])
+  const updateFilter = useMemo(
+    () =>
+      debounce(
+        (value: string) => {
+          startTransition(() => {
+            setDelayedSearchFilter(value)
+          })
+        },
+        500,
+        { leading: true },
+      ),
+    [],
+  )
 
   useEffect(() => {
     updateFilter(searchFilter)
@@ -42,7 +50,7 @@ export default function SearchResults({ module, searchFilter }: SearchResultsPro
 
   if (isLoading && !results) {
     return (
-      <div className="text-center w-full">
+      <div className="w-full text-center">
         <CircularProgress size="large" />
       </div>
     )
@@ -50,7 +58,7 @@ export default function SearchResults({ module, searchFilter }: SearchResultsPro
 
   if (delayedSearchFilter.length <= 1) {
     return (
-      <div className="text-center text-body-large text-text-secondary w-full select-none">
+      <div className="text-body-large text-text-secondary w-full text-center select-none">
         Type something above to start searching…
       </div>
     )
@@ -58,25 +66,37 @@ export default function SearchResults({ module, searchFilter }: SearchResultsPro
 
   return (
     <div style={{ position: 'relative' }}>
-      {!!results?.areas.length && results.areas.map((area) => (
-        <div key={area.type} className="mb-2 -mx-2" role="region">
-          <h2 className="text-h2">{areaTitles[area.type]}</h2>
-          <HorizontallyScrollableContainer>
-            {area.results.map((areaResult) => (
-              <ItemCell key={areaResult.id} item={areaResult} module={module} />
-            ))}
-          </HorizontallyScrollableContainer>
-        </div>
-      ))}
+      {!!results?.areas.length
+        && results.areas.map((area) => (
+          <div
+            key={area.type}
+            className="-mx-2 mb-2"
+            role="region"
+          >
+            <h2 className="text-h2">{areaTitles[area.type]}</h2>
+            <HorizontallyScrollableContainer>
+              {area.results.map((areaResult) => (
+                <ItemCell
+                  key={areaResult.id}
+                  item={areaResult}
+                  module={module}
+                />
+              ))}
+            </HorizontallyScrollableContainer>
+          </div>
+        ))}
 
       {results && !results.areas.length && (
-        <div className="text-center text-body-large text-text-secondary w-full select-none">
+        <div className="text-body-large text-text-secondary w-full text-center select-none">
           No results with the provided search.
         </div>
       )}
 
       {isLoading && (
-        <div className="text-center w-full h-full" style={{ position: 'absolute', top: 0, left: 0 }}>
+        <div
+          className="h-full w-full text-center"
+          style={{ position: 'absolute', top: 0, left: 0 }}
+        >
           <CircularProgress size="large" />
         </div>
       )}

@@ -13,7 +13,10 @@ type Data = Readonly<{
   origin: string
 }>
 
-const updateSessionUserAction = async function updateSessionUserAction(request: PageLoaderContext, user: Data) {
+const updateSessionUserAction = async function updateSessionUserAction(
+  request: PageLoaderContext,
+  user: Data,
+) {
   const session = await getSession(request)
   if (!session) {
     return invalid([])
@@ -30,10 +33,7 @@ const updateSessionUserAction = async function updateSessionUserAction(request: 
     fieldsToUpdate.familyName = user.familyName
   }
   if (user.profileImageUrl && URL.canParse(user.profileImageUrl, user.origin)) {
-    fieldsToUpdate.profileImageUrl = new URL(
-      user.profileImageUrl,
-      user.origin,
-    ).toString()
+    fieldsToUpdate.profileImageUrl = new URL(user.profileImageUrl, user.origin).toString()
   }
 
   const updatedUser = await updateUser(session.accountId, fieldsToUpdate)

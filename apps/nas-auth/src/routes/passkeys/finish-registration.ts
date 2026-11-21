@@ -48,10 +48,14 @@ const finishPasskeyRegistrationController: Controller<Route> = async (req, res) 
       data: {
         profile: { name: req.body.name },
         ...verification.registrationInfo,
-        attestationObject: Buffer.from(verification.registrationInfo.attestationObject).toString('base64'),
+        attestationObject: Buffer.from(verification.registrationInfo.attestationObject).toString(
+          'base64',
+        ),
         credential: {
           ...verification.registrationInfo.credential,
-          publicKey: Buffer.from(verification.registrationInfo.credential.publicKey).toString('base64'),
+          publicKey: Buffer.from(verification.registrationInfo.credential.publicKey).toString(
+            'base64',
+          ),
         },
       },
     })

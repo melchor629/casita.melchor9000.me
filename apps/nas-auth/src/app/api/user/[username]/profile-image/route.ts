@@ -43,13 +43,18 @@ export const GET = async (request: SsrRequest<{ username: string }>) => {
         .header('content-type', mimeType.svg)
         .header('last-modified', new Date().toUTCString())
         .header('etag', etag)
-        .raw(Buffer.from(`
+        .raw(
+          Buffer.from(
+            `
           <?xml version="1.0" encoding="UTF-8" standalone="no"?>
           <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
             <rect x="0" y="0" width="256" height="256" fill="#ff8904" />
             <text x="128" y="128" font-size="100" fill="#000" text-anchor="middle" alignment-baseline="central">${`${user.givenName?.slice(0, 1) ?? ''}${user.familyName?.slice(0, 1) ?? ''}`.trim() || user.userName.slice(0, 2)}</text>
           </svg>
-        `.trim(), 'utf-8'))
+        `.trim(),
+            'utf-8',
+          ),
+        )
     }
 
     if (user.profileImageUrl.startsWith(nasAuthImageUrl)) {
@@ -94,11 +99,13 @@ export const GET = async (request: SsrRequest<{ username: string }>) => {
         .stream(Readable.toWeb(stream) as unknown as ReadableStream)
     }
 
-    const headers = new Headers([
-      ['accept', request.headers.get('accept') ?? 'image/*'],
-      ['if-none-match', request.headers.get('if-none-match')],
-      ['if-none-since', request.headers.get('if-modified-since')],
-    ].filter((p): p is [string, string] => !!p[1]))
+    const headers = new Headers(
+      [
+        ['accept', request.headers.get('accept') ?? 'image/*'],
+        ['if-none-match', request.headers.get('if-none-match')],
+        ['if-none-since', request.headers.get('if-modified-since')],
+      ].filter((p): p is [string, string] => !!p[1]),
+    )
     const response = await fetch(user.profileImageUrl, {
       headers,
       signal: request.signal,
@@ -114,7 +121,10 @@ export const GET = async (request: SsrRequest<{ username: string }>) => {
       .header('etag', response.headers.get('etag'))
       .header('last-modified', response.headers.get('last-modified'))
       .header('cache-control', response.headers.get('cache-control') ?? 'public max-age=86400')
-      .header('expires', response.headers.get('expires') ?? new Date(Date.now() + 86400).toUTCString())
+      .header(
+        'expires',
+        response.headers.get('expires') ?? new Date(Date.now() + 86400).toUTCString(),
+      )
       .header('age', response.headers.get('age'))
       .status(response.status)
     if (response.body) return res.stream(response.body)

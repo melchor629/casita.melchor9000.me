@@ -1,6 +1,6 @@
 import { Button, ButtonGroup } from '@melchor629/ui'
-import ReactRouterButton from '@melchor629/ui/ReactRouterButton'
 import { Download, Downloading, type IconProps } from '@melchor629/ui/icons'
+import ReactRouterButton from '@melchor629/ui/ReactRouterButton'
 import { useCallback, useState } from 'react'
 import { getDownloadUrl } from '@/api/fs'
 import useApiClient from '@/hooks/use-api-client'
@@ -33,7 +33,10 @@ export default function ItemPath({ icon: Icon, module, path }: Props) {
       color="secondary"
       size="small"
     >
-      <ReactRouterButton to={`/${module}${path}`} icon={<Icon />}>
+      <ReactRouterButton
+        to={`/${module}${path}`}
+        icon={<Icon />}
+      >
         &nbsp;
         {basename(path)}
       </ReactRouterButton>

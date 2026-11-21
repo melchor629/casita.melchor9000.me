@@ -1,5 +1,5 @@
 ---
-"nas-web": patch
+'nas-web': patch
 ---
 
 Fix dialog types

@@ -7,31 +7,39 @@ export interface Libraries {
 export interface Library {
   key: string
   type: 'show' | 'movie' | 'artist'
-  Location: Array<{ id: number, path: string }>
+  Location: Array<{ id: number; path: string }>
 }
 
-export type LibraryContents = ({
-  viewGroup: 'show'
-  Metadata: Array<LibraryShowItem | LibraryCollectionItem<'show'>>
-} | {
-  viewGroup: 'movie'
-  Metadata: Array<LibraryMovieItem | LibraryCollectionItem<'movie'>>
-} | {
-  viewGroup: 'artist'
-  Metadata: Array<LibraryArtistItem | LibraryAlbumItem>
-} | {
-  viewGroup: 'season'
-  Metadata: LibrarySeasonItem[]
-} | {
-  viewGroup: 'album'
-  Metadata: LibraryAlbumItem[]
-} | {
-  viewGroup: 'track'
-  Metadata: LibraryTrackItem[]
-} | {
-  viewGroup: 'episode'
-  Metadata: LibraryEpisodeItem[]
-}) & {
+export type LibraryContents = (
+  | {
+      viewGroup: 'show'
+      Metadata: Array<LibraryShowItem | LibraryCollectionItem<'show'>>
+    }
+  | {
+      viewGroup: 'movie'
+      Metadata: Array<LibraryMovieItem | LibraryCollectionItem<'movie'>>
+    }
+  | {
+      viewGroup: 'artist'
+      Metadata: Array<LibraryArtistItem | LibraryAlbumItem>
+    }
+  | {
+      viewGroup: 'season'
+      Metadata: LibrarySeasonItem[]
+    }
+  | {
+      viewGroup: 'album'
+      Metadata: LibraryAlbumItem[]
+    }
+  | {
+      viewGroup: 'track'
+      Metadata: LibraryTrackItem[]
+    }
+  | {
+      viewGroup: 'episode'
+      Metadata: LibraryEpisodeItem[]
+    }
+) & {
   size: number
   librarySectionID: string | number
 }
@@ -267,7 +275,9 @@ interface Stream {
 
 /**
  * Notes from Plex:
+ *
  * - Movies has following entries:
+ *
  *   - "titleSort"
  *   - "year"
  *   - "originallyAvailableAt:desc"
@@ -284,6 +294,7 @@ interface Stream {
  *   - "mediaBitrate:desc"
  *   - "random:desc"
  * - Series has the following:
+ *
  *   - "titleSort:desc"
  *   - "year:desc"
  *   - "originallyAvailableAt:desc"
@@ -297,8 +308,8 @@ interface Stream {
  *   - "lastViewedAt:desc"
  *   - "random:desc"
  */
-type LibrarySortOptions = (
-  'addedAt'
+type LibrarySortOptions =
+  | 'addedAt'
   | 'titleSort'
   | 'year'
   | 'rating'
@@ -306,7 +317,6 @@ type LibrarySortOptions = (
   | 'duration'
   | 'mediaHeight'
   | 'episode.addedAt'
-)
 export interface LibraryContentsRequest {
   sort?: `${LibrarySortOptions}:${'asc' | 'desc'}`
   type?: 'movie' | 'show' | 'season' | 'episode' | 'artist' | 'album' | 'track'
@@ -505,14 +515,13 @@ export interface SeasonMetadata {
   Guid: { id: string }[]
 }
 
-export type Metadata = (
-  MovieMetadata
+export type Metadata =
+  | MovieMetadata
   | ShowMetadata
   | CollectionMetadata
   | AlbumMetadata
   | ArtistMetadata
   | SeasonMetadata
-)
 
 export interface MetadataResponse {
   size: number
@@ -566,8 +575,24 @@ export interface SearchResults {
 
 interface SearchResultsHub {
   title: string
-  type: 'artist' | 'track' | 'show' | 'album' | 'episode' | 'movie' | 'collection' | 'photoalbum'
-  | 'autotag' | 'photo' | 'tag' | 'actor' | 'director' | 'genre' | 'playlist' | 'shared' | 'place'
+  type:
+    | 'artist'
+    | 'track'
+    | 'show'
+    | 'album'
+    | 'episode'
+    | 'movie'
+    | 'collection'
+    | 'photoalbum'
+    | 'autotag'
+    | 'photo'
+    | 'tag'
+    | 'actor'
+    | 'director'
+    | 'genre'
+    | 'playlist'
+    | 'shared'
+    | 'place'
   hubIdentifier: SearchResultsHub['type']
   context: string
   size: number
@@ -619,7 +644,7 @@ interface SearchResultGenreItem {
 }
 
 type SearchResultMetadata = (
-  SearchResultArtistItem
+  | SearchResultArtistItem
   | SearchResultTrackItem
   | SearchResultShowItem
   | SearchResultAlbumItem

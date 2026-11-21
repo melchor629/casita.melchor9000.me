@@ -3,7 +3,9 @@ export default <
   T extends (arg: any, ...args: any[]) => any,
   FA = Parameters<T>[0],
   RT = ReturnType<T>,
->(func: T) => {
+>(
+  func: T,
+) => {
   const cache = new Map<FA, RT>()
   const impl = (...args: Parameters<T>) => {
     const key = args[0] as FA

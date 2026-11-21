@@ -7,9 +7,7 @@ interface RecentlyAddedMedia {
   items: Item[]
 }
 
-const {
-  useHook: useRecentlyAddedMedia,
-} = makeQuery((module: string) => ({
+const { useHook: useRecentlyAddedMedia } = makeQuery((module: string) => ({
   queryKey: ['fs', module, 'library', 'recently'],
   queryFn: () => {
     const { get } = getApiClient()

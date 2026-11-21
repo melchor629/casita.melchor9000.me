@@ -1,11 +1,5 @@
 import { TextInput } from '@melchor629/ui'
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import * as fs from '@/api/fs'
 import type { DirectoryMetadata } from '@/api/fs/directory'
@@ -19,7 +13,9 @@ interface DirectoryPathViewProps {
   readonly metadata: DirectoryMetadata
   readonly hidden?: boolean
   readonly selectedElements: Array<DirectoryMetadata | FileMetadata>
-  readonly setSelectedElements: React.Dispatch<React.SetStateAction<Array<DirectoryMetadata | FileMetadata>>>
+  readonly setSelectedElements: React.Dispatch<
+    React.SetStateAction<Array<DirectoryMetadata | FileMetadata>>
+  >
 }
 
 const localeIncludes = (a: string, b: string, options?: Intl.CollatorOptions) => {
@@ -54,11 +50,13 @@ export default function DirectoryPathView({
     }
 
     if (filter.length > 0) {
-      e = e.filter((entry) => localeIncludes(
-        path.basename(entry.path),
-        filter,
-        { sensitivity: 'base', usage: 'search', ignorePunctuation: true },
-      ))
+      e = e.filter((entry) =>
+        localeIncludes(path.basename(entry.path), filter, {
+          sensitivity: 'base',
+          usage: 'search',
+          ignorePunctuation: true,
+        }),
+      )
     }
 
     if (!isRoot) {
@@ -74,10 +72,11 @@ export default function DirectoryPathView({
       e.unshift(parentPath)
     }
 
-    return e.sort((a, b) => (
-      a.type.localeCompare(b.type, undefined, { sensitivity: 'base' })
-                || a.path.localeCompare(b.path, undefined, { sensitivity: 'base' })
-    ))
+    return e.sort(
+      (a, b) =>
+        a.type.localeCompare(b.type, undefined, { sensitivity: 'base' })
+        || a.path.localeCompare(b.path, undefined, { sensitivity: 'base' }),
+    )
   }, [hidden, filter, isRoot, metadata.contents, metadata.path, metadata.stat])
 
   useEffect(() => {
@@ -90,59 +89,68 @@ export default function DirectoryPathView({
     entriesDivRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
   }, [filter])
 
-  const onEntryMove = useCallback((
-    entry: DirectoryMetadata | FileMetadata,
-    dest: DirectoryMetadata,
-  ) => (
-    void fs.move(apiClient, module, entry.path, path.join(dest.path, path.basename(entry.path)))
-  ), [apiClient, module])
+  const onEntryMove = useCallback(
+    (entry: DirectoryMetadata | FileMetadata, dest: DirectoryMetadata) =>
+      void fs.move(apiClient, module, entry.path, path.join(dest.path, path.basename(entry.path))),
+    [apiClient, module],
+  )
 
-  const onEntryOpen = useCallback((entry: DirectoryMetadata | FileMetadata) => (
-    void navigate(path.join('/', module, fs.sanitizePathForUrl(entry.path)))
-  ), [navigate, module])
+  const onEntryOpen = useCallback(
+    (entry: DirectoryMetadata | FileMetadata) =>
+      void navigate(path.join('/', module, fs.sanitizePathForUrl(entry.path))),
+    [navigate, module],
+  )
 
-  const onEntrySelected = useCallback((
-    entry: DirectoryMetadata | FileMetadata,
-    multi?: boolean,
-  ) => (
-    multi ? setSelectedElements((s) => [...s, entry]) : setSelectedElements([entry])
-  ), [setSelectedElements])
+  const onEntrySelected = useCallback(
+    (entry: DirectoryMetadata | FileMetadata, multi?: boolean) =>
+      multi ? setSelectedElements((s) => [...s, entry]) : setSelectedElements([entry]),
+    [setSelectedElements],
+  )
 
-  const onEntryDeselected = useCallback((entry: DirectoryMetadata | FileMetadata) => {
-    setSelectedElements((s) => {
-      const entryPos = s.findIndex((e) => e.path === entry.path)
-      const pre = s.slice(0, entryPos)
-      const post = s.slice(entryPos + 1)
-      return [...pre, ...post]
-    })
-  }, [setSelectedElements])
+  const onEntryDeselected = useCallback(
+    (entry: DirectoryMetadata | FileMetadata) => {
+      setSelectedElements((s) => {
+        const entryPos = s.findIndex((e) => e.path === entry.path)
+        const pre = s.slice(0, entryPos)
+        const post = s.slice(entryPos + 1)
+        return [...pre, ...post]
+      })
+    },
+    [setSelectedElements],
+  )
 
-  const onEntryRangeSelect = useCallback((endRange: number | DirectoryMetadata | FileMetadata) => {
-    setSelectedElements((currentSelection) => {
-      if (currentSelection.length === 0) {
-        return currentSelection
-      }
-
-      const startRangePos = entries.indexOf(currentSelection[0])
-      const endRangePos = typeof endRange === 'number' ? endRange : entries.indexOf(endRange)
-      const selectedItems: Array<DirectoryMetadata | FileMetadata> = []
-      if (endRangePos < startRangePos) {
-        for (let i = startRangePos; i >= endRangePos; i -= 1) {
-          selectedItems.push(entries[i])
+  const onEntryRangeSelect = useCallback(
+    (endRange: number | DirectoryMetadata | FileMetadata) => {
+      setSelectedElements((currentSelection) => {
+        if (currentSelection.length === 0) {
+          return currentSelection
         }
-      } else if (endRangePos > startRangePos) {
-        for (let i = startRangePos; i <= endRangePos; i += 1) {
-          selectedItems.push(entries[i])
+
+        const startRangePos = entries.indexOf(currentSelection[0])
+        const endRangePos = typeof endRange === 'number' ? endRange : entries.indexOf(endRange)
+        const selectedItems: Array<DirectoryMetadata | FileMetadata> = []
+        if (endRangePos < startRangePos) {
+          for (let i = startRangePos; i >= endRangePos; i -= 1) {
+            selectedItems.push(entries[i])
+          }
+        } else if (endRangePos > startRangePos) {
+          for (let i = startRangePos; i <= endRangePos; i += 1) {
+            selectedItems.push(entries[i])
+          }
+        } else {
+          selectedItems.push(entries[startRangePos])
         }
-      } else {
-        selectedItems.push(entries[startRangePos])
-      }
 
-      return selectedItems
-    })
-  }, [entries, setSelectedElements])
+        return selectedItems
+      })
+    },
+    [entries, setSelectedElements],
+  )
 
-  const onUnselectAll = useCallback(() => setSelectedElements((a) => a.length ? [] : a), [setSelectedElements])
+  const onUnselectAll = useCallback(
+    () => setSelectedElements((a) => (a.length ? [] : a)),
+    [setSelectedElements],
+  )
 
   return (
     <>
@@ -160,28 +168,26 @@ export default function DirectoryPathView({
         />
       </div>
 
-      {entries.length > 0
-        ? (
-          <DirectoryEntries
-            ref={entriesDivRef}
-            isRoot={isRoot}
-            module={module}
-            metadata={metadata}
-            entries={entries}
-            selectedElements={selectedElements}
-            onEntryMove={onEntryMove}
-            onEntryOpen={onEntryOpen}
-            onEntrySelected={onEntrySelected}
-            onEntryDeselected={onEntryDeselected}
-            onEntryRangeSelect={onEntryRangeSelect}
-            onUnselectAll={onUnselectAll}
-          />
-          )
-        : (
-          <div className="text-center text-text-secondary">
-            {filter.length === 0 ? 'This folder is empty' : 'No entries match the filter'}
-          </div>
-          )}
+      {entries.length > 0 ? (
+        <DirectoryEntries
+          ref={entriesDivRef}
+          isRoot={isRoot}
+          module={module}
+          metadata={metadata}
+          entries={entries}
+          selectedElements={selectedElements}
+          onEntryMove={onEntryMove}
+          onEntryOpen={onEntryOpen}
+          onEntrySelected={onEntrySelected}
+          onEntryDeselected={onEntryDeselected}
+          onEntryRangeSelect={onEntryRangeSelect}
+          onUnselectAll={onUnselectAll}
+        />
+      ) : (
+        <div className="text-text-secondary text-center">
+          {filter.length === 0 ? 'This folder is empty' : 'No entries match the filter'}
+        </div>
+      )}
     </>
   )
 }

@@ -1,11 +1,19 @@
 import fs from 'node:fs/promises'
 import { execa } from 'execa'
-
 import memoize from '../utils/memoize.ts'
 
 const extractDarwin = (line: string) => {
   const [
-    username, password, userIdentifier, groupIdentifier,,,, fullName, homeDirectory, shell,
+    username,
+    password,
+    userIdentifier,
+    groupIdentifier,
+    ,
+    ,
+    ,
+    fullName,
+    homeDirectory,
+    shell,
   ] = line.split(' ')
 
   return {
@@ -20,9 +28,8 @@ const extractDarwin = (line: string) => {
 }
 
 const extractLinux = (line: string) => {
-  const [
-    username, password, userIdentifier, groupIdentifier, fullName, homeDirectory, shell,
-  ] = line.split(' ')
+  const [username, password, userIdentifier, groupIdentifier, fullName, homeDirectory, shell] =
+    line.split(' ')
 
   return {
     username,
@@ -35,9 +42,11 @@ const extractLinux = (line: string) => {
   }
 }
 
-const getUser = (passwd: string, username: number | bigint | string) => passwd.split('\n')
-  .map(process.platform === 'linux' ? extractLinux : extractDarwin)
-  .find((user) => user.username === username || user.userIdentifier === BigInt(username))
+const getUser = (passwd: string, username: number | bigint | string) =>
+  passwd
+    .split('\n')
+    .map(process.platform === 'linux' ? extractLinux : extractDarwin)
+    .find((user) => user.username === username || user.userIdentifier === BigInt(username))
 
 export const passwd = memoize(async (username: number | bigint | string) => {
   if (process.platform === 'linux') {
@@ -64,7 +73,7 @@ export const group = memoize(async (groupId: bigint | number | string) => {
       groupIdentifier: BigInt(entry[2]),
       members: entry[3] ? entry[3].split(',') : [],
     }))
-  return entries.find((entry) => (
-    entry.groupname === groupId || entry.groupIdentifier === BigInt(groupId)
-  ))
+  return entries.find(
+    (entry) => entry.groupname === groupId || entry.groupIdentifier === BigInt(groupId),
+  )
 })

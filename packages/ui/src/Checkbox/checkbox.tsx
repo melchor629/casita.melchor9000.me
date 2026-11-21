@@ -5,6 +5,7 @@ export type CheckboxProps = Omit<ComponentProps<'input'>, 'type'>
 
 /**
  * A checkbox input. Only supports checked and unchecked states.
+ *
  * @param param0 Component props.
  */
 const Checkbox = ({ children, className, ...props }: ComponentProps<'input'>) => (

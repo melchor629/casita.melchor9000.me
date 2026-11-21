@@ -2,7 +2,13 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Plugin } from 'vite'
 import { transformPage } from './transform-csr.ts'
-import { csrEntryFilePath, csrEntryModuleId, getAppPath, ssrRoutesFilePath, ssrRoutesModuleId } from './utils.ts'
+import {
+  csrEntryFilePath,
+  csrEntryModuleId,
+  getAppPath,
+  ssrRoutesFilePath,
+  ssrRoutesModuleId,
+} from './utils.ts'
 
 type NiceSsrOptions = Readonly<{
   devTools?: Readonly<{
@@ -94,10 +100,12 @@ const niceSsrPlugin = (_: NiceSsrOptions = {}): Plugin => {
                     : filePath.endsWith('route.ts')
                       ? 'route'
                       : '_'
-              const pageName = path.dirname(filePath)
-                .replaceAll(/[[\]/]/g, '_')
-                .replaceAll(/_+/g, '_')
-                .replace(/_$/, '') || 'root-page'
+              const pageName =
+                path
+                  .dirname(filePath)
+                  .replaceAll(/[[\]/]/g, '_')
+                  .replaceAll(/_+/g, '_')
+                  .replace(/_$/, '') || 'root-page'
               return `.p/pages/${pageName}.${type}.[hash].js`
             }
           }

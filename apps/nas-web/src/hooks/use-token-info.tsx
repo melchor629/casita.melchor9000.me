@@ -1,12 +1,6 @@
 import { Text } from '@melchor629/ui'
 import { Log } from 'oidc-client-ts'
-import {
-  type PropsWithChildren,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-} from 'react'
+import { type PropsWithChildren, createContext, useContext, useEffect, useMemo } from 'react'
 import { useAuth } from 'react-oidc-context'
 import type { TokenApplication, TokenPermission } from '../api/token/token-info'
 import { AppLoader } from '../components/loaders'
@@ -30,7 +24,12 @@ export const TokenInfoContext = createContext<TokenInfo | null>(null)
 export function TokenInfoProvider({ children }: PropsWithChildren) {
   const {
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    activeNavigator, clearStaleState, error, isAuthenticated, isLoading, signinRedirect,
+    activeNavigator,
+    clearStaleState,
+    error,
+    isAuthenticated,
+    isLoading,
+    signinRedirect,
     user,
   } = useAuth()
   const { data: permissions } = usePermissions(isLoading || !user)
@@ -59,22 +58,48 @@ export function TokenInfoProvider({ children }: PropsWithChildren) {
 
   switch (activeNavigator) {
     case 'signinSilent':
-      return <AppLoader message="Signing you in..." navbarMargin />
+      return (
+        <AppLoader
+          message="Signing you in..."
+          navbarMargin
+        />
+      )
     case 'signoutRedirect':
-      return <AppLoader message="Logging out..." navbarMargin />
+      return (
+        <AppLoader
+          message="Logging out..."
+          navbarMargin
+        />
+      )
     default:
   }
 
   if (isLoading) {
-    return <AppLoader message="Loading..." navbarMargin />
+    return (
+      <AppLoader
+        message="Loading..."
+        navbarMargin
+      />
+    )
   }
 
   if (error) {
     return (
       <div className="mt-navbar px-4 py-2 text-center">
         <Text size="h2">There is an issue during login or relogin :(</Text>
-        <Text size="bodyLarge" color="textSecondary">Try to reload the page or contact the admin.</Text>
-        <Text size="bodySmall" color="textSecondary" italic>{error.message}</Text>
+        <Text
+          size="bodyLarge"
+          color="textSecondary"
+        >
+          Try to reload the page or contact the admin.
+        </Text>
+        <Text
+          size="bodySmall"
+          color="textSecondary"
+          italic
+        >
+          {error.message}
+        </Text>
       </div>
     )
   }
@@ -86,7 +111,12 @@ export function TokenInfoProvider({ children }: PropsWithChildren) {
   }
 
   if (user && !permissions) {
-    return <AppLoader message="Loading user permissions..." navbarMargin />
+    return (
+      <AppLoader
+        message="Loading user permissions..."
+        navbarMargin
+      />
+    )
   }
 
   return <TokenInfoContext.Provider value={tokenInfo}>{children}</TokenInfoContext.Provider>

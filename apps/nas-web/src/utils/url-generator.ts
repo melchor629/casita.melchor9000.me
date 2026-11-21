@@ -6,11 +6,15 @@ import * as path from './path'
 
 export const iina = (downloadUrl: string) => `iina://open?url=${encodeURIComponent(downloadUrl)}`
 
-export const androidIntent = (downloadUrl: string, mime: string) => `intent://${downloadUrl.substring(downloadUrl.indexOf('://') + 3)}#Intent;scheme=http;action=android.intent.action.VIEW;type=${mime};end`
+export const androidIntent = (downloadUrl: string, mime: string) =>
+  `intent://${downloadUrl.substring(downloadUrl.indexOf('://') + 3)}#Intent;scheme=http;action=android.intent.action.VIEW;type=${mime};end`
 
 export const plsFromFiles = async (module: string, files: FileMetadata[], apiClient: ApiClient) => {
   const mediaFiles = files
-    .filter((file) => file.mime && (file.mime.mime.startsWith('audio') || file.mime.mime.startsWith('video')))
+    .filter(
+      (file) =>
+        file.mime && (file.mime.mime.startsWith('audio') || file.mime.mime.startsWith('video')),
+    )
     .filter((file) => !file.hidden)
 
   if (mediaFiles.length === 0) {
@@ -18,7 +22,11 @@ export const plsFromFiles = async (module: string, files: FileMetadata[], apiCli
   }
 
   const baseUrlWithoutSlash = baseUrl.replace(/\/$/, '')
-  const { urls } = await createAlias(apiClient, module, mediaFiles.map((file) => file.path))
+  const { urls } = await createAlias(
+    apiClient,
+    module,
+    mediaFiles.map((file) => file.path),
+  )
   let pls = `[playlist]\nNumberOfEntries=${mediaFiles.length}\n`
   pls += mediaFiles
     .filter((file) => urls[file.path])
@@ -31,10 +39,8 @@ export const plsFromFiles = async (module: string, files: FileMetadata[], apiCli
   pls += '\n'
 
   const blob = new Blob([new TextEncoder().encode(pls)], { type: 'audio/x-scpls;charset=utf-8' })
-  const file = new File(
-    [blob],
-    `${path.basename(path.dirname(mediaFiles[0].path))}.pls`,
-    { type: 'audio/x-scpls;charset=utf-8' },
-  )
+  const file = new File([blob], `${path.basename(path.dirname(mediaFiles[0].path))}.pls`, {
+    type: 'audio/x-scpls;charset=utf-8',
+  })
   return URL.createObjectURL(file)
 }

@@ -9,7 +9,7 @@ export const {
 } = makeQuery((module?: string | null, item?: string | null) => ({
   queryKey: ['fs', module, 'media', 'library-item', item] as const,
   queryFn({ queryKey }) {
-    const [, module,,, itemId] = queryKey
+    const [, module, , , itemId] = queryKey
     if (module && itemId) {
       const { get } = getApiClient()
       return get<ItemMetadata | null>(`${baseUrl}${module}/media/${itemId}`)

@@ -42,21 +42,19 @@ const uploadCleanerProcessor = async (job: Job<UploadCleanerJobData>) => {
     // detect orphan upload files
     const orphanFiles = inDiskUploadPaths.filter((p) => !uploadPaths.find(([m]) => m === p))
     logger.debug(`Detected ${orphanFiles.length} orphan files to clean up`)
-    await Promise.all(orphanFiles.map((path) => {
-      logger.debug({ path, jobId: job.id }, `Removing ${path}`)
-      return fs.unlink(join(uploadPath, path))
-    }))
+    await Promise.all(
+      orphanFiles.map((path) => {
+        logger.debug({ path, jobId: job.id }, `Removing ${path}`)
+        return fs.unlink(join(uploadPath, path))
+      }),
+    )
 
     logger.info({ jobId: job.id }, 'Job finished for app')
   }
 }
 
-const uploadCleanerWorker = new BaseWorker(
-  queues.uploadCleaner,
-  uploadCleanerProcessor,
-  {
-    concurrency: 1,
-  },
-)
+const uploadCleanerWorker = new BaseWorker(queues.uploadCleaner, uploadCleanerProcessor, {
+  concurrency: 1,
+})
 
 export default uploadCleanerWorker

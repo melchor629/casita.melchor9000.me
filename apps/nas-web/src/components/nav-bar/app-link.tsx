@@ -10,7 +10,12 @@ type AppLinkProps = Readonly<{
 
 export default function AppLink({ appKey, name }: AppLinkProps) {
   const fn = useCallback(
-    ({ isActive }: NavLinkRenderProps) => <MenuItem label={capitalize(name)} selected={isActive} />,
+    ({ isActive }: NavLinkRenderProps) => (
+      <MenuItem
+        label={capitalize(name)}
+        selected={isActive}
+      />
+    ),
     [name],
   )
   return <NavLink to={`/${appKey}`}>{fn}</NavLink>

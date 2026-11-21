@@ -10,7 +10,11 @@ type AddApplicationPermissionDialogProps = Readonly<{
   setOpened: (v: boolean) => void
 }>
 
-const AddApplicationPermissionDialog = ({ applicationId, opened, setOpened }: AddApplicationPermissionDialogProps) => {
+const AddApplicationPermissionDialog = ({
+  applicationId,
+  opened,
+  setOpened,
+}: AddApplicationPermissionDialogProps) => {
   const addPermissionMutation = useAddPermission()
   const revalidate = useRevalidator()
   const [name, setName] = useState('')
@@ -18,8 +22,14 @@ const AddApplicationPermissionDialog = ({ applicationId, opened, setOpened }: Ad
   const [error, setError] = useState<string | null>(null)
 
   const onClose = useCallback(() => setOpened(false), [setOpened])
-  const nameChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => setName(e.currentTarget.value), [])
-  const displayNameChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => setDisplayName(e.currentTarget.value), [])
+  const nameChanged = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setName(e.currentTarget.value),
+    [],
+  )
+  const displayNameChanged = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setDisplayName(e.currentTarget.value),
+    [],
+  )
 
   const clearState = useCallback(() => {
     setName('')
@@ -28,21 +38,32 @@ const AddApplicationPermissionDialog = ({ applicationId, opened, setOpened }: Ad
     addPermissionMutation.reset()
   }, [addPermissionMutation])
 
-  const save = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const save = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
 
-    if (!name) {
-      setError('Name is required')
-      return
-    }
+      if (!name) {
+        setError('Name is required')
+        return
+      }
 
-    setError(null)
-    addPermissionMutation.mutate({
-      appKey: applicationId,
-      name,
-      displayName: displayName || null,
-    }, { onSuccess: () => { setOpened(false); void revalidate() } })
-  }, [name, addPermissionMutation, applicationId, displayName, setOpened, revalidate])
+      setError(null)
+      addPermissionMutation.mutate(
+        {
+          appKey: applicationId,
+          name,
+          displayName: displayName || null,
+        },
+        {
+          onSuccess: () => {
+            setOpened(false)
+            void revalidate()
+          },
+        },
+      )
+    },
+    [name, addPermissionMutation, applicationId, displayName, setOpened, revalidate],
+  )
 
   return (
     <Dialog
@@ -54,17 +75,42 @@ const AddApplicationPermissionDialog = ({ applicationId, opened, setOpened }: Ad
       onClose={onClose}
       onCloseEnd={clearState}
       buttons={[
-        <Button key="save" onClick={save} loading={addPermissionMutation.isPending}>Save</Button>,
+        <Button
+          key="save"
+          onClick={save}
+          loading={addPermissionMutation.isPending}
+        >
+          Save
+        </Button>,
       ]}
     >
       <FormControlLabel htmlFor="perm-name">Name</FormControlLabel>
-      <TextInput type="text" id="perm-name" value={name} onChange={nameChanged} />
+      <TextInput
+        type="text"
+        id="perm-name"
+        value={name}
+        onChange={nameChanged}
+      />
 
-      <FormControlLabel htmlFor="perm-name" margin="none">Display Name</FormControlLabel>
-      <TextInput type="text" id="perm-name" value={displayName} onChange={displayNameChanged} />
+      <FormControlLabel
+        htmlFor="perm-name"
+        margin="none"
+      >
+        Display Name
+      </FormControlLabel>
+      <TextInput
+        type="text"
+        id="perm-name"
+        value={displayName}
+        onChange={displayNameChanged}
+      />
 
       {error && <p className="text-orange-700 dark:text-orange-300">{error}</p>}
-      {addPermissionMutation.error && <p className="text-orange-700 dark:text-orange-300">{addPermissionMutation.error.message}</p>}
+      {addPermissionMutation.error && (
+        <p className="text-orange-700 dark:text-orange-300">
+          {addPermissionMutation.error.message}
+        </p>
+      )}
     </Dialog>
   )
 }

@@ -8,67 +8,59 @@
       "type": "node",
       "request": "launch",
       "name": "ledefault",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceFolder}/apps/ledefault",
       "program": "${workspaceFolder}/apps/ledefault/src/server.ts",
       "runtimeArgs": [],
       "env": {
-        "NODE_ENV": "development",
+        "NODE_ENV": "development"
       },
       "envFile": "${workspaceFolder}/apps/ledefault/.env",
-      "outputCapture": "std",
+      "outputCapture": "std"
     },
     {
       "type": "node",
       "request": "launch",
       "name": "nas-fs api",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceFolder}/apps/nas-fs",
       "program": "${workspaceFolder}/apps/nas-fs/src/index.ts",
       "args": ["api"],
       "runtimeArgs": [],
       "env": {
-        "NODE_ENV": "development",
+        "NODE_ENV": "development"
       },
       "envFile": "${workspaceFolder}/apps/nas-fs/.env",
-      "outputCapture": "std",
+      "outputCapture": "std"
     },
     {
       "type": "node",
       "request": "launch",
       "name": "nas-fs worker",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceFolder}/apps/nas-fs",
       "program": "${workspaceFolder}/apps/nas-fs/src/index.ts",
       "args": ["worker"],
       "runtimeArgs": [],
       "env": {
-        "NODE_ENV": "development",
+        "NODE_ENV": "development"
       },
       "envFile": "${workspaceFolder}/apps/nas-fs/.env",
-      "outputCapture": "std",
+      "outputCapture": "std"
     },
     {
       "type": "node",
       "request": "launch",
       "name": "nas-auth",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceFolder}/apps/nas-auth",
       "program": "${workspaceFolder}/apps/nas-auth/src/index.ts",
       "runtimeArgs": [],
       "env": {
-        "NODE_ENV": "development",
+        "NODE_ENV": "development"
       },
       "envFile": "${workspaceFolder}/apps/nas-auth/.env",
-      "outputCapture": "std",
-    },
+      "outputCapture": "std"
+    }
   ]
 }

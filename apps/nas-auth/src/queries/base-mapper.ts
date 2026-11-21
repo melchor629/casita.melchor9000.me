@@ -1,7 +1,7 @@
 import type { PgSelectedFieldsFlat } from '@melchor629/orm-nas-auth'
 import type * as schema from '@melchor629/orm-nas-auth/schema'
 
-export type Tables = Omit<(typeof schema), 'auth' | 'ApiResourceAccessTokenFormat'>
+export type Tables = Omit<typeof schema, 'auth' | 'ApiResourceAccessTokenFormat'>
 export type TableNames = keyof Tables
 
 type DefaultKey = Record<string, number | string>
@@ -40,16 +40,23 @@ type OrmMapperTypes<T extends OrmMapperMap> = {
   $key: TSKey<T>
 }
 
-export type OrmMapper<T extends OrmMapperMap> = Readonly<OrmMapperTypes<T> & {
-  /**
-   * DB selector that maps to the ORM model.
-   */
-  select: Record<keyof OrmMapperTypes<T>['$orm']['$select'], PgSelectedFieldsFlat['']>
-  toDto: (values: OrmMapperTypes<T>['$orm']['$select']) => OrmMapperTypes<T>['$dto']['$select']
-  fromDtoToInsert: (values: OrmMapperTypes<T>['$dto']['$insert']) => OrmMapperTypes<T>['$orm']['$insert']
-  fromDtoToUpdate: (values: OrmMapperTypes<T>['$dto']['$update']) => OrmMapperTypes<T>['$orm']['$update']
-}>
+export type OrmMapper<T extends OrmMapperMap> = Readonly<
+  OrmMapperTypes<T> & {
+    /**
+     * DB selector that maps to the ORM model.
+     */
+    select: Record<keyof OrmMapperTypes<T>['$orm']['$select'], PgSelectedFieldsFlat['']>
+    toDto: (values: OrmMapperTypes<T>['$orm']['$select']) => OrmMapperTypes<T>['$dto']['$select']
+    fromDtoToInsert: (
+      values: OrmMapperTypes<T>['$dto']['$insert'],
+    ) => OrmMapperTypes<T>['$orm']['$insert']
+    fromDtoToUpdate: (
+      values: OrmMapperTypes<T>['$dto']['$update'],
+    ) => OrmMapperTypes<T>['$orm']['$update']
+  }
+>
 
-export const makeMapper = <T extends OrmMapperMap>() =>
+export const makeMapper =
+  <T extends OrmMapperMap>() =>
   <const M extends Omit<OrmMapper<T>, `$${string}`>>(mapper: M) =>
     mapper as OrmMapper<T> & M

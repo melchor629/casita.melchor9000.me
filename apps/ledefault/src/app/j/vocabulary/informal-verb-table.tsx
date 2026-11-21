@@ -4,13 +4,17 @@ import JapaneseWithRomaji from './japanese-with-romaji'
 
 /**
  * Renders the verb conjugation table.
- * @param props props
+ *
+ * @param props Props
  */
 const InformalVerbTable = ({ result }: VocabularyComponentProps<InformalVerbDictionaryEntry>) => (
   <NaisTable>
     <thead>
       <tr>
-        <th className="w-0" aria-label="Empty" />
+        <th
+          className="w-0"
+          aria-label="Empty"
+        />
         <th>Positive</th>
         <th>Negative</th>
       </tr>
@@ -61,7 +65,9 @@ const InformalVerbTable = ({ result }: VocabularyComponentProps<InformalVerbDict
     </tbody>
     <thead>
       <tr>
-        <th><em>(formal)</em></th>
+        <th>
+          <em>(formal)</em>
+        </th>
         <th>Positive</th>
         <th>Negative</th>
       </tr>

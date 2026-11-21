@@ -4,11 +4,12 @@ import { getClient } from '../queries/index.ts'
 export default class GraphQLClientAdapter implements Adapter {
   /**
    * Finds the payload for the given element id
+   *
    * @param id The ID of the element
    * @returns The payload of the element if found
    */
   async find(id: string): Promise<AdapterPayload | undefined> {
-    return await getClient(id) ?? undefined
+    return (await getClient(id)) ?? undefined
   }
 
   upsert(): Promise<void> {

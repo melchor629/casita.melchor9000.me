@@ -26,25 +26,49 @@ export default function FilePathView({ metadata, module }: FilePathViewProps) {
   }, [module, metadata.path, apiClient])
 
   return (
-    <div className="mt-6 pb-6 flex flex-col gap-4">
+    <div className="mt-6 flex flex-col gap-4 pb-6">
       {metadata.mime?.mime.startsWith('audio/') && downloadUrl && (
         <div>
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-          <audio src={downloadUrl} controls preload="none" className="w-full" />
+          <audio
+            src={downloadUrl}
+            controls
+            preload="none"
+            className="w-full"
+          />
         </div>
       )}
 
-      {metadata.mime && downloadUrl && (
-        metadata.mime.mime.startsWith('image/')
-          ? <img src={downloadUrl} alt={path.basename(metadata.path)} className="text-center" />
-          : <ImagesFilePathView module={module} metadata={metadata} />
-      )}
+      {metadata.mime
+        && downloadUrl
+        && (metadata.mime.mime.startsWith('image/') ? (
+          <img
+            src={downloadUrl}
+            alt={path.basename(metadata.path)}
+            className="text-center"
+          />
+        ) : (
+          <ImagesFilePathView
+            module={module}
+            metadata={metadata}
+          />
+        ))}
 
-      {metadata.mime?.isText && <CodeHighlightView module={module} path={metadata.path} />}
+      {metadata.mime?.isText && (
+        <CodeHighlightView
+          module={module}
+          path={metadata.path}
+        />
+      )}
       {metadata.audioTags && <AudioTagsView tags={metadata.audioTags} />}
       {metadata.mediainfo && <MediaInfoView mediainfo={metadata.mediainfo} />}
       {metadata.exif && <ExifView exif={metadata.exif} />}
-      {metadata.mime?.mime === 'application/pdf' && <PdfView module={module} path={metadata.path} />}
+      {metadata.mime?.mime === 'application/pdf' && (
+        <PdfView
+          module={module}
+          path={metadata.path}
+        />
+      )}
     </div>
   )
 }

@@ -111,7 +111,10 @@ export default class FSEvents {
     return this.eventListeners[event].length ?? 0
   }
 
-  private emit<TEvent extends keyof EventListeners>(event: TEvent, ...payload: Parameters<EventListeners[TEvent]>) {
+  private emit<TEvent extends keyof EventListeners>(
+    event: TEvent,
+    ...payload: Parameters<EventListeners[TEvent]>
+  ) {
     // @ts-expect-error ??¿
     this.eventListeners[event].forEach((cbk) => cbk(...payload))
   }
@@ -126,7 +129,9 @@ export default class FSEvents {
     this.#source = new EventSource(url)
     this.#source.addEventListener('open', () => this.emit('open'))
     this.#source.addEventListener('error', (ev) => this.emit('error', (ev as ErrorEvent).error))
-    this.#source.addEventListener('message', (ev) => this.emit('message', JSON.parse(ev.data as string) as unknown))
+    this.#source.addEventListener('message', (ev) =>
+      this.emit('message', JSON.parse(ev.data as string) as unknown),
+    )
     Object.keys(this.eventListeners)
       .filter((key) => !['open', 'error', 'message'].includes(key))
       .forEach((key) => this.#source!.addEventListener(key, this.handleEvent))

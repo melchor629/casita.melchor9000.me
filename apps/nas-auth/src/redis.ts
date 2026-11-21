@@ -44,9 +44,21 @@ const client = createClient({
         return {current, timeWindow}
       `,
       NUMBER_OF_KEYS: 1,
-      parseCommand(parser: CommandParser, key: string, timeWindow: number, max: number, continueExceeding: boolean, exponentialBackoff: boolean) {
+      parseCommand(
+        parser: CommandParser,
+        key: string,
+        timeWindow: number,
+        max: number,
+        continueExceeding: boolean,
+        exponentialBackoff: boolean,
+      ) {
         parser.pushKey(key)
-        parser.push(timeWindow.toString(), max.toString(), continueExceeding.toString(), exponentialBackoff.toString())
+        parser.push(
+          timeWindow.toString(),
+          max.toString(),
+          continueExceeding.toString(),
+          exponentialBackoff.toString(),
+        )
       },
       transformReply: (reply: number[]) => Object.freeze([reply[0], reply[1]] as const),
     }),
@@ -54,8 +66,8 @@ const client = createClient({
 })
 
 client.connect().catch(() => {})
-client.on('error', () => {});
+client.on('error', () => {})
 
-['SIGINT', 'SIGTERM'].map((signal) => process.once(signal, () => void client.quit()))
+;['SIGINT', 'SIGTERM'].map((signal) => process.once(signal, () => void client.quit()))
 
 export default client

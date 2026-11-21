@@ -4,15 +4,17 @@ import { ValidationError } from '#actions/helpers.ts'
 import { useChangeUserPassword } from '#actions/mutations/change-user-password.ts'
 import { useGetSession } from '#actions/queries/get-session.ts'
 
-export default function ChangePasswordDialog({ onClose, show }: Readonly<{ show: boolean, onClose(): void }>) {
+export default function ChangePasswordDialog({
+  onClose,
+  show,
+}: Readonly<{ show: boolean; onClose(): void }>) {
   const { data } = useGetSession()
   const login = useMemo(() => data?.user.logins.find((l) => l.type === 'local'), [data])
   const formRef = useRef<HTMLDivElement>(null)
   const changeUserPassword = useChangeUserPassword()
   const validations = useMemo(
-    () => changeUserPassword.error instanceof ValidationError
-      ? changeUserPassword.error.fields
-      : {},
+    () =>
+      changeUserPassword.error instanceof ValidationError ? changeUserPassword.error.fields : {},
     [changeUserPassword.error],
   )
   return (
@@ -22,7 +24,11 @@ export default function ChangePasswordDialog({ onClose, show }: Readonly<{ show:
       show={show}
       onClose={onClose}
       buttons={[
-        <Button key="change" type="submit" loading={changeUserPassword.isPending}>
+        <Button
+          key="change"
+          type="submit"
+          loading={changeUserPassword.isPending}
+        >
           Change
         </Button>,
       ]}
@@ -32,20 +38,23 @@ export default function ChangePasswordDialog({ onClose, show }: Readonly<{ show:
       slotProps={{
         container: {
           ref: formRef,
-          onSubmit: useCallback((e: SubmitEvent<HTMLDivElement>) => {
-            e.preventDefault()
-            changeUserPassword.mutate(new FormData(e.target), {
-              onSuccess: () => {
-                onClose()
-                window.location.search = ''
-              },
-            })
-          }, [changeUserPassword, onClose]),
+          onSubmit: useCallback(
+            (e: SubmitEvent<HTMLDivElement>) => {
+              e.preventDefault()
+              changeUserPassword.mutate(new FormData(e.target), {
+                onSuccess: () => {
+                  onClose()
+                  window.location.search = ''
+                },
+              })
+            },
+            [changeUserPassword, onClose],
+          ),
         },
       }}
       portal
       onCloseEnd={useCallback(() => {
-        (formRef.current as unknown as HTMLFormElement)?.reset()
+        ;(formRef.current as unknown as HTMLFormElement)?.reset()
         changeUserPassword.reset()
       }, [changeUserPassword])}
     >

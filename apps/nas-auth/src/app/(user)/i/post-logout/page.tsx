@@ -12,25 +12,30 @@ type PostLogoutPageProps = Readonly<{
 export default function PostLogoutPage({ clientName, clientUri }: PostLogoutPageProps) {
   return (
     <div>
-      <Text size="h2" className="mb-4">Sign-out succesfully</Text>
+      <Text
+        size="h2"
+        className="mb-4"
+      >
+        Sign-out succesfully
+      </Text>
       <Text>
         Your sign-out
         {clientName ? ` with ${clientName} ` : ' '}
         was succesful.
-        {clientUri
-          ? (
-            <>
-              You can now go back to the
-              {' '}
-              <a href={clientUri} rel="noopener">application page</a>
-              or close the tab.
-            </>
-            )
-          : (
-            <>
-              You can now close the tab.
-            </>
-            )}
+        {clientUri ? (
+          <>
+            You can now go back to the{' '}
+            <a
+              href={clientUri}
+              rel="noopener"
+            >
+              application page
+            </a>
+            or close the tab.
+          </>
+        ) : (
+          <>You can now close the tab.</>
+        )}
       </Text>
     </div>
   )

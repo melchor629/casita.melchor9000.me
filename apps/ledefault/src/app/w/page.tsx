@@ -15,21 +15,23 @@ export const metadata: Metadata = {
 }
 
 export const loader: PageLoader<PageProps> = async (req) => {
-  const sub = await getUser(req)
-    .then((res) => res.type === 'success' ? res.data.sub : '')
+  const sub = await getUser(req).then((res) => (res.type === 'success' ? res.data.sub : ''))
   return {
-    entries: entries
-      .filter((subEntries) => subEntries === 'space' || !subEntries.limitedTo || subEntries.limitedTo.includes(sub)),
+    entries: entries.filter(
+      (subEntries) =>
+        subEntries === 'space' || !subEntries.limitedTo || subEntries.limitedTo.includes(sub),
+    ),
   }
 }
 
 function DaLink({ entry }: { readonly entry: Entry }) {
   const [showTooltip, setShowTooltip] = useState(false)
-  const { floatingStyles, refs: { setFloating, setReference } } = useFloating({
+  const {
+    floatingStyles,
+    refs: { setFloating, setReference },
+  } = useFloating({
     strategy: 'fixed',
-    middleware: [
-      offset({ mainAxis: 12 }),
-    ],
+    middleware: [offset({ mainAxis: 12 })],
     open: showTooltip,
     whileElementsMounted: autoUpdate,
   })
@@ -59,13 +61,17 @@ function DaLink({ entry }: { readonly entry: Entry }) {
         onMouseLeave={useCallback(() => setShowTooltip(false), [])}
         rel="noreferrer"
       >
-        {entry.icon
-          ? <img className="size-12" src={ownImages[entry.icon as never] ?? entry.icon} alt={`${entry.name} icon`} />
-          : <div className="flex justify-center items-center size-12">{entry.id}</div>}
-
-        {entry.label && (
-          <div className="absolute right-6 bottom-6">{entry.label}</div>
+        {entry.icon ? (
+          <img
+            className="size-12"
+            src={ownImages[entry.icon as never] ?? entry.icon}
+            alt={`${entry.name} icon`}
+          />
+        ) : (
+          <div className="flex size-12 items-center justify-center">{entry.id}</div>
         )}
+
+        {entry.label && <div className="absolute right-6 bottom-6">{entry.label}</div>}
       </a>
 
       <div
@@ -96,34 +102,41 @@ export default function DashboardPage({ entries }: PageProps) {
   const navigate = useNavigate()
   const blocker = useBlocker(true)
 
-  const fadeout = useCallback(() => (
-    divRef.current!.animate([
-      { opacity: 1 },
-      { opacity: 0 },
-    ], {
-      duration: 2000,
-      easing: 'ease-in-out',
-    })
-      .finished
-      .then(() => setFadeInEnded(false))
-  ), [])
+  const fadeout = useCallback(
+    () =>
+      divRef
+        .current!.animate([{ opacity: 1 }, { opacity: 0 }], {
+          duration: 2000,
+          easing: 'ease-in-out',
+        })
+        .finished.then(() => setFadeInEnded(false)),
+    [],
+  )
 
   useEffect(() => {
     const abtctrl = new AbortController()
-    window.addEventListener('keyup', (event) => {
-      if (event.key === 'h') {
-        navigate('/')
-      } else if (event.key === 'j') {
-        navigate('/j/')
-      }
-      abtctrl.abort()
-    }, { passive: true, signal: abtctrl.signal })
-    return () => { if (!abtctrl.signal.aborted) abtctrl.abort() }
+    window.addEventListener(
+      'keyup',
+      (event) => {
+        if (event.key === 'h') {
+          navigate('/')
+        } else if (event.key === 'j') {
+          navigate('/j/')
+        }
+        abtctrl.abort()
+      },
+      { passive: true, signal: abtctrl.signal },
+    )
+    return () => {
+      if (!abtctrl.signal.aborted) abtctrl.abort()
+    }
   }, [navigate])
 
   useEffect(() => {
     if (blocker.state === 'blocked') {
-      fadeout().catch(() => {}).finally(() => blocker.proceed())
+      fadeout()
+        .catch(() => {})
+        .finally(() => blocker.proceed())
     }
   }, [blocker, fadeout])
 
@@ -138,12 +151,20 @@ export default function DashboardPage({ entries }: PageProps) {
       )}
       onAnimationEnd={useCallback(() => setFadeInEnded((v) => !v), [])}
     >
-      {entries.map((entry, i) => (
-        entry === 'space'
+      {entries.map((entry, i) =>
+        entry === 'space' ? (
           // eslint-disable-next-line react/no-array-index-key
-          ? <div key={`space-${i}`} className="grow w-full" />
-          : <DaLink key={entry.id} entry={entry} />
-      ))}
+          <div
+            key={`space-${i}`}
+            className="w-full grow"
+          />
+        ) : (
+          <DaLink
+            key={entry.id}
+            entry={entry}
+          />
+        ),
+      )}
     </div>
   )
 }

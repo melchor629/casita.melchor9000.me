@@ -3,7 +3,7 @@ import { cache, SsrResponse, type SsrRequest } from '@melchor629/nice-ssr'
 import { getPermissionsForUser } from '#queries/index.ts'
 import oidc from '../../oidc/oidc.ts'
 
-type Permission = { key: string, write: boolean, delete: boolean }
+type Permission = { key: string; write: boolean; delete: boolean }
 type Permissions = readonly Permission[] & { get(key: string): Permission | null }
 
 export type NextRouteContext = {
@@ -32,6 +32,7 @@ export const getSession = cache((headers: Headers) => {
 /**
  * Decorates the handler with the current session if any, optionally blocking the request if there
  * is no session.
+ *
  * @param fn Handler to decorate
  * @param options Options for the decorator
  * @returns The decorated handler
@@ -40,16 +41,16 @@ export const withSession = <Params extends Record<string, string> = Record<never
   fn: NextRouteHandler<Params, NextRouteContext>,
   { ensure }: { ensure?: boolean } = {},
 ) =>
-    async function withSessionDecorator(request: SsrRequest<Params>) {
-      const context: NextRouteContext = {
-        session: await getSession(request.headers),
-      }
-
-      if (!context.session.accountId && ensure) {
-        return SsrResponse.json({ error: true, message: 'Forbidden' }, { status: 401 })
-      }
-      return fn(request, context)
+  async function withSessionDecorator(request: SsrRequest<Params>) {
+    const context: NextRouteContext = {
+      session: await getSession(request.headers),
     }
+
+    if (!context.session.accountId && ensure) {
+      return SsrResponse.json({ error: true, message: 'Forbidden' }, { status: 401 })
+    }
+    return fn(request, context)
+  }
 
 export const getPermissions = cache(async (accountId?: string | null): Promise<Permissions> => {
   if (!accountId) {
@@ -72,10 +73,13 @@ export const getPermissions = cache(async (accountId?: string | null): Promise<P
 
 /**
  * Decorates the handler with the permissions from the current user
+ *
  * @param fn Handler to decorate
  * @returns The decorated handler
  */
-export const withPermissions = <Params extends Record<string, string> = Record<never, string>>(fn: NextRouteHandler<Params, NextRouteContext>) =>
+export const withPermissions = <Params extends Record<string, string> = Record<never, string>>(
+  fn: NextRouteHandler<Params, NextRouteContext>,
+) =>
   async function withPermissionsDecorator(request: SsrRequest<Params>, context: NextRouteContext) {
     const { accountId } = context.session
     context.permissions = await getPermissions(accountId)

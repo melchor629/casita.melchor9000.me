@@ -6,10 +6,16 @@
       "outputs": ["dist/**"]
     },
     "check": {
-      "dependsOn": ["^check"]
+      "dependsOn": ["check:lint", "check:fmt", "check:ts"]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
+    "check:lint": {
+      "dependsOn": ["^check:lint"]
+    },
+    "check:fmt": {
+      "dependsOn": ["^check:fmt"]
+    },
+    "check:ts": {
+      "dependsOn": ["^check:ts"]
     },
     "docker": {},
     "dev": {

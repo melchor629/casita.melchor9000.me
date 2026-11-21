@@ -10,7 +10,10 @@ type EditApplicationData = Readonly<{
   name: string
 }>
 
-async function editApplicationAction(context: PageLoaderContext, { key, ...data }: EditApplicationData) {
+async function editApplicationAction(
+  context: PageLoaderContext,
+  { key, ...data }: EditApplicationData,
+) {
   const sessionResult = await ensureSession(context, 'application', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult

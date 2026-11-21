@@ -7,13 +7,7 @@ import type {
   SigningAlgorithmWithNone,
   SymmetricSigningAlgorithm,
 } from 'oidc-provider'
-import {
-  useCallback,
-  useMemo,
-  useState,
-  type ChangeEvent,
-  type MouseEvent,
-} from 'react'
+import { useCallback, useMemo, useState, type ChangeEvent, type MouseEvent } from 'react'
 import CheckboxList from '#components/ui/checkbox-list.tsx'
 import { useEditClient } from '../../../actions/mutations/edit-client'
 import { useRemoveClient } from '../../../actions/mutations/remove-client'
@@ -71,9 +65,10 @@ const defaultApiResourcesProp = 'urn:custom:client:default-api-resources'
 const setPkceOptionalProp = 'urn:custom:client:set-pkce-optional'
 
 const apiResourceKeySelector = ({ key }: ApiResource) => key
-const apiResourceLabelSelector = ({ audience, name }: ApiResource) => (audience ? `${name} (${audience})` : name)
+const apiResourceLabelSelector = ({ audience, name }: ApiResource) =>
+  audience ? `${name} (${audience})` : name
 
-type ApiResource = { audience?: string, key: string, name: string }
+type ApiResource = { audience?: string; key: string; name: string }
 type EditClientProps = Readonly<{
   apiResources: ReadonlyArray<ApiResource>
   canDelete: boolean
@@ -105,9 +100,12 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
     setClient((c) => ({ ...c, token_endpoint_auth_method: newValue || undefined }))
   }, [])
 
-  const idTokenSignedResponseAlgChanged = useCallback((newValue: SigningAlgorithmWithNone | '' | null) => {
-    setClient((c) => ({ ...c, id_token_signed_response_alg: newValue || undefined }))
-  }, [])
+  const idTokenSignedResponseAlgChanged = useCallback(
+    (newValue: SigningAlgorithmWithNone | '' | null) => {
+      setClient((c) => ({ ...c, id_token_signed_response_alg: newValue || undefined }))
+    },
+    [],
+  )
 
   const defaultApiResourceChanged = useCallback((apiResource: ApiResource | null) => {
     setClient((c) => ({ ...c, [defaultApiResourcesProp]: apiResource?.key || undefined }))
@@ -118,33 +116,42 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
     setClient((c) => ({ ...c, [setPkceOptionalProp]: checked }))
   }, [])
 
-  const save = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const save = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
 
-    if (readOnly) {
-      return
-    }
+      if (readOnly) {
+        return
+      }
 
-    const { client_id: clientId, client_name: clientName, ...fields } = client
-    editClientMutation.mutate({
-      clientId,
-      clientName: clientName!,
-      ...fields,
-    })
-  }, [readOnly, client, editClientMutation])
+      const { client_id: clientId, client_name: clientName, ...fields } = client
+      editClientMutation.mutate({
+        clientId,
+        clientName: clientName!,
+        ...fields,
+      })
+    },
+    [readOnly, client, editClientMutation],
+  )
 
-  const remove = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const remove = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
 
-    if (readOnly || !canDelete) {
-      return
-    }
+      if (readOnly || !canDelete) {
+        return
+      }
 
-    removeClientMutation.mutate(client.client_id)
-  }, [readOnly, canDelete, removeClientMutation, client.client_id])
+      removeClientMutation.mutate(client.client_id)
+    },
+    [readOnly, canDelete, removeClientMutation, client.client_id],
+  )
 
   return (
-    <fieldset className="my-2" disabled={readOnly || editClientMutation.isPending}>
+    <fieldset
+      className="my-2"
+      disabled={readOnly || editClientMutation.isPending}
+    >
       <FormControlLabel htmlFor="client-id">Client ID</FormControlLabel>
       <TextInput
         type="text"
@@ -153,7 +160,12 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         readOnly
       />
 
-      <FormControlLabel htmlFor="client-name" margin="normal">Client Name</FormControlLabel>
+      <FormControlLabel
+        htmlFor="client-name"
+        margin="normal"
+      >
+        Client Name
+      </FormControlLabel>
       <TextInput
         type="text"
         id="client-name"
@@ -163,7 +175,12 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         readOnly={readOnly}
       />
 
-      <FormControlLabel htmlFor="app-uri" margin="normal">Application URI</FormControlLabel>
+      <FormControlLabel
+        htmlFor="app-uri"
+        margin="normal"
+      >
+        Application URI
+      </FormControlLabel>
       <TextInput
         type="url"
         id="app-uri"
@@ -173,7 +190,12 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         readOnly={readOnly}
       />
 
-      <FormControlLabel htmlFor="tos-uri" margin="normal">Terms Of Service URI</FormControlLabel>
+      <FormControlLabel
+        htmlFor="tos-uri"
+        margin="normal"
+      >
+        Terms Of Service URI
+      </FormControlLabel>
       <TextInput
         type="url"
         id="tos-uri"
@@ -183,7 +205,12 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         readOnly={readOnly}
       />
 
-      <FormControlLabel htmlFor="policy-uri" margin="normal">Privacy Policy URI</FormControlLabel>
+      <FormControlLabel
+        htmlFor="policy-uri"
+        margin="normal"
+      >
+        Privacy Policy URI
+      </FormControlLabel>
       <TextInput
         type="url"
         id="policy-uri"
@@ -193,7 +220,12 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         readOnly={readOnly}
       />
 
-      <FormControlLabel htmlFor="logo-uri" margin="normal">Logo URI</FormControlLabel>
+      <FormControlLabel
+        htmlFor="logo-uri"
+        margin="normal"
+      >
+        Logo URI
+      </FormControlLabel>
       <TextInput
         type="url"
         id="logo-uri"
@@ -219,7 +251,12 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         options={responseTypes}
       />
 
-      <FormControlLabel htmlFor="token-endpoint-auth-method" margin="normal">Token Endpoint Auth Method</FormControlLabel>
+      <FormControlLabel
+        htmlFor="token-endpoint-auth-method"
+        margin="normal"
+      >
+        Token Endpoint Auth Method
+      </FormControlLabel>
       <Select
         className="block w-full"
         id="token-endpoint-auth-method"
@@ -229,28 +266,36 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         values={clientAuthMethod}
       />
 
-      {(
-        client.token_endpoint_auth_method === 'client_secret_basic'
-          || client.token_endpoint_auth_method === 'client_secret_post'
-      )
-        ? (
-          <>
-            <FormControlLabel htmlFor="client-secret" margin="normal">Client Secret</FormControlLabel>
-            <TextInput
-              type="text"
-              id="client-secret"
-              name="client_secret"
-              value={client.client_secret || ''}
-              onChange={genericOnChange}
-              readOnly={readOnly}
-            />
-          </>
-          )
-        : client.token_endpoint_auth_method && (
+      {client.token_endpoint_auth_method === 'client_secret_basic'
+      || client.token_endpoint_auth_method === 'client_secret_post' ? (
+        <>
+          <FormControlLabel
+            htmlFor="client-secret"
+            margin="normal"
+          >
+            Client Secret
+          </FormControlLabel>
+          <TextInput
+            type="text"
+            id="client-secret"
+            name="client_secret"
+            value={client.client_secret || ''}
+            onChange={genericOnChange}
+            readOnly={readOnly}
+          />
+        </>
+      ) : (
+        client.token_endpoint_auth_method && (
           <div>{`Not implemented ${client.token_endpoint_auth_method}`}</div>
-        )}
+        )
+      )}
 
-      <FormControlLabel htmlFor="id-token-signed-response-alg" margin="normal">ID Token Signed Response Algorithm</FormControlLabel>
+      <FormControlLabel
+        htmlFor="id-token-signed-response-alg"
+        margin="normal"
+      >
+        ID Token Signed Response Algorithm
+      </FormControlLabel>
       <Select
         className="block w-full"
         id="id-token-signed-response-alg"
@@ -267,7 +312,7 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
           <Checkbox
             id="set-pkce-optional"
             name="set-pkce-optional"
-            checked={client[setPkceOptionalProp] as boolean ?? false}
+            checked={(client[setPkceOptionalProp] as boolean) ?? false}
             onChange={setPkceDisabledChanged}
           />
         }
@@ -278,13 +323,27 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
       <div className="my-6" />
 
       <FormControlLabel htmlFor="redirect_uris">Redirect URIs</FormControlLabel>
-      <EditUrls client={client} setClient={setClient} field="redirect_uris" />
+      <EditUrls
+        client={client}
+        setClient={setClient}
+        field="redirect_uris"
+      />
 
-      <FormControlLabel htmlFor="post_logout_redirect_uris">Post Logout Redirect URIs</FormControlLabel>
-      <EditUrls client={client} setClient={setClient} field="post_logout_redirect_uris" />
+      <FormControlLabel htmlFor="post_logout_redirect_uris">
+        Post Logout Redirect URIs
+      </FormControlLabel>
+      <EditUrls
+        client={client}
+        setClient={setClient}
+        field="post_logout_redirect_uris"
+      />
 
       <FormControlLabel htmlFor={corsProp}>CORS Origins</FormControlLabel>
-      <EditUrls client={client} setClient={setClient} field={corsProp} />
+      <EditUrls
+        client={client}
+        setClient={setClient}
+        field={corsProp}
+      />
 
       <FormControlLabel htmlFor="default-api-resource">Default API Resource</FormControlLabel>
       <Select
@@ -292,13 +351,13 @@ const EditClient = ({ apiResources, canDelete, client: c, readOnly }: EditClient
         id="default-api-resource"
         name={defaultApiResourcesProp}
         onChange={defaultApiResourceChanged}
-        value={{ key: client[defaultApiResourcesProp] as string || '', name: '' }}
+        value={{ key: (client[defaultApiResourcesProp] as string) || '', name: '' }}
         values={useMemo(() => [{ key: '', name: 'Not Selected' }, ...apiResources], [apiResources])}
         keySelector={apiResourceKeySelector}
         labelSelector={apiResourceLabelSelector}
       />
 
-      <div className="flex justify-end gap-2 mt-4">
+      <div className="mt-4 flex justify-end gap-2">
         {!readOnly && (
           <Button
             type="button"

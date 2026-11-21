@@ -119,8 +119,8 @@ interface GenreItem {
   title: string
 }
 
-export type Item = (
-  ShowItem
+export type Item =
+  | ShowItem
   | MovieItem
   | CollectionType
   | ArtistItem
@@ -131,7 +131,6 @@ export type Item = (
   | ActorItem
   | DirectorItem
   | GenreItem
-)
 
 export interface Tag {
   id: number | string
@@ -252,14 +251,13 @@ interface CollectionMetadata {
   itemCount: number
 }
 
-export type ItemMetadata = (
-  ArtistItemMetadata
+export type ItemMetadata =
+  | ArtistItemMetadata
   | AlbumItemMetadata
   | MovieItemMetadata
   | ShowItemMetadata
   | SeasonItemMetadata
   | CollectionMetadata
-)
 
 export interface SearchResults {
   areas: SearchResultArea[]

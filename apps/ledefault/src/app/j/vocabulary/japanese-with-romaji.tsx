@@ -20,7 +20,7 @@ const JapaneseWithRomaji = ({ otherValue, value }: JapaneseWithRomajiProps) => (
     )}
   >
     <span>{value}</span>
-    <span className="absolute top-0 left-0 w-full opacity-0 jp-furi">
+    <span className="jp-furi absolute top-0 left-0 w-full opacity-0">
       {useMemo(() => otherValue || toRomaji(value), [value, otherValue])}
     </span>
   </div>

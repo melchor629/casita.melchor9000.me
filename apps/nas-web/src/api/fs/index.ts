@@ -12,10 +12,11 @@ import type {
 } from './jobs'
 import type { ThumbnailManifest, ThumbnailRequestOptions } from './thumbnail-manifest'
 
-export const sanitizePathForUrl = (unsanitizedPath: string) => unsanitizedPath
-  .split('/')
-  .map((s) => encodeURIComponent(s))
-  .join('/')
+export const sanitizePathForUrl = (unsanitizedPath: string) =>
+  unsanitizedPath
+    .split('/')
+    .map((s) => encodeURIComponent(s))
+    .join('/')
 
 export async function getDownloadUrl(
   module: string,
@@ -33,7 +34,8 @@ export async function getDownloadUrl(
   apiClient: ApiClient,
 ): Promise<string | string[]> {
   const token = await apiClient.getAccessToken()
-  const generateUrl = (p: string) => `${baseUrl}${Path.join(module, 'storage', sanitizePathForUrl(p || '/'))}?token=${token}`
+  const generateUrl = (p: string) =>
+    `${baseUrl}${Path.join(module, 'storage', sanitizePathForUrl(p || '/'))}?token=${token}`
   if (Array.isArray(path)) {
     return path.map(generateUrl)
   }
@@ -48,23 +50,22 @@ export const downloadFile = (
   signal?: AbortSignal,
 ) => getRaw(`${module}/storage/${sanitizePathForUrl(path)}`, type, { signal })
 
-export const openFileSystemEvents = (module: string, apiClient: ApiClient) => (
+export const openFileSystemEvents = (module: string, apiClient: ApiClient) =>
   FSEvents.createForModule(module, apiClient)
-)
 
 export const move = (
   { post }: ApiClient,
   module: string,
   path: string,
   newPath: string,
-): Promise<{ done: true, path: string }> => post(`${module}/move`, { path: path || '.', newPath })
+): Promise<{ done: true; path: string }> => post(`${module}/move`, { path: path || '.', newPath })
 
 export const rename = (
   apiClient: ApiClient,
   module: string,
   path: string,
   newName: string,
-): Promise<{ done: true, path: string }> => {
+): Promise<{ done: true; path: string }> => {
   const newPath = Path.join(Path.dirname(path), newName)
   return move(apiClient, module, path, newPath)
 }
@@ -81,14 +82,16 @@ export const newFolder = (
   module: string,
   path: string,
   folderName: string,
-): Promise<{ done: true, path: string }> => post(`${baseUrl}${module}/new-folder`, { path: path || '.', folderName })
+): Promise<{ done: true; path: string }> =>
+  post(`${baseUrl}${module}/new-folder`, { path: path || '.', folderName })
 
 export const getThumbnailManifest = (
   { get }: ApiClient,
   module: string,
   path: string,
   signal?: AbortSignal,
-): Promise<ThumbnailManifest> => get(`${baseUrl}${Path.join(module, 'thumbnail-manifest', sanitizePathForUrl(path))}`, { signal })
+): Promise<ThumbnailManifest> =>
+  get(`${baseUrl}${Path.join(module, 'thumbnail-manifest', sanitizePathForUrl(path))}`, { signal })
 
 export const getThumbnailUrl = (
   module: string,
@@ -107,15 +110,20 @@ export const getThumbnail = (
   { getRaw }: ApiClient,
   module: string,
   path: string,
-  opts: ThumbnailRequestOptions & { signal?: AbortSignal | null, cache?: boolean } = {},
-): Promise<Blob> => getRaw(getThumbnailUrl(module, path, opts), 'blob', { signal: opts.signal, cache: opts.cache ? 'default' : 'reload' })
+  opts: ThumbnailRequestOptions & { signal?: AbortSignal | null; cache?: boolean } = {},
+): Promise<Blob> =>
+  getRaw(getThumbnailUrl(module, path, opts), 'blob', {
+    signal: opts.signal,
+    cache: opts.cache ? 'default' : 'reload',
+  })
 
 export const startUpload = (
   { put }: ApiClient,
   module: string,
   directoryPath: string,
   fileName: string,
-): Promise<{ uploadToken: string }> => put(`${baseUrl}${Path.join(module, 'upload')}`, { directoryPath, fileName })
+): Promise<{ uploadToken: string }> =>
+  put(`${baseUrl}${Path.join(module, 'upload')}`, { directoryPath, fileName })
 
 export const resumeUpload = (
   { put }: ApiClient,
@@ -123,9 +131,13 @@ export const resumeUpload = (
   directoryPath: string,
   fileName: string,
   uploadToken: string,
-): Promise<{ uploadToken: string, startPosition: number }> => put(`${baseUrl}${Path.join(module, 'upload')}`, {
-  directoryPath, fileName, resume: true, uploadToken,
-})
+): Promise<{ uploadToken: string; startPosition: number }> =>
+  put(`${baseUrl}${Path.join(module, 'upload')}`, {
+    directoryPath,
+    fileName,
+    resume: true,
+    uploadToken,
+  })
 
 export const endUpload = (
   { patch }: ApiClient,
@@ -133,8 +145,11 @@ export const endUpload = (
   uploadToken: string,
 ): Promise<void> => patch(`${baseUrl}${Path.join(module, 'upload', uploadToken)}`, {})
 
-export const cancelUpload = ({ del }: ApiClient, module: string, uploadToken: string): Promise<void> =>
-  del(`${baseUrl}${Path.join(module, 'upload', uploadToken)}`)
+export const cancelUpload = (
+  { del }: ApiClient,
+  module: string,
+  uploadToken: string,
+): Promise<void> => del(`${baseUrl}${Path.join(module, 'upload', uploadToken)}`)
 
 export const doUpload = (
   { post }: ApiClient,
@@ -146,7 +161,7 @@ export const doUpload = (
   const data = new FormData()
   data.append('file', chunk, 'chunk')
   const url = `${baseUrl}${Path.join(module, 'upload', uploadToken)}`
-  return post<FormData, { bytesWritten: number, position: number }>(url, data, { signal })
+  return post<FormData, { bytesWritten: number; position: number }>(url, data, { signal })
 }
 
 export const createThumbnailJob = (
@@ -166,7 +181,8 @@ export const getThumbnailJobs = (
   { get }: ApiClient,
   module: string,
   jobIds: string[],
-): Promise<{ jobs: Array<GenerateThumbnailJobDetails | null> }> => get(`${baseUrl}${module}/jobs/thumbnail/jobs`, { query: { jobIds } })
+): Promise<{ jobs: Array<GenerateThumbnailJobDetails | null> }> =>
+  get(`${baseUrl}${module}/jobs/thumbnail/jobs`, { query: { jobIds } })
 
 export const createSynchronizeJob = (
   { put }: ApiClient,
@@ -185,7 +201,8 @@ export const createAlias = (
   { post }: ApiClient,
   module: string,
   paths: string[],
-): Promise<{ id: string, url: string, urls: Record<string, string> }> => post(`${baseUrl}${module}/a`, { paths })
+): Promise<{ id: string; url: string; urls: Record<string, string> }> =>
+  post(`${baseUrl}${module}/a`, { paths })
 
 export const deleteThumbnails = (
   { del }: ApiClient,
@@ -199,7 +216,7 @@ export const getItemThumbnail = (
   module: string,
   itemId: string,
   thumbnailKey: string,
-  options?: { width?: number, height?: number },
+  options?: { width?: number; height?: number },
 ) => {
   const types = ['image/jpeg', 'image/*']
   if (hasWebpSupport()) {

@@ -11,12 +11,11 @@ type ThumbnailOptions = {
   size?: readonly [width: number, height: number] | 'original'
 }
 
-const getMediaThumbnail = async (app: App, mediaRepository: MediaSourceRepository, {
-  format = 'jpeg',
-  mediaKey,
-  size,
-  thumbnailKey,
-}: ThumbnailOptions) => {
+const getMediaThumbnail = async (
+  app: App,
+  mediaRepository: MediaSourceRepository,
+  { format = 'jpeg', mediaKey, size, thumbnailKey }: ThumbnailOptions,
+) => {
   if (size === 'original') {
     return mediaRepository.getThumbnail(app, mediaKey, thumbnailKey)
   }
@@ -27,10 +26,7 @@ const getMediaThumbnail = async (app: App, mediaRepository: MediaSourceRepositor
     mediaKey,
     size ? `${size[0]}x${size[1]}` : 'original',
   )
-  const cacheFilePath = join(
-    cacheFolderPath,
-    `${thumbnailKey}.${format}`,
-  )
+  const cacheFilePath = join(cacheFolderPath, `${thumbnailKey}.${format}`)
 
   const cacheExists = await fs.access(cacheFilePath, fs.constants.R_OK).catch(() => null)
   if (cacheExists) {

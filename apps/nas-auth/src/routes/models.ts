@@ -9,6 +9,7 @@ import type {
 
 /**
  * Route definition for a controller
+ *
  * @internal
  */
 export type GenericRoute = RouteGenericInterface
@@ -29,6 +30,7 @@ type ControllerHandler<Route extends GenericRoute> = RouteHandlerMethod<
 
 /**
  * Controller definition
+ *
  * @internal
  */
 export type Controller<Route extends GenericRoute = GenericRoute> = ControllerHandler<Route> & {

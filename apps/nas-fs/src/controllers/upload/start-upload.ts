@@ -7,7 +7,10 @@ import { applicationKeyParam } from '../../models/app.ts'
 import { Type, type Controller } from '../../models/controller.ts'
 import { ApiErrorSchema } from '../../models/errors/api-error.ts'
 import BadRequestError from '../../models/errors/bad-request-error.ts'
-import { StartUploadRequestSchema, StartUploadResponseSchema } from '../../models/uploads/start-upload-request.ts'
+import {
+  StartUploadRequestSchema,
+  StartUploadResponseSchema,
+} from '../../models/uploads/start-upload-request.ts'
 import type { UploadManifest } from '../../models/uploads/upload-manifest.ts'
 
 const schema = {
@@ -23,9 +26,7 @@ const schema = {
   tags: ['upload'],
 }
 
-const hashString = (str: string) => createHash('SHA512')
-  .update(str)
-  .digest('hex')
+const hashString = (str: string) => createHash('SHA512').update(str).digest('hex')
 
 const startUploadController: Controller<typeof schema> = async (req, reply) => {
   const { directoryPath, fileName } = req.body

@@ -11,7 +11,10 @@ type EditPermissionData = Readonly<{
   displayName?: string
 }>
 
-async function editPermissionAction(context: PageLoaderContext, { appKey, name, ...data }: EditPermissionData) {
+async function editPermissionAction(
+  context: PageLoaderContext,
+  { appKey, name, ...data }: EditPermissionData,
+) {
   const sessionResult = await ensureSession(context, 'application', 'write')
   if (sessionResult[0] !== 'k') {
     return sessionResult

@@ -33,12 +33,15 @@ type SessionInfo = Readonly<{
 const extractNameFromLoginData = (data: unknown) => {
   if (!data || typeof data !== 'object') return undefined
   if (!('profile' in data) || typeof data.profile !== 'object' || !data.profile) return undefined
-  if ('username' in data.profile && typeof data.profile.username === 'string') return data.profile.username
+  if ('username' in data.profile && typeof data.profile.username === 'string')
+    return data.profile.username
   if ('name' in data.profile && typeof data.profile.name === 'string') return data.profile.name
   return undefined
 }
 
-export const getSession = cache(async function getSession(request: PageLoaderContext): Promise<SessionInfo | null> {
+export const getSession = cache(async function getSession(
+  request: PageLoaderContext,
+): Promise<SessionInfo | null> {
   const h = request.headers
   const req = {
     socket: { encrypted: false },
@@ -68,12 +71,13 @@ export const getSession = cache(async function getSession(request: PageLoaderCon
       email: user!.email || undefined,
       profileImageUrl: user!.profileImageUrl || undefined,
       disabled: user!.disabled,
-      logins: user!.logins?.map((l) => ({
-        id: l.loginId,
-        name: extractNameFromLoginData(l.data),
-        type: l.type as never,
-        disabled: l.disabled,
-      })) || [],
+      logins:
+        user!.logins?.map((l) => ({
+          id: l.loginId,
+          name: extractNameFromLoginData(l.data),
+          type: l.type as never,
+          disabled: l.disabled,
+        })) || [],
     },
     permissions: permissions.permissions
       .filter((perm) => perm.applicationKey === 'auth')
@@ -107,7 +111,9 @@ export const ensureSession = async (
   return ok(session)
 }
 
-async function getSessionAction(request: PageLoaderContext): Promise<FailableResult<SessionInfo | null>> {
+async function getSessionAction(
+  request: PageLoaderContext,
+): Promise<FailableResult<SessionInfo | null>> {
   return ok(await getSession(request))
 }
 

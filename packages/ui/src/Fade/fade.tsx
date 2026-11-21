@@ -3,8 +3,8 @@ import Transition, { type TransitionImplementationBaseProps } from '../Transitio
 import { clsx, type OverridableComponent, type OverridableComponentProps } from '../utils'
 
 type FadeMap = {
-  props: TransitionImplementationBaseProps;
-  defaultComponent: 'div';
+  props: TransitionImplementationBaseProps
+  defaultComponent: 'div'
 }
 
 export type FadeProps<BaseElement extends ElementType = FadeMap['defaultComponent']> =

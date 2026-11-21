@@ -1,11 +1,6 @@
 import { CircularProgress } from '@melchor629/ui'
 import { styled } from '@melchor629/ui/utils'
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getItemThumbnail } from '@/api/fs'
 import type { Item } from '@/api/fs/media'
 import useApiClient from '@/hooks/use-api-client'
@@ -18,15 +13,24 @@ interface ItemImageProps {
   readonly forceLoadImage?: true
 }
 
-const LoadingContainer = styled('div', 'LoadingContainer')({
+const LoadingContainer = styled(
+  'div',
+  'LoadingContainer',
+)({
   base: 'absolute left-0 top-0 bg-elevated-0/25',
 })
 
-const ChildrenCount = styled('div', 'ChildrenCount')({
+const ChildrenCount = styled(
+  'div',
+  'ChildrenCount',
+)({
   base: 'absolute right-3 top-2 px-1 py-0.5 text-xs text-text-main bg-elevated-0/65 border border-elevated-border rounded-sm select-none',
 })
 
-const ImageThumbnail = styled('img', 'ImageThumbnail')({
+const ImageThumbnail = styled(
+  'img',
+  'ImageThumbnail',
+)({
   base: 'min-h-1.5 rounded-md shadow-md hover:shadow-lg hover:opacity-75 transition-all',
 })
 
@@ -37,16 +41,18 @@ export default function ItemThumbnailImage({ forceLoadImage, item, module }: Ite
   const [loading, setLoading] = useState<boolean | null>(forceLoadImage ? false : null)
   const [imageUrl, setImageUrl] = useState<string | null>(null)
   const thumbnail = item.type !== 'genre' ? item.thumbnail : undefined
-  const intersectionObserver = useMemo(() => (
-    new IntersectionObserver(
-      (info) => {
-        if (info.length > 0 && info[0].isIntersecting) {
-          setLoading((v) => (v == null ? false : v))
-        }
-      },
-      { root: document.body, rootMargin: '10px' },
-    )
-  ), [])
+  const intersectionObserver = useMemo(
+    () =>
+      new IntersectionObserver(
+        (info) => {
+          if (info.length > 0 && info[0].isIntersecting) {
+            setLoading((v) => (v == null ? false : v))
+          }
+        },
+        { root: document.body, rootMargin: '10px' },
+      ),
+    [],
+  )
   const { size } = useMediaThumbnailSize(item.type)
   const dpr = useDevicePixelRatio()
 
@@ -81,7 +87,7 @@ export default function ItemThumbnailImage({ forceLoadImage, item, module }: Ite
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setImageUrl(blobCache.get(key)![0])
       } else {
-        (async () => {
+        ;(async () => {
           setLoading(true)
           const blob = await getItemThumbnail(
             apiClient,
@@ -108,17 +114,20 @@ export default function ItemThumbnailImage({ forceLoadImage, item, module }: Ite
     } else {
       setImageUrl(null)
     }
-  }, [apiClient, module, item.id, thumbnail, size, loading, dpr])
+  }, [apiClient, module, thumbnail, size, loading, dpr])
 
   return (
     <div
-      ref={useCallback((div: HTMLDivElement) => {
-        if (div) {
-          intersectionObserver.observe(div)
-        } else {
-          intersectionObserver.disconnect()
-        }
-      }, [intersectionObserver])}
+      ref={useCallback(
+        (div: HTMLDivElement) => {
+          if (div) {
+            intersectionObserver.observe(div)
+          } else {
+            intersectionObserver.disconnect()
+          }
+        },
+        [intersectionObserver],
+      )}
       className="relative min-h-24"
       style={size}
     >
@@ -130,15 +139,11 @@ export default function ItemThumbnailImage({ forceLoadImage, item, module }: Ite
         />
       )}
       {loading !== false && (
-        <LoadingContainer
-          className="w-full h-full flex justify-center items-center"
-        >
+        <LoadingContainer className="flex h-full w-full items-center justify-center">
           <CircularProgress size="large" />
         </LoadingContainer>
       )}
-      {childrenCount != null && (
-        <ChildrenCount>{childrenCount}</ChildrenCount>
-      )}
+      {childrenCount != null && <ChildrenCount>{childrenCount}</ChildrenCount>}
     </div>
   )
 }

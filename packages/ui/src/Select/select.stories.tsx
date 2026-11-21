@@ -37,8 +37,15 @@ export const Default = meta.story()
 
 export const WithFormControl = meta.story({
   render: (args) => (
-    <FormControl htmlFor="text" label="Select" helperText="Some text">
-      <Select {...args} id="text" />
+    <FormControl
+      htmlFor="text"
+      label="Select"
+      helperText="Some text"
+    >
+      <Select
+        {...args}
+        id="text"
+      />
     </FormControl>
   ),
   args: { fullWidth: true },
@@ -46,8 +53,15 @@ export const WithFormControl = meta.story({
 
 export const WithFormControlError = meta.story({
   render: (args) => (
-    <FormControl htmlFor="text" label="Select" error="Invalid value!">
-      <Select {...args} id="text" />
+    <FormControl
+      htmlFor="text"
+      label="Select"
+      error="Invalid value!"
+    >
+      <Select
+        {...args}
+        id="text"
+      />
     </FormControl>
   ),
   args: { fullWidth: true },

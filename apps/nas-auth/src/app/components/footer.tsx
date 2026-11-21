@@ -4,12 +4,21 @@ import packageJson from '../../../package.json' with { type: 'json' }
 const { version } = packageJson
 
 const Footer = () => (
-  <div className="max-w-sm mx-auto text-text-secondary text-center select-none mb-4">
-    nas-auth v
-    {`${version} · `}
-    <Link to="/privacy" viewTransition>Privacy</Link>
+  <div className="text-text-secondary mx-auto mb-4 max-w-sm text-center select-none">
+    nas-auth v{`${version} · `}
+    <Link
+      to="/privacy"
+      viewTransition
+    >
+      Privacy
+    </Link>
     {' · '}
-    <Link to="/" viewTransition>Home</Link>
+    <Link
+      to="/"
+      viewTransition
+    >
+      Home
+    </Link>
   </div>
 )
 

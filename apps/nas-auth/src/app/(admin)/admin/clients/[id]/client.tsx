@@ -6,17 +6,22 @@ import AdminBreadcrumb from '#components/admin/admin-breadcrumb.tsx'
 import { EditClient } from '#components/admin/client/index.ts'
 
 type ClientProps = Readonly<{
-  apiResources: ReadonlyArray<{ key: string, name: string }>
+  apiResources: ReadonlyArray<{ key: string; name: string }>
   client: ClientMetadata
 }>
 
 const Client = ({ apiResources, client }: ClientProps) => {
-  const { data: { permissions } } = useEnsureGetSession()
+  const {
+    data: { permissions },
+  } = useEnsureGetSession()
 
-  const breadcrumbSections = useMemo(() => [
-    { name: 'Clients', part: 'clients' },
-    { name: client?.client_name ?? '', part: client?.client_id ?? '' },
-  ], [client])
+  const breadcrumbSections = useMemo(
+    () => [
+      { name: 'Clients', part: 'clients' },
+      { name: client?.client_name ?? '', part: client?.client_id ?? '' },
+    ],
+    [client],
+  )
   const permission = useMemo(() => permissions.find((p) => p.key === 'client')!, [permissions])
 
   return (

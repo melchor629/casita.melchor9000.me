@@ -48,7 +48,7 @@ export default function PdfView({ module, path }: PdfViewProps) {
       <div>
         <iframe
           src={pdfUrl}
-          className="border-0 w-full -mt-4 -mb-2 rounded-md"
+          className="-mt-4 -mb-2 w-full rounded-md border-0"
           style={{ minHeight: 'calc(100vh - 176px - 6*1rem)' }}
           title={`${path} PDF Preview`}
         />

@@ -1,21 +1,22 @@
 {
+  "name": "nas-fs",
+  "version": "0.12.35",
+  "private": true,
+  "license": "MIT",
   "author": {
     "name": "Melchor Alejo Garau Madrigal",
     "email": "melchor9000@gmail.com",
     "url": "https://melchor9000.me"
   },
-  "name": "nas-fs",
-  "version": "0.12.35",
   "type": "module",
-  "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "license": "MIT",
-  "private": true,
+  "exports": "./dist/index.js",
   "scripts": {
     "start": "NODE_ENV=production node src/index.ts",
     "dev": "NODE_ENV=development node --env-file-if-exists=.env src/index.ts",
-    "lint": "eslint src",
-    "check": "tsc -p . --noEmit",
+    "check:lint": "oxlint",
+    "check:fmt": "oxfmt --check",
+    "check:ts": "tsc -p . --noEmit",
     "docker": "../../docker_build.sh"
   },
   "dependencies": {
@@ -29,8 +30,8 @@
     "@melchor629/fastify-infra": "*",
     "@melchor629/infra": "*",
     "@opentelemetry/api": "^1.10.0",
-    "@opentelemetry/semantic-conventions": "^1.45.0",
     "@opentelemetry/instrumentation-ioredis": "^0.73.0",
+    "@opentelemetry/semantic-conventions": "^1.45.0",
     "bullmq": "^6.7.6",
     "bullmq-otel": "^2.0.1",
     "commander": "^15.1.0",
@@ -50,8 +51,8 @@
     "typebox": "^1.4.6"
   },
   "devDependencies": {
-    "@scalar/fastify-api-reference": "^1.78.0",
     "@melchor629/tsconfigs": "*",
+    "@scalar/fastify-api-reference": "^1.78.0",
     "@types/etag": "^1.8.1",
     "@types/fresh": "^0.5.0",
     "@types/fs-extra": "^11.0.1",

@@ -9,7 +9,9 @@ import User from './user'
 type Params = Readonly<{ id: string }>
 type UserPageProps = Readonly<{
   applications: Awaited<ReturnType<typeof getApplications>>
-  user: NonNullable<Awaited<ReturnType<typeof getUser<{ userPermissions: true, logins: true, permissions: true }>>>>
+  user: NonNullable<
+    Awaited<ReturnType<typeof getUser<{ userPermissions: true; logins: true; permissions: true }>>>
+  >
   permissions: Awaited<ReturnType<typeof getPermissions>>
   session: ActionReturnType<'get-session'>
 }>
@@ -24,18 +26,18 @@ export const loader = async (context: PageLoaderContext<Params>): Promise<UserPa
     notFound()
   }
 
-  const user = await getUser({ userName: context.nice.params.id }, {
-    userPermissions: true,
-    logins: true,
-    permissions: true,
-  })
+  const user = await getUser(
+    { userName: context.nice.params.id },
+    {
+      userPermissions: true,
+      logins: true,
+      permissions: true,
+    },
+  )
   if (!user) {
     notFound()
   }
-  const [applications, permissions] = await Promise.all([
-    getApplications(),
-    getPermissions(),
-  ])
+  const [applications, permissions] = await Promise.all([getApplications(), getPermissions()])
   return {
     applications,
     user,
@@ -51,7 +53,13 @@ export const metadata = ({ user }: UserPageProps) => ({
 const UserPage = ({ applications, permissions, session, user }: UserPageProps) => {
   usePrefillGetSession(session)
 
-  return <User applications={applications} permissions={permissions} user={user} />
+  return (
+    <User
+      applications={applications}
+      permissions={permissions}
+      user={user}
+    />
+  )
 }
 
 export default UserPage

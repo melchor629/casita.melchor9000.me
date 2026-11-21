@@ -21,7 +21,7 @@ const loginMapper = makeMapper<{
   table: 'login'
   dto: LoginDto
   row: LoginRow
-  secondaryKey: { type: string, loginId: string, userName: string }
+  secondaryKey: { type: string; loginId: string; userName: string }
 }>()({
   select: {
     data: login.data,

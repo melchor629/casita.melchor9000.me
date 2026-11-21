@@ -8,8 +8,8 @@ export type ButtonGroupProps = Readonly<
 /**
  * A container component for grouping multiple buttons.
  *
- * This component groups a set of buttons, applying shared styling.
- * Individual buttons can override shared styles.
+ * This component groups a set of buttons, applying shared styling. Individual buttons can override
+ * shared styles.
  */
 export default function ButtonGroup({
   children,

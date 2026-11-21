@@ -19,7 +19,7 @@ const UserRow = ({ user }: { readonly user: GetUsers[0] }) => {
           <img
             src={resolvedProfilePicUrl}
             alt={`${user.userName} profile`}
-            className="rounded-md hover:scale-150 transition-transform"
+            className="rounded-md transition-transform hover:scale-150"
             style={{ height: 26 }}
           />
         )}

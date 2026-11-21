@@ -19,6 +19,7 @@ const consumable = new Set([
 
 /**
  * Gets the Redis key for a grant key reference list
+ *
  * @param grantId The grant id
  * @returns Redis key
  */
@@ -26,6 +27,7 @@ const grantKeyFor = (grantId: string) => `${redisPrefix}:oidc:grant:${grantId}:r
 
 /**
  * Gets the Redis key for a user code reference
+ *
  * @param userCode The user code
  * @returns Redis key
  */
@@ -33,13 +35,15 @@ const userCodeKeyFor = (userCode: string) => `${redisPrefix}:oidc:user-code:${us
 
 /**
  * Gets the Redis key for a uid reference
- * @param uid uid
+ *
+ * @param uid Uid
  * @returns Redis key
  */
 const uidKeyFor = (uid: string) => `${redisPrefix}:oidc:uid:${uid}` as const
 
 /**
  * Converts the string into kebab case
+ *
  * @param {string} value String to convert to
  * @returns String converted
  */
@@ -72,6 +76,7 @@ export default class RedisAdapter implements Adapter {
 
   /**
    * Inserts or updates an entry of the store
+   *
    * @param id ID of the element
    * @param payload The data to store
    * @param expiresIn The time when this data will expire on
@@ -124,6 +129,7 @@ export default class RedisAdapter implements Adapter {
 
   /**
    * Finds the payload for the given element id
+   *
    * @param id The ID of the element
    * @returns The payload of the
    * element if found
@@ -153,6 +159,7 @@ export default class RedisAdapter implements Adapter {
 
   /**
    * Given the user code, looks for a payload that relates to it
+   *
    * @param userCode User code that relates to an element of the store
    * @returns The payload of the element if found
    */
@@ -164,7 +171,8 @@ export default class RedisAdapter implements Adapter {
 
   /**
    * Given the uid, looks for a payload that relates to it
-   * @param uid uid that relates to an element of the store
+   *
+   * @param uid Uid that relates to an element of the store
    * @returns The payload of the element if found
    */
   async findByUid(uid: string) {
@@ -175,6 +183,7 @@ export default class RedisAdapter implements Adapter {
 
   /**
    * Marks the element as consumed
+   *
    * @param id ID of the element
    */
   async consume(id: string) {
@@ -184,6 +193,7 @@ export default class RedisAdapter implements Adapter {
 
   /**
    * Removes the payload of the given ID
+   *
    * @param id ID of the element
    */
   async destroy(id: string) {
@@ -192,6 +202,7 @@ export default class RedisAdapter implements Adapter {
 
   /**
    * Given the grant id, removes all elements that relates to it
+   *
    * @param grantId Grant id which is related to a set of elements
    */
   async revokeByGrantId(grantId: string) {

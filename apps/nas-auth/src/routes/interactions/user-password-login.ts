@@ -3,27 +3,20 @@ import findLoginInfoForUsernameAndPassword from '../../queries/login/find-login-
 import type { Controller, GenericRoute } from '../models.ts'
 
 interface Route extends GenericRoute {
-  Body: { username: string, password: string }
-  Reply:
-    | string
-    | { message: string }
+  Body: { username: string; password: string }
+  Reply: string | { message: string }
 }
 
 const userPasswordLoginController: Controller<Route> = async (req, res) => {
-  const interaction = await req.trace(
-    'interaction details',
-    {},
-    () => oidc.interactionDetails(req.raw, res.raw),
+  const interaction = await req.trace('interaction details', {}, () =>
+    oidc.interactionDetails(req.raw, res.raw),
   )
   const { prompt, uid } = interaction
   if (prompt.name !== 'login') {
     return res.status(400).send({ message: 'Interaction is not a login' })
   }
 
-  const login = await findLoginInfoForUsernameAndPassword(
-    req.body.username,
-    req.body.password,
-  )
+  const login = await findLoginInfoForUsernameAndPassword(req.body.username, req.body.password)
 
   if (!login) {
     interaction.params.login_hint = req.body.username
@@ -32,12 +25,14 @@ const userPasswordLoginController: Controller<Route> = async (req, res) => {
     return res.redirect(`/i/${uid}`).send('Redirecting...')
   }
 
-  await req.trace('interaction finished', {}, () => oidc.interactionFinished(
-    req.raw,
-    res.raw,
-    { login: { accountId: login.userName } },
-    { mergeWithLastSubmission: false },
-  ))
+  await req.trace('interaction finished', {}, () =>
+    oidc.interactionFinished(
+      req.raw,
+      res.raw,
+      { login: { accountId: login.userName } },
+      { mergeWithLastSubmission: false },
+    ),
+  )
 }
 
 userPasswordLoginController.options = {

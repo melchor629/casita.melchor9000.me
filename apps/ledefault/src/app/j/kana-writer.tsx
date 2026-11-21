@@ -1,4 +1,14 @@
-import { memo, type KeyboardEvent, type Ref, useCallback, useImperativeHandle, useLayoutEffect, useRef, useState, type SyntheticEvent } from 'react'
+import {
+  memo,
+  type KeyboardEvent,
+  type Ref,
+  useCallback,
+  useImperativeHandle,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type SyntheticEvent,
+} from 'react'
 import * as wanakana from 'wanakana'
 import { hiraganaCharRows, katakanaCharRows, toRomaji } from './jp-utils'
 import { CharButton, TextArea } from './shared-components'
@@ -6,7 +16,7 @@ import { CharButton, TextArea } from './shared-components'
 type WanaKanaInputProps = Readonly<{
   mode: 'hira' | 'kata'
   onLatinChars: (value: string) => void
-  ref: Ref<Readonly<{ clear: () => void, add: (jpChar: string) => void }>>
+  ref: Ref<Readonly<{ clear: () => void; add: (jpChar: string) => void }>>
   toggleMode: () => void
 }>
 function WanaKanaInput({ mode, onLatinChars, ref, toggleMode }: WanaKanaInputProps) {
@@ -18,22 +28,29 @@ function WanaKanaInput({ mode, onLatinChars, ref, toggleMode }: WanaKanaInputPro
     onLatinChars(latChars)
   }, [onLatinChars, textArea])
 
-  useImperativeHandle(ref, () => Object.freeze({
-    clear() {
-      textArea!.value = ''
-    },
-    add(jpChar: string) {
-      const [start, end] = [textArea!.selectionStart, textArea!.selectionEnd]
-      textArea!.setRangeText(jpChar, start, end, 'end')
-    },
-  }), [textArea])
+  useImperativeHandle(
+    ref,
+    () =>
+      Object.freeze({
+        clear() {
+          textArea!.value = ''
+        },
+        add(jpChar: string) {
+          const [start, end] = [textArea!.selectionStart, textArea!.selectionEnd]
+          textArea!.setRangeText(jpChar, start, end, 'end')
+        },
+      }),
+    [textArea],
+  )
 
   useLayoutEffect(() => {
     if (textArea == null) {
       return
     }
 
-    if (textArea.hasAttribute('data-wanakana-id')) { wanakana.unbind(textArea) }
+    if (textArea.hasAttribute('data-wanakana-id')) {
+      wanakana.unbind(textArea)
+    }
     wanakana.bind(textArea, { IMEMode: mode === 'hira' ? 'toHiragana' : 'toKatakana' })
     textArea.removeEventListener('input', onKanaInputChange, false)
     textArea.removeEventListener('change', onKanaInputChange, false)
@@ -48,11 +65,14 @@ function WanaKanaInput({ mode, onLatinChars, ref, toggleMode }: WanaKanaInputPro
       className="min-h-48"
       cols={18}
       rows={8}
-      onKeyUp={useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
-        if ((e.ctrlKey || e.metaKey) && e.code === 'Space') {
-          toggleMode()
-        }
-      }, [toggleMode])}
+      onKeyUp={useCallback(
+        (e: KeyboardEvent<HTMLTextAreaElement>) => {
+          if ((e.ctrlKey || e.metaKey) && e.code === 'Space') {
+            toggleMode()
+          }
+        },
+        [toggleMode],
+      )}
     />
   )
 }
@@ -74,27 +94,36 @@ function KanaCharacter({ addChar, jp, lat }: KanaCharacterProps) {
     setText(lat)
   }, [lat])
 
-  const renderJpChar = useCallback((e: SyntheticEvent<HTMLButtonElement>) => {
-    if (document.activeElement !== e.target) {
-      setText(jp)
-    }
-  }, [jp])
+  const renderJpChar = useCallback(
+    (e: SyntheticEvent<HTMLButtonElement>) => {
+      if (document.activeElement !== e.target) {
+        setText(jp)
+      }
+    },
+    [jp],
+  )
 
   useLayoutEffect(() => {
     const { current: button } = buttonRef
-    button?.animate([
-      { transform: 'scale(1)', opacity: 1 },
-      { transform: 'scale(0.5)', opacity: 0 },
-    ], { duration: 125, easing: 'ease-in-out' })
-      .finished
-      .then(() => setText(jp))
-      .then(() => (
-        button?.animate([
-          { transform: 'scale(0.5)', opacity: 0 },
+    button
+      ?.animate(
+        [
           { transform: 'scale(1)', opacity: 1 },
-        ], { duration: 125, easing: 'ease-in-out' })
-          .finished
-      ))
+          { transform: 'scale(0.5)', opacity: 0 },
+        ],
+        { duration: 125, easing: 'ease-in-out' },
+      )
+      .finished.then(() => setText(jp))
+      .then(
+        () =>
+          button?.animate(
+            [
+              { transform: 'scale(0.5)', opacity: 0 },
+              { transform: 'scale(1)', opacity: 1 },
+            ],
+            { duration: 125, easing: 'ease-in-out' },
+          ).finished,
+      )
       .catch(() => {})
   }, [jp])
 
@@ -102,7 +131,7 @@ function KanaCharacter({ addChar, jp, lat }: KanaCharacterProps) {
     <CharButton
       ref={buttonRef}
       type="button"
-      className="px-0 w-12"
+      className="w-12 px-0"
       tab-index="1"
       onClick={click}
       onPointerEnter={renderLatChar}
@@ -125,7 +154,14 @@ type KanaRowProps = Readonly<{
 function KanaRow({ addChar, row }: KanaRowProps) {
   return (
     <div className="flex flex-row justify-center gap-2">
-      {row.map(([jp, lat]) => <KanaCharacter key={lat} addChar={addChar} jp={jp} lat={lat} />)}
+      {row.map(([jp, lat]) => (
+        <KanaCharacter
+          key={lat}
+          addChar={addChar}
+          jp={jp}
+          lat={lat}
+        />
+      ))}
     </div>
   )
 }
@@ -136,13 +172,20 @@ type KanaRowsProps = Readonly<{
 }>
 /**
  * Renders the kata rows.
+ *
  * @param props
  */
 const KanaRows = memo(function KanaRows({ addChar, mode }: KanaRowsProps) {
   const charRows = mode === 'hira' ? hiraganaCharRows : katakanaCharRows
   return (
-    <div className="flex flex-col gap-2 flex-wrap md:max-h-screen">
-      {charRows.map((row, i) => <KanaRow key={row.length ? row[0][0] : `space-${charRows[i - 1][0][0]}`} addChar={addChar} row={row} />)}
+    <div className="flex flex-col flex-wrap gap-2 md:max-h-screen">
+      {charRows.map((row, i) => (
+        <KanaRow
+          key={row.length ? row[0][0] : `space-${charRows[i - 1][0][0]}`}
+          addChar={addChar}
+          row={row}
+        />
+      ))}
     </div>
   )
 })
@@ -158,7 +201,7 @@ export default function KanaWriter({ changePage }: { readonly changePage: () => 
   }, [])
 
   const toggleMode = useCallback(() => {
-    setMode((m) => m === 'hira' ? 'kata' : 'hira')
+    setMode((m) => (m === 'hira' ? 'kata' : 'hira'))
   }, [])
 
   const addChar = useCallback((jpChar: string, latChar: string) => {
@@ -172,9 +215,12 @@ export default function KanaWriter({ changePage }: { readonly changePage: () => 
 
   return (
     <>
-      <KanaRows mode={mode} addChar={addChar} />
+      <KanaRows
+        mode={mode}
+        addChar={addChar}
+      />
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row gap-3 justify-center">
+        <div className="flex flex-row justify-center gap-3">
           <div>
             <CharButton
               variant="secondary"
@@ -190,10 +236,7 @@ export default function KanaWriter({ changePage }: { readonly changePage: () => 
               tabIndex={0}
               onClick={toggleMode}
             >
-              {mode === 'hira' ? 'あ' : 'ア'}
-              {' '}
-              ↔
-              {mode === 'kata' ? 'あ' : 'ア'}
+              {mode === 'hira' ? 'あ' : 'ア'} ↔{mode === 'kata' ? 'あ' : 'ア'}
             </CharButton>
           </div>
           <div>
@@ -206,7 +249,7 @@ export default function KanaWriter({ changePage }: { readonly changePage: () => 
             </CharButton>
           </div>
         </div>
-        <div className="flex flex-row gap-3 justify-center">
+        <div className="flex flex-row justify-center gap-3">
           <WanaKanaInput
             ref={wanaKanaRef}
             mode={mode}

@@ -18,16 +18,29 @@ const meta = preview.meta({
 
 export const Default = meta.story({
   render: (args) => (
-    <FormControl {...args} htmlFor="text">
-      <input type="text" id="text" />
+    <FormControl
+      {...args}
+      htmlFor="text"
+    >
+      <input
+        type="text"
+        id="text"
+      />
     </FormControl>
   ),
 })
 
 export const WithError = meta.story({
   render: (args) => (
-    <FormControl {...args} htmlFor="text">
-      <input type="text" id="text" required />
+    <FormControl
+      {...args}
+      htmlFor="text"
+    >
+      <input
+        type="text"
+        id="text"
+        required
+      />
     </FormControl>
   ),
   args: {
@@ -37,8 +50,15 @@ export const WithError = meta.story({
 
 export const WithDisabled = meta.story({
   render: (args) => (
-    <FormControl {...args} htmlFor="text">
-      <input type="text" id="text" disabled />
+    <FormControl
+      {...args}
+      htmlFor="text"
+    >
+      <input
+        type="text"
+        id="text"
+        disabled
+      />
     </FormControl>
   ),
   args: {},

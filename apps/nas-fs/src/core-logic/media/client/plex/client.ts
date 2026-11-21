@@ -15,19 +15,14 @@ class PlexException extends Error {
   readonly status?: number
   readonly body?: unknown
 
-  constructor(
-    message: string,
-    status?: number,
-    body?: unknown,
-    cause?: unknown,
-  ) {
+  constructor(message: string, status?: number, body?: unknown, cause?: unknown) {
     super(message, { cause })
     this.status = status
     this.body = body
   }
 }
 
-const queryParamsToString = (queryParams: QueryParams) => (
+const queryParamsToString = (queryParams: QueryParams) =>
   new URLSearchParams(
     Object.fromEntries(
       Object.entries(queryParams)
@@ -35,7 +30,6 @@ const queryParamsToString = (queryParams: QueryParams) => (
         .map(([key, value]) => [key, value!.toString()] as const),
     ),
   ).toString()
-)
 
 const request = async (endpoint: string, queryParams: QueryParams = {}) => {
   if (!plexToken) {
@@ -86,7 +80,7 @@ const requestJson = async <T>(endpoint: string, queryParams: QueryParams = {}) =
 
   const isJson = response.headers.get('content-type')?.includes('application/json')
   if (isJson) {
-    const body = await response.json() as PlexResult<T>
+    const body = (await response.json()) as PlexResult<T>
     return body.MediaContainer
   }
 
@@ -128,33 +122,29 @@ export const getThumbnailStream = async (contentKey: string, thumbnailKey: strin
 }
 
 export const getMetadata = async (contentKey: string) => {
-  const response = await requestJson<MetadataResponse>(
-    `/library/metadata/${contentKey}`,
-    {
-      includeConcerts: 1,
-      includeExtras: 1,
-      // includeOnDeck: 1,
-      // includePopularLeaves: 1,
-      // includePreferences: 1,
-      includeReviews: 1,
-      includeChapters: 1,
-      includeStations: 1,
-      includeExternalMedia: 1,
-      asyncAugmentMetadata: 1,
-      asyncCheckFiles: 1,
-      asyncRefreshAnalysis: 1,
-      asyncRefreshLocalMediaAgent: 1,
-    },
-  )
+  const response = await requestJson<MetadataResponse>(`/library/metadata/${contentKey}`, {
+    includeConcerts: 1,
+    includeExtras: 1,
+    // includeOnDeck: 1,
+    // includePopularLeaves: 1,
+    // includePreferences: 1,
+    includeReviews: 1,
+    includeChapters: 1,
+    includeStations: 1,
+    includeExternalMedia: 1,
+    asyncAugmentMetadata: 1,
+    asyncCheckFiles: 1,
+    asyncRefreshAnalysis: 1,
+    asyncRefreshLocalMediaAgent: 1,
+  })
 
   return response
 }
 
 export const getChildren = async (contentKey: string) => {
-  const response = await requestJson<LibraryContents>(
-    `/library/metadata/${contentKey}/children`,
-    { excludeAllLeaves: 1 },
-  )
+  const response = await requestJson<LibraryContents>(`/library/metadata/${contentKey}/children`, {
+    excludeAllLeaves: 1,
+  })
 
   return response
 }

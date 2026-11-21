@@ -6,7 +6,10 @@ import { Type, type Controller } from '../../models/controller.ts'
 import { ApiErrorSchema } from '../../models/errors/api-error.ts'
 import BadRequestError from '../../models/errors/bad-request-error.ts'
 import type { DirectoryEntry } from '../../models/fs/directory-entry.ts'
-import { UrlAliasRequestSchema, UrlAliasResponseSchema } from '../../models/url-alias/alias-request.ts'
+import {
+  UrlAliasRequestSchema,
+  UrlAliasResponseSchema,
+} from '../../models/url-alias/alias-request.ts'
 
 const schema = {
   summary: 'Create an URL alias for the given existing paths',

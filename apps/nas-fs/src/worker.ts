@@ -7,9 +7,13 @@ const start = async () => {
 
   logger.info({ workers: Object.keys(workers) }, 'Starting workers...')
 
-  const job1 = await queues.thumbnailCleanerQueue.upsertJobScheduler('daily-cleanup', { pattern: '15 0 * * *' })
+  const job1 = await queues.thumbnailCleanerQueue.upsertJobScheduler('daily-cleanup', {
+    pattern: '15 0 * * *',
+  })
   logger.info({ jobId: job1.id }, 'Scheduled repeatable job for thumbnail-cleaner')
-  const job2 = await queues.uploadCleanerQueue.upsertJobScheduler('daily-cleanup', { pattern: '20 0 * * *' })
+  const job2 = await queues.uploadCleanerQueue.upsertJobScheduler('daily-cleanup', {
+    pattern: '20 0 * * *',
+  })
   logger.info({ jobId: job2.id }, 'Scheduled repeatable job for upload-cleaner')
 }
 

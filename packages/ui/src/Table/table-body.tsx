@@ -6,7 +6,10 @@ export type TableBodyProps = ComponentProps<'tbody'>
 
 const TableBody = ({ className, ...props }: TableBodyProps) => (
   <TableScopeContext value="body">
-    <tbody {...props} className={clsx(className)} />
+    <tbody
+      {...props}
+      className={clsx(className)}
+    />
   </TableScopeContext>
 )
 

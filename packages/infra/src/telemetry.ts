@@ -24,7 +24,11 @@ import {
   resourceFromAttributes,
   type ResourceDetector,
 } from '@opentelemetry/resources'
-import { MeterProvider, PeriodicExportingMetricReader, type ViewOptions } from '@opentelemetry/sdk-metrics'
+import {
+  MeterProvider,
+  PeriodicExportingMetricReader,
+  type ViewOptions,
+} from '@opentelemetry/sdk-metrics'
 import {
   AlwaysOnSampler,
   BasicTracerProvider,
@@ -34,10 +38,7 @@ import {
   type Sampler,
   type SpanLimits,
 } from '@opentelemetry/sdk-trace-node'
-import {
-  ATTR_SERVICE_NAME,
-  ATTR_SERVICE_VERSION,
-} from '@opentelemetry/semantic-conventions'
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
 import createLogger from './logger.ts'
 
 const logLevelMap = {
@@ -84,22 +85,21 @@ function createContextManager(contextManager?: ContextManager) {
   return contextManager
 }
 
-export default function createTelemetry({
-  disabled,
-  logLevel,
-  ...options
-}: TelemetryOptions) {
+export default function createTelemetry({ disabled, logLevel, ...options }: TelemetryOptions) {
   if (logLevel) {
     const logger = createLogger('@melchor629/infra/telemetry', 'trace')
-    diag.setLogger({
-      debug: (message, ...args) => logger.debug({}, message, ...args),
-      error: (message, ...args) => logger.error({}, message, ...args),
-      info: (message, ...args) => logger.info({}, message, ...args),
-      verbose: (message, ...args) => logger.trace({}, message, ...args),
-      warn: (message, ...args) => logger.warn({}, message, ...args),
-    }, {
-      logLevel: logLevelMap[logLevel.toUpperCase() as keyof typeof logLevelMap],
-    })
+    diag.setLogger(
+      {
+        debug: (message, ...args) => logger.debug({}, message, ...args),
+        error: (message, ...args) => logger.error({}, message, ...args),
+        info: (message, ...args) => logger.info({}, message, ...args),
+        verbose: (message, ...args) => logger.trace({}, message, ...args),
+        warn: (message, ...args) => logger.warn({}, message, ...args),
+      },
+      {
+        logLevel: logLevelMap[logLevel.toUpperCase() as keyof typeof logLevelMap],
+      },
+    )
   }
 
   if (disabled) {
@@ -117,13 +117,11 @@ export default function createTelemetry({
 
     ...options.attributes,
   })
-  resource = resource.merge(detectResources({
-    detectors: [
-      envDetector,
-      containerDetector,
-      ...(options.resourceDetectors ?? []),
-    ],
-  }))
+  resource = resource.merge(
+    detectResources({
+      detectors: [envDetector, containerDetector, ...(options.resourceDetectors ?? [])],
+    }),
+  )
 
   const propagators = options.propagators ?? [new W3CTraceContextPropagator()]
   const traceSampler = options.traceSampler ?? new AlwaysOnSampler()
@@ -183,10 +181,7 @@ export default function createTelemetry({
     meterProvider,
     [Symbol.asyncDispose]: async () => {
       diag.info('Shutting down telemetry')
-      await Promise.all([
-        meterProvider.shutdown(),
-        traceProvider.shutdown(),
-      ])
+      await Promise.all([meterProvider.shutdown(), traceProvider.shutdown()])
 
       contextManager.disable()
       disableInstrumentations()

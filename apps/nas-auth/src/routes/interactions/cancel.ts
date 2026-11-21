@@ -11,10 +11,8 @@ const cancelController: Controller<Route> = async (req, res) => {
     error_description: 'User aborted interaction',
   }
 
-  const location = await req.trace(
-    'interaction finished',
-    {},
-    () => oidc.interactionResult(req.raw, res.raw, result, { mergeWithLastSubmission: false }),
+  const location = await req.trace('interaction finished', {}, () =>
+    oidc.interactionResult(req.raw, res.raw, result, { mergeWithLastSubmission: false }),
   )
   return res.redirect(location).send()
 }

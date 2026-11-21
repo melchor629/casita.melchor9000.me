@@ -8,7 +8,7 @@ interface Job<Params, Data, ReturnValue> {
   data: Data
   abort: AbortController
   apiClient: ApiClient
-  progress?: number | { value: number, description: string } | null
+  progress?: number | { value: number; description: string } | null
   error?: Error
   returnValue?: ReturnValue
 }
@@ -17,10 +17,10 @@ export interface JobContext<Params, Data> {
   readonly apiClient: ApiClient
   readonly params: Readonly<Params>
   readonly data: Readonly<Data>
-  readonly progress?: number | { value: number, description: string } | null
+  readonly progress?: number | { value: number; description: string } | null
   readonly abortSignal: AbortSignal
 
-  onProgress(progress: number | { value: number, description: string } | null): void
+  onProgress(progress: number | { value: number; description: string } | null): void
 }
 
 export default abstract class UiWorker<
@@ -84,9 +84,9 @@ export default abstract class UiWorker<
   }
 
   update(apiClient: ApiClient, jobs: OtherJob<Data>[]) {
-    const iJobs = jobs.map((j) => (
-      [j, this.#jobs.find((ij) => ij.data.jobId === j.data.jobId)] as const
-    ))
+    const iJobs = jobs.map(
+      (j) => [j, this.#jobs.find((ij) => ij.data.jobId === j.data.jobId)] as const,
+    )
     iJobs.forEach(([, j]) => {
       if (j) {
         j.apiClient = apiClient
@@ -99,12 +99,18 @@ export default abstract class UiWorker<
       }
 
       switch (ij.state) {
-        case 'aborted': return { id, state: 'aborted' }
-        case 'enqueued': return { id, state: 'enqueued' }
-        case 'failed': return { id, state: 'failed', error: ij.error }
-        case 'processing': return { id, state: 'processing', progress: ij.progress }
-        case 'succeeded': return { id, state: 'succeeded' }
-        default: return { id, state: 'failed' }
+        case 'aborted':
+          return { id, state: 'aborted' }
+        case 'enqueued':
+          return { id, state: 'enqueued' }
+        case 'failed':
+          return { id, state: 'failed', error: ij.error }
+        case 'processing':
+          return { id, state: 'processing', progress: ij.progress }
+        case 'succeeded':
+          return { id, state: 'succeeded' }
+        default:
+          return { id, state: 'failed' }
       }
     })
     return Promise.resolve(jobStates)
@@ -124,13 +130,17 @@ export default abstract class UiWorker<
       const j = job
       const context = Object.freeze<JobContext<Params, Data>>({
         abortSignal: j.abort.signal,
-        get apiClient() { return j.apiClient },
+        get apiClient() {
+          return j.apiClient
+        },
         data: j.data,
         onProgress(progress) {
           j.progress = progress
         },
         params: j.params,
-        get progress() { return j.progress },
+        get progress() {
+          return j.progress
+        },
       })
 
       try {
@@ -148,5 +158,9 @@ export default abstract class UiWorker<
   protected abstract prepare(apiClient: ApiClient, params: Params): Promise<Omit<Data, 'jobId'>>
   protected generateName?: (params: Params) => string
   protected abstract process(context: JobContext<Params, Data>): Promise<ReturnValue>
-  protected abstract prepareRetry(apiClient: ApiClient, job: OtherJob<Data>, params: Params): Promise<Omit<Data, 'jobId'>>
+  protected abstract prepareRetry(
+    apiClient: ApiClient,
+    job: OtherJob<Data>,
+    params: Params,
+  ): Promise<Omit<Data, 'jobId'>>
 }

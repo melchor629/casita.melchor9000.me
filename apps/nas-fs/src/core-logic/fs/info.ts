@@ -23,12 +23,15 @@ const generateCacheMetadata = ({ stat }: CacheDirectoryEntry) => {
   const changeTime = BigInt(stat.changeTime.ms)
   const lastModified = (modificationTime < changeTime ? changeTime : modificationTime).toString()
   const lastModifiedDate = new Date(Number(BigInt(lastModified)))
-  const tag = etag({
-    ctime: lastModifiedDate,
-    mtime: lastModifiedDate,
-    ino: 0,
-    size: stat.size,
-  }, { weak: true })
+  const tag = etag(
+    {
+      ctime: lastModifiedDate,
+      mtime: lastModifiedDate,
+      ino: 0,
+      size: stat.size,
+    },
+    { weak: true },
+  )
 
   return {
     lastModified,
@@ -38,14 +41,7 @@ const generateCacheMetadata = ({ stat }: CacheDirectoryEntry) => {
 }
 
 const info = async (
-  {
-    cache,
-    logger: parentLogger,
-    notifier,
-    storagePath,
-    thumbnailPath,
-    uploadPath,
-  }: App,
+  { cache, logger: parentLogger, notifier, storagePath, thumbnailPath, uploadPath }: App,
   _path: string,
 ): Promise<CacheDirectoryEntry> => {
   const logger = parentLogger.child({ module: 'core-logic.fs.info' })
@@ -86,7 +82,7 @@ const info = async (
 
     if (model === null) {
       logger.debug({ path, fullPath }, `Getting ${path} info from the system`)
-      dirStat = dirStat || await fs.lstat(fullPath, { bigint: true })
+      dirStat = dirStat || (await fs.lstat(fullPath, { bigint: true }))
       const tmpModel = await fromStat(path, dirStat, storagePath, { detailed: true })
       model = {
         ...tmpModel,

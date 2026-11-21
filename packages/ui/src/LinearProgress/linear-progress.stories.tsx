@@ -4,7 +4,12 @@ import LinearProgress from './linear-progress'
 const meta = preview.meta({
   title: 'atoms/Linear Progress',
   component: LinearProgress,
-  render: (props) => <LinearProgress {...props} className="min-w-[80dvw]" />,
+  render: (props) => (
+    <LinearProgress
+      {...props}
+      className="min-w-[80dvw]"
+    />
+  ),
   parameters: {
     layout: 'centered',
   },

@@ -12,10 +12,7 @@ const schema = {
     queueName: queueNameParamSchema,
   }),
   querystring: Type.Object({
-    jobIds: Type.Union([
-      jobIdParamSchema,
-      Type.Array(jobIdParamSchema),
-    ]),
+    jobIds: Type.Union([jobIdParamSchema, Type.Array(jobIdParamSchema)]),
   }),
   response: {
     default: ApiErrorSchema,
@@ -31,30 +28,34 @@ const getJobsController: Controller<typeof schema> = async (req, reply) => {
   jobIds = Array.isArray(jobIds) ? jobIds.map((v) => v) : [jobIds]
 
   const jobs = await Promise.all(jobIds.map((jobId) => queue!.getJob(jobId)))
-  const jobsWithState = await Promise.all(jobs.map(async (job) => {
-    if (job) {
-      return [job.asJSON(), await job.getState()] as const
-    }
+  const jobsWithState = await Promise.all(
+    jobs.map(async (job) => {
+      if (job) {
+        return [job.asJSON(), await job.getState()] as const
+      }
 
-    return [null, null] as const
-  }))
+      return [null, null] as const
+    }),
+  )
   const response: GetJobsResponse = {
-    jobs: jobsWithState.map(([jobJson, state]) => (jobJson
-      ? {
-        attemptsMade: jobJson.attemptsMade,
-        data: JSON.parse(jobJson.data) as unknown,
-        failedReason: jobJson.failedReason,
-        finishedOn: jobJson.finishedOn,
-        id: jobJson.id,
-        name: jobJson.name,
-        processedOn: jobJson.processedOn,
-        progress: jobJson.progress as number,
-        stackTrace: JSON.parse(jobJson.stacktrace ?? '[]') as unknown[],
-        returnValue: JSON.parse(jobJson.returnvalue) as unknown,
-        timestamp: jobJson.timestamp,
-        state,
-      } satisfies GetJobsResponse['jobs'][0]
-      : null)),
+    jobs: jobsWithState.map(([jobJson, state]) =>
+      jobJson
+        ? ({
+            attemptsMade: jobJson.attemptsMade,
+            data: JSON.parse(jobJson.data) as unknown,
+            failedReason: jobJson.failedReason,
+            finishedOn: jobJson.finishedOn,
+            id: jobJson.id,
+            name: jobJson.name,
+            processedOn: jobJson.processedOn,
+            progress: jobJson.progress as number,
+            stackTrace: JSON.parse(jobJson.stacktrace ?? '[]') as unknown[],
+            returnValue: JSON.parse(jobJson.returnvalue) as unknown,
+            timestamp: jobJson.timestamp,
+            state,
+          } satisfies GetJobsResponse['jobs'][0])
+        : null,
+    ),
   }
   reply.send(response)
 }

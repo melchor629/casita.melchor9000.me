@@ -1,19 +1,9 @@
 {
   "name": "@melchor629/ui",
-  "private": true,
   "version": "0.0.8",
+  "private": true,
   "type": "module",
   "sideEffects": false,
-  "engines": {
-    "node": ">=22"
-  },
-  "exports": {
-    ".": "./src/index.ts",
-    "./utils": "./src/utils.tsx",
-    "./styles": "./styles/tailwind.css",
-    "./styles/manual-theme": "./styles/manual-theme.css",
-    "./*": "./src/*/index.ts"
-  },
   "imports": {
     "#/test-utils": "./src/test-utils.tsx",
     "#*": [
@@ -24,9 +14,17 @@
       "./*.jsx"
     ]
   },
+  "exports": {
+    ".": "./src/index.ts",
+    "./utils": "./src/utils.tsx",
+    "./styles": "./styles/tailwind.css",
+    "./styles/manual-theme": "./styles/manual-theme.css",
+    "./*": "./src/*/index.ts"
+  },
   "scripts": {
-    "lint": "eslint src .storybook",
-    "check": "tsc -p . --noEmit",
+    "check:lint": "oxlint",
+    "check:fmt": "oxfmt --check",
+    "check:ts": "tsc -p . --noEmit",
     "build": "bun run ./generate-index.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -36,20 +34,6 @@
     "@fortawesome/fontawesome-free": "^7.3.1",
     "clsx": "^2.1.1",
     "tailwind-variants": "^4.0.2"
-  },
-  "peerDependencies": {
-    "@floating-ui/react": "^0.27.0",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "react-router": "^8.5.1"
-  },
-  "peerDependenciesMeta": {
-    "@floating-ui/react": {
-      "optional": true
-    },
-    "react-router": {
-      "optional": true
-    }
   },
   "devDependencies": {
     "@melchor629/tsconfigs": "*",
@@ -71,5 +55,22 @@
     "vite": "^8.3.8",
     "vitest": "^5.1.0",
     "vitest-browser-react": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@floating-ui/react": "^0.27.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router": "^8.5.1"
+  },
+  "peerDependenciesMeta": {
+    "@floating-ui/react": {
+      "optional": true
+    },
+    "react-router": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

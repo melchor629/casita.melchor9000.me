@@ -10,9 +10,12 @@ const schema = {
   }),
   response: {
     default: ApiErrorSchema,
-    200: ContentResponse({ 'text/event-stream': Type.Unknown() }, {
-      description: 'Events',
-    }),
+    200: ContentResponse(
+      { 'text/event-stream': Type.Unknown() },
+      {
+        description: 'Events',
+      },
+    ),
     404: NotFoundApiErrorSchema,
   },
   tags: ['fs'],
@@ -31,7 +34,7 @@ const fsChangesSseController: Controller<typeof schema> = async (req, reply) => 
   sse.send({ comment: 'creating subscriptor' })
   const sub = await req.appTenant!.cache.createSubscriptor(sse.abortSignal)
   sub.on('message', (_, value) => {
-    const { path, type } = JSON.parse(value) as { path: string, type: string }
+    const { path, type } = JSON.parse(value) as { path: string; type: string }
     sse.send({
       event: type,
       data: JSON.stringify({ path }),
@@ -41,7 +44,7 @@ const fsChangesSseController: Controller<typeof schema> = async (req, reply) => 
   await sub.subscribe('fs-events')
 
   sse.send({ comment: 'sending events' })
-  await sse
+  await sse.promise
 
   logger.debug({ reason: (sse.abortSignal.reason as Error)?.message }, 'Closing connection for SSE')
 }

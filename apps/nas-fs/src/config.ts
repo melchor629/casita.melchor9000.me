@@ -26,14 +26,17 @@ export const apps = Object.fromEntries(
       }
 
       const storagePath = path.resolve(appStoragePath)
-      return [appIdentifier, {
-        identifier: appIdentifier,
-        storagePath,
-        thumbnailPath: path.resolve(appThumbnailPath || path.join(storagePath, '.thumbnail')),
-        uploadPath: path.resolve(appUploadPath || path.join(storagePath, '.upload')),
-        plexLibraryId,
-        jellyfinLibraryId,
-      }]
+      return [
+        appIdentifier,
+        {
+          identifier: appIdentifier,
+          storagePath,
+          thumbnailPath: path.resolve(appThumbnailPath || path.join(storagePath, '.thumbnail')),
+          uploadPath: path.resolve(appUploadPath || path.join(storagePath, '.upload')),
+          plexLibraryId,
+          jellyfinLibraryId,
+        },
+      ]
     }),
 )
 export const authApiBaseUrl = process.env.AUTH_API_BASE_URL.replace(/\/$/, '')
@@ -48,7 +51,8 @@ export const rateLimiter = {
   allowList: (process.env.RATE_LIMITER_ALLOW_LIST || '127.0.0.1').split(','),
 }
 
-export const logLevel = process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug')
+export const logLevel =
+  process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug')
 
 export const plexUrl = process.env.PLEX_URL
 
@@ -60,6 +64,8 @@ export const otlp = Object.freeze({
 })
 
 if (Object.keys(apps).length === 0) {
-  console.error('No apps defined. One must be defined at least with APP_key_IDENTIFIER and APP_key_STORAGE_PATH')
+  console.error(
+    'No apps defined. One must be defined at least with APP_key_IDENTIFIER and APP_key_STORAGE_PATH',
+  )
   process.exit(1)
 }

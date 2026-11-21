@@ -1,12 +1,21 @@
 import { readFile, glob, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-const excluded = ['**/ReactRouterButton', '**/ReactRouterLink', '**/icons', '**/Popover', '**/PopoverMenu'];
-const exportOneRegex = /^export default (\w+)\nexport type { (\w+)(?: } from|, )/m
-const exportMultipleRegex = /^export { default as (\w+)((?:, ?type \w+)*) } from '.+?'$/gm
+const excluded = [
+  '**/ReactRouterButton',
+  '**/ReactRouterLink',
+  '**/icons',
+  '**/Popover',
+  '**/PopoverMenu',
+]
+const exportOneRegex = /^export default (\w+)\nexport type \{ (\w+)(?: \} from|, )/m
+const exportMultipleRegex = /^export \{ default as (\w+)((?:, ?type \w+)*) \} from '.+?'$/gm
 
 const lines = []
-for await (const item of glob('./src/*/index.ts', { cwd: import.meta.dirname, exclude: excluded })) {
+for await (const item of glob('./src/*/index.ts', {
+  cwd: import.meta.dirname,
+  exclude: excluded,
+})) {
   const index = await readFile(path.join(import.meta.dirname, item), { encoding: 'utf8' })
   const relativePath = path.relative('./src', item)
   const exportOneMatch = exportOneRegex.exec(index)

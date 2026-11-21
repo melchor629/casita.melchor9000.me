@@ -8,9 +8,7 @@ export type Logger = {
   }
 }
 
-export type SsrRequest<
-  TParams extends Record<string, string> = Record<never, string>,
-> = Request & {
+export type SsrRequest<TParams extends Record<string, string> = Record<never, string>> = Request & {
   nice: Readonly<{
     /**
      * Original URL including the original pathname.

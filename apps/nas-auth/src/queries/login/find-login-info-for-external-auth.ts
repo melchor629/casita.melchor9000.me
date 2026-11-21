@@ -7,10 +7,7 @@ const findLoginInfoForExternalAuth = async (provider: string, loginId: string) =
     .select(loginMapper.select)
     .from(login)
     .innerJoin(user, eq(login.userId, user.id))
-    .where(and(
-      eq(login.type, provider),
-      eq(login.loginId, loginId),
-    ))
+    .where(and(eq(login.type, provider), eq(login.loginId, loginId)))
     .limit(1)
 
   return loginResult ? loginMapper.toDto(loginResult) : null

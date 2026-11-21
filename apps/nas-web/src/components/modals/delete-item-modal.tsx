@@ -1,7 +1,5 @@
 import { Alert, Button, Dialog, Text } from '@melchor629/ui'
-import React, {
-  useCallback, useMemo, useState,
-} from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import * as fs from '@/api/fs'
 import type { DirectoryMetadata } from '@/api/fs/directory'
 import type { FileMetadata } from '@/api/fs/file'
@@ -15,36 +13,55 @@ interface DeleteItemModalProps {
   readonly onClose?: (hasDeleted?: boolean) => void
 }
 
-export default function DeleteItemModal({
-  entries, module, onClose, show,
-}: DeleteItemModalProps) {
+export default function DeleteItemModal({ entries, module, onClose, show }: DeleteItemModalProps) {
   const apiClient = useApiClient()
   const [error, setError] = useState<Error[] | null>(null)
 
-  const close = useCallback((hasDeleted?: boolean) => {
-    onClose?.(hasDeleted)
-    setError(null)
-  }, [onClose])
+  const close = useCallback(
+    (hasDeleted?: boolean) => {
+      onClose?.(hasDeleted)
+      setError(null)
+    },
+    [onClose],
+  )
 
-  const onDeleteImpl: React.MouseEventHandler = useCallback((e) => {
-    e.preventDefault()
-    const newErrors: Error[] = []
-    setError(null)
-    Promise.all(entries.map((entry) => (
-      fs.remove(apiClient, module, entry.path, true).catch((err) => newErrors.push(err as Error))
-    )))
-      .then(() => close(true))
-      .catch((err) => newErrors.push(err as Error))
-      .finally(() => (newErrors.length ? setError(newErrors) : undefined))
-  }, [apiClient, entries, module, close])
+  const onDeleteImpl: React.MouseEventHandler = useCallback(
+    (e) => {
+      e.preventDefault()
+      const newErrors: Error[] = []
+      setError(null)
+      Promise.all(
+        entries.map((entry) =>
+          fs
+            .remove(apiClient, module, entry.path, true)
+            .catch((err) => newErrors.push(err as Error)),
+        ),
+      )
+        .then(() => close(true))
+        .catch((err) => newErrors.push(err as Error))
+        .finally(() => (newErrors.length ? setError(newErrors) : undefined))
+    },
+    [apiClient, entries, module, close],
+  )
 
-  const closeButton = useMemo(() => (
-    <Button type="button" color="error" onClick={onDeleteImpl} key="delete">Delete</Button>
-  ), [onDeleteImpl])
+  const closeButton = useMemo(
+    () => (
+      <Button
+        type="button"
+        color="error"
+        onClick={onDeleteImpl}
+        key="delete"
+      >
+        Delete
+      </Button>
+    ),
+    [onDeleteImpl],
+  )
   const title = entries.length === 1 ? 'Delete item' : 'Delete items'
-  const endDescription = entries.length === 1
-    ? `this ${entries[0].type === 'dir' ? 'folder and all its content' : 'file'}`
-    : 'these items'
+  const endDescription =
+    entries.length === 1
+      ? `this ${entries[0].type === 'dir' ? 'folder and all its content' : 'file'}`
+      : 'these items'
   return (
     <Dialog
       id="delete-item"
@@ -57,23 +74,29 @@ export default function DeleteItemModal({
       portal
     >
       {error && (
-        <Alert severity="error" title="There was an error during deletion">
+        <Alert
+          severity="error"
+          title="There was an error during deletion"
+        >
           {JSON.stringify(error)}
         </Alert>
       )}
       <Text>
-        Do you confirm you want to remove
-        {' '}
-        {endDescription}
+        Do you confirm you want to remove {endDescription}
         ?
         <br />
-        <Text component="span" color="primary">
+        <Text
+          component="span"
+          color="primary"
+        >
           This action cannot be undone!
         </Text>
       </Text>
       {entries.length > 0 && (
         <ul className="mt-3">
-          {entries.map((entry) => <li key={entry.path}>{Path.basename(entry.path)}</li>)}
+          {entries.map((entry) => (
+            <li key={entry.path}>{Path.basename(entry.path)}</li>
+          ))}
         </ul>
       )}
     </Dialog>

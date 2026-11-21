@@ -12,7 +12,12 @@ const normalizePosix = (path: string, allowAboveRoot: boolean) => {
       if (lastSlash === i - 1 || dots === 1) {
         // do nothing
       } else if (lastSlash !== i - 1 && dots === 2) {
-        if (result.length < 2 || lastSegmentLength !== 2 || result[result.length - 1] !== '.' || result[result.length - 2] !== '.') {
+        if (
+          result.length < 2
+          || lastSegmentLength !== 2
+          || result[result.length - 1] !== '.'
+          || result[result.length - 2] !== '.'
+        ) {
           if (result.length > 2) {
             const lastSlashIndex = result.lastIndexOf(sep)
             if (lastSlashIndex !== result.length - 1) {
@@ -101,9 +106,7 @@ export const join = (...paths: string[]) => {
     return '.'
   }
 
-  const joined = paths
-    .filter((path) => path.length > 0)
-    .join(sep)
+  const joined = paths.filter((path) => path.length > 0).join(sep)
 
   return normalize(joined)
 }
@@ -130,8 +133,9 @@ export const basename = (path: string) => {
     return path
   }
 
-  let start = 0; let end = -1; let
-    matchedSlash = true
+  let start = 0
+  let end = -1
+  let matchedSlash = true
   for (let i = path.length - 1; i >= 0; i -= 1) {
     if (path[i] === sep) {
       if (!matchedSlash) {

@@ -1,8 +1,6 @@
 import { Button, Dialog, Text, TextInput } from '@melchor629/ui'
 import { ContentCopy, Done } from '@melchor629/ui/icons'
-import {
-  type FC, useCallback, useEffect, useId, useState,
-} from 'react'
+import { type FC, useCallback, useEffect, useId, useState } from 'react'
 import baseUrl from '@/api/base-url'
 import { createAlias } from '@/api/fs'
 import type { DirectoryMetadata } from '@/api/fs/directory'
@@ -16,15 +14,18 @@ interface GenerateUrlsModalProps {
   readonly metadata: Array<DirectoryMetadata | FileMetadata>
 }
 
-const GeneratedUrl = ({ path, url }: { readonly path: string, readonly url: string }) => {
+const GeneratedUrl = ({ path, url }: { readonly path: string; readonly url: string }) => {
   const [isCopied, setIsCopied] = useState(false)
   const id = useId()
 
   const copyUrl = useCallback(() => {
-    navigator.clipboard.writeText(url).then(() => {
-      setIsCopied(true)
-      setTimeout(() => setIsCopied(false), 2000)
-    }).catch(() => setIsCopied(false))
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        setIsCopied(true)
+        setTimeout(() => setIsCopied(false), 2000)
+      })
+      .catch(() => setIsCopied(false))
   }, [url])
 
   return (
@@ -35,7 +36,7 @@ const GeneratedUrl = ({ path, url }: { readonly path: string, readonly url: stri
         readOnly
         value={url}
         fullWidth
-        endAdornment={(
+        endAdornment={
           <Button
             type="button"
             variant="text"
@@ -44,7 +45,7 @@ const GeneratedUrl = ({ path, url }: { readonly path: string, readonly url: stri
             onClick={copyUrl}
             icon={isCopied ? <Done /> : <ContentCopy />}
           />
-        )}
+        }
       >
         {path}
       </TextInput>
@@ -52,25 +53,21 @@ const GeneratedUrl = ({ path, url }: { readonly path: string, readonly url: stri
   )
 }
 
-const GenerateUrlsModal: FC<GenerateUrlsModalProps> = ({
-  metadata,
-  module,
-  onClose,
-  show,
-}) => {
+const GenerateUrlsModal: FC<GenerateUrlsModalProps> = ({ metadata, module, onClose, show }) => {
   const apiClient = useApiClient()
   const [generatedUrls, setGeneratedUrls] = useState<[string, string][] | null>(null)
   const [isCopied, setIsCopied] = useState(false)
   const id = useId()
 
   const copyAllUrls = useCallback(() => {
-    const text = (generatedUrls || [])
-      .map(([, url]) => url)
-      .join('\n')
-    navigator.clipboard.writeText(text).then(() => {
-      setIsCopied(true)
-      setTimeout(() => setIsCopied(false), 2000)
-    }).catch(() => setIsCopied(false))
+    const text = (generatedUrls || []).map(([, url]) => url).join('\n')
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setIsCopied(true)
+        setTimeout(() => setIsCopied(false), 2000)
+      })
+      .catch(() => setIsCopied(false))
   }, [generatedUrls])
 
   useEffect(() => {
@@ -78,7 +75,11 @@ const GenerateUrlsModal: FC<GenerateUrlsModalProps> = ({
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setGeneratedUrls(null)
 
-      createAlias(apiClient, module, metadata.map((m) => m.path))
+      createAlias(
+        apiClient,
+        module,
+        metadata.map((m) => m.path),
+      )
         .then(({ url, urls }) => {
           const baseUrlWithoutSlash = baseUrl.replace(/\/$/, '')
           if (Object.keys(urls).length === 1) {
@@ -88,7 +89,8 @@ const GenerateUrlsModal: FC<GenerateUrlsModalProps> = ({
               Object.entries(urls).map(([key, path]) => [key, baseUrlWithoutSlash + path]),
             )
           }
-        }).catch(() => setGeneratedUrls(null))
+        })
+        .catch(() => setGeneratedUrls(null))
     }
   }, [apiClient, module, show, metadata])
 
@@ -101,19 +103,26 @@ const GenerateUrlsModal: FC<GenerateUrlsModalProps> = ({
       size="extra-large"
       portal
     >
-      <Text color="textSecondary" className="mb-2">
+      <Text
+        color="textSecondary"
+        className="mb-2"
+      >
         {metadata.length === 1 ? 'This URL is' : 'These URLs are'}
         &nbsp;valid for the following 12 hours, after that,&nbsp;
         {metadata.length === 1 ? 'it' : 'they'}
         &nbsp;won&apos;t work anymore…
       </Text>
       {generatedUrls === null && (
-        <Text color="textSecondary" align="center" className="mt-2">
+        <Text
+          color="textSecondary"
+          align="center"
+          className="mt-2"
+        >
           Generating...
         </Text>
       )}
       {generatedUrls !== null && metadata.length > 1 && (
-        <div className="text-end my-3">
+        <div className="my-3 text-end">
           <Button
             type="button"
             variant="text"
@@ -124,10 +133,14 @@ const GenerateUrlsModal: FC<GenerateUrlsModalProps> = ({
           </Button>
         </div>
       )}
-      {generatedUrls !== null && (
-        generatedUrls
-          .map(([path, url]) => <GeneratedUrl key={path} path={path} url={url} />)
-      )}
+      {generatedUrls !== null
+        && generatedUrls.map(([path, url]) => (
+          <GeneratedUrl
+            key={path}
+            path={path}
+            url={url}
+          />
+        ))}
     </Dialog>
   )
 }

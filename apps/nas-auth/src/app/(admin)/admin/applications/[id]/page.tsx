@@ -11,7 +11,9 @@ type ApplicationPageProps = Readonly<{
   session: ActionReturnType<'get-session'>
 }>
 
-export const loader = async (context: PageLoaderContext<ApplicationPageParams>): Promise<ApplicationPageProps> => {
+export const loader = async (
+  context: PageLoaderContext<ApplicationPageParams>,
+): Promise<ApplicationPageProps> => {
   const session = await runActionForLoader('get-session', context)
   if (!session) {
     notFound()

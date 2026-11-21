@@ -7,18 +7,16 @@ interface MediaLibraryChildren {
   items: Item[]
 }
 
-export const {
-  prefetch: prefetchMediaLibraryChildren,
-  useHook: useMediaLibraryChildren,
-} = makeQuery((module?: string | null) => ({
-  queryKey: ['fs', module, 'library'],
-  queryFn: () => {
-    if (!module) {
-      return null
-    }
+export const { prefetch: prefetchMediaLibraryChildren, useHook: useMediaLibraryChildren } =
+  makeQuery((module?: string | null) => ({
+    queryKey: ['fs', module, 'library'],
+    queryFn: () => {
+      if (!module) {
+        return null
+      }
 
-    const { get } = getApiClient()
-    return get<MediaLibraryChildren>(`${baseUrl}${module}/media`)
-  },
-  staleTime: 60_000,
-}))
+      const { get } = getApiClient()
+      return get<MediaLibraryChildren>(`${baseUrl}${module}/media`)
+    },
+    staleTime: 60_000,
+  }))

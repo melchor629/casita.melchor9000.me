@@ -46,7 +46,9 @@ const queues = Object.freeze({
 
 for (const queue of Object.values(queues)) {
   queue.on('error', () => {})
-  addCloseableHandler(`bullmq:queue:${queue.name}`, () => queue.close().catch(() => queue.disconnect()))
+  addCloseableHandler(`bullmq:queue:${queue.name}`, () =>
+    queue.close().catch(() => queue.disconnect()),
+  )
 }
 
 export default queues

@@ -5,6 +5,7 @@ import { Type } from './type-helpers.ts'
 
 /**
  * Application (tenant) services
+ *
  * @internal
  */
 export interface App {
@@ -14,7 +15,7 @@ export interface App {
   readonly uploadPath: string
   readonly cache: Cache
   readonly notifier: ReturnType<typeof getNotifier>
-  readonly logger: Logger,
+  readonly logger: Logger
   readonly mediaLibrary: {
     readonly plex?: string
     readonly jellyfin?: string

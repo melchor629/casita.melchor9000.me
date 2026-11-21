@@ -5,18 +5,31 @@ import type { DictionaryEntry } from '../jp-utils'
 import VocabularyResult from './vocabulary-result'
 
 const virtuosoComponents: Components<DictionaryEntry> = {
-  Header: () => <div className="w-full h-17" />,
-  Footer: () => <div className="w-full h-5" />,
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  Scroller: (props) => <div {...props} className="grow w-full max-w-3xl -mt-16" />,
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  List: (props) => <div {...props} className="flex grow flex-col gap-2 px-4 overflow-y-auto" />,
+  Header: () => <div className="h-17 w-full" />,
+  Footer: () => <div className="h-5 w-full" />,
+  Scroller: (props) => (
+    <div
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
+      className="-mt-16 w-full max-w-3xl grow"
+    />
+  ),
+  List: (props) => (
+    <div
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
+      className="flex grow flex-col gap-2 overflow-y-auto px-4"
+    />
+  ),
 }
 
-const virtuosoItemRender = (_: number, result: DictionaryEntry) => <VocabularyResult result={result} />
+const virtuosoItemRender = (_: number, result: DictionaryEntry) => (
+  <VocabularyResult result={result} />
+)
 
 /**
  * Renders the vocabulary list with using the provided filter.
+ *
  * @param param0 Props.
  */
 export default function VocabularyResults({ filter }: Readonly<{ filter: string }>) {
@@ -34,14 +47,18 @@ export default function VocabularyResults({ filter }: Readonly<{ filter: string 
   }, [filter])
 
   useEffect(() => {
-    const vocabularyWorker = new Worker(
-      new URL('../vocabulary-worker.js', import.meta.url),
-      { type: 'module', name: 'jpn-vocab' },
+    const vocabularyWorker = new Worker(new URL('../vocabulary-worker.js', import.meta.url), {
+      type: 'module',
+      name: 'jpn-vocab',
+    })
+    vocabularyWorker.addEventListener(
+      'message',
+      (ev) => {
+        setResults(ev.data as DictionaryEntry[])
+        setLoading(false)
+      },
+      false,
     )
-    vocabularyWorker.addEventListener('message', (ev) => {
-      setResults(ev.data as DictionaryEntry[])
-      setLoading(false)
-    }, false)
     vocabularyWorkerRef.current = vocabularyWorker
     return () => {
       vocabularyWorkerRef.current = null
@@ -70,7 +87,9 @@ export default function VocabularyResults({ filter }: Readonly<{ filter: string 
 
   return (
     <>
-      <div className="fixed top-20"><CircularProgress show={loading} /></div>
+      <div className="fixed top-20">
+        <CircularProgress show={loading} />
+      </div>
       <Virtuoso
         data={results ?? []}
         itemContent={virtuosoItemRender}

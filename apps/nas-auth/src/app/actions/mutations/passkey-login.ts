@@ -1,4 +1,7 @@
-import { startAuthentication, type PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/browser'
+import {
+  startAuthentication,
+  type PublicKeyCredentialRequestOptionsJSON,
+} from '@simplewebauthn/browser'
 import { useMutation, type MutationOptions } from '@tanstack/react-query'
 
 const passkeyLoginOptions: MutationOptions = {
@@ -9,12 +12,14 @@ const passkeyLoginOptions: MutationOptions = {
       credentials: 'include',
     })
     if (!authenticationResponse.ok) {
-      throw new Error(`Failed starting login process: ${authenticationResponse.status} ${await authenticationResponse.text()}`)
+      throw new Error(
+        `Failed starting login process: ${authenticationResponse.status} ${await authenticationResponse.text()}`,
+      )
     }
 
-    const optionsJSON = await authenticationResponse.json() as PublicKeyCredentialRequestOptionsJSON
-    const credential = await startAuthentication({ optionsJSON })
-      .catch((e) => e as Error)
+    const optionsJSON =
+      (await authenticationResponse.json()) as PublicKeyCredentialRequestOptionsJSON
+    const credential = await startAuthentication({ optionsJSON }).catch((e) => e as Error)
     if (credential instanceof Error) {
       throw new Error(`Passkey login failed or canceled: ${credential.message}`)
     }
@@ -30,11 +35,13 @@ const passkeyLoginOptions: MutationOptions = {
     })
 
     if (!verificationResponse.ok) {
-      const text = await verificationResponse.json().catch(() => ({})) as { message?: string }
+      const text = (await verificationResponse.json().catch(() => ({}))) as { message?: string }
       throw new Error(`Login verification failed: ${text.message || 'unknown error (retry pls)'}`)
     }
 
-    const { location: url, verified } = await verificationResponse.json() as { verified: false, location: undefined } | { verified: true, location: string }
+    const { location: url, verified } = (await verificationResponse.json()) as
+      | { verified: false; location: undefined }
+      | { verified: true; location: string }
     if (!verified) {
       throw new Error('Login verification failed')
     }

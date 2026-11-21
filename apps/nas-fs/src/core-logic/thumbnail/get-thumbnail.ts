@@ -42,15 +42,24 @@ const getThumbnail = async (
     }
   }
 
-  logger.debug({
-    size, i, format, path: metadata.path,
-  }, 'Read thumbnail')
-  return [{
-    ...manifest.images[i],
-    format: size === 'original' ? manifest.images[i].format : formatMimeType,
-    path: fullThumbnailPath,
-    data: imageData,
-  }, manifest] as const
+  logger.debug(
+    {
+      size,
+      i,
+      format,
+      path: metadata.path,
+    },
+    'Read thumbnail',
+  )
+  return [
+    {
+      ...manifest.images[i],
+      format: size === 'original' ? manifest.images[i].format : formatMimeType,
+      path: fullThumbnailPath,
+      data: imageData,
+    },
+    manifest,
+  ] as const
 }
 
 export default getThumbnail

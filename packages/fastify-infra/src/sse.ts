@@ -20,30 +20,33 @@ interface Sse {
    */
   readonly abortSignal: AbortSignal
   /**
-   * Sends an event through the channel. The message will be send asynchronously
-   * soon after this is called.
+   * Sends an event through the channel. The message will be send asynchronously soon after this is
+   * called.
+   *
    * @param event Event to send to the requester.
    */
   send(event: EventMessage): void
   /**
    * Ends the channel.
+   *
    * @param reason The reason of why it is ended, if it matters.
    */
   end(reason?: Error): void
-  then(onFullfilled: () => void, onRejected?: (error: Error) => void): void
+  promise: Promise<void>
 }
 
 declare module 'fastify' {
   interface FastifyReply {
     /**
      * Replies this connection with Server-Sent Events.
+     *
      * @param opts Options for the Server-Sent Events reply.
      */
     sse(opts?: Options): Readonly<Sse>
   }
 }
 
-async function * generatePings(signal: AbortSignal, interval: number): AsyncGenerator<EventMessage> {
+async function* generatePings(signal: AbortSignal, interval: number): AsyncGenerator<EventMessage> {
   let pingNumber = 0
   do {
     yield {
@@ -82,7 +85,7 @@ const serializeMessage = (event: EventMessage) => {
 }
 
 const ssePlugin: FastifyPluginAsync = (fastify) => {
-  const connections: { reqId: string, abort: AbortController }[] = []
+  const connections: { reqId: string; abort: AbortController }[] = []
   fastify.addHook('preClose', () => {
     connections.forEach(({ abort }) => {
       abort.abort(new Error('Server is closing'))
@@ -90,45 +93,47 @@ const ssePlugin: FastifyPluginAsync = (fastify) => {
     connections.splice(0)
     return Promise.resolve()
   })
-  fastify
-    .decorateReply('sse', function sse(this: FastifyReply, opts: Options = {}): Readonly<Sse> {
-      if (connections.find((c) => c.reqId === this.request.id)) {
-        throw new Error('Server-Sent Events has already been configured')
-      }
+  fastify.decorateReply('sse', function sse(this: FastifyReply, opts: Options = {}): Readonly<Sse> {
+    if (connections.find((c) => c.reqId === this.request.id)) {
+      throw new Error('Server-Sent Events has already been configured')
+    }
 
-      const abort = new AbortController()
-      const eventStream = new PassThrough({ objectMode: true, signal: abort.signal })
-      const connection = { reqId: this.request.id, abort }
-      connections.push(connection)
+    const abort = new AbortController()
+    const eventStream = new PassThrough({ objectMode: true, signal: abort.signal })
+    const connection = { reqId: this.request.id, abort }
+    connections.push(connection)
 
-      this.header('Content-Type', 'text/event-stream; charset=utf-8')
-      if (this.request.raw.httpVersionMajor < 2) {
-        this.header('Connection', 'keep-alive')
-      }
-      this.header('Cache-Control', 'no-cache,no-transform')
-      this.header('x-no-compression', '1')
+    this.header('Content-Type', 'text/event-stream; charset=utf-8')
+    if (this.request.raw.httpVersionMajor < 2) {
+      this.header('Connection', 'keep-alive')
+    }
+    this.header('Cache-Control', 'no-cache,no-transform')
+    this.header('x-no-compression', '1')
 
-      if (opts.configurePings) {
-        Readable.from(generatePings(
+    if (opts.configurePings) {
+      Readable.from(
+        generatePings(
           abort.signal,
           typeof opts.configurePings === 'number' ? opts.configurePings : 10_000,
-        )).pipe(eventStream, { end: false })
+        ),
+      ).pipe(eventStream, { end: false })
+    }
+
+    // NOTE: this is never called when the browser closes connection through vite...
+    this.request.cancelSignal.addEventListener('abort', () => {
+      abort.abort(new Error('Client has closed the connection'))
+    })
+
+    abort.signal.addEventListener('abort', () => {
+      const idx = connections.indexOf(connection)
+      if (idx !== -1) {
+        connections.splice(idx, 1)
       }
+    })
 
-      // NOTE: this is never called when the browser closes connection through vite...
-      this.request.cancelSignal.addEventListener('abort', () => {
-        abort.abort(new Error('Client has closed the connection'))
-      })
-
-      abort.signal.addEventListener('abort', () => {
-        const idx = connections.indexOf(connection)
-        if (idx !== -1) {
-          connections.splice(idx, 1)
-        }
-      })
-
-      const promise = this.send(eventStream.pipe(
-        Transform.from(async function * transformEvent(source) {
+    const sendResult = this.send(
+      eventStream.pipe(
+        Transform.from(async function* transformEvent(source) {
           for await (const chunk of source) {
             const serialized = serializeMessage(chunk as EventMessage)
             if (serialized) {
@@ -136,19 +141,21 @@ const ssePlugin: FastifyPluginAsync = (fastify) => {
             }
           }
         }),
-      ))
+      ),
+    )
+    const promise = new Promise<void>((resolve, reject) => sendResult.then(resolve, reject))
 
-      return Object.freeze({
-        then: promise.then.bind(promise),
-        abortSignal: abort.signal,
-        send(event) {
-          eventStream.push(event)
-        },
-        end(reason) {
-          abort.abort(reason ?? new Error('Called end'))
-        },
-      } satisfies Sse)
-    })
+    return Object.freeze({
+      promise,
+      abortSignal: abort.signal,
+      send(event) {
+        eventStream.push(event)
+      },
+      end(reason) {
+        abort.abort(reason ?? new Error('Called end'))
+      },
+    } satisfies Sse)
+  })
 
   return Promise.resolve()
 }

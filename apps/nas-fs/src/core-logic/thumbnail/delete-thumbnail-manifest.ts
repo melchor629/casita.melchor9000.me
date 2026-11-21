@@ -13,10 +13,7 @@ const deleteThumbnailManifest = async (app: App, metadata: File) => {
 
   if (manifest) {
     logger.debug({ path: metadata.path }, `Deleting manifest for ${metadata.path}`)
-    await Promise.all([
-      remove(join(app.thumbnailPath, manifest.path)),
-      cache.remove(key),
-    ])
+    await Promise.all([remove(join(app.thumbnailPath, manifest.path)), cache.remove(key)])
   }
 }
 

@@ -23,9 +23,7 @@ const schema = {
 
 const endUploadController: Controller<typeof schema> = async (req, reply) => {
   const { uploadToken } = req.params
-  const {
-    cache, notifier, storagePath, uploadPath,
-  } = req.appTenant!
+  const { cache, notifier, storagePath, uploadPath } = req.appTenant!
   const cacheKey = `upload:${req.jwtToken!.payload.sub}:${uploadToken}`
   let manifest: UploadManifest | null
   try {
@@ -39,14 +37,8 @@ const endUploadController: Controller<typeof schema> = async (req, reply) => {
     return
   }
 
-  await move(
-    join(uploadPath, manifest.uploadPath),
-    join(storagePath, manifest.path),
-  )
-  await Promise.all([
-    cache.remove(cacheKey),
-    notifier.addFile(manifest.path),
-  ])
+  await move(join(uploadPath, manifest.uploadPath), join(storagePath, manifest.path))
+  await Promise.all([cache.remove(cacheKey), notifier.addFile(manifest.path)])
 
   reply
     .header('location', `${pathPrefix ?? ''}/info/${manifest.path}`)

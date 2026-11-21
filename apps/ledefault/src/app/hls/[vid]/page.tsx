@@ -21,7 +21,11 @@ type SsrProps = Readonly<{
   manifest: Manifest
 }>
 
-export const loader: PageLoader<SsrProps, { vid: string }> = async ({ nice: { params: { vid } } }) => {
+export const loader: PageLoader<SsrProps, { vid: string }> = async ({
+  nice: {
+    params: { vid },
+  },
+}) => {
   const videoPath = path.join(staticDirPath, 'hls', vid, 'manifest.json')
   try {
     const manifestJson = await readFile(videoPath, 'utf-8')
@@ -36,11 +40,9 @@ export const loader: PageLoader<SsrProps, { vid: string }> = async ({ nice: { pa
 }
 
 export const metadata = ({ manifest: { artist, description, title }, vid }: SsrProps): Metadata => {
-  const titleParts = [
-    'pi/video -',
-    title ?? vid,
-    artist && `(from ${artist})`,
-  ].filter(Boolean).join(' ')
+  const titleParts = ['pi/video -', title ?? vid, artist && `(from ${artist})`]
+    .filter(Boolean)
+    .join(' ')
   return {
     title: titleParts,
     description,

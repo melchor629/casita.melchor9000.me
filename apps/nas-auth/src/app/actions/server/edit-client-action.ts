@@ -5,10 +5,12 @@ import { updateClient } from '#queries/index.ts'
 import { ensureSession } from './get-session-action'
 import { ok } from './helpers'
 
-type EditClientData = Readonly<{
-  clientId: string
-  clientName: string
-} & Record<string, unknown>>
+type EditClientData = Readonly<
+  {
+    clientId: string
+    clientName: string
+  } & Record<string, unknown>
+>
 
 async function editClientAction(context: PageLoaderContext, { clientId, ...data }: EditClientData) {
   const sessionResult = await ensureSession(context, 'client', 'write')

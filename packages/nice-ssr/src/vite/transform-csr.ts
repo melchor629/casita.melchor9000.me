@@ -1,10 +1,23 @@
 import { generate } from 'astring'
-import type { ExportNamedDeclaration, Expression, ImportDeclaration, Pattern, Program, Property, SpreadElement, Statement, VariableDeclaration } from 'estree'
+import type {
+  ExportNamedDeclaration,
+  Expression,
+  ImportDeclaration,
+  Pattern,
+  Program,
+  Property,
+  SpreadElement,
+  Statement,
+  VariableDeclaration,
+} from 'estree'
 
 type ParentDecls = readonly string[]
 type VisitResult = readonly [decl: string[], externalRefs: string[]]
 
-function getDeclaredNamesProperty(property: Property | SpreadElement, parentDecls: ParentDecls): VisitResult {
+function getDeclaredNamesProperty(
+  property: Property | SpreadElement,
+  parentDecls: ParentDecls,
+): VisitResult {
   if (property.type === 'SpreadElement') {
     return getExternalIdentifiersExpression(property.argument, [])
   }
@@ -30,7 +43,13 @@ function getDeclaredNamesPattern(pattern: Pattern, parentDecls: ParentDecls): Vi
     return pattern.elements
       .filter((v): v is NonNullable<typeof v> => v != null)
       .map((v) => getDeclaredNamesPattern(v, parentDecls))
-      .reduce(([a, b], [c, d]) => ([[...a, ...c], [...b, ...d]]), [[], []])
+      .reduce(
+        ([a, b], [c, d]) => [
+          [...a, ...c],
+          [...b, ...d],
+        ],
+        [[], []],
+      )
   } else if (pattern.type === 'AssignmentPattern') {
     //
   } else if (pattern.type === 'Identifier') {
@@ -41,9 +60,10 @@ function getDeclaredNamesPattern(pattern: Pattern, parentDecls: ParentDecls): Vi
     const decl = []
     const externalRefs = []
     for (const prop of pattern.properties) {
-      const [a, b] = prop.type === 'Property'
-        ? getDeclaredNamesProperty(prop, parentDecls)
-        : getDeclaredNamesPattern(prop.argument, parentDecls)
+      const [a, b] =
+        prop.type === 'Property'
+          ? getDeclaredNamesProperty(prop, parentDecls)
+          : getDeclaredNamesPattern(prop.argument, parentDecls)
       decl.push(...a)
       externalRefs.push(...b)
     }
@@ -54,7 +74,10 @@ function getDeclaredNamesPattern(pattern: Pattern, parentDecls: ParentDecls): Vi
   return [[], []]
 }
 
-function getExternalIdentifiersVariableDeclaration(varDeclaration: VariableDeclaration, parentDecls: ParentDecls): VisitResult {
+function getExternalIdentifiersVariableDeclaration(
+  varDeclaration: VariableDeclaration,
+  parentDecls: ParentDecls,
+): VisitResult {
   const decl: string[] = []
   const externalRefs: string[] = []
   for (const declaration of varDeclaration.declarations) {
@@ -70,7 +93,10 @@ function getExternalIdentifiersVariableDeclaration(varDeclaration: VariableDecla
   return [decl, externalRefs]
 }
 
-function getExternalIdentifiersExpression(expression: Expression, parentDecls: ParentDecls): VisitResult {
+function getExternalIdentifiersExpression(
+  expression: Expression,
+  parentDecls: ParentDecls,
+): VisitResult {
   const decl: string[] = [...parentDecls]
   const externalRefs: string[] = []
   if (expression.type === 'ArrayExpression') {
@@ -138,8 +164,11 @@ function getExternalIdentifiersExpression(expression: Expression, parentDecls: P
         externalRefs.push(...a)
       }
 
-      const u = expression.expression.arguments
-        .flatMap((arg) => arg.type === 'SpreadElement' ? getDeclaredNamesProperty(arg, parentDecls)[1] : getExternalIdentifiersExpression(arg, decl)[1])
+      const u = expression.expression.arguments.flatMap((arg) =>
+        arg.type === 'SpreadElement'
+          ? getDeclaredNamesProperty(arg, parentDecls)[1]
+          : getExternalIdentifiersExpression(arg, decl)[1],
+      )
       externalRefs.push(...u)
     } else if (expression.expression.type === 'MemberExpression') {
       if (expression.expression.object.type !== 'Super') {
@@ -213,12 +242,16 @@ function getExternalIdentifiersExpression(expression: Expression, parentDecls: P
       externalRefs.push(...b)
     }
   } else if (expression.type === 'SequenceExpression') {
-    externalRefs.push(...expression.expressions.flatMap((ex) => getExternalIdentifiersExpression(ex, decl)[1]))
+    externalRefs.push(
+      ...expression.expressions.flatMap((ex) => getExternalIdentifiersExpression(ex, decl)[1]),
+    )
   } else if (expression.type === 'TaggedTemplateExpression') {
     externalRefs.push(...getExternalIdentifiersExpression(expression.tag, decl)[1])
     externalRefs.push(...getExternalIdentifiersExpression(expression.quasi, decl)[1])
   } else if (expression.type === 'TemplateLiteral') {
-    externalRefs.push(...expression.expressions.flatMap((ex) => getExternalIdentifiersExpression(ex, decl)[1]))
+    externalRefs.push(
+      ...expression.expressions.flatMap((ex) => getExternalIdentifiersExpression(ex, decl)[1]),
+    )
   } else if (expression.type === 'ThisExpression') {
     //
   } else if (expression.type === 'UnaryExpression') {
@@ -319,7 +352,9 @@ export function getExternalIdentifiers(stmts: Statement[], parentDecls: string[]
     } else if (stmt.type === 'TryStatement') {
       externalRefs.push(...getExternalIdentifiers(stmt.block.body, decl))
       if (stmt.handler != null) {
-        const [newDecl, newExternalRefs] = stmt.handler.param ? getDeclaredNamesPattern(stmt.handler.param, parentDecls) : [[], []]
+        const [newDecl, newExternalRefs] = stmt.handler.param
+          ? getDeclaredNamesPattern(stmt.handler.param, parentDecls)
+          : [[], []]
         externalRefs.push(...newExternalRefs)
         externalRefs.push(...getExternalIdentifiers(stmt.handler.body.body, [...decl, ...newDecl]))
       }
@@ -351,18 +386,17 @@ export function getExternalIdentifiers(stmts: Statement[], parentDecls: string[]
 
 const exportsToRemove = Object.freeze(['loader', 'metadata'])
 export const transformPage = (ast: Program): string => {
-  const ssrExports = ast.body
-    .filter((el): el is ExportNamedDeclaration =>
+  const ssrExports = ast.body.filter(
+    (el): el is ExportNamedDeclaration =>
       el.type === 'ExportNamedDeclaration'
-        && el.declaration != null
-        && (
-          (el.declaration.type === 'FunctionDeclaration' && exportsToRemove.includes(el.declaration.id.name))
-            || (
-              el.declaration.type === 'VariableDeclaration'
-                && getDeclaredNamesPattern(el.declaration.declarations[0].id, [])[0].some((n) => exportsToRemove.includes(n))
-            )
-        ),
-    )
+      && el.declaration != null
+      && ((el.declaration.type === 'FunctionDeclaration'
+        && exportsToRemove.includes(el.declaration.id.name))
+        || (el.declaration.type === 'VariableDeclaration'
+          && getDeclaredNamesPattern(el.declaration.declarations[0].id, [])[0].some((n) =>
+            exportsToRemove.includes(n),
+          ))),
+  )
   const asd = ssrExports.flatMap((el) => {
     let name: string
     if (el.declaration?.type === 'FunctionDeclaration') {
@@ -380,28 +414,33 @@ export const transformPage = (ast: Program): string => {
       } else if (init?.type === 'ObjectExpression') {
         return getExternalIdentifiersExpression(init, [])[1]
       } else {
-        throw new Error(`Unsupported expression for ${name}: must be a function or value assignment`)
+        throw new Error(
+          `Unsupported expression for ${name}: must be a function or value assignment`,
+        )
       }
     } else {
       throw new Error('???')
     }
   })
-  const importsToRemove = ast.body.filter((el): el is ImportDeclaration =>
-    el.type === 'ImportDeclaration'
+  const importsToRemove = ast.body.filter(
+    (el): el is ImportDeclaration =>
+      el.type === 'ImportDeclaration'
       && typeof el.source.value === 'string'
       && el.source.value.match(/^node:/) != null,
   )
   for (const importDeclaration of ast.body.filter((el) => el.type === 'ImportDeclaration')) {
     const prevLength = importDeclaration.specifiers.length
-    importDeclaration.specifiers = importDeclaration.specifiers
-      .filter((specifier) => !asd.includes(specifier.local.name))
+    importDeclaration.specifiers = importDeclaration.specifiers.filter(
+      (specifier) => !asd.includes(specifier.local.name),
+    )
     if (prevLength > 0 && importDeclaration.specifiers.length === 0) {
       importsToRemove.push(importDeclaration)
     }
   }
 
-  ast.body = ast.body
-    .filter((el) => !ssrExports.includes(el as never) && !importsToRemove.includes(el as never))
+  ast.body = ast.body.filter(
+    (el) => !ssrExports.includes(el as never) && !importsToRemove.includes(el as never),
+  )
   const newCode = generate(ast, { comments: true })
   return newCode
 }

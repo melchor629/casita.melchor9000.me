@@ -3,7 +3,7 @@ name: nas-web artifact
 on:
   push:
     tags:
-      - "nas-web@*"
+      - 'nas-web@*'
 
 env:
   REGISTRY: docker.io

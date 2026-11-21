@@ -16,10 +16,13 @@ interface ShowItemProps {
 const ShowItem = ({ item, module }: ShowItemProps) => (
   <div>
     <div className="flex gap-6">
-      <ItemThumbnailImage item={item} module={module} />
+      <ItemThumbnailImage
+        item={item}
+        module={module}
+      />
       <div>
         <h2 className="text-h2">{item.title}</h2>
-        <div className="flex gap-4 my-3 flex-wrap">
+        <div className="my-3 flex flex-wrap gap-4">
           <span>{item.year}</span>
           <span>{humanDuration(item.duration)}</span>
           <span>{item.contentRating}</span>
@@ -68,28 +71,42 @@ const ShowItem = ({ item, module }: ShowItemProps) => (
             <span>{item.studio}</span>
           </div>
         )}
-        <Tags type="Genres" tags={item.genres} />
-        <Tags type="Countries" tags={item.countries} />
-        <div className="flex gap-3 my-4">
+        <Tags
+          type="Genres"
+          tags={item.genres}
+        />
+        <Tags
+          type="Countries"
+          tags={item.countries}
+        />
+        <div className="my-4 flex gap-3">
           {item.paths.map((p) => (
-            <ItemPath key={p} icon={Folder} module={module} path={p} />
+            <ItemPath
+              key={p}
+              icon={Folder}
+              module={module}
+              path={p}
+            />
           ))}
         </div>
       </div>
     </div>
 
-    <CollapsableText className="text-body-large my-6">
-      {item.summary}
-    </CollapsableText>
+    <CollapsableText className="text-body-large my-6">{item.summary}</CollapsableText>
 
     <ItemChildren
-      className="flex flex-row gap-6 px-4 py-3 mb-3 overflow-auto"
+      className="mb-3 flex flex-row gap-6 overflow-auto px-4 py-3"
       module={module}
       itemId={item.id}
     />
 
-    <div className="flex flex-row gap-4 px-4 overflow-auto">
-      {item.roles.map((role) => <RoleProfile key={`${role.id}-${role.role}`} role={role} />)}
+    <div className="flex flex-row gap-4 overflow-auto px-4">
+      {item.roles.map((role) => (
+        <RoleProfile
+          key={`${role.id}-${role.role}`}
+          role={role}
+        />
+      ))}
     </div>
   </div>
 )

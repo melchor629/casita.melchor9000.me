@@ -26,10 +26,9 @@ function withTouchEvents<CTP extends ComponentTypeProps>(
     ...props
   }: Omit<CTP, keyof ComponentTypeProps> & TouchEventProps) {
     const [timeoutHandler, setTimeoutHandler] = useState<number | null>(null)
-    const [
-      [touchStartTime, touchStartPosition],
-      setTouchStart,
-    ] = useState<[ Date, React.Touch ] | []>([])
+    const [[touchStartTime, touchStartPosition], setTouchStart] = useState<
+      [Date, React.Touch] | []
+    >([])
 
     const clearTimeoutHandler = useCallback(() => {
       if (timeoutHandler !== null) {
@@ -47,71 +46,85 @@ function withTouchEvents<CTP extends ComponentTypeProps>(
       return [posDiff, posDiffDistance] as const
     }, [])
 
-    const onTouchStart: React.TouchEventHandler = useCallback((e) => {
-      setTouchStart([new Date(), e.touches[0]])
+    const onTouchStart: React.TouchEventHandler = useCallback(
+      (e) => {
+        setTouchStart([new Date(), e.touches[0]])
 
-      clearTimeoutHandler()
-      setTimeoutHandler(setTimeout(() => {
-        if (onLongTap) {
-          onLongTap(e)
-        }
-
-        setTimeoutHandler(null)
-      }, longTapDelay || 500) as unknown as number)
-    }, [clearTimeoutHandler, longTapDelay, onLongTap])
-
-    const onTouchEnd: React.TouchEventHandler = useCallback((e) => {
-      if (!e.cancelable) {
-        return
-      }
-
-      if (!touchStartTime || !touchStartPosition) {
-        return
-      }
-
-      e.preventDefault()
-      const timeDiff = Date.now() - +touchStartTime
-      const [, posDiffDistance] = touchDiffDistance(touchStartPosition, e.changedTouches[0])
-      if (posDiffDistance <= 15 && timeDiff < (longTapDelay || 500)) {
-        // Short-tap
         clearTimeoutHandler()
-        if (onTap) {
-          onTap(e)
+        setTimeoutHandler(
+          setTimeout(() => {
+            if (onLongTap) {
+              onLongTap(e)
+            }
+
+            setTimeoutHandler(null)
+          }, longTapDelay || 500) as unknown as number,
+        )
+      },
+      [clearTimeoutHandler, longTapDelay, onLongTap],
+    )
+
+    const onTouchEnd: React.TouchEventHandler = useCallback(
+      (e) => {
+        if (!e.cancelable) {
+          return
         }
-      } else {
-        // Long-tap
-        if (timeoutHandler !== null) {
-          if (onLongTap) {
-            onLongTap(e)
+
+        if (!touchStartTime || !touchStartPosition) {
+          return
+        }
+
+        e.preventDefault()
+        const timeDiff = Date.now() - +touchStartTime
+        const [, posDiffDistance] = touchDiffDistance(touchStartPosition, e.changedTouches[0])
+        if (posDiffDistance <= 15 && timeDiff < (longTapDelay || 500)) {
+          // Short-tap
+          clearTimeoutHandler()
+          if (onTap) {
+            onTap(e)
           }
+        } else {
+          // Long-tap
+          if (timeoutHandler !== null) {
+            if (onLongTap) {
+              onLongTap(e)
+            }
+          }
+          clearTimeoutHandler()
         }
-        clearTimeoutHandler()
-      }
 
-      setTouchStart([])
-    }, [
-      touchStartTime,
-      touchStartPosition,
-      clearTimeoutHandler,
-      timeoutHandler,
-      touchDiffDistance,
-      longTapDelay,
-      onLongTap,
-      onTap,
-    ])
+        setTouchStart([])
+      },
+      [
+        touchStartTime,
+        touchStartPosition,
+        clearTimeoutHandler,
+        timeoutHandler,
+        touchDiffDistance,
+        longTapDelay,
+        onLongTap,
+        onTap,
+      ],
+    )
 
-    const onTouchMove: React.TouchEventHandler = useCallback((e) => (
-      touchDiffDistance(touchStartPosition!, e.changedTouches[0])[1] > 15 && clearTimeoutHandler()
-    ), [touchDiffDistance, touchStartPosition, clearTimeoutHandler])
+    const onTouchMove: React.TouchEventHandler = useCallback(
+      (e) =>
+        touchDiffDistance(touchStartPosition!, e.changedTouches[0])[1] > 15
+        && clearTimeoutHandler(),
+      [touchDiffDistance, touchStartPosition, clearTimeoutHandler],
+    )
 
-    const onContextMenu2: React.MouseEventHandler = useCallback((e) => {
-      if (!touchStartTime || !touchStartPosition) {
-        onContextMenu?.(e)
-        return
-      }
+    const onContextMenu2: React.MouseEventHandler = useCallback(
+      (e) => {
+        if (!touchStartTime || !touchStartPosition) {
+          onContextMenu?.(e)
+          return
+        }
 
-      e.preventDefault()
-    }, [touchStartTime, touchStartPosition, onContextMenu])
+        e.preventDefault()
+      },
+      [touchStartTime, touchStartPosition, onContextMenu],
+    )
 
     return (
       <Component

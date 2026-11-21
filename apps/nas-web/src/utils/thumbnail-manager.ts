@@ -105,43 +105,57 @@ export const thumbnailGenerationWorker: ThumbnailGenerationWorker = {
       {},
     )
     const jobDetails = await Promise.allSettled(
-      Object.entries(jobsByModule)
-        .map(async ([module, js]) => (
-          [await fs.getThumbnailJobs(apiClient, module, js.map((j) => j.data.jobId)), js] as const
-        )),
+      Object.entries(jobsByModule).map(
+        async ([module, js]) =>
+          [
+            await fs.getThumbnailJobs(
+              apiClient,
+              module,
+              js.map((j) => j.data.jobId),
+            ),
+            js,
+          ] as const,
+      ),
     )
-    return jobDetails.map((result): JobState[] => {
-      if (result.status === 'fulfilled') {
-        return result.value[0].jobs
-          .map((s, i) => [s, result.value[1][i]] as const)
-          .map(([status, { id }]): JobState => {
-            if (status === null) {
-              return { id, state: 'failed', message: 'Job does not exist' }
-            }
-
-            switch (status.state) {
-              case 'active': return { id, state: 'processing', progress: status.progress / 100 }
-              case 'completed': return {
-                id,
-                state: 'succeeded',
+    return jobDetails
+      .map((result): JobState[] => {
+        if (result.status === 'fulfilled') {
+          return result.value[0].jobs
+            .map((s, i) => [s, result.value[1][i]] as const)
+            .map(([status, { id }]): JobState => {
+              if (status === null) {
+                return { id, state: 'failed', message: 'Job does not exist' }
               }
-              case 'failed': return {
-                id,
-                state: 'failed',
-                message: status.failedReason,
-                error: {
-                  name: 'JobError',
-                  message: status.failedReason,
-                  stack: status.stackTrace,
-                },
-              }
-              case 'waiting': return { id, state: 'enqueued' }
-              default: return { id, state: 'failed', message: `Job in ${status.state}` }
-            }
-          })
-      }
 
-      return []
-    }).flat()
+              switch (status.state) {
+                case 'active':
+                  return { id, state: 'processing', progress: status.progress / 100 }
+                case 'completed':
+                  return {
+                    id,
+                    state: 'succeeded',
+                  }
+                case 'failed':
+                  return {
+                    id,
+                    state: 'failed',
+                    message: status.failedReason,
+                    error: {
+                      name: 'JobError',
+                      message: status.failedReason,
+                      stack: status.stackTrace,
+                    },
+                  }
+                case 'waiting':
+                  return { id, state: 'enqueued' }
+                default:
+                  return { id, state: 'failed', message: `Job in ${status.state}` }
+              }
+            })
+        }
+
+        return []
+      })
+      .flat()
   },
 }

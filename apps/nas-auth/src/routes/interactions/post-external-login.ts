@@ -15,10 +15,8 @@ interface Route extends GenericRoute {
 
 const postExternalLoginController: Controller<Route> = async (req, res) => {
   const failInteraction = async (errorMessage: string) => {
-    const interaction = await req.trace(
-      'interaction details',
-      {},
-      () => oidc.interactionDetails(req.raw, res.raw),
+    const interaction = await req.trace('interaction details', {}, () =>
+      oidc.interactionDetails(req.raw, res.raw),
     )
     interaction.params.login_error = errorMessage
     await req.trace('save interaction', {}, () => interaction.save(interaction.exp))
@@ -32,12 +30,14 @@ const postExternalLoginController: Controller<Route> = async (req, res) => {
 
   const { provider, token } = loginResult
   const profile = loginResult.profile as Record<string, string>
-  const displayName = profile.name
-    || ([profile.given_name, profile.family_name].filter((s) => s).join(' '))
+  const displayName =
+    profile.name
+    || [profile.given_name, profile.family_name].filter((s) => s).join(' ')
     || profile.username
     || profile.email?.split('@')[0]
     || profile.sub
-  const userName = profile.username
+  const userName =
+    profile.username
     || profile.email?.split('@')[0]
     || profile.name?.toLowerCase().split(' ').join('_')
     || profile.sub
@@ -53,11 +53,14 @@ const postExternalLoginController: Controller<Route> = async (req, res) => {
   }
 
   if (user == null || user?.disabled) {
-    req.log.warn({
-      loginResult,
-      status: user?.disabled ? 'disabled' : 'not-registered',
-      loginId,
-    }, 'The user cannot log in')
+    req.log.warn(
+      {
+        loginResult,
+        status: user?.disabled ? 'disabled' : 'not-registered',
+        loginId,
+      },
+      'The user cannot log in',
+    )
     await failInteraction('Your user is disabled! Contact to the administrator.')
     return
   }
@@ -71,18 +74,26 @@ const postExternalLoginController: Controller<Route> = async (req, res) => {
       userName: user.userName,
     })
   } else if (login.disabled) {
-    req.log.warn({
-      loginResult,
-      status: 'login-disabled',
-      loginId,
-    }, 'The user cannot log in')
-    await failInteraction(`The provider '${provider}' is disabled for you! Please contact the administrator.`)
+    req.log.warn(
+      {
+        loginResult,
+        status: 'login-disabled',
+        loginId,
+      },
+      'The user cannot log in',
+    )
+    await failInteraction(
+      `The provider '${provider}' is disabled for you! Please contact the administrator.`,
+    )
     return
   } else {
     login = await updateLogin(login.type, login.loginId, { data: { profile, token } })
   }
 
-  const propertiesToUpdateInUser: ['givenName' | 'familyName' | 'profileImageUrl' | 'displayName', string][] = []
+  const propertiesToUpdateInUser: [
+    'givenName' | 'familyName' | 'profileImageUrl' | 'displayName',
+    string,
+  ][] = []
   if (!user.givenName && profile.given_name) {
     propertiesToUpdateInUser.push(['givenName', profile.given_name])
   }
@@ -102,12 +113,14 @@ const postExternalLoginController: Controller<Route> = async (req, res) => {
 
   req.session.set('loginResult', undefined)
   await req.session.save()
-  await req.trace('interaction finished', {}, () => oidc.interactionFinished(
-    req.raw,
-    res.raw,
-    { login: { accountId: user.userName } },
-    { mergeWithLastSubmission: false },
-  ))
+  await req.trace('interaction finished', {}, () =>
+    oidc.interactionFinished(
+      req.raw,
+      res.raw,
+      { login: { accountId: user.userName } },
+      { mergeWithLastSubmission: false },
+    ),
+  )
 }
 
 postExternalLoginController.options = {

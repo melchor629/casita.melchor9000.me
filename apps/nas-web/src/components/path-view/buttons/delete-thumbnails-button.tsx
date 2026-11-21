@@ -14,8 +14,7 @@ const DeleteThumbnailsButton: FC<DeleteThumbnailsButtonProps> = ({ entries, modu
   const [jobsActions] = useJobHandler()
 
   const action = useCallback(() => {
-    jobsActions.register({ type: 'thumbnailDelete', module, entries })
-      .catch(() => {})
+    jobsActions.register({ type: 'thumbnailDelete', module, entries }).catch(() => {})
   }, [module, entries, jobsActions])
 
   return (

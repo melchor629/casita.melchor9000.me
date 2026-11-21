@@ -6,15 +6,15 @@ import Popover, { type PopoverProps } from '../Popover'
 import { clsx } from '../utils'
 
 export type PopoverMenuProps = Readonly<
-  MenuProps &
-    Pick<PopoverProps, 'onClose' | 'placement' | 'strategy' | 'middleware' | 'portal'> & {
+  MenuProps
+    & Pick<PopoverProps, 'onClose' | 'placement' | 'strategy' | 'middleware' | 'portal'> & {
       /**
        * This function is called once the menu has been closed.
        */
-      onClosed?: () => void;
-      open?: boolean;
-      referenceElement: PopoverProps['referenceElement'] | 'contextMenu';
-      unmountWhenHidden?: boolean;
+      onClosed?: () => void
+      open?: boolean
+      referenceElement: PopoverProps['referenceElement'] | 'contextMenu'
+      unmountWhenHidden?: boolean
     }
 >
 
@@ -92,7 +92,11 @@ export default function PopoverMenu({
       onContextMenu={ignore}
       className={clsx(delayedIsOpen && 'transition-transform', !isOpen && 'pointer-events-none')}
     >
-      <FadeAndMove show={isOpen} unmountWhenHidden={unmountWhenHidden} onHidden={onClosed}>
+      <FadeAndMove
+        show={isOpen}
+        unmountWhenHidden={unmountWhenHidden}
+        onHidden={onClosed}
+      >
         <Menu {...props} />
       </FadeAndMove>
     </Popover>

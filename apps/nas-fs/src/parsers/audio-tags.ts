@@ -3,7 +3,9 @@ import type { AudioPicture, AudioTags } from '../models/audio-tags.ts'
 
 export const readTags = async (path: string): Promise<AudioTags> => {
   try {
-    const { common: { picture, ...tags } } = await parseFile(path, { skipCovers: true })
+    const {
+      common: { picture, ...tags },
+    } = await parseFile(path, { skipCovers: true })
     return tags
   } catch (e) {
     // TODO log error

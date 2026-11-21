@@ -3,12 +3,18 @@ import RefLink from './ref-link'
 
 /**
  * Renders the stack list of reference links.
- * @param props props
+ *
+ * @param props Props
  */
 const RefLinkStack = ({ result: { refs } }: VocabularyComponentProps) => (
-  <div className="flex flex-row flex-wrap justify-end gap-1 mt-6">
+  <div className="mt-6 flex flex-row flex-wrap justify-end gap-1">
     {/* eslint-disable-next-line react/no-array-index-key */}
-    {refs!.map((ref, i) => <RefLink key={`${ref.type}:${i}`} refLink={ref} />)}
+    {refs!.map((ref, i) => (
+      <RefLink
+        key={`${ref.type}:${i}`}
+        refLink={ref}
+      />
+    ))}
   </div>
 )
 

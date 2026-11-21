@@ -15,10 +15,14 @@ interface ThumbnailDeleteJobData {
 
 interface ThumbnailDeleteReturnData {
   processed: Array<{ path: string }>
-  errors: Array<{ path: string, error: ApiClientException<unknown> }>
+  errors: Array<{ path: string; error: ApiClientException<unknown> }>
 }
 
-class ThumbnailDeleteWorker extends UiWorker<ThumbnailDeleteJobParams, ThumbnailDeleteJobData, ThumbnailDeleteReturnData> {
+class ThumbnailDeleteWorker extends UiWorker<
+  ThumbnailDeleteJobParams,
+  ThumbnailDeleteJobData,
+  ThumbnailDeleteReturnData
+> {
   protected prepare() {
     return Promise.resolve({})
   }
@@ -37,12 +41,9 @@ class ThumbnailDeleteWorker extends UiWorker<ThumbnailDeleteJobParams, Thumbnail
 
       try {
         if (entry.type === 'file') {
-          await deleteThumbnails(
-            context.apiClient,
-            context.params.module,
-            entry.path,
-            { signal: context.abortSignal },
-          )
+          await deleteThumbnails(context.apiClient, context.params.module, entry.path, {
+            signal: context.abortSignal,
+          })
           result.processed.push({ path: entry.path })
         }
       } catch (e) {

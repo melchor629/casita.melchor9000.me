@@ -17,8 +17,7 @@ const queryClient = new QueryClient({
   },
 })
 
-export const getApiClient = () =>
-  queryClient.getQueryData<ApiClient>(['api-client'])!
+export const getApiClient = () => queryClient.getQueryData<ApiClient>(['api-client'])!
 
 const noop = () => {}
 
@@ -27,7 +26,7 @@ type QueryOptions<
   TData = unknown,
   TError extends Error = Error,
 > = UseSuspenseQueryOptions<TData, TError, TData, TQueryKey> & {
-  errorType?: new(...args: never[]) => TError,
+  errorType?: new (...args: never[]) => TError
 }
 
 export const makeQuery = <
@@ -35,16 +34,23 @@ export const makeQuery = <
   TData,
   TError extends Error,
   const TParams extends unknown[],
->(fn: (...params: TParams) => QueryOptions<TQueryKey, TData, TError>): Readonly<{
-  options: (...params: TParams) => QueryOptions<DataTag<TQueryKey, TData, TError>, TData, TError>,
-  useHook: (...params: TParams) => UseSuspenseQueryResult<TData, TError>,
-  fetch: (...params: TParams) => Promise<TData>,
-  prefetch: (...params: TParams) => Promise<void>,
+>(
+  fn: (...params: TParams) => QueryOptions<TQueryKey, TData, TError>,
+): Readonly<{
+  options: (...params: TParams) => QueryOptions<DataTag<TQueryKey, TData, TError>, TData, TError>
+  useHook: (...params: TParams) => UseSuspenseQueryResult<TData, TError>
+  fetch: (...params: TParams) => Promise<TData>
+  prefetch: (...params: TParams) => Promise<void>
 }> => ({
-    fetch: (...params) => queryClient.query(fn(...params)),
-    options: (...params) => fn(...params) as QueryOptions<DataTag<TQueryKey, TData, TError>, TData, TError>,
-    prefetch: (...params) => queryClient.query(fn(...params)).then(noop).catch(noop),
-    useHook: (...params) => useSuspenseQuery(useMemo(() => fn(...params), [params])),
-  })
+  fetch: (...params) => queryClient.query(fn(...params)),
+  options: (...params) =>
+    fn(...params) as QueryOptions<DataTag<TQueryKey, TData, TError>, TData, TError>,
+  prefetch: (...params) =>
+    queryClient
+      .query(fn(...params))
+      .then(noop)
+      .catch(noop),
+  useHook: (...params) => useSuspenseQuery(useMemo(() => fn(...params), [params])),
+})
 
 export default queryClient

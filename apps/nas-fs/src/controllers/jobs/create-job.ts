@@ -1,7 +1,10 @@
 import { applicationKeyParam } from '../../models/app.ts'
 import { Type, type Controller } from '../../models/controller.ts'
 import { ApiErrorSchema } from '../../models/errors/api-error.ts'
-import { CreateJobRequestSchema, CreateJobResponseSchema } from '../../models/jobs/create-job-request.ts'
+import {
+  CreateJobRequestSchema,
+  CreateJobResponseSchema,
+} from '../../models/jobs/create-job-request.ts'
 import queueNameParamSchema from '../../models/jobs/queue-name.ts'
 
 const schema = {

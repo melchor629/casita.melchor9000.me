@@ -22,8 +22,12 @@ const DownloadButton: FC<DownloadButtonProps> = ({ disabled, metadata, module })
     }
 
     setPreparing(true)
-    const all = (Array.isArray(metadata) ? metadata : [metadata])
-    getDownloadUrl(module, all.map((file) => file.path), apiClient)
+    const all = Array.isArray(metadata) ? metadata : [metadata]
+    getDownloadUrl(
+      module,
+      all.map((file) => file.path),
+      apiClient,
+    )
       .then((urls) => {
         for (const url of urls) {
           window.location.assign(url)
@@ -40,8 +44,12 @@ const DownloadButton: FC<DownloadButtonProps> = ({ disabled, metadata, module })
       icon={preparing ? <Downloading /> : <Download />}
       label={
         !Array.isArray(metadata)
-          ? (metadata?.type === 'dir' ? 'Download Folder' : 'Download')
-          : (metadata.length === 1 ? 'Download' : 'Download All')
+          ? metadata?.type === 'dir'
+            ? 'Download Folder'
+            : 'Download'
+          : metadata.length === 1
+            ? 'Download'
+            : 'Download All'
       }
     />
   )

@@ -1,6 +1,6 @@
 import type { Tag } from '@/api/fs/media'
 
-export default function Tags({ tags, type }: { readonly type: string, readonly tags: Tag[] }) {
+export default function Tags({ tags, type }: { readonly type: string; readonly tags: Tag[] }) {
   if (!tags?.length) {
     return null
   }

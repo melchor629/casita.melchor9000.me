@@ -14,21 +14,29 @@ export default function UploadButton({ metadata, module }: UploadButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [jobsActions] = useJobHandler()
 
-  const startUploading = useCallback((file: File) => {
-    jobsActions.register({
-      type: 'upload',
-      module,
-      directoryPath: metadata.path,
-      file,
-    }).catch(() => {})
-  }, [metadata.path, module, jobsActions])
+  const startUploading = useCallback(
+    (file: File) => {
+      jobsActions
+        .register({
+          type: 'upload',
+          module,
+          directoryPath: metadata.path,
+          file,
+        })
+        .catch(() => {})
+    },
+    [metadata.path, module, jobsActions],
+  )
 
-  const onChangeImpl: React.ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
-    if (e.target.files) {
-      startUploading(e.target.files[0])
-    }
-    e.target.value = e.target.defaultValue
-  }, [startUploading])
+  const onChangeImpl: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      if (e.target.files) {
+        startUploading(e.target.files[0])
+      }
+      e.target.value = e.target.defaultValue
+    },
+    [startUploading],
+  )
 
   const onClickImpl = useCallback(() => {
     inputRef.current?.click()

@@ -17,11 +17,14 @@ const schema = {
   produces: ['application/json'],
   response: {
     default: ApiErrorSchema,
-    200: ContentResponse({
-      'application/octet-stream': Binary({ description: 'The file contents' }),
-    }, {
-      description: 'The contents of a file or folder',
-    }),
+    200: ContentResponse(
+      {
+        'application/octet-stream': Binary({ description: 'The file contents' }),
+      },
+      {
+        description: 'The contents of a file or folder',
+      },
+    ),
     304: { type: 'null', description: 'Information is fresh' },
     404: NotFoundApiErrorSchema,
   },
@@ -40,11 +43,9 @@ const storageController: Controller<typeof schema> = async (req, reply) => {
   }
 
   if (stat.isDirectory()) {
-    logger.debug({ path, op: 'download' }, 'Using \'tar\' to archive folder')
+    logger.debug({ path, op: 'download' }, "Using 'tar' to archive folder")
     const acceptEncodingHeader = req.headers['accept-encoding']
-    const acceptedEncodings = (acceptEncodingHeader || '')
-      .split(',')
-      .map((e) => e.trim())
+    const acceptedEncodings = (acceptEncodingHeader || '').split(',').map((e) => e.trim())
     let compress: 'brotli' | 'zstd' | 'gzip' | 'deflate' | null = null
     if (acceptedEncodings.includes('br')) {
       compress = 'brotli'

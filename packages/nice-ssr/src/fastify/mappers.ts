@@ -11,7 +11,11 @@ function createHeaders(req: FastifyRequest): Headers {
   return headers
 }
 
-export function createRequest(req: FastifyRequest, reply: FastifyReply, pathname?: string): Request {
+export function createRequest(
+  req: FastifyRequest,
+  reply: FastifyReply,
+  pathname?: string,
+): Request {
   // based on https://github.com/mjackson/remix-the-web/blob/main/packages/node-fetch-server/src/lib/request-listener.ts
   const controller = new AbortController()
   reply.raw.on('close', () => controller.abort())
@@ -42,9 +46,9 @@ export function createRequest(req: FastifyRequest, reply: FastifyReply, pathname
           controller.close()
         })
       },
-    });
+    })
     // See https://fetch.spec.whatwg.org/#dom-requestinit-duplex
-    (init as { duplex: 'half' }).duplex = 'half'
+    ;(init as { duplex: 'half' }).duplex = 'half'
   }
 
   return new Request(url, init)
@@ -88,14 +92,16 @@ export async function writeResponse(response: Response, reply: FastifyReply, hij
     reply.status(response.status)
     if (response.body == null) {
       // compress does not like null response
-      await reply.send(new Proxy(response, {
-        get(_, p) {
-          if (p === 'body') {
-            return ''
-          }
-          return response[p as keyof Response]
-        },
-      }))
+      await reply.send(
+        new Proxy(response, {
+          get(_, p) {
+            if (p === 'body') {
+              return ''
+            }
+            return response[p as keyof Response]
+          },
+        }),
+      )
     } else {
       await reply.send(response)
     }

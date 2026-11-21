@@ -1,9 +1,7 @@
 {
   "dialect": "postgres",
   "id": "86f6164d-6804-4b72-b161-ff215d7a847e",
-  "prevIds": [
-    "00000000-0000-0000-0000-000000000000"
-  ],
+  "prevIds": ["00000000-0000-0000-0000-000000000000"],
   "version": "8",
   "ddl": [
     {
@@ -11,10 +9,7 @@
       "entityType": "schemas"
     },
     {
-      "values": [
-        "jwt",
-        "opaque"
-      ],
+      "values": ["jwt", "opaque"],
       "name": "ApiResourceAccessTokenFormat",
       "entityType": "enums",
       "schema": "auth"
@@ -668,14 +663,10 @@
     },
     {
       "nameExplicit": true,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "auth",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
       "name": "FK_b1c3fff7c4bc7d15b3018abab6f",
@@ -685,14 +676,10 @@
     },
     {
       "nameExplicit": true,
-      "columns": [
-        "applicationId"
-      ],
+      "columns": ["applicationId"],
       "schemaTo": "auth",
       "tableTo": "application",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "FK_2a032717ceae31ffbbc72a4805b",
@@ -702,14 +689,10 @@
     },
     {
       "nameExplicit": true,
-      "columns": [
-        "permissionId"
-      ],
+      "columns": ["permissionId"],
       "schemaTo": "auth",
       "tableTo": "permission",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "FK_a592f2df24c9d464afd71401ff6",
@@ -719,14 +702,10 @@
     },
     {
       "nameExplicit": true,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "auth",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "FK_deb59c09715314aed1866e18a81",
@@ -736,14 +715,10 @@
     },
     {
       "nameExplicit": true,
-      "columns": [
-        "applicationId"
-      ],
+      "columns": ["applicationId"],
       "schemaTo": "auth",
       "tableTo": "application",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
       "name": "FK_7c34867275a5cc746b6d4fd75ed",
@@ -752,9 +727,7 @@
       "table": "api_resource"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": true,
       "name": "PK_b50aa5a1c0644e601c0cdbf986d",
       "entityType": "pks",
@@ -762,9 +735,7 @@
       "table": "application"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": true,
       "name": "PK_0e29aa96b7d3fb812ff43fcfcd3",
       "entityType": "pks",
@@ -772,9 +743,7 @@
       "table": "login"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": true,
       "name": "PK_3b8b97af9d9d8807e41e6f48362",
       "entityType": "pks",
@@ -782,9 +751,7 @@
       "table": "permission"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": true,
       "name": "PK_cace4a159ff9f2512dd42373760",
       "entityType": "pks",
@@ -792,9 +759,7 @@
       "table": "user"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": true,
       "name": "PK_a7326749e773c740a7104634a77",
       "entityType": "pks",
@@ -802,9 +767,7 @@
       "table": "user_permission"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": true,
       "name": "PK_96da49381769303a6515a8785c7",
       "entityType": "pks",
@@ -812,9 +775,7 @@
       "table": "client"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": true,
       "name": "PK_f80ccb48a19c807aa53d90dd66b",
       "entityType": "pks",
@@ -823,10 +784,7 @@
     },
     {
       "nameExplicit": true,
-      "columns": [
-        "name",
-        "applicationId"
-      ],
+      "columns": ["name", "applicationId"],
       "nullsNotDistinct": false,
       "name": "permission-name-application-key",
       "entityType": "uniques",
@@ -835,9 +793,7 @@
     },
     {
       "nameExplicit": true,
-      "columns": [
-        "clientId"
-      ],
+      "columns": ["clientId"],
       "nullsNotDistinct": false,
       "name": "UQ_6ed9067942d7537ce359e172ff6",
       "entityType": "uniques",

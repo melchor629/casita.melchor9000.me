@@ -10,9 +10,7 @@ import { ok, invalid } from './helpers.ts'
 async function uploadUserProfilePictureAction(context: PageLoaderContext, data: FormData) {
   const image = data.get('image')
   if (!image || typeof image === 'string') {
-    return invalid([
-      { name: 'image', messages: ['Field required.'] },
-    ])
+    return invalid([{ name: 'image', messages: ['Field required.'] }])
   }
 
   const session = await getSession(context)

@@ -1,7 +1,11 @@
 import path from 'node:path'
 import type { PreloadAs } from 'react-dom'
 import { renderToReadableStream } from 'react-dom/server'
-import { SsrRouterProvider, type SsrRouteAsset, type SsrRouterProviderProps } from '../nice-ssr/navigation'
+import {
+  SsrRouterProvider,
+  type SsrRouteAsset,
+  type SsrRouterProviderProps,
+} from '../nice-ssr/navigation'
 import type { PageHelperModule, PageLoaderContext, PageModule } from '../nice-ssr/page'
 import type { SsrRequest } from '../nice-ssr/request'
 import { SsrResponse } from '../nice-ssr/response'
@@ -56,10 +60,13 @@ const serializeForHtml = (data: unknown) => {
     return value as unknown
   })
   // eslint-disable-next-line no-control-regex
-  return json.replace(/[<>\u0008\f\n\r\t\0\u2028\u2029]/g, x => unsafeCharMap[x])
+  return json.replace(/[<>\u0008\f\n\r\t\0\u2028\u2029]/g, (x) => unsafeCharMap[x])
 }
 
-function getEntryForModuleId(manifest: Record<string, RawManifestEntry>, moduleId: string): ManifestEntry {
+function getEntryForModuleId(
+  manifest: Record<string, RawManifestEntry>,
+  moduleId: string,
+): ManifestEntry {
   if (!(moduleId in manifest)) {
     return null!
   }
@@ -82,17 +89,19 @@ const getExtraEntries = (entry: ManifestEntry): ManifestEntry[] => [
   // ...(entry.dynamicImports ?? []).flatMap(getExtraEntries),
 ]
 
-const getAllAssets = (entry: ManifestEntry): string[] => [
-  ...(entry.assets ?? []),
-  ...(entry.imports?.map((n) => getAllAssets(n)) ?? []),
-  // ...(entry.dynamicImports?.map((n) => getAllAssets(n)) ?? []),
-].flat()
+const getAllAssets = (entry: ManifestEntry): string[] =>
+  [
+    ...(entry.assets ?? []),
+    ...(entry.imports?.map((n) => getAllAssets(n)) ?? []),
+    // ...(entry.dynamicImports?.map((n) => getAllAssets(n)) ?? []),
+  ].flat()
 
-const getAllStyles = (entry: ManifestEntry): string[] => [
-  ...(entry.css ?? []),
-  ...(entry.imports?.map((n) => getAllStyles(n)) ?? []),
-  // ...(entry.dynamicImports?.map((n) => getAllStyles(n)) ?? []),
-].flat()
+const getAllStyles = (entry: ManifestEntry): string[] =>
+  [
+    ...(entry.css ?? []),
+    ...(entry.imports?.map((n) => getAllStyles(n)) ?? []),
+    // ...(entry.dynamicImports?.map((n) => getAllStyles(n)) ?? []),
+  ].flat()
 
 const imageTypes = ['.png', '.jpg', '.jpeg', '.jfif', '.webp', '.avif', '.heif', '.heic', '.ico']
 const fontTypes = ['.woff', '.woff2', '.ttf', '.otf']
@@ -121,25 +130,33 @@ async function getCsrAssets(
 
   // @ts-expect-error this is an external file after build
   // eslint-disable-next-line import-x/no-unresolved
-  const { default: manifest } = await import('../client/.vite/manifest.json', { with: { type: 'json' } }) as { default: Record<string, RawManifestEntry> }
+  const { default: manifest } = (await import('../client/.vite/manifest.json', {
+    with: { type: 'json' },
+  })) as { default: Record<string, RawManifestEntry> }
   const entryCsrManifestEntry = getEntryForModuleId(manifest, 'virtual:entry-csr')
   const pageCsrManifestEntry = getEntryForModuleId(manifest, pageCsrModuleId)
   const allDependencyEntries = getExtraEntries(pageCsrManifestEntry)
   const css = Array.from(new Set(getAllStyles(pageCsrManifestEntry)))
-  const preloadScripts = Array.from(new Set([
-    entryCsrManifestEntry,
-    pageCsrManifestEntry,
-    ...getExtraEntries(entryCsrManifestEntry).flatMap((entry) => entry?.imports ?? []),
-    ...allDependencyEntries.flatMap((entry) => entry?.imports ?? []),
-    ...allDependencyEntries.flatMap((entry) => entry?.dynamicImports ?? []),
-  ].map((entry) => entry.file)))
-  const assets = Array.from(new Set([
-    ...getAllAssets(entryCsrManifestEntry),
-    ...getAllAssets(pageCsrManifestEntry),
-  ]))
+  const preloadScripts = Array.from(
+    new Set(
+      [
+        entryCsrManifestEntry,
+        pageCsrManifestEntry,
+        ...getExtraEntries(entryCsrManifestEntry).flatMap((entry) => entry?.imports ?? []),
+        ...allDependencyEntries.flatMap((entry) => entry?.imports ?? []),
+        ...allDependencyEntries.flatMap((entry) => entry?.dynamicImports ?? []),
+      ].map((entry) => entry.file),
+    ),
+  )
+  const assets = Array.from(
+    new Set([...getAllAssets(entryCsrManifestEntry), ...getAllAssets(pageCsrManifestEntry)]),
+  )
   return [
     ...css.map((entry): SsrRouteAsset => ({ type: 'style', path: `${basePath}${entry}` })),
-    ...preloadScripts.map((entry): SsrRouteAsset => ({ type: 'modulepreload', path: `${basePath}${entry}` })),
+    ...preloadScripts.map((entry): SsrRouteAsset => ({
+      type: 'modulepreload',
+      path: `${basePath}${entry}`,
+    })),
     ...assets.map((path): SsrRouteAsset => ({
       type: 'preload',
       path: `${basePath}${path}`,
@@ -156,7 +173,9 @@ async function getEntryCsr(basePath: string) {
 
   // @ts-expect-error this is an external file after build
   // eslint-disable-next-line import-x/no-unresolved
-  const { default: manifest } = await import('../client/.vite/manifest.json', { with: { type: 'json' } }) as { default: Record<string, RawManifestEntry> }
+  const { default: manifest } = (await import('../client/.vite/manifest.json', {
+    with: { type: 'json' },
+  })) as { default: Record<string, RawManifestEntry> }
   const entry = getEntryForModuleId(manifest, 'virtual:entry-csr')
   return basePath + entry.file
 }
@@ -176,11 +195,7 @@ async function renderCompletePage(
   const scriptNonce = request.headers.get('x-script-nonce') || undefined
   const styleNonce = request.headers.get('x-style-nonce') || undefined
   const [assets, pageMetadataHead, entryScriptPath] = await Promise.all([
-    getCsrAssets(
-      request.nice.originalPathname,
-      request.nice.basePath,
-      pageContext.type,
-    ),
+    getCsrAssets(request.nice.originalPathname, request.nice.basePath, pageContext.type),
     generateMetadata(module, ssrProps),
     getEntryCsr(request.nice.basePath),
   ])
@@ -188,7 +203,9 @@ async function renderCompletePage(
   request.nice.log.debug('Building body')
   const tree = await startSpan('render page', async () => {
     const { default: Page } = module
-    const layoutComponents = await Promise.all(pageContext.layouts.map(async (m) => (await m()).default))
+    const layoutComponents = await Promise.all(
+      pageContext.layouts.map(async (m) => (await m()).default),
+    )
     const tree = (
       <SsrRouterProvider
         key="router-provider"
@@ -204,7 +221,9 @@ async function renderCompletePage(
           metadata: pageMetadataHead,
         }}
         initialPage={layoutComponents.reduceRight(
-          (p, Layout) => <Layout>{p}</Layout>,
+          (p, Layout) => (
+            <Layout>{p}</Layout>
+          ),
           <Page {...ssrProps} />,
         )}
       />
@@ -233,7 +252,10 @@ async function renderCompletePage(
       import(${serializeForHtml(entryScriptPath)}).then(({ default: start }) => start(c));
     `,
     onError(error, errorInfo) {
-      request.nice.log.error({ err: error, ...errorInfo }, 'Rendering page thrown an unhandled error')
+      request.nice.log.error(
+        { err: error, ...errorInfo },
+        'Rendering page thrown an unhandled error',
+      )
     },
   })
   return SsrResponse.new()
@@ -261,11 +283,7 @@ async function renderPartialPage(
 
   request.nice.log.debug('Building head')
   const [assets, metadata] = await Promise.all([
-    getCsrAssets(
-      request.nice.originalPathname,
-      request.nice.basePath,
-      pageContext.type,
-    ),
+    getCsrAssets(request.nice.originalPathname, request.nice.basePath, pageContext.type),
     generateMetadata(module, ssrProps),
   ])
 
@@ -318,7 +336,10 @@ export default async function renderPage(
   return renderInvalidPage(request)
 }
 
-async function generateMetadata({ metadata: metadataFn }: PageModule, ssrProps: Record<string, unknown>) {
+async function generateMetadata(
+  { metadata: metadataFn }: PageModule,
+  ssrProps: Record<string, unknown>,
+) {
   return startSpan('prepare metadata', async () => {
     const metadata = typeof metadataFn === 'function' ? await metadataFn(ssrProps) : metadataFn
     return metadata ?? {}

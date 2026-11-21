@@ -39,13 +39,29 @@ async function changeUserPasswordAction(context: PageLoaderContext, form: FormDa
   if (typeof newPassword2 !== 'string' || !newPassword2) {
     validations.push({ name: 'newPassword2', messages: ['Please fill the new password, again'] })
   } else if (newPassword2 !== newPassword1) {
-    validations.push({ name: 'newPassword2', messages: ['Password does not match with the above one'] })
+    validations.push({
+      name: 'newPassword2',
+      messages: ['Password does not match with the above one'],
+    })
   } else if (newPassword1 === currentPassword) {
-    validations.push({ name: 'newPassword1', messages: ['The password must be different from the previous one'] })
+    validations.push({
+      name: 'newPassword1',
+      messages: ['The password must be different from the previous one'],
+    })
   } else if (newPassword1.length < 6) {
-    validations.push({ name: 'newPassword1', messages: ['The password must have at least 6 characters'] })
-  } else if (!newPassword1.match(/[a-z]/) || !newPassword1.match(/[A-Z]/) || !newPassword1.match(/\d/)) {
-    validations.push({ name: 'newPassword1', messages: ['The password must have at least one lower case, upper case, digit characters'] })
+    validations.push({
+      name: 'newPassword1',
+      messages: ['The password must have at least 6 characters'],
+    })
+  } else if (
+    !newPassword1.match(/[a-z]/)
+    || !newPassword1.match(/[A-Z]/)
+    || !newPassword1.match(/\d/)
+  ) {
+    validations.push({
+      name: 'newPassword1',
+      messages: ['The password must have at least one lower case, upper case, digit characters'],
+    })
   }
 
   if (validations.length > 0) {

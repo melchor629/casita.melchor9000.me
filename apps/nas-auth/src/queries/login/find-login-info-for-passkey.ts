@@ -11,10 +11,7 @@ const findLoginInfoForPasskey = async (loginId: string) => {
     })
     .from(login)
     .innerJoin(user, eq(login.userId, user.id))
-    .where(and(
-      eq(login.type, 'passkey'),
-      eq(login.loginId, loginId),
-    ))
+    .where(and(eq(login.type, 'passkey'), eq(login.loginId, loginId)))
     .limit(1)
 
   if (!result) return null

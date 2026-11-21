@@ -29,10 +29,13 @@ const synchronizeProcessor = async (
     }
   })
 
-  const errors: Array<{ path: string, error: unknown }> = []
+  const errors: Array<{ path: string; error: unknown }> = []
   const filesToExtractImages: string[] = []
   let i = 0
-  const updateProgressHandle = setInterval(() => void job.updateProgress((i / paths.length) * 100).catch(() => {}), 100)
+  const updateProgressHandle = setInterval(
+    () => void job.updateProgress((i / paths.length) * 100).catch(() => {}),
+    100,
+  )
   updateProgressHandle.unref()
   await createSpan('synchronize info', async () => {
     for (const path of paths) {
@@ -53,13 +56,13 @@ const synchronizeProcessor = async (
   clearInterval(updateProgressHandle)
   await job.updateProgress(100)
   const thumbnailJobs = await Promise.all(
-    filesToExtractImages.map((path) => (
+    filesToExtractImages.map((path) =>
       q.thumbnailQueue.add(
         path,
         { appIdentifier: job.data.appIdentifier, path },
         { parent: { id: job.id!, queue: job.queueName } },
-      )
-    )),
+      ),
+    ),
   )
   return {
     processed: paths.length - errors.length,

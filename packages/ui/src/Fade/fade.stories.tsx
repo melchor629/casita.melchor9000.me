@@ -27,8 +27,11 @@ export const Interactive = meta.story({
           {show ? 'Hide' : 'Show'}
           &nbsp;Content
         </Button>
-        <Fade {...args} show={show}>
-          <div className="p-4 bg-primary-main rounded-md text-white">
+        <Fade
+          {...args}
+          show={show}
+        >
+          <div className="bg-primary-main rounded-md p-4 text-white">
             This content fades in when toggled
           </div>
         </Fade>

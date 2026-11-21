@@ -64,8 +64,8 @@ export const loader = async (request: PageLoaderContext): Promise<LoaderData> =>
         details: interaction.prompt.details,
       },
       externalAuths: [
-        config.githubClientId && config.githubClientSecret && 'github' as const,
-        config.googleClientId && config.googleClientSecret && 'google' as const,
+        config.githubClientId && config.githubClientSecret && ('github' as const),
+        config.googleClientId && config.googleClientSecret && ('google' as const),
       ].filter((v): v is Exclude<NonNullable<typeof v>, ''> => !!v),
     }
   } catch (e) {
@@ -100,8 +100,19 @@ export default function InteractionPage({ client, externalAuths, interaction }: 
   }
 
   if (interaction.name === 'login') {
-    return <Login client={client} interaction={interaction} externalAuths={externalAuths} />
+    return (
+      <Login
+        client={client}
+        interaction={interaction}
+        externalAuths={externalAuths}
+      />
+    )
   }
 
-  return <Consent client={client} interaction={interaction} />
+  return (
+    <Consent
+      client={client}
+      interaction={interaction}
+    />
+  )
 }

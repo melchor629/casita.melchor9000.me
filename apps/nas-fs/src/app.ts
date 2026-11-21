@@ -13,7 +13,9 @@ declare module 'fastify' {
 }
 
 const start = async () => {
-  const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8')) as typeof import('../package.json')
+  const packageJson = JSON.parse(
+    fs.readFileSync('./package.json', 'utf-8'),
+  ) as typeof import('../package.json')
 
   logger.info({ version: packageJson.version }, `Starting nas-fs app v${packageJson.version}...`)
 
@@ -36,7 +38,8 @@ const start = async () => {
       })
     }
 
-    let type = ('type' in error && error.type as string)
+    let type =
+      ('type' in error && (error.type as string))
       || ('code' in error && error.code)
       || ('name' in error && error.name)
       || error.constructor.name

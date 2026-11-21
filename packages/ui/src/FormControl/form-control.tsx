@@ -5,11 +5,11 @@ import { makeStyles } from '../utils'
 
 export type FormControlProps = Readonly<
   ComponentProps<'div'> & {
-    fullWidth?: boolean;
-    label?: string;
-    htmlFor?: string;
-    helperText?: string;
-    error?: boolean | string;
+    fullWidth?: boolean
+    label?: string
+    htmlFor?: string
+    helperText?: string
+    error?: boolean | string
   }
 >
 
@@ -37,7 +37,10 @@ export default function FormControl({
 }: FormControlProps) {
   const styles = createStyles({ className, error: !!error, fullWidth })
   return (
-    <div {...props} className={styles}>
+    <div
+      {...props}
+      className={styles}
+    >
       {label && htmlFor && <FormControlLabel htmlFor={htmlFor}>{label}</FormControlLabel>}
       {children}
       {(helperText || !!error) && (

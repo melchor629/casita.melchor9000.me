@@ -3,8 +3,8 @@ import { clsx } from '../utils'
 
 export type TextAreaProps = Readonly<
   ComponentPropsWithRef<'textarea'> & {
-    fullWidth?: boolean;
-    size?: 'small' | 'medium' | 'large';
+    fullWidth?: boolean
+    size?: 'small' | 'medium' | 'large'
   }
 >
 

@@ -16,10 +16,9 @@ const GenerateDownloadUrl: FC<GenerateDownloadUrlButtonProps> = ({
   metadata,
   module,
 }) => {
-  const [
-    metadataToGenerate,
-    setMetadataToGenerate,
-  ] = useState<Array<DirectoryMetadata | FileMetadata> | null>(null)
+  const [metadataToGenerate, setMetadataToGenerate] = useState<Array<
+    DirectoryMetadata | FileMetadata
+  > | null>(null)
 
   const openModal = useCallback(() => {
     if (!metadata) {

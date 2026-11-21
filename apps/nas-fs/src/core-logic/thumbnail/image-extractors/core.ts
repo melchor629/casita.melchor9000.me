@@ -13,9 +13,19 @@ export type ExtractedImage = Readonly<{
 }>
 
 // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
-const exifOrientationToDegrees: readonly ExtractedImage['rotation'][] = [0, 0, undefined, 180, undefined, undefined, 270, undefined, 90]
+const exifOrientationToDegrees: readonly ExtractedImage['rotation'][] = [
+  0,
+  0,
+  undefined,
+  180,
+  undefined,
+  undefined,
+  270,
+  undefined,
+  90,
+]
 
-export const getMetadata = (buffer: Buffer | Uint8Array) => (
+export const getMetadata = (buffer: Buffer | Uint8Array) =>
   sharp(buffer)
     .metadata()
     .then((metadata) => ({
@@ -25,4 +35,3 @@ export const getMetadata = (buffer: Buffer | Uint8Array) => (
       hasAlpha: metadata.hasAlpha,
       rotation: exifOrientationToDegrees[metadata.orientation ?? 0],
     }))
-)

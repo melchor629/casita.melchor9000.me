@@ -28,16 +28,30 @@ export const Default = meta.story()
 
 export const WithFormControl = meta.story({
   render: (args) => (
-    <FormControl htmlFor="text" label="Text Area" helperText="Some text">
-      <TextArea {...args} id="text" />
+    <FormControl
+      htmlFor="text"
+      label="Text Area"
+      helperText="Some text"
+    >
+      <TextArea
+        {...args}
+        id="text"
+      />
     </FormControl>
   ),
 })
 
 export const WithFormControlError = meta.story({
   render: (args) => (
-    <FormControl htmlFor="text" label="Text Area" error="Invalid value!">
-      <TextArea {...args} id="text" />
+    <FormControl
+      htmlFor="text"
+      label="Text Area"
+      error="Invalid value!"
+    >
+      <TextArea
+        {...args}
+        id="text"
+      />
     </FormControl>
   ),
   args: {},

@@ -3,8 +3,8 @@ import { makeStyles } from '../utils'
 
 export type InputLabelProps = Readonly<
   ComponentProps<'label'> & {
-    input: ReactElement;
-    margin?: 'none' | 'dense' | 'normal';
+    input: ReactElement
+    margin?: 'none' | 'dense' | 'normal'
   }
 >
 
@@ -37,7 +37,10 @@ export default function InputLabel({
 }: InputLabelProps) {
   const styles = createStyles({ margin })
   return (
-    <label {...props} className={styles.base({ className })}>
+    <label
+      {...props}
+      className={styles.base({ className })}
+    >
       {input}
       {children && <div className={styles.text()}>{children}</div>}
     </label>
