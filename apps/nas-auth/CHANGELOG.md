@@ -1,5 +1,13 @@
 # nas-auth
 
+## 3.3.13
+
+### Patch Changes
+
+- c17e456: Fix possible error when missing data.
+- Updated dependencies [5a402e1]
+  - @melchor629/ui@0.0.9
+
 ## 3.3.12
 
 ### Patch Changes

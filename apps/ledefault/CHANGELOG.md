@@ -1,5 +1,14 @@
 # ledefault
 
+## 0.4.7
+
+### Patch Changes
+
+- acd6ba2: Fix jp types
+- c69218d: Remove certain headers to forward to furifont loading and include log when load fails.
+- Updated dependencies [5a402e1]
+  - @melchor629/ui@0.0.9
+
 ## 0.4.6
 
 ### Patch Changes

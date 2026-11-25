@@ -1,5 +1,11 @@
 # nas-fs
 
+## 0.12.36
+
+### Patch Changes
+
+- c17e456: Fix possible error when missing data.
+
 ## 0.12.35
 
 ### Patch Changes

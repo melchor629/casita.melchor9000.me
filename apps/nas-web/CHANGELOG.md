@@ -1,5 +1,13 @@
 # nas-web
 
+## 0.16.10
+
+### Patch Changes
+
+- b95547c: Fix dialog types
+- Updated dependencies [5a402e1]
+  - @melchor629/ui@0.0.9
+
 ## 0.16.9
 
 ### Patch Changes

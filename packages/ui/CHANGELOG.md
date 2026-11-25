@@ -1,5 +1,11 @@
 # @melchor629/ui
 
+## 0.0.9
+
+### Patch Changes
+
+- 5a402e1: Upgrade storybook to v11
+
 ## 0.0.8
 
 ### Patch Changes
