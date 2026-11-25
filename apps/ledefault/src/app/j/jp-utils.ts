@@ -169,7 +169,7 @@ type Mutable<T> = T extends object
     ? Array<Mutable<TT>>
     : T
 
-type DictEntryRef = Readonly<{ type: 'basic' | 'intermediate'; chapter: number; word?: string }>
+type DictEntryRef = Readonly<{ type: 'basic' | 'intermediate'; chapter: number; word: string }>
 type UrlEntryRef = Readonly<{ type: 'url'; url: string | URL; name: string }>
 export type EntryRef = DictEntryRef | UrlEntryRef
 
@@ -189,7 +189,11 @@ export type WordDictionaryEntry<TType extends string = string> = BaseDictionaryE
   }>
 
 export type NounDictionaryEntry = WordDictionaryEntry<'noun' | 'interjection' | 'adverb'>
-export type MarkerDictionaryEntry = BaseDictionaryEntry<'marker' | 'particle'>
+export type MarkerDictionaryEntry = BaseDictionaryEntry<'marker'>
+export type ParticleDictionaryEntry = BaseDictionaryEntry<'particle'>
+  & Readonly<{
+    pronuntiation?: string
+  }>
 export type PhraseDictionaryEntry = BaseDictionaryEntry<'phrase'>
 export type InterrogativeDictionaryEntry = WordDictionaryEntry<'interrogative'>
 export type NaAdjectiveDictionaryEntry = WordDictionaryEntry<'na-adj'>
@@ -272,6 +276,7 @@ export type KanjiEntry = BaseDictionaryEntry<'kanji'>
 export type DictionaryEntry =
   | NounDictionaryEntry
   | MarkerDictionaryEntry
+  | ParticleDictionaryEntry
   | PhraseDictionaryEntry
   | InterrogativeDictionaryEntry
   | NaAdjectiveDictionaryEntry
@@ -301,6 +306,7 @@ type Yamlify<T extends Record<string, unknown>> = Omit<T, 'level' | 'chapter' | 
 export type IntermediateDictionaryEntry =
   | Yamlify<NounDictionaryEntry>
   | Yamlify<MarkerDictionaryEntry>
+  | Yamlify<ParticleDictionaryEntry>
   | Yamlify<PhraseDictionaryEntry>
   | Yamlify<InterrogativeDictionaryEntry>
   | Yamlify<NaAdjectiveDictionaryEntry>
