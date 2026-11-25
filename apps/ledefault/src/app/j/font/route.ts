@@ -1,10 +1,18 @@
 import type { SsrRequest } from '@melchor629/nice-ssr'
 
+const copyHeaderValue = (header: string, from: Headers, to: Headers) => {
+  const value = from.get(header)
+  if (value != null) {
+    to.set(header, value)
+  }
+};
+
 export async function GET(req: SsrRequest) {
-  const headers = new Headers(req.headers)
-  headers.delete('cookie')
-  headers.delete('referer')
-  headers.set('origin', 'https://furifont.antfu.me')
+  const headers = new Headers()
+  copyHeaderValue('accept', req.headers, headers)
+  copyHeaderValue('accept-encoding', req.headers, headers)
+  copyHeaderValue('if-modified-since', req.headers, headers)
+  copyHeaderValue('if-none-match', req.headers, headers)
   const fontReq = new Request('https://furifont.antfu.me/fonts/FurifontSansVF.woff2', {
     headers,
   })

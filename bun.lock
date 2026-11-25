@@ -18,7 +18,7 @@
     },
     "apps/ledefault": {
       "name": "ledefault",
-      "version": "0.4.7",
+      "version": "0.4.8",
       "dependencies": {
         "@fastify/compress": "^9.3.0",
         "@fastify/helmet": "^13.2.0",

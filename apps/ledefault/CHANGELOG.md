@@ -1,5 +1,11 @@
 # ledefault
 
+## 0.4.8
+
+### Patch Changes
+
+- Try fix font load in prod.
+
 ## 0.4.7
 
 ### Patch Changes
