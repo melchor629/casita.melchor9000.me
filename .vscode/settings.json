@@ -1,5 +1,6 @@
 {
   "tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]],
   "tailwindCSS.classFunctions": ["tv", "styled", "makeStyles"],
-  "js/ts.tsdk.path": "node_modules/typescript/lib"
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "editor.formatOnSave": true
 }

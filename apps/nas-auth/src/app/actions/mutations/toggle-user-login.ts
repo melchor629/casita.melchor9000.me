@@ -15,7 +15,7 @@ export const { useHook: useToggleUserLogin } = makeMutation({
         user: {
           ...data.user,
           logins: data.user.logins.map((l) =>
-            l.id === id && l.type === type ? { ...l, disabled } : l,
+            l.id === id && l.type === type ? Object.assign(l, { disabled }) : l,
           ),
         },
       } satisfies typeof data

@@ -397,31 +397,33 @@ export const transformPage = (ast: Program): string => {
             exportsToRemove.includes(n),
           ))),
   )
-  const asd = ssrExports.flatMap((el) => {
-    let name: string
-    if (el.declaration?.type === 'FunctionDeclaration') {
-      name = el.declaration.id.name
-      return getExternalIdentifiers([el.declaration], [])
-    } else if (el.declaration?.type === 'VariableDeclaration') {
-      const { id, init } = el.declaration.declarations[0]
-      name = id.type === 'Identifier' ? id.name : '???'
-      if (init?.type === 'ArrowFunctionExpression') {
-        return getExternalIdentifiersExpression(init, [])[1]
-      } else if (init?.type === 'FunctionExpression') {
-        return getExternalIdentifiersExpression(init, [])[1]
-      } else if (init?.type === 'AssignmentExpression') {
-        return getExternalIdentifiersExpression(init.right, [])[1]
-      } else if (init?.type === 'ObjectExpression') {
-        return getExternalIdentifiersExpression(init, [])[1]
+  const asd = new Set(
+    ssrExports.flatMap((el) => {
+      let name: string
+      if (el.declaration?.type === 'FunctionDeclaration') {
+        name = el.declaration.id.name
+        return getExternalIdentifiers([el.declaration], [])
+      } else if (el.declaration?.type === 'VariableDeclaration') {
+        const { id, init } = el.declaration.declarations[0]
+        name = id.type === 'Identifier' ? id.name : '???'
+        if (init?.type === 'ArrowFunctionExpression') {
+          return getExternalIdentifiersExpression(init, [])[1]
+        } else if (init?.type === 'FunctionExpression') {
+          return getExternalIdentifiersExpression(init, [])[1]
+        } else if (init?.type === 'AssignmentExpression') {
+          return getExternalIdentifiersExpression(init.right, [])[1]
+        } else if (init?.type === 'ObjectExpression') {
+          return getExternalIdentifiersExpression(init, [])[1]
+        } else {
+          throw new Error(
+            `Unsupported expression for ${name}: must be a function or value assignment`,
+          )
+        }
       } else {
-        throw new Error(
-          `Unsupported expression for ${name}: must be a function or value assignment`,
-        )
+        throw new Error('???')
       }
-    } else {
-      throw new Error('???')
-    }
-  })
+    }),
+  )
   const importsToRemove = ast.body.filter(
     (el): el is ImportDeclaration =>
       el.type === 'ImportDeclaration'
@@ -431,7 +433,7 @@ export const transformPage = (ast: Program): string => {
   for (const importDeclaration of ast.body.filter((el) => el.type === 'ImportDeclaration')) {
     const prevLength = importDeclaration.specifiers.length
     importDeclaration.specifiers = importDeclaration.specifiers.filter(
-      (specifier) => !asd.includes(specifier.local.name),
+      (specifier) => !asd.has(specifier.local.name),
     )
     if (prevLength > 0 && importDeclaration.specifiers.length === 0) {
       importsToRemove.push(importDeclaration)

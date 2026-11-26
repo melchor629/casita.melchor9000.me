@@ -153,8 +153,8 @@ export default function DashboardPage({ entries }: PageProps) {
     >
       {entries.map((entry, i) =>
         entry === 'space' ? (
-          // eslint-disable-next-line react/no-array-index-key
           <div
+            // oxlint-disable-next-line react/no-array-index-key
             key={`space-${i}`}
             className="w-full grow"
           />

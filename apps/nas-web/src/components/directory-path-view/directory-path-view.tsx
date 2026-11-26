@@ -72,7 +72,7 @@ export default function DirectoryPathView({
       e.unshift(parentPath)
     }
 
-    return e.sort(
+    return e.toSorted(
       (a, b) =>
         a.type.localeCompare(b.type, undefined, { sensitivity: 'base' })
         || a.path.localeCompare(b.path, undefined, { sensitivity: 'base' }),
@@ -83,10 +83,12 @@ export default function DirectoryPathView({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setFilter('')
     entriesDivRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [module, metadata.path])
 
   useEffect(() => {
     entriesDivRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [filter])
 
   const onEntryMove = useCallback(

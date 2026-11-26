@@ -10,6 +10,8 @@ export const ensureNotExists = (path: string) =>
       if (!res) {
         throw new AlreadyExistsException(path, 'The path already exists')
       }
+
+      return undefined
     })
 
 export const ensureExists = (path: string) =>

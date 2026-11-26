@@ -103,9 +103,13 @@ export default function ImagesFilePathView({ metadata, module }: ImagesFilePathV
     return null
   }
 
-  const altImages = thumbnailManifest.images.map((img, i) => ({
-    ...img,
-    url: `${getThumbnailUrl(module, metadata.path, { size: 'original', i })}&token=${token}`,
-  }))
+  const altImages = thumbnailManifest.images.map((img, i) =>
+    Object.assign(img, {
+      url: `${getThumbnailUrl(module, metadata.path, {
+        size: 'original',
+        i,
+      })}&token=${token}`,
+    }),
+  )
   return <ImagesSlideShow images={altImages} />
 }

@@ -53,6 +53,7 @@ export default function ModulePathPage() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedElements([])
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [path])
 
   useEffect(() => {

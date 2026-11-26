@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useEffectEvent, useRef } from 'react'
 import { openFileSystemEvents } from '../api/fs'
 import FSEvents from '../api/fs/fs-events'
 import * as Path from '../utils/path'
@@ -10,6 +10,12 @@ export default function useMetadata(module: string, path: string) {
   const { data: metadata, error, isFetching, refetch } = useStorageMetadata(module, path)
   const sseRef = useRef<FSEvents>(null!)
 
+  const handleEvent = useEffectEvent(({ path: eventPath }: { path: string }) => {
+    if (eventPath === Path.join('/', path)) {
+      void refetch()
+    }
+  })
+
   useEffect(() => {
     const sse = openFileSystemEvents(module, apiClient)
     sseRef.current = sse
@@ -20,6 +26,13 @@ export default function useMetadata(module: string, path: string) {
       }
     })
 
+    sse
+      .on('add', handleEvent)
+      .on('addDir', handleEvent)
+      .on('change', handleEvent)
+      .on('unlink', handleEvent)
+      .on('unlinkDir', handleEvent)
+
     if (sse.state === 'closed') {
       sse.reconnect()
     }
@@ -28,38 +41,6 @@ export default function useMetadata(module: string, path: string) {
       sse.close()
     }
   }, [module, apiClient])
-
-  useEffect(() => {
-    const isCurrentPath = (eventPath: string) => eventPath === Path.join('/', path)
-
-    const reloadEvent = (event: { path: string }) => {
-      if (isCurrentPath(event.path)) {
-        void refetch()
-      }
-    }
-
-    const removedEvent = (event: { path: string }) => {
-      if (isCurrentPath(event.path)) {
-        void refetch()
-      }
-    }
-
-    sseRef.current
-      .on('add', reloadEvent)
-      .on('addDir', reloadEvent)
-      .on('change', reloadEvent)
-      .on('unlink', removedEvent)
-      .on('unlinkDir', removedEvent)
-
-    return () => {
-      sseRef.current
-        .off('add', reloadEvent)
-        .off('addDir', reloadEvent)
-        .off('change', reloadEvent)
-        .off('unlink', removedEvent)
-        .off('unlinkDir', removedEvent)
-    }
-  }, [apiClient, module, path, refetch])
 
   return {
     metadata: metadata || null,

@@ -1,9 +1,11 @@
-import { useEffect } from 'react'
+import { useState } from 'react'
 
 export default function ScrollToTopWhen({ deps }: { readonly deps: unknown }) {
-  useEffect(() => {
+  const [prevDeps, setPrevDeps] = useState(deps)
+  if (!Object.is(prevDeps, deps)) {
     window.scrollTo(0, 0)
-  }, [deps])
+    setPrevDeps(deps)
+  }
 
   return null
 }

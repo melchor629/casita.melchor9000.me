@@ -45,21 +45,21 @@ const storageController: Controller<typeof schema> = async (req, reply) => {
   if (stat.isDirectory()) {
     logger.debug({ path, op: 'download' }, "Using 'tar' to archive folder")
     const acceptEncodingHeader = req.headers['accept-encoding']
-    const acceptedEncodings = (acceptEncodingHeader || '').split(',').map((e) => e.trim())
+    const acceptedEncodings = new Set((acceptEncodingHeader || '').split(',').map((e) => e.trim()))
     let compress: 'brotli' | 'zstd' | 'gzip' | 'deflate' | null = null
-    if (acceptedEncodings.includes('br')) {
+    if (acceptedEncodings.has('br')) {
       compress = 'brotli'
       reply.header('Content-Encoding', 'br')
       logger.debug({ path, op: 'download' }, 'Using brotli as compression')
-    } else if (acceptedEncodings.includes('zstd')) {
+    } else if (acceptedEncodings.has('zstd')) {
       compress = 'zstd'
       reply.header('Content-Encoding', 'zstd')
       logger.debug({ path, op: 'download' }, 'Using zstd as compression')
-    } else if (acceptedEncodings.includes('gzip')) {
+    } else if (acceptedEncodings.has('gzip')) {
       compress = 'gzip'
       reply.header('Content-Encoding', 'gzip')
       logger.debug({ path, op: 'download' }, 'Using gzip as compression')
-    } else if (acceptedEncodings.includes('deflate')) {
+    } else if (acceptedEncodings.has('deflate')) {
       compress = 'deflate'
       reply.header('Content-Encoding', 'deflate')
       logger.debug({ path, op: 'download' }, 'Using gzip as compression')

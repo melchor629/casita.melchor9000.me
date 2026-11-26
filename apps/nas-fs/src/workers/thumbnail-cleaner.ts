@@ -9,12 +9,12 @@ import BaseWorker from './base-worker.ts'
 
 export type ThumbnailCleanerJobData = object
 
-const ignoredPaths = ['_media']
+const ignoredPaths = new Set(['_media'])
 
 const readThumbnailFolders = async (thumbnailPath: string) => {
   const paths: string[] = []
   for await (const path of await fs.opendir(thumbnailPath)) {
-    if (path.isDirectory() && !ignoredPaths.includes(path.name)) {
+    if (path.isDirectory() && !ignoredPaths.has(path.name)) {
       paths.push(path.name)
     }
   }

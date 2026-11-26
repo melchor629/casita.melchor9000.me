@@ -248,7 +248,7 @@ const useJobHandler = () => {
         )
         const unfinishedJobsPerWorker = unfinishedJobs.reduce<{
           [JK in JobWorkerTypes]: Job<JobDataType<JK>>[]
-        }>((groups, job) => ({ ...groups, [job.queue]: [...groups[job.queue], job] }), {
+        }>((groups, job) => Object.assign(groups, { [job.queue]: [...groups[job.queue], job] }), {
           synchronization: [],
           thumbnailGeneration: [],
           thumbnailDelete: [],

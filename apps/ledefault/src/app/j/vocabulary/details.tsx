@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import type { MarkdownToJSX } from 'markdown-to-jsx'
-import Markdown, { RuleType } from 'markdown-to-jsx/react'
+import { Markdown, RuleType } from 'markdown-to-jsx/react'
 import { Fragment, useMemo } from 'react'
 import type { VocabularyComponentProps } from '../jp-utils'
 
@@ -85,9 +85,9 @@ const mdOptions: MarkdownToJSX.Options = {
               const startIndex = prevMatch ? prevMatch.index + prevMatch[0].length : 0
               return [
                 node.text.slice(startIndex, match.index),
-                // eslint-disable-next-line react/no-array-index-key
                 <span
                   className="jp-furi"
+                  // oxlint-disable-next-line react/no-array-index-key
                   key={match[0] + i}
                 >
                   {match[0]}

@@ -56,7 +56,7 @@ const directoryExtend = async (directoryEntry: DirectoryEntryBase): Promise<Dire
       itemsInDir.map(async (item) => {
         const info = await fromPath(Path.join(directoryEntry.path, item), storagePath)
         if (info.type === 'file') {
-          return { ...info, mime: await getMimeType(info.realPath) }
+          return Object.assign(info, { mime: await getMimeType(info.realPath) })
         }
         return info
       }),

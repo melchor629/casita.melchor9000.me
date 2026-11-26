@@ -103,6 +103,7 @@ const ButtonsBar: FC<ButtonsBarProps> = ({ loading, metadata, module, selectedEl
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowOptionsMenu(false)
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [metadata])
 
   useEffect(() => {

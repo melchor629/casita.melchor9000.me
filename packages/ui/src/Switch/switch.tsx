@@ -1,4 +1,4 @@
-import clsx from 'clsx'
+import { clsx } from '@melchor629/ui/utils'
 import type { ComponentProps } from 'react'
 
 export type SwitchProps = Omit<ComponentProps<'input'>, 'type'>

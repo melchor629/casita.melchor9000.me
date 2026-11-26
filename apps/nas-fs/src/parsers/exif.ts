@@ -1,4 +1,4 @@
-import exifreader, { type ExpandedTags } from 'exifreader'
+import { load, type ExpandedTags } from 'exifreader'
 import type { ImageExifTags, ImageFileTags, ImageGpsTags, ImageTags } from '../models/exif.ts'
 
 const mapFileTags = ({ file }: ExpandedTags): ImageFileTags | null =>
@@ -46,7 +46,7 @@ const mapGpsTags = ({ gps }: ExpandedTags): ImageGpsTags | null =>
 
 const readExif = async (file: string): Promise<ImageTags> => {
   try {
-    const tags = await exifreader.load(file, { async: true, expanded: true })
+    const tags = await load(file, { async: true, expanded: true })
     delete tags.exif?.MakerNote
     delete tags.Thumbnail
     delete tags.jfif?.['JFIF Thumbnail']

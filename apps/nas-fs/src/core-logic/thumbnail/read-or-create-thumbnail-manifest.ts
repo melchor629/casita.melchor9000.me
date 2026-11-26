@@ -51,7 +51,12 @@ const createThumbnailManifest = async (
   const manifest = {
     path: fullPathHash,
     modificationTime: new Date().toISOString(),
-    images: images.map((image) => ({ ...image, data: undefined, originalSoftLink: undefined })),
+    images: images.map((image) =>
+      Object.assign(image, {
+        data: undefined,
+        originalSoftLink: undefined,
+      }),
+    ),
   }
   await Promise.all([cache.set(key, manifest), notifier.thumbnail(metadata.path)])
   return manifest

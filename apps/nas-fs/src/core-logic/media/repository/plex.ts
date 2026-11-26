@@ -353,9 +353,9 @@ const plexTypeToAreaType = Object.freeze({
   director: 'director',
   genre: 'genre',
 })
-const mapHub = <T extends plex.SearchResults['Hub'][0]>(
+const mapHub = (
   library: plex.Library,
-  hub: T,
+  hub: plex.SearchResults['Hub'][0],
 ): SearchResultArea | null => {
   if (!hub.Metadata || hub.size === 0) {
     return null
@@ -497,6 +497,6 @@ export const search = async (app: App, query: string, limit = 30): Promise<Searc
     areas: response
       .map((hub) => mapHub(library, hub))
       .filter((area): area is NonNullable<typeof area> => area != null && area.count > 0)
-      .sort((area1, area2) => area2.maxScore - area1.maxScore),
+      .toSorted((area1, area2) => area2.maxScore - area1.maxScore),
   }
 }

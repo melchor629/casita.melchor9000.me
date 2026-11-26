@@ -16,7 +16,7 @@ function ExifView({ exif }: { readonly exif: FileMetadata['exif'] }) {
                 >
               )
                 .filter(([k, val]) => val != null && k !== '_raw')
-                .sort(([a], [b]) => a.localeCompare(b, undefined, { sensitivity: 'accent' })),
+                .toSorted(([a], [b]) => a.localeCompare(b, undefined, { sensitivity: 'accent' })),
             ] as const,
         )
         .filter(([, obj]) => obj.length > 0),

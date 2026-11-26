@@ -23,13 +23,13 @@ interface DirectoryEntryIconViewProps {
   readonly size: 'list' | 'grid'
 }
 
-const archiveTypes = [
+const archiveTypes = new Set([
   'application/zip',
   'application/x-rar-compressed',
   'application/x-tar',
   'application/gzip',
   'application/x-xz',
-]
+])
 
 const ThumbnailIconContainer = styled(
   'div',
@@ -132,7 +132,7 @@ function DirectoryEntryIconView({ entry, module, size }: DirectoryEntryIconViewP
       icon = <FileVideo />
     } else if (mime.mime.startsWith('image')) {
       icon = <FileImage />
-    } else if (archiveTypes.includes(mime.mime)) {
+    } else if (archiveTypes.has(mime.mime)) {
       icon = <FileZipper />
     } else {
       // this was originally file binary

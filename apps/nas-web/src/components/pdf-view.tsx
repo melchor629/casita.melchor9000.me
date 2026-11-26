@@ -47,6 +47,7 @@ export default function PdfView({ module, path }: PdfViewProps) {
     return (
       <div>
         <iframe
+          sandbox="allow-downloads allow-forms allow-same-origin"
           src={pdfUrl}
           className="-mt-4 -mb-2 w-full rounded-md border-0"
           style={{ minHeight: 'calc(100vh - 176px - 6*1rem)' }}

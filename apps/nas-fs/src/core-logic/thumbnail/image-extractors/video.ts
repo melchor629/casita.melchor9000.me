@@ -75,7 +75,7 @@ const getImagesFromVideo = async (metadata: File): Promise<ExtractedImage[]> => 
   }
 
   return Promise.all(
-    images.map(async (image) => ({ ...image, ...(await getMetadata(image.data)) })),
+    images.map(async (image) => Object.assign(image, await getMetadata(image.data))),
   )
 }
 

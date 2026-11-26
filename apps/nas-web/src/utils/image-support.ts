@@ -1,13 +1,8 @@
 const checkSupport = (imageUrl: string) =>
   new Promise<boolean>((resolve) => {
     const img = new Image()
-    img.onload = () => {
-      const result = img.width > 0 && img.height > 0
-      resolve(result)
-    }
-    img.onerror = () => {
-      resolve(false)
-    }
+    img.addEventListener('load', () => resolve(img.width > 0 && img.height > 0), { once: true })
+    img.addEventListener('error', () => resolve(false), { once: true })
     img.src = imageUrl
   })
 

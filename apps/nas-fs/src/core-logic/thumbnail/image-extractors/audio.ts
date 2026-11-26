@@ -5,12 +5,13 @@ import { type ExtractedImage, getMetadata } from './core.ts'
 const getImagesFromAudio = async (metadata: File): Promise<ExtractedImage[]> => {
   const covers = await readCovers(metadata.realPath)
   return Promise.all(
-    covers.map(async (cover) => ({
-      format: cover.format,
-      data: cover.data,
-      type: cover.name,
-      ...(await getMetadata(cover.data)),
-    })),
+    covers.map(async (cover) =>
+      Object.assign(await getMetadata(cover.data), {
+        format: cover.format,
+        data: cover.data,
+        type: cover.name,
+      }),
+    ),
   )
 }
 

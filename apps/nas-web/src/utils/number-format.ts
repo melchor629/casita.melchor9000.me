@@ -47,11 +47,11 @@ export const unixPermissions = (mode: number) => {
   return `${perm(u, setuid && 's')}${perm(g, setgid && 's')}${perm(o, sticky && 't')}`
 }
 
+const tt = (n: number) => (n < 10 ? `0${n}` : n.toString())
 export const humanDuration = (durationInSeconds: number) => {
   const milliseconds = ((durationInSeconds * 1000) % 1000).toFixed(0).padStart(3, '0')
   const seconds = Math.floor(durationInSeconds % 60)
   const minutes = Math.floor(durationInSeconds / 60) % 60
   const hours = Math.floor(durationInSeconds / 3600) % 60
-  const tt = (n: number) => (n < 10 ? `0${n}` : n.toString())
   return `${tt(hours)}:${tt(minutes)}:${tt(seconds)}.${milliseconds}`
 }

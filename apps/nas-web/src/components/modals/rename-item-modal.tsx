@@ -36,6 +36,7 @@ export default function RenameItemModal({ entry, module, onClose, show }: Rename
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setError(null)
     setNewName(Path.basename(path) || path)
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [module, path, show])
 
   const closeButton = useMemo(

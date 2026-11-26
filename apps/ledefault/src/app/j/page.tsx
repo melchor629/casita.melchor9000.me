@@ -1,5 +1,5 @@
 import { useBlocker, useNavigate, type Metadata } from '@melchor629/nice-ssr'
-import clsx from 'clsx'
+import { clsx } from '@melchor629/ui/utils'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import KanaWriter from './kana-writer'
 import Vocabulary from './vocabulary'

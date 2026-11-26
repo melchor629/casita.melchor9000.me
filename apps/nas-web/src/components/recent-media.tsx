@@ -25,6 +25,7 @@ export default function RecentMedia({
       left: 0,
       behavior: 'smooth',
     })
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [mostRecentId])
 
   if (!recent.length) {
