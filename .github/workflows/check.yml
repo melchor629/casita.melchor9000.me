@@ -17,10 +17,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Use node 24
+      - name: Use node 26
         uses: actions/setup-node@v7
         with:
-          node-version: '24.x'
+          node-version: '26.x'
 
       - name: Use bun
         uses: oven-sh/setup-bun@v2
@@ -39,7 +39,9 @@ jobs:
         if: ${{ success() || failure() }}
 
       - name: Run checks
-        run: bunx turbo run check --continue=always
+        run: |
+          bunx oxlint
+          bunx oxfmt --check
         if: ${{ success() || failure() }}
 
   docker:
