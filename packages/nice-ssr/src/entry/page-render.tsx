@@ -1,4 +1,5 @@
 import path from 'node:path'
+import * as devalue from 'devalue'
 import type { PreloadAs } from 'react-dom'
 import { renderToReadableStream } from 'react-dom/server'
 import {
@@ -35,33 +36,7 @@ type RawManifestEntry = Omit<ManifestEntry, 'imports' | 'dynamicImports'> & {
   imports?: string[]
 }
 
-const unsafeCharMap: Record<string, string> = {
-  '<': '\\u003C',
-  '>': '\\u003E',
-  '/': '\\u002F',
-  '\\': '\\\\',
-  '\b': '\\b',
-  '\f': '\\f',
-  '\n': '\\n',
-  '\r': '\\r',
-  '\t': '\\t',
-  '\0': '\\0',
-  '\u2028': '\\u2028',
-  '\u2029': '\\u2029',
-}
-const serializeForHtml = (data: unknown) => {
-  const json = JSON.stringify(data, (_, value) => {
-    if (typeof value === 'function') {
-      throw new Error('Cannot serialize functions')
-    }
-    if (typeof value === 'bigint') {
-      return value.toString()
-    }
-    return value as unknown
-  })
-  // eslint-disable-next-line no-control-regex
-  return json.replace(/[<>\u0008\f\n\r\t\0\u2028\u2029]/g, (x) => unsafeCharMap[x])
-}
+const serializeForHtml = (data: unknown) => devalue.uneval(data)
 
 function getEntryForModuleId(
   manifest: Record<string, RawManifestEntry>,
@@ -86,21 +61,18 @@ function getEntryForModuleId(
 const getExtraEntries = (entry: ManifestEntry): ManifestEntry[] => [
   entry,
   ...(entry.imports ?? []).flatMap(getExtraEntries),
-  // ...(entry.dynamicImports ?? []).flatMap(getExtraEntries),
 ]
 
 const getAllAssets = (entry: ManifestEntry): string[] =>
   [
     ...(entry.assets ?? []),
     ...(entry.imports?.map((n) => getAllAssets(n)) ?? []),
-    // ...(entry.dynamicImports?.map((n) => getAllAssets(n)) ?? []),
   ].flat()
 
 const getAllStyles = (entry: ManifestEntry): string[] =>
   [
     ...(entry.css ?? []),
     ...(entry.imports?.map((n) => getAllStyles(n)) ?? []),
-    // ...(entry.dynamicImports?.map((n) => getAllStyles(n)) ?? []),
   ].flat()
 
 const imageTypes = ['.png', '.jpg', '.jpeg', '.jfif', '.webp', '.avif', '.heif', '.heic', '.ico']
@@ -111,6 +83,15 @@ const mapExtToPreloadAs = (name: string): PreloadAs => {
   if (imageTypes.some((ext) => name.endsWith(ext))) return 'image'
   if (fontTypes.some((ext) => name.endsWith(ext))) return 'font'
   return 'fetch'
+}
+
+const getViteManifest = async () => {
+  // @ts-expect-error this is an external file after build
+  // eslint-disable-next-line import-x/no-unresolved
+  const { default: manifest } = (await import('../client/.vite/manifest.json', {
+    with: { type: 'json' },
+  })) as { default: Record<string, RawManifestEntry> }
+  return manifest
 }
 
 async function getCsrAssets(
@@ -128,11 +109,7 @@ async function getCsrAssets(
     ]
   }
 
-  // @ts-expect-error this is an external file after build
-  // eslint-disable-next-line import-x/no-unresolved
-  const { default: manifest } = (await import('../client/.vite/manifest.json', {
-    with: { type: 'json' },
-  })) as { default: Record<string, RawManifestEntry> }
+  const manifest = await getViteManifest()
   const entryCsrManifestEntry = getEntryForModuleId(manifest, 'virtual:entry-csr')
   const pageCsrManifestEntry = getEntryForModuleId(manifest, pageCsrModuleId)
   const allDependencyEntries = getExtraEntries(pageCsrManifestEntry)
@@ -171,11 +148,7 @@ async function getEntryCsr(basePath: string) {
     return '/@id/__x00__virtual:entry-csr'
   }
 
-  // @ts-expect-error this is an external file after build
-  // eslint-disable-next-line import-x/no-unresolved
-  const { default: manifest } = (await import('../client/.vite/manifest.json', {
-    with: { type: 'json' },
-  })) as { default: Record<string, RawManifestEntry> }
+  const manifest = await getViteManifest()
   const entry = getEntryForModuleId(manifest, 'virtual:entry-csr')
   return basePath + entry.file
 }
@@ -249,7 +222,7 @@ async function renderCompletePage(
     bootstrapModules: assets.filter((a) => a.type === 'module').map((a) => a.path),
     bootstrapScriptContent: `
       const c=${serializeForHtml(serializableContext)};
-      import(${serializeForHtml(entryScriptPath)}).then(({ default: start }) => start(c));
+      import(${serializeForHtml(entryScriptPath)}).then(({start})=>start(c));
     `,
     onError(error, errorInfo) {
       request.nice.log.error(
@@ -287,24 +260,26 @@ async function renderPartialPage(
     generateMetadata(module, ssrProps),
   ])
 
-  const context = {
-    basePath: request.nice.basePath,
-    params: request.nice.params,
-    pathname: request.nice.pathname,
-    url: request.nice.url,
-    metadata,
-    server: {
-      assets,
-      nonce: {},
+  const result = {
+    p: ssrProps,
+    c: {
+      basePath: request.nice.basePath,
+      params: request.nice.params,
+      pathname: request.nice.pathname,
+      url: request.nice.url,
+      metadata,
+      server: {
+        assets,
+        nonce: {},
+      },
     },
-  } satisfies PartialPageRenderResult['c']
+    t: pageContext.type,
+  } satisfies PartialPageRenderResult
 
   request.nice.log.debug('Generting response')
-  return SsrResponse.json({
-    p: ssrProps,
-    c: context,
-    t: pageContext.type,
-  } satisfies PartialPageRenderResult)
+  return SsrResponse.new()
+    .header('content-type', 'application/json+uneval')
+    .raw(devalue.stringify(result))
 }
 
 function renderInvalidPage(request: SsrRequest) {

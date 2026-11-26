@@ -40,6 +40,7 @@
   "dependencies": {
     "@fastify/static": "^10.1.10",
     "astring": "^1.9.0",
+    "devalue": "^6.0.0",
     "fastify-plugin": "^6.0.1",
     "zustand": "^5.1.0"
   },

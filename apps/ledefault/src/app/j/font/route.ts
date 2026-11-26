@@ -5,7 +5,7 @@ const copyHeaderValue = (header: string, from: Headers, to: Headers) => {
   if (value != null) {
     to.set(header, value)
   }
-};
+}
 
 export async function GET(req: SsrRequest) {
   const headers = new Headers()

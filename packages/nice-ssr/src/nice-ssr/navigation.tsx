@@ -1,3 +1,4 @@
+import { parse as devalueParse } from 'devalue'
 import {
   createContext,
   use,
@@ -191,9 +192,9 @@ const loadPage = async (store: RouterContextActions, newUrl: URL, justFetch = fa
       accept: 'application/json+ssr',
     },
   })
-  const data = (await res.json()) as PartialPageRenderResult
+  const data = devalueParse(await res.text()) as PartialPageRenderResult
   if (!justFetch) {
-    store.setState({ ...data.c, url: new URL(data.c.url) })
+    store.setState(data.c)
   }
 
   return renderPage(data.c.pathname, data.t, data.p)
@@ -329,7 +330,7 @@ export const useSearchParams = (): URLSearchParams =>
  *
  * @returns The route parameters.
  */
-export const useParams = <T extends Record<string, string>>(): T =>
+export const useParams = <T extends Record<string, string> = Record<string, string>>(): T =>
   useRouterContextState(useCallback((state) => state.params as T, []))
 
 export type NavigateOptions = {
@@ -517,8 +518,8 @@ export function SsrRouterProvider({
         server: initialValue.server,
         metadata: initialValue.metadata,
         client: initialValue.client,
-        // eslint-disable-next-line react-hooks/exhaustive-deps
       })),
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
     [],
   )
   const [loadPagePromise, setLoadPagePromise] = useState<Promise<ReactNode> | null>(null)
@@ -610,11 +611,11 @@ export function SsrRouterProvider({
   const pageElement = loadPagePromise ? use(loadPagePromise) : initialPage
   return (
     <SsrRouterContext
-      value={{
+      value={useMemo(() => ({
         actions,
         store,
         isTransitioning,
-      }}
+      }), [actions, store, isTransitioning])}
     >
       <RootLayout>
         <ViewTransition default={viewTransition === true ? 'auto' : viewTransition || 'none'}>

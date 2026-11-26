@@ -45,7 +45,8 @@ async function renderPage(
   )
 }
 
-export default async function start({
+// oxlint-disable-next-line import/prefer-default-export
+export async function start({
   c: context,
   p: props,
   t: pageType,
@@ -56,7 +57,6 @@ export default async function start({
         <SsrRouterProvider
           initialValue={{
             ...context,
-            url: new URL(context.url),
             client: {
               renderPage,
             },
