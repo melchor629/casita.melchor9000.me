@@ -32,7 +32,6 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
-    "@melchor629/eslint-config": "^0.4.1",
     "@melchor629/tsconfigs": "*",
     "@tailwindcss/vite": "^4.3.5",
     "@types/lodash-es": "^4.17.7",

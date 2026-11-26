@@ -10,8 +10,8 @@
     "./ts": "./src/ts.ts"
   },
   "dependencies": {
-    "@opentelemetry/context-async-hooks": "^2.12.1",
-    "@opentelemetry/core": "^2.12.1",
+    "@opentelemetry/context-async-hooks": "^3.1.1",
+    "@opentelemetry/core": "^3.1.1",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.301.2",
     "@opentelemetry/exporter-trace-otlp-http": "^0.301.2",
     "@opentelemetry/instrumentation": "^0.301.2",
@@ -19,8 +19,8 @@
     "@opentelemetry/instrumentation-runtime-node": "^0.38.0",
     "@opentelemetry/instrumentation-undici": "^0.35.1",
     "@opentelemetry/resource-detector-container": "^0.9.1",
-    "@opentelemetry/resources": "^2.12.1",
-    "@opentelemetry/sdk-metrics": "^2.12.1",
+    "@opentelemetry/resources": "^3.1.1",
+    "@opentelemetry/sdk-metrics": "^3.1.1",
     "@opentelemetry/sdk-trace-node": "^2.12.1",
     "@opentelemetry/semantic-conventions": "^1.45.0",
     "pino": "^10.4.0"

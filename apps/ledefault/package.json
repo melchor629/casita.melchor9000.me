@@ -15,7 +15,7 @@
     "@fastify/compress": "^9.3.0",
     "@fastify/helmet": "^13.2.0",
     "@fastify/otel": "^1.0.2",
-    "@fastify/static": "^10.1.12",
+    "@fastify/static": "^11.0.0",
     "@floating-ui/react-dom": "^2.1.9",
     "@henrygd/queue": "^1.2.0",
     "@melchor629/fastify-infra": "*",

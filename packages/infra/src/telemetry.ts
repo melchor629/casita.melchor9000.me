@@ -20,7 +20,8 @@ import { UndiciInstrumentation } from '@opentelemetry/instrumentation-undici'
 import { containerDetector } from '@opentelemetry/resource-detector-container'
 import {
   detectResources,
-  envDetector,
+  resourceAttributesEnvDetector,
+  serviceNameEnvDetector,
   resourceFromAttributes,
   type ResourceDetector,
 } from '@opentelemetry/resources'
@@ -119,7 +120,12 @@ export default function createTelemetry({ disabled, logLevel, ...options }: Tele
   })
   resource = resource.merge(
     detectResources({
-      detectors: [envDetector, containerDetector, ...(options.resourceDetectors ?? [])],
+      detectors: [
+        resourceAttributesEnvDetector,
+        serviceNameEnvDetector,
+        containerDetector,
+        ...(options.resourceDetectors ?? []),
+      ],
     }),
   )
 
