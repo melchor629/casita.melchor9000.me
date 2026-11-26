@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Text, TextInput } from '@melchor629/ui'
+import { Alert, Button, CircularProgress, Text, TextInput, TransitionGroup } from '@melchor629/ui'
 import {
   AccountCircle,
   ArrowLeftAlt,
@@ -54,11 +54,8 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
         Sign In
       </Text>
 
-      <div className="relative mb-6 w-full">
-        <AnimatePresence
-          mode="wait"
-          initial={false}
-        >
+      <TransitionGroup className="relative mb-6 w-full">
+        <AnimatePresence initial={false}>
           {step === 'initial' && (
             <motion.div
               key="login-method"
@@ -224,7 +221,7 @@ const Login = ({ client, externalAuths, interaction }: LoginProps) => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </TransitionGroup>
 
       <InteractionFooter client={client} />
     </>
