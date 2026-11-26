@@ -30,7 +30,7 @@ const CollapsableText = ({ children, className, maxLines = 3, ...props }: Collap
 
     const lineHeight = parseFloat(getComputedStyle(div).lineHeight)
     return Math.trunc(div.scrollHeight / lineHeight)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps react/memo-dependencies
   }, [children, div, maxLines])
 
   const toggleOpen = useCallback(() => setIsOpen((v) => !v), [])

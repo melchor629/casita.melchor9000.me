@@ -46,11 +46,7 @@ async function renderPage(
 }
 
 // oxlint-disable-next-line import/prefer-default-export
-export async function start({
-  c: context,
-  p: props,
-  t: pageType,
-}: PartialPageRenderResult) {
+export async function start({ c: context, p: props, t: pageType }: PartialPageRenderResult) {
   try {
     const tree = (
       <StrictMode>

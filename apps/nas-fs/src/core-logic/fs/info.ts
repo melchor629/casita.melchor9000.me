@@ -1,7 +1,7 @@
 import type { BigIntStats } from 'node:fs'
 import fs from 'node:fs/promises'
 import Path from 'node:path'
-import etag from 'etag'
+import { etag } from 'etag'
 import type { App } from '../../models/app.ts'
 import type { DirectoryEntry } from '../../models/fs/directory-entry.ts'
 import { fromStat } from '../../parsers/directory-entry.ts'

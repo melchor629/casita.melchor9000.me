@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { clsx } from 'clsx'
+import { clsx } from '@melchor629/ui/utils'
 import type { ComponentPropsWithRef } from 'react'
 
 type TextAreaProps = Readonly<ComponentPropsWithRef<'textarea'>>

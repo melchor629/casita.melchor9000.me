@@ -64,16 +64,10 @@ const getExtraEntries = (entry: ManifestEntry): ManifestEntry[] => [
 ]
 
 const getAllAssets = (entry: ManifestEntry): string[] =>
-  [
-    ...(entry.assets ?? []),
-    ...(entry.imports?.map((n) => getAllAssets(n)) ?? []),
-  ].flat()
+  [...(entry.assets ?? []), ...(entry.imports?.map((n) => getAllAssets(n)) ?? [])].flat()
 
 const getAllStyles = (entry: ManifestEntry): string[] =>
-  [
-    ...(entry.css ?? []),
-    ...(entry.imports?.map((n) => getAllStyles(n)) ?? []),
-  ].flat()
+  [...(entry.css ?? []), ...(entry.imports?.map((n) => getAllStyles(n)) ?? [])].flat()
 
 const imageTypes = ['.png', '.jpg', '.jpeg', '.jfif', '.webp', '.avif', '.heif', '.heic', '.ico']
 const fontTypes = ['.woff', '.woff2', '.ttf', '.otf']

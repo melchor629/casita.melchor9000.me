@@ -1,4 +1,4 @@
-import { clsx } from 'clsx'
+import { clsx } from '@melchor629/ui/utils'
 import { useMemo } from 'react'
 import { toRomaji } from '../jp-utils'
 

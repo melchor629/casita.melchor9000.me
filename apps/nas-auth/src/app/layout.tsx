@@ -1,6 +1,6 @@
 import { useNavigationStatus } from '@melchor629/nice-ssr'
 import { CircularProgress } from '@melchor629/ui'
-import { clsx } from 'clsx'
+import { clsx } from '@melchor629/ui/utils'
 import type { PropsWithChildren } from 'react'
 import ClientProvider from '#actions/client-provider.tsx'
 

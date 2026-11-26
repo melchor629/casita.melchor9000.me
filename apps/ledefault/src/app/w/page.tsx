@@ -1,6 +1,6 @@
 import { useFloating, offset, autoUpdate } from '@floating-ui/react-dom'
 import { type PageLoader, type Metadata, useNavigate, useBlocker } from '@melchor629/nice-ssr'
-import { clsx } from 'clsx'
+import { clsx } from '@melchor629/ui/utils'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getUser } from '@/auth'
 import entries, { type Entry } from './entries'

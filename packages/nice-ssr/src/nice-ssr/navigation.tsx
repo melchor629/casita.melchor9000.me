@@ -519,7 +519,7 @@ export function SsrRouterProvider({
         metadata: initialValue.metadata,
         client: initialValue.client,
       })),
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps react/memo-dependencies
     [],
   )
   const [loadPagePromise, setLoadPagePromise] = useState<Promise<ReactNode> | null>(null)
@@ -611,11 +611,14 @@ export function SsrRouterProvider({
   const pageElement = loadPagePromise ? use(loadPagePromise) : initialPage
   return (
     <SsrRouterContext
-      value={useMemo(() => ({
-        actions,
-        store,
-        isTransitioning,
-      }), [actions, store, isTransitioning])}
+      value={useMemo(
+        () => ({
+          actions,
+          store,
+          isTransitioning,
+        }),
+        [actions, store, isTransitioning],
+      )}
     >
       <RootLayout>
         <ViewTransition default={viewTransition === true ? 'auto' : viewTransition || 'none'}>

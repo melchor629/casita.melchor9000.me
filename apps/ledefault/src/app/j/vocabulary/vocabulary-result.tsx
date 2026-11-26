@@ -1,6 +1,6 @@
 import Collapse from '@melchor629/ui/Collapse'
 import { ArrowUpward } from '@melchor629/ui/icons'
-import { clsx } from 'clsx'
+import { clsx } from '@melchor629/ui/utils'
 import { memo, useCallback, useState } from 'react'
 import type { VocabularyComponentProps } from '../jp-utils'
 import AdjectiveTable from './adjective-table'

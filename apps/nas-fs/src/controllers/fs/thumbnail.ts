@@ -1,4 +1,4 @@
-import etag from 'etag'
+import { etag } from 'etag'
 import { NotExistsException } from '../../core-logic/exceptions/index.ts'
 import { info } from '../../core-logic/fs/index.ts'
 import { getThumbnail } from '../../core-logic/thumbnail/index.ts'

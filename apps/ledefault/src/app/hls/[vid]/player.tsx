@@ -1,6 +1,6 @@
 import { useSearchParams } from '@melchor629/nice-ssr'
 import { PlayCircle } from '@melchor629/ui/icons'
-import { clsx } from 'clsx'
+import { clsx } from '@melchor629/ui/utils'
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import 'shaka-player/dist/controls.css'
 import type Shaka from 'shaka-player/dist/shaka-player.ui.js'

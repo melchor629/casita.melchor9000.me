@@ -1,5 +1,5 @@
 import { Link } from '@melchor629/nice-ssr'
-import { clsx } from 'clsx'
+import { clsx } from '@melchor629/ui/utils'
 import { useMemo } from 'react'
 import type { EntryRef } from '../jp-utils'
 

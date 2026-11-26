@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from '@melchor629/nice-ssr'
-import { clsx } from 'clsx'
+import { clsx } from '@melchor629/ui/utils'
 import { useCallback, useEffect, useState, type InputEvent } from 'react'
 import { CharButton } from './shared-components'
 import VocabularyResults from './vocabulary/vocabulary-results'
