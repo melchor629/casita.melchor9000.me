@@ -89,8 +89,8 @@ const Job: FC<Props> = ({ job, queue }) => {
         {job.state === 'failed' && (
           <code>
             {job.message
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               || (job.error instanceof ApiClientException
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 && (job.error.parsedBody?.message as string))
               || job.error?.message
               || `${job.error}`}

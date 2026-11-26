@@ -1,5 +1,5 @@
 import type { FastifyOtelInstrumentation } from '@fastify/otel'
-import type { Span, SpanOptions } from '@opentelemetry/api'
+import { SpanStatusCode, type Span, type SpanOptions } from '@opentelemetry/api'
 import type { FastifyRequest } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
 
@@ -35,13 +35,15 @@ const telemetryPlugin = fastifyPlugin(
 
           return returnValue
         } catch (e) {
-          span.setStatus({ code: 2, message: (e as Error).message })
+          span.setStatus({ code: SpanStatusCode.ERROR, message: (e as Error).message })
           throw e
         } finally {
           span.end()
         }
       }
 
+      // NOTE: the issue is because the `SpanOptions` imported here is the ESM version
+      //       but the `otel.tracer` is from CJS and enums are different objects
       return otel.tracer.startActiveSpan(key, options, runner)
     })
   },

@@ -48,6 +48,8 @@ const readExif = async (file: string): Promise<ImageTags> => {
   try {
     const tags = await load(file, { async: true, expanded: true })
     delete tags.exif?.MakerNote
+    delete tags.thumbnail
+    // oxlint-disable-next-line typescript/no-deprecated
     delete tags.Thumbnail
     delete tags.jfif?.['JFIF Thumbnail']
     return Object.freeze({

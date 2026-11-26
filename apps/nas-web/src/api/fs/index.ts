@@ -161,7 +161,7 @@ export const doUpload = (
   const data = new FormData()
   data.append('file', chunk, 'chunk')
   const url = `${baseUrl}${Path.join(module, 'upload', uploadToken)}`
-  return post<FormData, { bytesWritten: number; position: number }>(url, data, { signal })
+  return post<{ bytesWritten: number; position: number }>(url, data, { signal })
 }
 
 export const createThumbnailJob = (

@@ -1,5 +1,5 @@
 import events from 'events'
-import { type Attributes, type Span, type Tracer, trace } from '@opentelemetry/api'
+import { type Attributes, type Span, SpanStatusCode, type Tracer, trace } from '@opentelemetry/api'
 import { ATTR_SERVER_ADDRESS, ATTR_SERVER_PORT } from '@opentelemetry/semantic-conventions'
 import { ATTR_DB_NAMESPACE } from '@opentelemetry/semantic-conventions/incubating'
 import Redis from 'ioredis'
@@ -31,7 +31,7 @@ export default class RedisCache implements Cache {
     return res ? (JSON.parse(res) as T) : null
   }
 
-  public async set<T>(key: string, value: T, expiration?: number): Promise<void> {
+  public async set(key: string, value: unknown, expiration?: number): Promise<void> {
     if (expiration) {
       logger.trace(
         { op: 'set', key, expiration },
@@ -46,7 +46,7 @@ export default class RedisCache implements Cache {
     }
   }
 
-  public async setIfNotExists<T>(key: string, value: T): Promise<boolean> {
+  public async setIfNotExists(key: string, value: unknown): Promise<boolean> {
     logger.trace({ op: 'setIfNotExists', key }, `setIfNotExists with key ${key}`)
     const result = await this.trace('setnx', { key }, () =>
       this.client.setnx(this.key(key), JSON.stringify(value)),
@@ -104,7 +104,7 @@ export default class RedisCache implements Cache {
     )
   }
 
-  public async publish<T>(channel: string, value: string | T): Promise<boolean> {
+  public async publish(channel: string, value: unknown): Promise<boolean> {
     const stringValue = typeof value === 'string' ? value : JSON.stringify(value)
     logger.trace({ op: 'publish', channel, value }, `publish operation to channel ${channel}`)
     const n = await this.trace('publish', { channel }, () =>
@@ -149,10 +149,10 @@ export default class RedisCache implements Cache {
       async (span) => {
         try {
           const retValue = await fn(span)
-          span.setStatus({ code: 1 })
+          span.setStatus({ code: SpanStatusCode.OK })
           return retValue
         } catch (e) {
-          span.setStatus({ code: 2, message: (e as Error).message })
+          span.setStatus({ code: SpanStatusCode.ERROR, message: (e as Error).message })
           throw e
         } finally {
           span.end()

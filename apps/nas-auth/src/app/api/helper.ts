@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
+import type { EmptyObject } from '@melchor629/infra/ts'
 import { cache, SsrResponse, type SsrRequest } from '@melchor629/nice-ssr'
 import { getPermissionsForUser } from '#queries/index.ts'
 import oidc from '../../oidc/oidc.ts'
@@ -24,7 +25,7 @@ export const getSession = cache((headers: Headers) => {
       'X-Forwarded-Proto': headers.get('X-Forwarded-Proto'),
     },
   } as unknown as IncomingMessage
-  const res = {} as ServerResponse
+  const res = {} as unknown as ServerResponse
   const ctx = oidc.createContext(req, res)
   return oidc.Session.get(ctx)
 })
@@ -37,7 +38,7 @@ export const getSession = cache((headers: Headers) => {
  * @param options Options for the decorator
  * @returns The decorated handler
  */
-export const withSession = <Params extends Record<string, string> = Record<never, string>>(
+export const withSession = <Params extends Record<string, string> = EmptyObject>(
   fn: NextRouteHandler<Params, NextRouteContext>,
   { ensure }: { ensure?: boolean } = {},
 ) =>
@@ -77,7 +78,7 @@ export const getPermissions = cache(async (accountId?: string | null): Promise<P
  * @param fn Handler to decorate
  * @returns The decorated handler
  */
-export const withPermissions = <Params extends Record<string, string> = Record<never, string>>(
+export const withPermissions = <Params extends Record<string, string> = EmptyObject>(
   fn: NextRouteHandler<Params, NextRouteContext>,
 ) =>
   async function withPermissionsDecorator(request: SsrRequest<Params>, context: NextRouteContext) {

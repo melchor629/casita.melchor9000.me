@@ -3,7 +3,7 @@ import Button, { type ButtonProps } from '../Button'
 import { useRadioButtonGroup } from './radio-button-group-context'
 
 export type RadioButtonProps = Readonly<
-  Omit<ButtonProps<'button'>, 'variant' | 'color'> & {
+  Omit<ButtonProps, 'variant' | 'color'> & {
     value: string
   }
 >

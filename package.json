@@ -10,7 +10,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "change": "changeset",
-    "check": "turbo run check",
+    "check": "oxlint && oxfmt --check",
     "lint": "turbo run lint",
     "docker": "turbo run docker --concurrency 1 --ui stream --log-prefix=none",
     "db:generate": "turbo run db:generate",

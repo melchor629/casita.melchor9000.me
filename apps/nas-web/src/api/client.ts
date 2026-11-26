@@ -72,9 +72,9 @@ const prepareRequest = (r: RequestOptions | undefined, body?: BodyTypes): Reques
 
 export function sendRequest(url: string): Promise<HTTPResponse>
 export function sendRequest(url: string, req: Partial<RequestOptions>): Promise<HTTPResponse>
-export function sendRequest<BT extends BodyTypes>(
+export function sendRequest(
   url: string,
-  body: BT,
+  body: BodyTypes,
   req: RequestOptions,
 ): Promise<HTTPResponse>
 

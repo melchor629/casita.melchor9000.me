@@ -50,7 +50,7 @@ export const getSession = cache(async function getSession(
       'X-Forwarded-Proto': h.get('X-Forwarded-Proto'),
     },
   } as unknown as IncomingMessage
-  const res = {} as ServerResponse
+  const res = {} as unknown as ServerResponse
   const ctx = oidc.createContext(req, res)
   const session = await oidc.Session.get(ctx)
   if (!session.accountId) {

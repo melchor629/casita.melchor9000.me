@@ -16,15 +16,15 @@ export type GenericRoute = RouteGenericInterface
 
 type ControllerOptions<Route extends GenericRoute> = RouteShorthandOptions<
   RawServerDefault,
-  RawRequestDefaultExpression<RawServerDefault>,
-  RawReplyDefaultExpression<RawServerDefault>,
+  RawRequestDefaultExpression,
+  RawReplyDefaultExpression,
   Route
 >
 
 type ControllerHandler<Route extends GenericRoute> = RouteHandlerMethod<
   RawServerDefault,
-  RawRequestDefaultExpression<RawServerDefault>,
-  RawReplyDefaultExpression<RawServerDefault>,
+  RawRequestDefaultExpression,
+  RawReplyDefaultExpression,
   Route
 >
 

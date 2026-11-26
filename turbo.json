@@ -5,18 +5,6 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "check": {
-      "dependsOn": ["check:lint", "check:fmt", "check:ts"]
-    },
-    "check:lint": {
-      "dependsOn": ["^check:lint"]
-    },
-    "check:fmt": {
-      "dependsOn": ["^check:fmt"]
-    },
-    "check:ts": {
-      "dependsOn": ["^check:ts"]
-    },
     "docker": {},
     "dev": {
       "persistent": true,

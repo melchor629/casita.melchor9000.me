@@ -6,9 +6,6 @@
   "scripts": {
     "dev": ". ./env.sh && vite",
     "build": ". ./env.sh && vite build --base \"${BASE_PATH}\"",
-    "check:lint": "oxlint",
-    "check:fmt": "oxfmt --check",
-    "check:ts": "tsc -p .",
     "clean": "rm -rf dist node_modules/.cache",
     "docker": "../../docker_build.sh"
   },

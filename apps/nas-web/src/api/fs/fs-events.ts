@@ -107,7 +107,7 @@ export default class FSEvents {
     return this
   }
 
-  private listenerCount<TEvent extends keyof EventListeners>(event: TEvent) {
+  private listenerCount(event: keyof EventListeners) {
     return this.eventListeners[event].length ?? 0
   }
 

@@ -4,6 +4,8 @@ import healthCheckRunner from './runner.ts'
 import type {
   HealthCheck,
   HealthCheckEntry,
+  HealthCheckFn,
+  HealthCheckParams,
   HealthCheckResponse,
   HealthCheckStatus,
 } from './types.ts'
@@ -12,8 +14,13 @@ type HealthCheckPluginOptions = Readonly<{
   shouldIncludeDetails?: (request: FastifyRequest) => Promise<boolean> | boolean
   path?: `/${string}`
   checks: (
-    add: <T>(key: string, fn: HealthCheck<T>, params: T, maxWorst?: HealthCheckStatus) => void,
-    mkcheck: <T>(type: string, fn: Omit<HealthCheck<T>, 'type'>) => HealthCheck<T>,
+    add: <T extends HealthCheckParams>(
+      key: string,
+      fn: HealthCheck<T>,
+      params: T,
+      maxWorst?: HealthCheckStatus,
+    ) => void,
+    mkcheck: <T extends HealthCheckParams>(type: string, fn: HealthCheckFn<T>) => HealthCheck<T>,
   ) => Promise<void> | void
   config?: FastifyContextConfig
 }>
@@ -62,8 +69,8 @@ const responseSchema = {
   },
 }
 
-const mkcheck = <T>(type: string, fn: Omit<HealthCheck<T>, 'type'>): HealthCheck<T> =>
-  Object.assign(fn, { type }) as unknown as HealthCheck<T>
+const mkcheck = <T extends HealthCheckParams>(type: string, fn: HealthCheckFn<T>): HealthCheck<T> =>
+  Object.assign(fn, { type })
 
 const healthCheckPlugin = fastifyPlugin(
   async (fastify, options: HealthCheckPluginOptions): Promise<void> => {
@@ -72,7 +79,7 @@ const healthCheckPlugin = fastifyPlugin(
       checks.push({
         key,
         params,
-        fn: fn as HealthCheck<unknown>,
+        fn: fn as HealthCheck<HealthCheckParams>,
         failureAs: maxWords,
       })
     }, mkcheck)

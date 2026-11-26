@@ -22,5 +22,5 @@ export function useEnsureGetSession() {
     notFound()
   }
 
-  return result as UseSuspenseQueryResult<NonNullable<ActionReturnType<'get-session'>>, Error>
+  return result as UseSuspenseQueryResult<NonNullable<ActionReturnType<'get-session'>>>
 }

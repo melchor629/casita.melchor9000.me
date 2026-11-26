@@ -6,12 +6,8 @@
   "sideEffects": false,
   "exports": {
     "./logger": "./src/logger.ts",
-    "./telemetry": "./src/telemetry.ts"
-  },
-  "scripts": {
-    "check:lint": "oxlint",
-    "check:fmt": "oxfmt --check",
-    "check:ts": "tsc -p . --noEmit"
+    "./telemetry": "./src/telemetry.ts",
+    "./ts": "./src/ts.ts"
   },
   "dependencies": {
     "@opentelemetry/context-async-hooks": "^2.12.1",

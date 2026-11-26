@@ -58,8 +58,8 @@ const info = async (
     model = await cache.get(cacheKey)
     if (model !== null) {
       dirStat = await fs.lstat(fullPath, { bigint: true })
-      const mtimeIsDifferent = BigInt(model.stat.modificationTime.ms) !== BigInt(dirStat.mtimeMs)
-      const ctimeIsDifferent = BigInt(model.stat.changeTime.ms) !== BigInt(dirStat.ctimeMs)
+      const mtimeIsDifferent = BigInt(model.stat.modificationTime.ms) !== dirStat.mtimeMs
+      const ctimeIsDifferent = BigInt(model.stat.changeTime.ms) !== dirStat.ctimeMs
       const versionIsDifferent = model.cacheMetadata?.version !== currentEntryVersion
       if (mtimeIsDifferent || ctimeIsDifferent || versionIsDifferent) {
         const what = [

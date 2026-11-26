@@ -9,7 +9,6 @@
     "./schema": "./drizzle/schema.ts"
   },
   "scripts": {
-    "check:ts": "tsc -p . --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"

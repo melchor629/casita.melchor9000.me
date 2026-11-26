@@ -23,12 +23,13 @@ export const TokenInfoContext = createContext<TokenInfo | null>(null)
 
 export function TokenInfoProvider({ children }: PropsWithChildren) {
   const {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     activeNavigator,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     clearStaleState,
     error,
     isAuthenticated,
     isLoading,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     signinRedirect,
     user,
   } = useAuth()

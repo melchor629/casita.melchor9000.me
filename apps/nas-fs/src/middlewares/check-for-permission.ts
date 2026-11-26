@@ -54,7 +54,7 @@ const fetchPermissions = async (token: string, user: string, cache: Cache) => {
     throw new Error(JSON.stringify(data))
   }
 
-  await cache.set<TokenInfoResult>(`auth-cache:${user}`, data, 5 * 60 * 1000)
+  await cache.set(`auth-cache:${user}`, data, 5 * 60 * 1000)
   return data
 }
 

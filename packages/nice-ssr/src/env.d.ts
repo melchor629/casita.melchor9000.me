@@ -7,6 +7,7 @@ declare module 'virtual:ssr/routes' {
     RouteHandler,
     RouteModule,
   } from '@melchor629/nice-ssr'
+  import type { PropsWithChildren } from 'react'
 
   type Lazy<T> = () => Promise<T>
   export type RootPathModule = {
@@ -17,7 +18,7 @@ declare module 'virtual:ssr/routes' {
     pathname: `/${string}`
     matcher: RegExp
     children: PathModule[]
-    layout?: Lazy<PageHelperModule>
+    layout?: Lazy<PageHelperModule<PropsWithChildren>>
     notFound?: Lazy<PageHelperModule>
     error?: Lazy<PageHelperModule<{ error: Error }>>
   }
@@ -49,4 +50,9 @@ declare module 'virtual:ssr/routes' {
     path: string,
     type: 'route',
   ): readonly [...PathModule[], RoutePathModule] | null
+}
+
+declare module 'virtual:ts' {
+  const emptySymbol: unique symbol
+  export type EmptyObject = { [emptySymbol]?: never }
 }

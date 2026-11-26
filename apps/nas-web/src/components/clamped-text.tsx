@@ -43,18 +43,18 @@ const clamp = (el: HTMLElement, lineClamp: number) => {
 
     const pos = p as number
     // create a text node and place it in the measurement element
-    measure.appendChild(ctn(text.substr(lineStart, pos - lineStart)))
+    measure.appendChild(ctn(text.substring(lineStart, pos)))
     // have we exceeded allowed line width?
     if (lineWidth < measure.clientWidth) {
       let lineText: string
       if (wasNewLine) {
         // we have a long word so it gets a line of it's own
-        lineText = text.substr(lineStart, pos + 1 - lineStart)
+        lineText = text.substring(lineStart, pos + 1)
         // next line start position
         lineStart = pos + 1
       } else {
         // grab the text until this word
-        lineText = text.substr(lineStart, wordStart - lineStart)
+        lineText = text.substring(lineStart, wordStart)
         // next line start position
         lineStart = wordStart
       }

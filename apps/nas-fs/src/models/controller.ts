@@ -19,8 +19,8 @@ export type GenericRoute = RouteGenericInterface
 
 type ControllerOptions<TSchema extends FastifySchema> = RouteShorthandOptions<
   RawServerDefault,
-  RawRequestDefaultExpression<RawServerDefault>,
-  RawReplyDefaultExpression<RawServerDefault>,
+  RawRequestDefaultExpression,
+  RawReplyDefaultExpression,
   RouteGenericInterface,
   ContextConfigDefault,
   TSchema,
@@ -29,8 +29,8 @@ type ControllerOptions<TSchema extends FastifySchema> = RouteShorthandOptions<
 
 type ControllerHandler<TSchema extends FastifySchema> = RouteHandlerMethod<
   RawServerDefault,
-  RawRequestDefaultExpression<RawServerDefault>,
-  RawReplyDefaultExpression<RawServerDefault>,
+  RawRequestDefaultExpression,
+  RawReplyDefaultExpression,
   RouteGenericInterface,
   ContextConfigDefault,
   TSchema,

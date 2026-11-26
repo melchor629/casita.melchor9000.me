@@ -15,7 +15,7 @@ interface ThumbnailDeleteJobData {
 
 interface ThumbnailDeleteReturnData {
   processed: Array<{ path: string }>
-  errors: Array<{ path: string; error: ApiClientException<unknown> }>
+  errors: Array<{ path: string; error: ApiClientException }>
 }
 
 class ThumbnailDeleteWorker extends UiWorker<

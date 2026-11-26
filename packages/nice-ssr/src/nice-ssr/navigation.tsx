@@ -330,6 +330,7 @@ export const useSearchParams = (): URLSearchParams =>
  *
  * @returns The route parameters.
  */
+// oxlint-disable-next-line typescript/no-unnecessary-type-parameters
 export const useParams = <T extends Record<string, string> = Record<string, string>>(): T =>
   useRouterContextState(useCallback((state) => state.params as T, []))
 

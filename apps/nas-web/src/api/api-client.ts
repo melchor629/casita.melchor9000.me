@@ -32,23 +32,23 @@ export interface ApiClient {
     type: 'blob' | 'text',
     req?: Omit<RequestOptions, 'method'>,
   ): Promise<Blob | string>
-  post<BT extends BodyTypes, RT>(
+  post<RT>(
     this: void,
     url: string,
-    body: BT,
+    body: BodyTypes,
     req?: Omit<RequestOptions, 'method'>,
   ): Promise<RT>
   del<RT>(this: void, url: string, req?: Omit<RequestOptions, 'method'>): Promise<RT>
-  patch<BT extends BodyTypes, RT>(
+  patch<RT>(
     this: void,
     url: string,
-    body: BT,
+    body: BodyTypes,
     req?: Omit<RequestOptions, 'method'>,
   ): Promise<RT>
-  put<BT extends BodyTypes, RT>(
+  put<RT>(
     this: void,
     url: string,
-    body: BT,
+    body: BodyTypes,
     req?: Omit<RequestOptions, 'method'>,
   ): Promise<RT>
   getAccessToken(this: void): Promise<string | null>
@@ -153,19 +153,19 @@ export async function getRaw(
   return identifyExceptionAndThrow(res)
 }
 
-export async function post<BT extends BodyTypes, RT>(
+export async function post<RT>(
   url: string,
-  body: BT,
+  body: BodyTypes,
   r?: RequestOptionsWithToken,
 ): Promise<RT> {
-  const res = await sendRequest<BT>(getUrl(url), body, await requestOptionsWithToken(r, 'post'))
+  const res = await sendRequest(getUrl(url), body, await requestOptionsWithToken(r, 'post'))
   if (res.ok) {
     return res.json() as RT
   }
 
   if (shouldRetry(res)) {
     await retryWait(res)
-    return post<BT, RT>(url, body, r)
+    return post<RT>(url, body, r)
   }
 
   return identifyExceptionAndThrow(res)
@@ -185,37 +185,37 @@ export async function del<RT>(url: string, r?: RequestOptionsWithToken): Promise
   return identifyExceptionAndThrow(res)
 }
 
-export async function patch<BT extends BodyTypes, RT>(
+export async function patch<RT>(
   url: string,
-  body: BT,
+  body: BodyTypes,
   r?: RequestOptionsWithToken,
 ): Promise<RT> {
-  const res = await sendRequest<BT>(getUrl(url), body, await requestOptionsWithToken(r, 'patch'))
+  const res = await sendRequest(getUrl(url), body, await requestOptionsWithToken(r, 'patch'))
   if (res.ok) {
     return res.json() as RT
   }
 
   if (shouldRetry(res)) {
     await retryWait(res)
-    return patch<BT, RT>(url, body, r)
+    return patch<RT>(url, body, r)
   }
 
   return identifyExceptionAndThrow(res)
 }
 
-export async function put<BT extends BodyTypes, RT>(
+export async function put<RT>(
   url: string,
-  body: BT,
+  body: BodyTypes,
   r?: RequestOptionsWithToken,
 ): Promise<RT> {
-  const res = await sendRequest<BT>(getUrl(url), body, await requestOptionsWithToken(r, 'put'))
+  const res = await sendRequest(getUrl(url), body, await requestOptionsWithToken(r, 'put'))
   if (res.ok) {
     return res.json() as RT
   }
 
   if (shouldRetry(res)) {
     await retryWait(res)
-    return put<BT, RT>(url, body, r)
+    return put<RT>(url, body, r)
   }
 
   return identifyExceptionAndThrow(res)

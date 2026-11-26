@@ -31,7 +31,7 @@ export const loader = async (request: PageLoaderContext): Promise<LoaderData> =>
         'X-Forwarded-Proto': h.get('X-Forwarded-Proto'),
       },
     } as unknown as IncomingMessage
-    const res = {} as ServerResponse
+    const res = {} as unknown as ServerResponse
     const interaction = await oidc.interactionDetails(req, res)
     const clientId = interaction.params.client_id as string
     const [client, session, config] = await Promise.all([

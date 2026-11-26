@@ -9,6 +9,7 @@ type SwrCacheEntry<TData = unknown> = {
 
 const getKey = (key: string) => `nas-web:${key}`
 
+// oxlint-disable-next-line typescript/no-unnecessary-type-parameters
 const getItem = <T>(key: string): T | null => {
   const value = localStorage.getItem(getKey(key))
   return value ? (JSON.parse(value) as T) : null

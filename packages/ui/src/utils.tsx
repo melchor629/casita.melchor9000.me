@@ -106,7 +106,7 @@ export type OverridableComponentProps<
 
 export function styled<const Comp extends ElementType>(Component: Comp, name: string) {
   return function <
-    V extends TVVariantsConstraint = Record<never, Record<string, any>>,
+    V extends TVVariantsConstraint = { _: never },
     DV = object,
     CV extends ReadonlyArray<object> = [],
     B extends ClassNameValue = undefined,

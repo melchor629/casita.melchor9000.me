@@ -1,5 +1,6 @@
 import path from 'node:path'
 import * as devalue from 'devalue'
+import type { PropsWithChildren } from 'react'
 import type { PreloadAs } from 'react-dom'
 import { renderToReadableStream } from 'react-dom/server'
 import {
@@ -283,7 +284,7 @@ function renderInvalidPage(request: SsrRequest) {
 
 type RenderPageContext = {
   type: 'page' | 'not-found' | 'error'
-  layouts: Array<() => Promise<PageHelperModule>>
+  layouts: Array<() => Promise<PageHelperModule<PropsWithChildren>>>
   status?: number
   props?: Record<string, unknown>
 }

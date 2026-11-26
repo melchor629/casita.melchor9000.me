@@ -9,7 +9,7 @@ import TransitionGroup from '../TransitionGroup'
 import { clsx } from '../utils'
 
 export type CollapsableTextProps = Readonly<
-  TextProps<'p'> & {
+  TextProps & {
     /**
      * Maximum number of lines to render when collapsed.
      *

@@ -12,11 +12,18 @@ export type HealthCheckResponse = Readonly<{
   checks: Record<string, HealthCheckResult & { readonly duration: number; readonly type: string }>
 }>
 
-export type HealthCheck<T> = ((params: T, signal: AbortSignal) => Promise<HealthCheckResult>) & {
+export type HealthCheckParams = object | void
+
+export type HealthCheckFn<T extends HealthCheckParams> = (
+  params: T,
+  signal: AbortSignal,
+) => Promise<HealthCheckResult>
+
+export type HealthCheck<T extends HealthCheckParams> = HealthCheckFn<T> & {
   type: string
 }
 
-export type HealthCheckEntry<T = unknown> = Readonly<{
+export type HealthCheckEntry<T extends HealthCheckParams = HealthCheckParams> = Readonly<{
   key: string
   params: T
   fn: HealthCheck<T>

@@ -1,3 +1,5 @@
+import type { EmptyObject } from 'virtual:ts'
+
 export type Logger = {
   // readonly level: 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal' | 'silent'
   child(bindings: Record<string, unknown>): Logger
@@ -8,7 +10,7 @@ export type Logger = {
   }
 }
 
-export type SsrRequest<TParams extends Record<string, string> = Record<never, string>> = Request & {
+export type SsrRequest<TParams extends Record<string, string> = EmptyObject> = Request & {
   nice: Readonly<{
     /**
      * Original URL including the original pathname.
