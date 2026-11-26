@@ -1,4 +1,4 @@
-import { load, type ExpandedTags } from 'exifreader'
+import exifreader, { type ExpandedTags } from 'exifreader'
 import type { ImageExifTags, ImageFileTags, ImageGpsTags, ImageTags } from '../models/exif.ts'
 
 const mapFileTags = ({ file }: ExpandedTags): ImageFileTags | null =>
@@ -46,7 +46,9 @@ const mapGpsTags = ({ gps }: ExpandedTags): ImageGpsTags | null =>
 
 const readExif = async (file: string): Promise<ImageTags> => {
   try {
-    const tags = await load(file, { async: true, expanded: true })
+    // NOTE: types are wrong and load is only exported from the namespace
+    // oxlint-disable-next-line import/no-named-as-default-member
+    const tags = await exifreader.load(file, { async: true, expanded: true })
     delete tags.exif?.MakerNote
     delete tags.thumbnail
     // oxlint-disable-next-line typescript/no-deprecated

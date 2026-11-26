@@ -1,5 +1,11 @@
 # nas-fs
 
+## 0.12.38
+
+### Patch Changes
+
+- Fix import crashing API
+
 ## 0.12.37
 
 ### Patch Changes

@@ -114,7 +114,7 @@
     },
     "apps/nas-fs": {
       "name": "nas-fs",
-      "version": "0.12.37",
+      "version": "0.12.38",
       "dependencies": {
         "@fastify/multipart": "^10.1.9",
         "@fastify/otel": "^1.0.2",
