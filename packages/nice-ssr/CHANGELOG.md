@@ -1,5 +1,18 @@
 # @melchor629/nice-ssr
 
+## 0.7.0
+
+### Minor Changes
+
+- eb33ece: Use svelte's devalue for SSR data exchange.
+
+### Patch Changes
+
+- c30e907: Upgrade otel libraries to v3
+- c9f159c: Fix TS warnings.
+- cb9990a: Remove linter issues
+- a778ff1: Update deps
+
 ## 0.6.6
 
 ### Patch Changes

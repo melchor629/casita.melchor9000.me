@@ -1,5 +1,13 @@
 # @melchor629/ui
 
+## 0.0.10
+
+### Patch Changes
+
+- c9f159c: Fix TS warnings.
+- cb9990a: Remove linter issues
+- a778ff1: Update deps
+
 ## 0.0.9
 
 ### Patch Changes

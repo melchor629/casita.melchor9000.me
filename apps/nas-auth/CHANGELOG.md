@@ -1,5 +1,24 @@
 # nas-auth
 
+## 3.3.14
+
+### Patch Changes
+
+- 4713c0e: Upgrade motion to v14 and accelerate login animation
+- c9f159c: Fix TS warnings.
+- cb9990a: Remove linter issues
+- a778ff1: Update deps
+- Updated dependencies [c30e907]
+- Updated dependencies [c9f159c]
+- Updated dependencies [cb9990a]
+- Updated dependencies [eb33ece]
+- Updated dependencies [a778ff1]
+  - @melchor629/infra@0.1.8
+  - @melchor629/nice-ssr@0.7.0
+  - @melchor629/fastify-infra@0.2.6
+  - @melchor629/orm-nas-auth@0.1.6
+  - @melchor629/ui@0.0.10
+
 ## 3.3.13
 
 ### Patch Changes

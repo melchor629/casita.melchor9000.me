@@ -1,5 +1,15 @@
 # @melchor629/orm-nas-auth
 
+## 0.1.6
+
+### Patch Changes
+
+- c9f159c: Fix TS warnings.
+- Updated dependencies [c30e907]
+- Updated dependencies [c9f159c]
+- Updated dependencies [a778ff1]
+  - @melchor629/infra@0.1.8
+
 ## 0.1.5
 
 ### Patch Changes

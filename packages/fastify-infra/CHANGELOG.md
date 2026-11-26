@@ -1,5 +1,12 @@
 # @melchor629/fastify-infra
 
+## 0.2.6
+
+### Patch Changes
+
+- c9f159c: Fix TS warnings.
+- a778ff1: Update deps
+
 ## 0.2.5
 
 ### Patch Changes

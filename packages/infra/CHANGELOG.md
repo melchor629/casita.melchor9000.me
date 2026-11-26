@@ -1,5 +1,13 @@
 # @melchor629/infra
 
+## 0.1.8
+
+### Patch Changes
+
+- c30e907: Upgrade otel libraries to v3
+- c9f159c: Fix TS warnings.
+- a778ff1: Update deps
+
 ## 0.1.7
 
 ### Patch Changes

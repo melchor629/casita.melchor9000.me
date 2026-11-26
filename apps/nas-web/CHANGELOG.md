@@ -1,5 +1,18 @@
 # nas-web
 
+## 0.16.11
+
+### Patch Changes
+
+- c30e907: Upgrade otel libraries to v3
+- c9f159c: Fix TS warnings.
+- cb9990a: Remove linter issues
+- a778ff1: Update deps
+- Updated dependencies [c9f159c]
+- Updated dependencies [cb9990a]
+- Updated dependencies [a778ff1]
+  - @melchor629/ui@0.0.10
+
 ## 0.16.10
 
 ### Patch Changes
